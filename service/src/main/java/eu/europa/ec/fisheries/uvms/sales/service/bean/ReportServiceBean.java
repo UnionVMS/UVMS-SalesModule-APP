@@ -4,8 +4,8 @@ import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.service.ExchangeService;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
+import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.*;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
@@ -46,7 +46,7 @@ public class ReportServiceBean implements ReportService {
     private FLUXSalesResponseMessageFactory fluxSalesResponseMessageFactory;
 
     @EJB
-    private ExchangeService exchangeService;
+    private RulesService rulesService;
 
     @EJB
     private ReportServiceHelper reportServiceHelper;
@@ -106,8 +106,8 @@ public class ReportServiceBean implements ReportService {
 
         FLUXSalesResponseMessage fluxSalesResponse = fluxSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResultDocumentType);
 
-        //TODO: logic to decide which recipient this should be sent to
-        exchangeService.sendToExchange(fluxSalesResponse, fluxSalesQueryMessage.getSalesQuery().getSubmitterFLUXParty().getIDS().get(0).getValue());
+        //TODO Stijn/Mathias: logic to decide which recipient this should be sent to
+        rulesService.sendResponseToRules(fluxSalesResponse, fluxSalesQueryMessage.getSalesQuery().getSubmitterFLUXParty().getIDS().get(0).getValue());
         //salesMessageProducer.sendModuleMessage("", U)
     }
 

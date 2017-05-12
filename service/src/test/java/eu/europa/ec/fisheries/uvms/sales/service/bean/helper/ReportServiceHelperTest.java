@@ -7,7 +7,7 @@ import eu.europa.ec.fisheries.schema.sales.ValidationResultDocumentType;
 import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.service.ExchangeService;
+import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class ReportServiceHelperTest {
     private ParameterService parameterService;
 
     @Mock
-    private ExchangeService exchangeService;
+    private RulesService rulesService;
 
     @Mock
     private ReportDomainModel reportDomainModel;
@@ -56,8 +56,8 @@ public class ReportServiceHelperTest {
         //verify
         verify(fluxSalesResponseMessageFactory).create(report, new ValidationResultDocumentType());
         verify(reportHelper).getFLUXReportDocumentOwnerId(report);
-        verify(exchangeService).sendToExchange(responseToSender, senderOfReport);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verify(rulesService).sendResponseToRules(responseToSender, senderOfReport);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -141,7 +141,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -200,9 +200,9 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verify(exchangeService).sendToExchange(fluxSalesReportMessage, vesselFlagState);
-        verify(exchangeService).sendToExchange(fluxSalesReportMessage, landingCountry);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -233,8 +233,8 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verify(exchangeService).sendToExchange(fluxSalesReportMessage, landingCountry);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -265,8 +265,8 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verify(exchangeService).sendToExchange(fluxSalesReportMessage, vesselFlagState);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -297,7 +297,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -328,8 +328,8 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verify(exchangeService).sendToExchange(fluxSalesReportMessage, vesselFlagState);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -367,9 +367,9 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
-        verify(exchangeService).sendToExchange(fluxSalesReportMessage, vesselFlagState);
-        verify(exchangeService).sendToExchange(fluxSalesReportMessage, landingCountry);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -406,7 +406,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -456,9 +456,9 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
-        verify(exchangeService).sendToExchange(fluxSalesReportMessage, vesselFlagState);
-        verify(exchangeService).sendToExchange(fluxSalesReportMessage, landingCountry);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
     @Test
@@ -508,7 +508,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, exchangeService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
 }

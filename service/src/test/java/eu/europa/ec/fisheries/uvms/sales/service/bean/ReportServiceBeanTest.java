@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.service.ExchangeService;
+import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceExportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.SalesDetailsHelper;
@@ -50,7 +50,7 @@ public class ReportServiceBeanTest {
     private FLUXSalesResponseMessageFactory fluxSalesResponseMessageFactory;
 
     @Mock
-    private ExchangeService exchangeService;
+    private RulesService rulesService;
 
     @Mock
     private ReportServiceHelper reportServiceHelper;
@@ -277,7 +277,7 @@ public class ReportServiceBeanTest {
         doReturn(reportQuery).when(mapper).map(fluxSalesQueryMessage, ReportQuery.class);
         doReturn(reports).when(reportDomainModel).search(reportQuery);
         doReturn(fluxSalesResponseMessage).when(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResultDocumentType);
-        doNothing().when(exchangeService).sendToExchange(fluxSalesResponseMessage, "BEL");
+        doNothing().when(rulesService).sendResponseToRules(fluxSalesResponseMessage, "BEL");
 
         //execute
         reportServiceBean.search(fluxSalesQueryMessage);
