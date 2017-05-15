@@ -59,15 +59,13 @@ public class EventServiceBean implements EventService {
     public void executeQuery(@Observes @QueryReceivedEvent EventMessage message) throws ServiceException {
         SalesQueryRequest salesReportRequest = (SalesQueryRequest) message.getSalesBaseRequest();
 
-        FLUXSalesQueryMessage salesQueryType;
         try {
-            salesQueryType = JAXBMarshaller.unmarshallString(salesReportRequest.getQuery(), FLUXSalesQueryMessage.class);
+            FLUXSalesQueryMessage salesQueryType = JAXBMarshaller.unmarshallString(salesReportRequest.getQuery(), FLUXSalesQueryMessage.class);
+            reportService.search(salesQueryType);
         } catch (SalesMarshallException e) {
             LOG.error("Something went wrong during unmarshalling of a sales query", e);
             return;
         }
-
-        reportService.search(salesQueryType);
     }
 
     @Override
