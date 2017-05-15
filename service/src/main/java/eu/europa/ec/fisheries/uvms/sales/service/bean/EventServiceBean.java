@@ -11,8 +11,8 @@ import eu.europa.ec.fisheries.schema.sales.SalesQueryRequest;
 import eu.europa.ec.fisheries.schema.sales.SalesReportRequest;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.message.event.ErrorEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.MessageReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.QueryReceivedEvent;
+import eu.europa.ec.fisheries.uvms.sales.message.event.ReportReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
@@ -43,7 +43,7 @@ public class EventServiceBean implements EventService {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void createReport(@Observes @MessageReceivedEvent EventMessage message) {
+    public void createReport(@Observes @ReportReceivedEvent EventMessage message) {
         try {
             SalesReportRequest salesReportRequest = (SalesReportRequest) message.getSalesBaseRequest();
             Report report = JAXBMarshaller.unmarshallString(salesReportRequest.getReport(), Report.class);

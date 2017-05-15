@@ -5,8 +5,8 @@ import eu.europa.ec.fisheries.schema.sales.SalesModuleMethod;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.SalesMessageConstants;
 import eu.europa.ec.fisheries.uvms.sales.message.event.ErrorEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.MessageReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.QueryReceivedEvent;
+import eu.europa.ec.fisheries.uvms.sales.message.event.ReportReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
@@ -33,16 +33,16 @@ public class MessageConsumerBean implements MessageListener {
     final static Logger LOG = LoggerFactory.getLogger(MessageConsumerBean.class);
 
     @Inject
-    @MessageReceivedEvent
-    Event<EventMessage> messageReceivedEvent;
+    @ReportReceivedEvent
+    private Event<EventMessage> reportReceivedEvent;
 
     @Inject
     @QueryReceivedEvent
-    Event<EventMessage> queryReceivedEvent;
+    private Event<EventMessage> queryReceivedEvent;
 
     @Inject
     @ErrorEvent
-    Event<EventMessage> errorEvent;
+    private Event<EventMessage> errorEvent;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -67,7 +67,7 @@ public class MessageConsumerBean implements MessageListener {
         }
 
         switch (method) {
-            case REPORT: messageReceivedEvent.fire(new EventMessage(salesRequest)); break;
+            case REPORT: reportReceivedEvent.fire(new EventMessage(salesRequest)); break;
             case QUERY: queryReceivedEvent.fire(new EventMessage(salesRequest)); break;
             default: errorEvent.fire(new EventMessage(textMessage, "Invalid method '" + method + "' in SalesBaseRequest")); break;
         }

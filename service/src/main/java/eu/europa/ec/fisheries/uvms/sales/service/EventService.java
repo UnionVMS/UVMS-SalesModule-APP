@@ -7,9 +7,10 @@ package eu.europa.ec.fisheries.uvms.sales.service;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.message.event.ErrorEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.MessageReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.QueryReceivedEvent;
+import eu.europa.ec.fisheries.uvms.sales.message.event.ReportReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
+
 import javax.ejb.Local;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -22,7 +23,7 @@ import javax.enterprise.event.Observes;
 @Local
 public interface EventService {
 
-    public void createReport(@Observes @MessageReceivedEvent EventMessage message);
+    public void createReport(@Observes @ReportReceivedEvent EventMessage message);
 
     public void returnError(@Observes @ErrorEvent EventMessage message);
 
