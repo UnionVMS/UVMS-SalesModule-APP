@@ -44,7 +44,7 @@ public class ReportServiceHelper {
 
     public void forwardReportToOtherRelevantParties(Report report) throws ServiceException {
         Report originalReport = findOriginalReport(report);
-        String countryOfHost = parameterService.getParameterValue(ParameterKey.COUNTRY_OF_HOST);
+        String countryOfHost = parameterService.getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
         String vesselFlagState = reportHelper.getVesselFlagState(originalReport);
         String salesLocationCountry = reportHelper.getSalesLocationCountry(originalReport);
         String landingCountry = reportHelper.getLandingCountry(originalReport);
