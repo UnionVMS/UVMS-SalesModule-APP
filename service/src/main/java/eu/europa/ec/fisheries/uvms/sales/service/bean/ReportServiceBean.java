@@ -6,7 +6,10 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
-import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.*;
+import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceExportHelper;
+import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceHelper;
+import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.SalesDetailsHelper;
+import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.SearchReportsHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
@@ -50,9 +53,6 @@ public class ReportServiceBean implements ReportService {
 
     @EJB
     private ReportServiceHelper reportServiceHelper;
-
-    @EJB
-    private ReportHelper reportHelper;
 
     @Override
     public void saveReport(Report report) throws ServiceException {
@@ -108,7 +108,6 @@ public class ReportServiceBean implements ReportService {
 
         //TODO Stijn/Mathias: logic to decide which recipient this should be sent to
         rulesService.sendResponseToRules(fluxSalesResponse, fluxSalesQueryMessage.getSalesQuery().getSubmitterFLUXParty().getIDS().get(0).getValue());
-        //salesMessageProducer.sendModuleMessage("", U)
     }
 
     @Override

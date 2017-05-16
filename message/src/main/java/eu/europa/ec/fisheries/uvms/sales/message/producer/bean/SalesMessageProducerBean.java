@@ -26,15 +26,14 @@ import javax.naming.InitialContext;
 @Stateless
 public class SalesMessageProducerBean implements SalesMessageProducer {
 
-    final static Logger LOG = LoggerFactory.getLogger(SalesMessageProducerBean.class);
-    public static final long TIME_TO_LIVE = 60000L;
-
+    private final static Logger LOG = LoggerFactory.getLogger(SalesMessageProducerBean.class);
+    private static final long TIME_TO_LIVE = 60000L;
 
     private Queue salesQueue;
     private Queue assetQueue;
     private Queue ecbProxyQueue;
     private Queue configQueue;
-    private Queue exchangeQueue;
+    private Queue rulesQueue;
 
     @EJB
     private JMSConnectorBean connector;
@@ -52,7 +51,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
         this.salesQueue = JMSUtils.lookupQueue(ctx, SalesMessageConstants.INTERNAL_QUEUE_JNDI);
         this.ecbProxyQueue = JMSUtils.lookupQueue(ctx, SalesMessageConstants.QUEUE_ECB_PROXY);
         this.configQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_CONFIG);
-        this.exchangeQueue = JMSUtils.lookupQueue(ctx, SalesMessageConstants.QUEUE_EXCHANGE);
+        this.rulesQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_MODULE_RULES);
     }
 
     @Override
@@ -72,8 +71,8 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
                 case CONFIG:
                     getProducer(session, configQueue).send(jmsMessage);
                     break;
-                case EXCHANGE:
-                    getProducer(session, exchangeQueue).send(jmsMessage);
+                case RULES:
+                    getProducer(session, rulesQueue).send(jmsMessage);
                     break;
                 default:
                     throw new UnsupportedOperationException("Sales has no functionality implemented to talk with " + module);
