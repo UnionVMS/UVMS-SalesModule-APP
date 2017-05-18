@@ -234,4 +234,13 @@ public class ReportHelperTest {
 
         assertEquals("abc", reportHelper.getFLUXReportDocumentReferencedId(report));
     }
+
+    @Test
+    public void testGetId() {
+        FLUXSalesReportMessage reportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(new FLUXReportDocumentType()
+                    .withIDS(new IDType().withValue("id")));
+
+        assertEquals("id", reportHelper.getId(reportMessage));
+    }
 }

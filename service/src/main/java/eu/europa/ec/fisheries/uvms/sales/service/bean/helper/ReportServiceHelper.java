@@ -36,13 +36,13 @@ public class ReportServiceHelper {
     @EJB(lookup = ServiceConstants.DB_ACCESS_REPORT_DOMAIN_MODEL)
     private ReportDomainModel reportDomainModel;
 
-    public void sendResponseToSenderOfReport(Report report) throws ServiceException {
+    public void sendResponseToSenderOfReport(Report report, String pluginToSendResponseThrough) throws ServiceException {
         FLUXSalesResponseMessage responseToSender = fluxSalesResponseMessageFactory.create(report, new ValidationResultDocumentType()); //todo: implement properly
         String senderOfReport = reportHelper.getFLUXReportDocumentOwnerId(report);
-        rulesService.sendResponseToRules(responseToSender, senderOfReport);
+        rulesService.sendResponseToRules(responseToSender, senderOfReport, pluginToSendResponseThrough);
     }
 
-    public void forwardReportToOtherRelevantParties(Report report) throws ServiceException {
+    public void forwardReportToOtherRelevantParties(Report report, String pluginToSendResponseThrough) throws ServiceException {
         Report originalReport = findOriginalReport(report);
         String countryOfHost = parameterService.getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
         String vesselFlagState = reportHelper.getVesselFlagState(originalReport);
@@ -51,10 +51,10 @@ public class ReportServiceHelper {
 
         if (salesLocationCountry.equals(countryOfHost)) {
             if (!vesselFlagState.equals(countryOfHost)) {
-                rulesService.sendReportToRules(report.getFLUXSalesReportMessage(), vesselFlagState);
+                rulesService.sendReportToRules(report.getFLUXSalesReportMessage(), vesselFlagState, pluginToSendResponseThrough);
             }
             if (!landingCountry.equals(countryOfHost) && !landingCountry.equals(vesselFlagState)) {
-                rulesService.sendReportToRules(report.getFLUXSalesReportMessage(), landingCountry);
+                rulesService.sendReportToRules(report.getFLUXSalesReportMessage(), landingCountry, pluginToSendResponseThrough);
             }
         }
     }

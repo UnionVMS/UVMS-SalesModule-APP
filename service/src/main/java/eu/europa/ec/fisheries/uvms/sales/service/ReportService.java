@@ -31,8 +31,9 @@ public interface ReportService {
      * Search for sales reports asynchronously. Used over JMS.
      * When the search has finished, the results will be returned via the Exchange plugin over JMS.
      * @param fluxSalesQueryMessage filter criteria
+     * @param pluginToSendResponseThrough the plugin through which the query result should be sent
      */
-    void search(@NotNull FLUXSalesQueryMessage fluxSalesQueryMessage) throws ServiceException;
+    void search(@NotNull FLUXSalesQueryMessage fluxSalesQueryMessage, String pluginToSendResponseThrough) throws ServiceException;
 
     /**
      * Exports documents based on the same criterias you can use for search()
@@ -54,6 +55,7 @@ public interface ReportService {
      * Saves an incoming report whether it's PurposeCode is 9, 5 or 3
      * and it'll do the necessary actions to the previous report if the code is 5 or 3
      * @param report
+     * @param pluginToSendResponseThrough the plugin through which the query result should be sent
      */
-    void saveReport(Report report) throws ServiceException;
+    void saveReport(Report report, String pluginToSendResponseThrough) throws ServiceException;
 }

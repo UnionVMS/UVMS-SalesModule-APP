@@ -277,27 +277,31 @@ public class ReportServiceBeanTest {
         doReturn(reportQuery).when(mapper).map(fluxSalesQueryMessage, ReportQuery.class);
         doReturn(reports).when(reportDomainModel).search(reportQuery);
         doReturn(fluxSalesResponseMessage).when(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResultDocumentType);
-        doNothing().when(rulesService).sendResponseToRules(fluxSalesResponseMessage, "BEL");
+        doNothing().when(rulesService).sendResponseToRules(fluxSalesResponseMessage, "BEL", "FLUX");
 
         //execute
-        reportServiceBean.search(fluxSalesQueryMessage);
+        reportServiceBean.search(fluxSalesQueryMessage, "FLUX");
 
         //verify and assert
         verify(mapper).map(fluxSalesQueryMessage, ReportQuery.class);
         verify(reportDomainModel).search(reportQuery);
+        verify(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResultDocumentType);
+        verify(rulesService).sendResponseToRules(fluxSalesResponseMessage, "BEL", "FLUX");
+        verifyNoMoreInteractions(mapper, reportDomainModel, fluxSalesResponseMessageFactory, rulesService);
     }
 
     @Test
     public void testSaveReportWhenPurposeIsOriginalAndSalesLocationIsNotCountryOfHostAndVesselFlagIsNotCountryOfHost() throws ServiceException {
         Report report = new Report();
+        String plugin = "FLUX";
 
         //execute
-        reportServiceBean.saveReport(report);
+        reportServiceBean.saveReport(report, plugin);
 
         //verify and assert
         verify(reportDomainModel).create(report);
-        verify(reportServiceHelper).sendResponseToSenderOfReport(report);
-        verify(reportServiceHelper).forwardReportToOtherRelevantParties(report);
+        verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin);
+        verify(reportServiceHelper).forwardReportToOtherRelevantParties(report, plugin);
     }
 
 }

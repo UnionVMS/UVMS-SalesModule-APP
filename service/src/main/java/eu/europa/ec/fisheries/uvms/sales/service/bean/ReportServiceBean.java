@@ -55,10 +55,10 @@ public class ReportServiceBean implements ReportService {
     private ReportServiceHelper reportServiceHelper;
 
     @Override
-    public void saveReport(Report report) throws ServiceException {
+    public void saveReport(Report report, String pluginToSendResponseThrough) throws ServiceException {
         reportDomainModel.create(report);
-        reportServiceHelper.sendResponseToSenderOfReport(report);
-        reportServiceHelper.forwardReportToOtherRelevantParties(report);
+        reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough);
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
     }
 
     @Override
@@ -99,15 +99,15 @@ public class ReportServiceBean implements ReportService {
     }
 
     @Override
-    public void search(FLUXSalesQueryMessage fluxSalesQueryMessage) throws ServiceException {
+    public void search(FLUXSalesQueryMessage fluxSalesQueryMessage, String pluginToSendResponseThrough) throws ServiceException {
         ReportQuery query = mapper.map(fluxSalesQueryMessage, ReportQuery.class);
         List<Report> reports = reportDomainModel.search(query);
         ValidationResultDocumentType validationResultDocumentType = new ValidationResultDocumentType(); //TODO: implement correctly
 
         FLUXSalesResponseMessage fluxSalesResponse = fluxSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResultDocumentType);
 
-        //TODO Stijn/Mathias: logic to decide which recipient this should be sent to
-        rulesService.sendResponseToRules(fluxSalesResponse, fluxSalesQueryMessage.getSalesQuery().getSubmitterFLUXParty().getIDS().get(0).getValue());
+        String recipient = fluxSalesQueryMessage.getSalesQuery().getSubmitterFLUXParty().getIDS().get(0).getValue();
+        rulesService.sendResponseToRules(fluxSalesResponse, recipient, pluginToSendResponseThrough);
     }
 
     @Override

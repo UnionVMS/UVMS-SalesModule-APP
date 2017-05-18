@@ -100,5 +100,8 @@ public class ReportHelper {
         return getFluxReportDocument(report).getReferencedID().getValue();
     }
 
-
+    //TODO: test
+    public String getId(FLUXSalesReportMessage reportMessage) {
+        return reportMessage.getFLUXReportDocument().getIDS().get(0).getValue();
+    }
 }

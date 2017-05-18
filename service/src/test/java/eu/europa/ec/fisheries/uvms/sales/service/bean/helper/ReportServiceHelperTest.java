@@ -45,18 +45,19 @@ public class ReportServiceHelperTest {
         Report report = new Report();
         FLUXSalesResponseMessage responseToSender = new FLUXSalesResponseMessage();
         String senderOfReport = "FRA";
+        String pluginToSendResponseThrough = "FLUX";
 
         //mock
         doReturn(responseToSender).when(fluxSalesResponseMessageFactory).create(report, new ValidationResultDocumentType());
         doReturn(senderOfReport).when(reportHelper).getFLUXReportDocumentOwnerId(report);
 
         //execute
-        reportServiceHelper.sendResponseToSenderOfReport(report);
+        reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough);
 
         //verify
         verify(fluxSalesResponseMessageFactory).create(report, new ValidationResultDocumentType());
         verify(reportHelper).getFLUXReportDocumentOwnerId(report);
-        verify(rulesService).sendResponseToRules(responseToSender, senderOfReport);
+        verify(rulesService).sendResponseToRules(responseToSender, senderOfReport, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -68,6 +69,7 @@ public class ReportServiceHelperTest {
         String vesselFlagState = "NLD";
         String landingCountry = "SWE";
         Report report = new Report();
+        String pluginToSendResponseThrough = "FLUX";
 
         //mock
         doReturn(false).when(reportHelper).isReportCorrectedOrDeleted(report);
@@ -77,7 +79,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(report);
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(report);
@@ -96,6 +98,7 @@ public class ReportServiceHelperTest {
         String vesselFlagState = "NLD";
         String landingCountry = "BEL";
         Report report = new Report();
+        String pluginToSendResponseThrough = "FLUX";
 
         //mock
         doReturn(false).when(reportHelper).isReportCorrectedOrDeleted(report);
@@ -105,7 +108,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(report);
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(report);
@@ -124,6 +127,7 @@ public class ReportServiceHelperTest {
         String vesselFlagState = "BEL";
         String landingCountry = "SWE";
         Report report = new Report();
+        String pluginToSendResponseThrough = "FLUX";
 
         //mock
         doReturn(false).when(reportHelper).isReportCorrectedOrDeleted(report);
@@ -133,7 +137,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(report);
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(report);
@@ -152,6 +156,7 @@ public class ReportServiceHelperTest {
         String vesselFlagState = "BEL";
         String landingCountry = "BEL";
         Report report = new Report();
+        String pluginToSendResponseThrough = "FLUX";
 
         //mock
         doReturn(false).when(reportHelper).isReportCorrectedOrDeleted(report);
@@ -161,7 +166,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(report);
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(report);
@@ -179,6 +184,7 @@ public class ReportServiceHelperTest {
         String salesLocationCountry = "BEL";
         String vesselFlagState = "FRA";
         String landingCountry = "NLD";
+        String pluginToSendResponseThrough = "FLUX";
 
         FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage();
         Report report = new Report()
@@ -192,7 +198,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(report);
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(report);
@@ -200,8 +206,8 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -212,6 +218,7 @@ public class ReportServiceHelperTest {
         String salesLocationCountry = "BEL";
         String vesselFlagState = "BEL";
         String landingCountry = "NLD";
+        String pluginToSendResponseThrough = "FLUX";
 
         FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage();
         Report report = new Report()
@@ -225,7 +232,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(report);
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(report);
@@ -233,7 +240,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -244,6 +251,7 @@ public class ReportServiceHelperTest {
         String salesLocationCountry = "BEL";
         String vesselFlagState = "FRA";
         String landingCountry = "BEL";
+        String pluginToSendResponseThrough = "FLUX";
 
         FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage();
         Report report = new Report()
@@ -257,7 +265,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(report);
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(report);
@@ -265,7 +273,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -276,6 +284,7 @@ public class ReportServiceHelperTest {
         String salesLocationCountry = "BEL";
         String vesselFlagState = "BEL";
         String landingCountry = "BEL";
+        String pluginToSendResponseThrough = "FLUX";
 
         FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage();
         Report report = new Report()
@@ -289,7 +298,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(report);
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(report);
@@ -307,6 +316,7 @@ public class ReportServiceHelperTest {
         String salesLocationCountry = "BEL";
         String vesselFlagState = "FRA";
         String landingCountry = "FRA";
+        String pluginToSendResponseThrough = "FLUX";
 
         FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage();
         Report report = new Report()
@@ -320,7 +330,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(report);
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(report);
@@ -328,7 +338,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -340,6 +350,7 @@ public class ReportServiceHelperTest {
         String vesselFlagState = "FRA";
         String landingCountry = "NLD";
         String referencedID = "abc";
+        String pluginToSendResponseThrough = "FLUX";
 
         Report original = ReportMother.withId("original");
         Report correction = ReportMother.withId("correction");
@@ -356,7 +367,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(correction);
+        reportServiceHelper.forwardReportToOtherRelevantParties(correction, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(correction);
@@ -367,8 +378,8 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -380,6 +391,7 @@ public class ReportServiceHelperTest {
         String vesselFlagState = "BEL";
         String landingCountry = "BEL";
         String referencedID = "abc";
+        String pluginToSendResponseThrough = "FLUX";
 
         Report original = ReportMother.withId("original");
         Report correction = ReportMother.withId("correction");
@@ -395,7 +407,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(correction);
+        reportServiceHelper.forwardReportToOtherRelevantParties(correction, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(correction);
@@ -418,6 +430,7 @@ public class ReportServiceHelperTest {
         String landingCountry = "NLD";
         String referencedIDOfSecondCorrection = "abc";
         String referencedIDOfFirstCorrection = "def";
+        String pluginToSendResponseThrough = "FLUX";
 
         Report original = ReportMother.withId("original");
         Report firstCorrection = ReportMother.withId("firstCorrection");
@@ -440,7 +453,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(secondCorrection);
+        reportServiceHelper.forwardReportToOtherRelevantParties(secondCorrection, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(secondCorrection);
@@ -456,8 +469,8 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -470,6 +483,7 @@ public class ReportServiceHelperTest {
         String landingCountry = "BEL";
         String referencedIDOfSecondCorrection = "abc";
         String referencedIDOfFirstCorrection = "def";
+        String pluginToSendResponseThrough = "FLUX";
 
         Report original = ReportMother.withId("original");
         Report firstCorrection = ReportMother.withId("firstCorrection");
@@ -492,7 +506,7 @@ public class ReportServiceHelperTest {
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
 
         //execute
-        reportServiceHelper.forwardReportToOtherRelevantParties(secondCorrection);
+        reportServiceHelper.forwardReportToOtherRelevantParties(secondCorrection, pluginToSendResponseThrough);
 
         //verify
         verify(reportHelper).isReportCorrectedOrDeleted(secondCorrection);

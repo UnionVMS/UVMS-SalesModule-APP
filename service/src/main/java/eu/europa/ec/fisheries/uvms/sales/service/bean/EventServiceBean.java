@@ -47,7 +47,7 @@ public class EventServiceBean implements EventService {
         try {
             SalesReportRequest salesReportRequest = (SalesReportRequest) message.getSalesBaseRequest();
             Report report = JAXBMarshaller.unmarshallString(salesReportRequest.getReport(), Report.class);
-            reportService.saveReport(report);
+            reportService.saveReport(report, salesReportRequest.getPluginToSendResponseThrough());
         } catch (SalesMarshallException e) {
             LOG.error("Something went wrong during unmarshalling of a sales report", e);
         } catch (ServiceException e) {
@@ -57,11 +57,11 @@ public class EventServiceBean implements EventService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void executeQuery(@Observes @QueryReceivedEvent EventMessage message) throws ServiceException {
-        SalesQueryRequest salesReportRequest = (SalesQueryRequest) message.getSalesBaseRequest();
+        SalesQueryRequest salesQueryRequest = (SalesQueryRequest) message.getSalesBaseRequest();
 
         try {
-            FLUXSalesQueryMessage salesQueryType = JAXBMarshaller.unmarshallString(salesReportRequest.getQuery(), FLUXSalesQueryMessage.class);
-            reportService.search(salesQueryType);
+            FLUXSalesQueryMessage salesQueryType = JAXBMarshaller.unmarshallString(salesQueryRequest.getQuery(), FLUXSalesQueryMessage.class);
+            reportService.search(salesQueryType, salesQueryRequest.getPluginToSendResponseThrough());
         } catch (SalesMarshallException e) {
             LOG.error("Something went wrong during unmarshalling of a sales query", e);
             return;
