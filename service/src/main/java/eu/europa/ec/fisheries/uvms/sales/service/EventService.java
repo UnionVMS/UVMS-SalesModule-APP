@@ -12,21 +12,14 @@ import eu.europa.ec.fisheries.uvms.sales.message.event.ReportReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 
 import javax.ejb.Local;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
 
-/**
- *
- * @author jojoha
- */
 @Local
 public interface EventService {
 
-    public void createReport(@Observes @ReportReceivedEvent EventMessage message);
+    void createReport(@Observes @ReportReceivedEvent EventMessage message);
 
-    public void returnError(@Observes @ErrorEvent EventMessage message);
+    void returnError(@Observes @ErrorEvent EventMessage message);
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     void executeQuery(@Observes @QueryReceivedEvent EventMessage message) throws ServiceException;
 }

@@ -1,6 +1,9 @@
 package eu.europa.ec.fisheries.uvms.sales.service.factory;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
+import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportHelper;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,6 +29,9 @@ public class FLUXSalesResponseMessageFactoryTest {
     @Mock
     private ReportHelper reportHelper;
 
+    @Mock
+    private ParameterService parameterService;
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -46,21 +52,33 @@ public class FLUXSalesResponseMessageFactoryTest {
         Report report = new Report().withFLUXSalesReportMessage(new FLUXSalesReportMessage());
         List<Report> reports = Arrays.asList(report, report, report, report);
 
-        ValidationResultDocumentType validationResult = new ValidationResultDocumentType();
+        String messageValidationStatus = "OK";
+        String fluxLocalNationCode = "BEL";
 
         for (int i = 0; i < 100; i++) {
            report.getFLUXSalesReportMessage().withSalesReports(new SalesReportType());
         }
 
-        //execute
-        FLUXSalesResponseMessage fluxSalesResponse = FLUXSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResult);
+        ValidationQualityAnalysisType validationResult = new ValidationQualityAnalysisType().withID(new IDType().withValue("v"));
+        List<ValidationQualityAnalysisType> validationResults = Lists.newArrayList(validationResult);
 
-        //assert
+        //mock
+        doReturn(fluxLocalNationCode).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+
+        //execute
+        FLUXSalesResponseMessage fluxSalesResponse = FLUXSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResults, messageValidationStatus);
+
+        //verify and assert
+        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+
         assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getIDS().get(0).getValue());
         assertEquals("salesQuery", fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getValue());
-        assertEquals(fluxParty, fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty());
-        assertEquals(validationResult, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0));
+        assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty().getIDS().get(0).getValue());
+        assertEquals(validationResult, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getRelatedValidationQualityAnalysises().get(0));
+        assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getCreationDateTime());
+        assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getValidatorID().getValue());
         assertEquals(400, fluxSalesResponse.getSalesReports().size());
+        assertEquals(messageValidationStatus, fluxSalesResponse.getFLUXResponseDocument().getResponseCode().getValue());
     }
 
     @Test
@@ -69,24 +87,31 @@ public class FLUXSalesResponseMessageFactoryTest {
         String referencedId = "abc";
         Report report = new Report();
         FLUXPartyType fluxParty = new FLUXPartyType();
-        ValidationResultDocumentType validationResult = new ValidationResultDocumentType();
+        String fluxLocalNationCode = "BEL";
+        String messageValidationStatus = "OK";
+
+        ValidationQualityAnalysisType validationResult = new ValidationQualityAnalysisType().withID(new IDType().withValue("v"));
+        List<ValidationQualityAnalysisType> validationResults = Lists.newArrayList(validationResult);
 
         //mock
         doReturn(referencedId).when(reportHelper).getFLUXReportDocumentId(report);
-        doReturn(fluxParty).when(reportHelper).getFLUXReportDocumentOwner(report);
+        doReturn(fluxLocalNationCode).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
 
         //execute
-        FLUXSalesResponseMessage fluxSalesResponse = FLUXSalesResponseMessageFactory.create(report, validationResult);
+        FLUXSalesResponseMessage fluxSalesResponse = FLUXSalesResponseMessageFactory.create(report, validationResults, messageValidationStatus);
 
         //verify and assert
         verify(reportHelper).getFLUXReportDocumentId(report);
-        verify(reportHelper).getFLUXReportDocumentOwner(report);
+        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
 
         assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getIDS().get(0).getValue());
         assertEquals(referencedId, fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getValue());
-        assertEquals(fluxParty, fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty());
-        assertEquals(validationResult, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0));
+        assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty().getIDS().get(0).getValue());
+        assertEquals(validationResult, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getRelatedValidationQualityAnalysises().get(0));
+        assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getCreationDateTime());
+        assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getValidatorID().getValue());
         assertTrue(fluxSalesResponse.getSalesReports().isEmpty());
+        assertEquals(messageValidationStatus, fluxSalesResponse.getFLUXResponseDocument().getResponseCode().getValue());
     }
 
 }

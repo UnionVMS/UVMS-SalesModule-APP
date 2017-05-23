@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
-import eu.europa.ec.fisheries.schema.sales.ValidationResultDocumentType;
+import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
@@ -13,6 +13,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessag
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import java.util.List;
 
 /**
  * Class who's only purpose is to hide low-level logic from the ReportServiceBean.
@@ -36,8 +37,11 @@ public class ReportServiceHelper {
     @EJB(lookup = ServiceConstants.DB_ACCESS_REPORT_DOMAIN_MODEL)
     private ReportDomainModel reportDomainModel;
 
-    public void sendResponseToSenderOfReport(Report report, String pluginToSendResponseThrough) throws ServiceException {
-        FLUXSalesResponseMessage responseToSender = fluxSalesResponseMessageFactory.create(report, new ValidationResultDocumentType()); //todo: implement properly
+    public void sendResponseToSenderOfReport(Report report,
+                                             String pluginToSendResponseThrough,
+                                             List<ValidationQualityAnalysisType> validationResults,
+                                             String messageValidationStatus) throws ServiceException {
+        FLUXSalesResponseMessage responseToSender = fluxSalesResponseMessageFactory.create(report, validationResults, messageValidationStatus);
         String senderOfReport = reportHelper.getFLUXReportDocumentOwnerId(report);
         rulesService.sendResponseToRules(responseToSender, senderOfReport, pluginToSendResponseThrough);
     }

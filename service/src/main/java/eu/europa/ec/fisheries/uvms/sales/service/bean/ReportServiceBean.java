@@ -55,9 +55,11 @@ public class ReportServiceBean implements ReportService {
     private ReportServiceHelper reportServiceHelper;
 
     @Override
-    public void saveReport(Report report, String pluginToSendResponseThrough) throws ServiceException {
+    public void saveReport(Report report, String pluginToSendResponseThrough,
+                           List<ValidationQualityAnalysisType> validationResults,
+                           String messageValidationStatus) throws ServiceException {
         reportDomainModel.create(report);
-        reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough);
+        reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough, validationResults, messageValidationStatus);
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
     }
 
@@ -99,12 +101,14 @@ public class ReportServiceBean implements ReportService {
     }
 
     @Override
-    public void search(FLUXSalesQueryMessage fluxSalesQueryMessage, String pluginToSendResponseThrough) throws ServiceException {
+    public void search(FLUXSalesQueryMessage fluxSalesQueryMessage,
+                       String pluginToSendResponseThrough,
+                       List<ValidationQualityAnalysisType> validationResults,
+                       String messageValidationStatus) throws ServiceException {
         ReportQuery query = mapper.map(fluxSalesQueryMessage, ReportQuery.class);
         List<Report> reports = reportDomainModel.search(query);
-        ValidationResultDocumentType validationResultDocumentType = new ValidationResultDocumentType(); //TODO: implement correctly
 
-        FLUXSalesResponseMessage fluxSalesResponse = fluxSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResultDocumentType);
+        FLUXSalesResponseMessage fluxSalesResponse = fluxSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResults, messageValidationStatus);
 
         String recipient = fluxSalesQueryMessage.getSalesQuery().getSubmitterFLUXParty().getIDS().get(0).getValue();
         rulesService.sendResponseToRules(fluxSalesResponse, recipient, pluginToSendResponseThrough);

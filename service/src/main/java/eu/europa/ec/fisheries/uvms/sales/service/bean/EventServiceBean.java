@@ -5,10 +5,7 @@
  */
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import eu.europa.ec.fisheries.schema.sales.FLUXSalesQueryMessage;
-import eu.europa.ec.fisheries.schema.sales.Report;
-import eu.europa.ec.fisheries.schema.sales.SalesQueryRequest;
-import eu.europa.ec.fisheries.schema.sales.SalesReportRequest;
+import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.message.event.ErrorEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.QueryReceivedEvent;
@@ -24,10 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import java.util.List;
 
 
 @Stateless
@@ -42,12 +38,16 @@ public class EventServiceBean implements EventService {
     private SalesMessageProducer salesMessageProducer;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void createReport(@Observes @ReportReceivedEvent EventMessage message) {
         try {
             SalesReportRequest salesReportRequest = (SalesReportRequest) message.getSalesBaseRequest();
+
             Report report = JAXBMarshaller.unmarshallString(salesReportRequest.getReport(), Report.class);
-            reportService.saveReport(report, salesReportRequest.getPluginToSendResponseThrough());
+            List<ValidationQualityAnalysisType> validationResults = salesReportRequest.getValidationResults();
+            String pluginToSendResponseThrough = salesReportRequest.getPluginToSendResponseThrough();
+            String messageValidationResult = salesReportRequest.getMessageValidationStatus().name();
+
+            reportService.saveReport(report, pluginToSendResponseThrough, validationResults, messageValidationResult);
         } catch (SalesMarshallException e) {
             LOG.error("Something went wrong during unmarshalling of a sales report", e);
         } catch (ServiceException e) {
@@ -55,13 +55,16 @@ public class EventServiceBean implements EventService {
         }
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void executeQuery(@Observes @QueryReceivedEvent EventMessage message) throws ServiceException {
         SalesQueryRequest salesQueryRequest = (SalesQueryRequest) message.getSalesBaseRequest();
 
         try {
             FLUXSalesQueryMessage salesQueryType = JAXBMarshaller.unmarshallString(salesQueryRequest.getQuery(), FLUXSalesQueryMessage.class);
-            reportService.search(salesQueryType, salesQueryRequest.getPluginToSendResponseThrough());
+            String pluginToSendResponseThrough = salesQueryRequest.getPluginToSendResponseThrough();
+            List<ValidationQualityAnalysisType> validationResults = salesQueryRequest.getValidationResults();
+            String messageValidationResult = salesQueryRequest.getMessageValidationStatus().name();
+
+            reportService.search(salesQueryType, pluginToSendResponseThrough, validationResults, messageValidationResult);
         } catch (SalesMarshallException e) {
             LOG.error("Something went wrong during unmarshalling of a sales query", e);
             return;
@@ -69,7 +72,6 @@ public class EventServiceBean implements EventService {
     }
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void returnError(@Observes @ErrorEvent EventMessage message) {
         salesMessageProducer.sendModuleErrorMessage(message);
         LOG.info("Received Error event in Sales");
