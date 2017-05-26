@@ -349,7 +349,8 @@ public class MapperProducerTest {
                 .withSalesCategory(SalesCategoryType.FIRST_SALE);
 
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
-                .withIDS(new IDType().withValue("fluxReportDocumentExtId"));
+                .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
+                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")));
 
         FLUXLocationType fluxLocation1 = new FLUXLocationType()
                 .withID(new IDType().withValue("BEL"));
