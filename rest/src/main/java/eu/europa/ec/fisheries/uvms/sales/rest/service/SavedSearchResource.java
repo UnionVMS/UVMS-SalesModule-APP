@@ -42,9 +42,8 @@ public class SavedSearchResource extends UnionVMSResource {
     }
 
     @DELETE
-    @Path("{id}")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response deleteSavedSearch(@PathParam("id") Integer id) throws ServiceException {
+    public Response deleteSavedSearch(@QueryParam("id") Integer id) throws ServiceException {
         savedSearchService.deleteSearch(id);
 
         return createSuccessResponse();
