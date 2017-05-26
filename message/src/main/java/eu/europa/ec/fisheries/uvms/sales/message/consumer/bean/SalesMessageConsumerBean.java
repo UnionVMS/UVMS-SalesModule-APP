@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.jms.Queue;
 import javax.jms.Session;
 
@@ -39,12 +37,10 @@ public class SalesMessageConsumerBean implements SalesMessageConsumer {
     }
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public <T> T getMessage(String correlationId, Class type) throws MessageException {
         return getMessage(correlationId, type, TIMEOUT);
     }
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public <T> T getMessage(String correlationId, Class type, long timeout) throws MessageException {
         try(Session session = connector.getNewSession()) {
 

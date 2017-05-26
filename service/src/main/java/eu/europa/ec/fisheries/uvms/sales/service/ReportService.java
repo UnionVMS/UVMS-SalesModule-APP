@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.service;
 
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesQueryMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
+import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 
@@ -32,8 +33,11 @@ public interface ReportService {
      * When the search has finished, the results will be returned via the Exchange plugin over JMS.
      * @param fluxSalesQueryMessage filter criteria
      * @param pluginToSendResponseThrough the plugin through which the query result should be sent
+     * @param validationResults the validation results of the incoming query
+     * @param messageValidationStatus the general validation status of the entire message
      */
-    void search(@NotNull FLUXSalesQueryMessage fluxSalesQueryMessage, String pluginToSendResponseThrough) throws ServiceException;
+    void search(@NotNull FLUXSalesQueryMessage fluxSalesQueryMessage, String pluginToSendResponseThrough,
+                List<ValidationQualityAnalysisType> validationResults, String messageValidationStatus) throws ServiceException;
 
     /**
      * Exports documents based on the same criterias you can use for search()
@@ -56,6 +60,10 @@ public interface ReportService {
      * and it'll do the necessary actions to the previous report if the code is 5 or 3
      * @param report
      * @param pluginToSendResponseThrough the plugin through which the query result should be sent
+     * @param validationResults the validation results of the incoming report
+     * @param messageValidationStatus the general validation status of the entire message
      */
-    void saveReport(Report report, String pluginToSendResponseThrough) throws ServiceException;
+    void saveReport(Report report, String pluginToSendResponseThrough,
+                    List<ValidationQualityAnalysisType> validationResults,
+                    String messageValidationStatus) throws ServiceException;
 }

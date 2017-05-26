@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.jms.*;
 import javax.naming.InitialContext;
 
@@ -55,7 +53,6 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
     }
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String sendModuleMessage(String text, Union module) throws MessageException {
         try {
             Session session = connector.getNewSession();

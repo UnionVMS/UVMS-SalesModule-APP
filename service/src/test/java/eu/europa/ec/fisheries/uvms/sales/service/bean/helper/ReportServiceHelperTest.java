@@ -1,9 +1,10 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
-import eu.europa.ec.fisheries.schema.sales.ValidationResultDocumentType;
+import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
@@ -15,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -46,16 +49,18 @@ public class ReportServiceHelperTest {
         FLUXSalesResponseMessage responseToSender = new FLUXSalesResponseMessage();
         String senderOfReport = "FRA";
         String pluginToSendResponseThrough = "FLUX";
+        List<ValidationQualityAnalysisType> validationResults = Lists.newArrayList(new ValidationQualityAnalysisType());
+        String messageValidationResult = "OK";
 
         //mock
-        doReturn(responseToSender).when(fluxSalesResponseMessageFactory).create(report, new ValidationResultDocumentType());
+        doReturn(responseToSender).when(fluxSalesResponseMessageFactory).create(report, validationResults, messageValidationResult);
         doReturn(senderOfReport).when(reportHelper).getFLUXReportDocumentOwnerId(report);
 
         //execute
-        reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough);
+        reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough, validationResults, messageValidationResult);
 
         //verify
-        verify(fluxSalesResponseMessageFactory).create(report, new ValidationResultDocumentType());
+        verify(fluxSalesResponseMessageFactory).create(report, validationResults, messageValidationResult);
         verify(reportHelper).getFLUXReportDocumentOwnerId(report);
         verify(rulesService).sendResponseToRules(responseToSender, senderOfReport, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);

@@ -263,8 +263,9 @@ public class ReportServiceBeanTest {
                         .withID(new IDType().withValue("value")).withSubmitterFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("BEL"))));
         ReportQuery reportQuery = new ReportQuery();
         List<Report> reports = new ArrayList<>();
-        ValidationResultDocumentType validationResultDocumentType = new ValidationResultDocumentType();
         FLUXPartyType fluxPartyType = new FLUXPartyType();
+        String messageValidationResult = "OK";
+        List<ValidationQualityAnalysisType> validationResults = Lists.newArrayList(new ValidationQualityAnalysisType());
 
         FLUXResponseDocumentType fluxResponseDocumentType = new FLUXResponseDocumentType()
                 .withIDS(new IDType().withValue(UUID.randomUUID().toString()))
@@ -276,16 +277,16 @@ public class ReportServiceBeanTest {
         //mock
         doReturn(reportQuery).when(mapper).map(fluxSalesQueryMessage, ReportQuery.class);
         doReturn(reports).when(reportDomainModel).search(reportQuery);
-        doReturn(fluxSalesResponseMessage).when(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResultDocumentType);
+        doReturn(fluxSalesResponseMessage).when(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResults, messageValidationResult);
         doNothing().when(rulesService).sendResponseToRules(fluxSalesResponseMessage, "BEL", "FLUX");
 
         //execute
-        reportServiceBean.search(fluxSalesQueryMessage, "FLUX");
+        reportServiceBean.search(fluxSalesQueryMessage, "FLUX", validationResults, messageValidationResult);
 
         //verify and assert
         verify(mapper).map(fluxSalesQueryMessage, ReportQuery.class);
         verify(reportDomainModel).search(reportQuery);
-        verify(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResultDocumentType);
+        verify(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResults, messageValidationResult);
         verify(rulesService).sendResponseToRules(fluxSalesResponseMessage, "BEL", "FLUX");
         verifyNoMoreInteractions(mapper, reportDomainModel, fluxSalesResponseMessageFactory, rulesService);
     }
@@ -294,13 +295,15 @@ public class ReportServiceBeanTest {
     public void testSaveReportWhenPurposeIsOriginalAndSalesLocationIsNotCountryOfHostAndVesselFlagIsNotCountryOfHost() throws ServiceException {
         Report report = new Report();
         String plugin = "FLUX";
+        List<ValidationQualityAnalysisType> validationResults = Lists.newArrayList(new ValidationQualityAnalysisType());
+        String messageValidationResult = "OK";
 
         //execute
-        reportServiceBean.saveReport(report, plugin);
+        reportServiceBean.saveReport(report, plugin, validationResults, messageValidationResult);
 
         //verify and assert
         verify(reportDomainModel).create(report);
-        verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin);
+        verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin, validationResults, messageValidationResult);
         verify(reportServiceHelper).forwardReportToOtherRelevantParties(report, plugin);
     }
 

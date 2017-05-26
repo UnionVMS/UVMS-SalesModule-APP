@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.jms.Message;
@@ -45,7 +43,6 @@ public class MessageConsumerBean implements MessageListener {
     private Event<EventMessage> errorEvent;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void onMessage(Message message) {
         LOG.info("Message received in sales");
         TextMessage textMessage = (TextMessage) message;
