@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 @Stateless
 public class FLUXSalesResponseMessageHelper {
 
-    //TODO: test
     public String getId(FLUXSalesResponseMessage response) {
         return response.getFLUXResponseDocument().getIDS().get(0).getValue();
     }

@@ -7,6 +7,7 @@ package eu.europa.ec.fisheries.uvms.sales.service;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.message.event.ErrorEvent;
+import eu.europa.ec.fisheries.uvms.sales.message.event.InvalidMessageReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.QueryReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.ReportReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
@@ -17,9 +18,27 @@ import javax.enterprise.event.Observes;
 @Local
 public interface EventService {
 
-    void createReport(@Observes @ReportReceivedEvent EventMessage message);
+    /**
+     * Persist a received report, and send back a response. When needed, forward the report.
+     * @param event the event received event
+     */
+    void createReport(@Observes @ReportReceivedEvent EventMessage event);
 
-    void returnError(@Observes @ErrorEvent EventMessage message);
+    /**
+     * Execute the received query, and send back a response.
+     * @param event the event received event
+     */
+    void executeQuery(@Observes @QueryReceivedEvent EventMessage event) throws ServiceException;
 
-    void executeQuery(@Observes @QueryReceivedEvent EventMessage message) throws ServiceException;
+    /**
+     * Create a response for a received message that is deemed invalid (by the Rules component, for example)
+     * @param event the event received event
+     */
+    void respondToInvalidMessage(@Observes @InvalidMessageReceivedEvent EventMessage event) throws ServiceException;
+
+    /**
+     * Sends back an error message over the queue
+     * @param event
+     */
+    void returnError(@Observes @ErrorEvent EventMessage event);
 }

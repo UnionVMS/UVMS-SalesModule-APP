@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,9 +47,15 @@ public class FLUXSalesResponseMessageFactory {
     }
 
     public FLUXSalesResponseMessage create(Report report,
-                                           List<ValidationQualityAnalysisType> validationResults,
+                                           Collection<ValidationQualityAnalysisType> validationResults,
                                            String messageValidationStatus) {
         String referencedId = reportHelper.getFLUXReportDocumentId(report);
+        return create(referencedId, validationResults, messageValidationStatus);
+    }
+
+    public FLUXSalesResponseMessage create(String referencedId,
+                                           Collection<ValidationQualityAnalysisType> validationResults,
+                                           String messageValidationStatus) {
         String fluxLocationNationCode = findFluxLocalNationCode();
         FLUXPartyType fluxParty = createFluxParty(fluxLocationNationCode);
         ValidationResultDocumentType validationResultDocument = createValidationResultDocument(validationResults, fluxLocationNationCode);
@@ -62,7 +69,7 @@ public class FLUXSalesResponseMessageFactory {
         return new FLUXPartyType().withIDS(new IDType().withValue(fluxLocalNationCode));
     }
 
-    private ValidationResultDocumentType createValidationResultDocument(List<ValidationQualityAnalysisType> validationResults, String fluxLocalNationCode) {
+    private ValidationResultDocumentType createValidationResultDocument(Collection<ValidationQualityAnalysisType> validationResults, String fluxLocalNationCode) {
         return new ValidationResultDocumentType()
                     .withValidatorID(new IDType().withValue(fluxLocalNationCode))
                     .withCreationDateTime(new DateTimeType().withDateTime(DateTime.now()))
