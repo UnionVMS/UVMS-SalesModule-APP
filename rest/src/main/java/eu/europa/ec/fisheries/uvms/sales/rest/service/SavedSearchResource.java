@@ -29,9 +29,8 @@ public class SavedSearchResource extends UnionVMSResource {
      * @responseType eu.europa.ec.fisheries.uvms.sales.rest.dto.ResponseDto<eu.europa.ec.fisheries.uvms.sales.service.dto>
      */
     @GET
-    @Path("{user}")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response getSavedSearchesByUser(@PathParam(value = "user") final String user) {
+    public Response getSavedSearchesByUser(@QueryParam(value = "user") final String user) {
         return createSuccessResponse(savedSearchService.getSavedSearches(user));
     }
 
