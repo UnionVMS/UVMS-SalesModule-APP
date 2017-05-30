@@ -182,7 +182,7 @@ public class MapperProducerTest {
     }
 
     @Test
-    public void testReportTypeToSalesDetailsDto() {
+    public void testReportTypeToSalesDetailsDtoWhenAuctionSaleIsProvided() {
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("extId"))
                 .withCreationDateTime(new DateTimeType().withDateTime(new DateTime(2016, 10, 10, 12, 10)))
@@ -228,6 +228,52 @@ public class MapperProducerTest {
         assertEquals("LOC", salesDetailsDto.getSalesNote().getLocation().getExtId());
         assertEquals("SAL", salesDetailsDto.getSalesNote().getProducts().get(0).getSpecies());
         assertEquals(SalesCategoryType.NEGOTIATED_SALE, salesDetailsDto.getSalesNote().getCategory());
+    }
+
+    @Test
+    public void testReportTypeToSalesDetailsDtoWhenAuctionSaleIsNotProvided() {
+        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
+                .withIDS(new IDType().withValue("extId"))
+                .withCreationDateTime(new DateTimeType().withDateTime(new DateTime(2016, 10, 10, 12, 10)))
+                .withPurpose(new TextType().withValue("Oh... do I need a reason??"))
+                .withPurposeCode(new CodeType().withValue("9"))
+                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("BEL")));
+
+        FishingActivityType fishingActivity = new FishingActivityType()
+                .withIDS(new IDType().withValue("FA1"))
+                .withRelatedFLUXLocations(new FLUXLocationType().withID(new IDType().withValue("LUX")))
+                .withSpecifiedDelimitedPeriods(new DelimitedPeriodType().withStartDateTime(new DateTimeType().withDateTime(new DateTime(2016, 5, 10, 20, 22))));
+
+        SalesDocumentType salesDocument = new SalesDocumentType()
+                .withSpecifiedFishingActivities(fishingActivity)
+                .withSpecifiedFLUXLocations(new FLUXLocationType().withID(new IDType().withValue("LOC")))
+                .withSpecifiedSalesBatches(new SalesBatchType().withSpecifiedAAPProducts(new AAPProductType().withSpeciesCode(new CodeType().withValue("SAL"))))
+                .withSpecifiedSalesParties(new SalesPartyType().withID(new IDType().withValue("FRA")));
+
+        SalesReportType salesReport = new SalesReportType()
+                .withIncludedSalesDocuments(salesDocument);
+
+        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(fluxReportDocument)
+                .withSalesReports(salesReport);
+
+        Report report = new Report()
+                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+
+        SalesDetailsDto salesDetailsDto = mapper.map(report, SalesDetailsDto.class);
+
+        assertEquals(new DateTime(2016, 5, 10, 20, 22), salesDetailsDto.getFishingTrip().getLandingDate());
+        assertEquals("LUX", salesDetailsDto.getFishingTrip().getLandingLocation());
+        assertEquals("FA1", salesDetailsDto.getFishingTrip().getExtId());
+        assertEquals("FRA", salesDetailsDto.getSalesNote().getParties().get(0).getExtId());
+        assertEquals("extId", salesDetailsDto.getSalesNote().getFluxReport().getExtId());
+        assertEquals(new DateTime(2016, 10, 10, 12, 10), salesDetailsDto.getSalesNote().getFluxReport().getCreation());
+        assertEquals("Oh... do I need a reason??", salesDetailsDto.getSalesNote().getFluxReport().getPurposeText());
+        assertEquals("9", salesDetailsDto.getSalesNote().getFluxReport().getPurposeCode());
+        assertEquals("BEL", salesDetailsDto.getSalesNote().getFluxReport().getFluxReportParty());
+        assertEquals("LOC", salesDetailsDto.getSalesNote().getLocation().getExtId());
+        assertEquals("SAL", salesDetailsDto.getSalesNote().getProducts().get(0).getSpecies());
+        assertEquals(SalesCategoryType.FIRST_SALE, salesDetailsDto.getSalesNote().getCategory());
     }
 
     @Test
@@ -344,9 +390,9 @@ public class MapperProducerTest {
     }
 
     @Test
-    public void testMapReportTypeToReportListDto() {
+    public void testMapReportTypeToReportListDtoWhenAuctionSalesIsProvided() {
         AuctionSaleType auctionSale = new AuctionSaleType()
-                .withSalesCategory(SalesCategoryType.FIRST_SALE);
+                .withSalesCategory(SalesCategoryType.NEGOTIATED_SALE);
 
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
@@ -398,6 +444,73 @@ public class MapperProducerTest {
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage)
                 .withAuctionSale(auctionSale);
+
+        ReportListDto dto = mapper.map(report, ReportListDto.class);
+
+        assertEquals(SalesCategoryType.NEGOTIATED_SALE, dto.getCategory());
+        assertEquals("fluxReportDocumentExtId", dto.getExtId());
+        assertEquals(new DateTime(2017, 3, 2, 15, 0), dto.getOccurrence());
+        assertEquals("vesselName", dto.getVesselName());
+        assertEquals("vesselExtId", dto.getVesselExtId());
+        assertEquals("FRA", dto.getFlagState());
+        assertEquals(new DateTime(2017, 3, 3, 14, 0), dto.getLandingDate());
+        assertEquals("NED", dto.getLandingPort());
+        assertEquals("BEL", dto.getLocation());
+        assertEquals("Mathiblaa", dto.getBuyer());
+        assertEquals("Superstijn", dto.getSeller());
+    }
+
+    @Test
+    public void testMapReportTypeToReportListDtoWhenAuctionSalesIsNotProvided() {
+        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
+                .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
+                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")));
+
+        FLUXLocationType fluxLocation1 = new FLUXLocationType()
+                .withID(new IDType().withValue("BEL"));
+        FLUXLocationType fluxLocation2 = new FLUXLocationType()
+                .withID(new IDType().withValue("NED"));
+
+        RegistrationLocationType registrationLocation = new RegistrationLocationType()
+                .withCountryID(new IDType().withValue("FRA"));
+        RegistrationEventType registrationEvent = new RegistrationEventType()
+                .withRelatedRegistrationLocation(registrationLocation);
+
+        VesselTransportMeansType vessel = new VesselTransportMeansType()
+                .withNames(new TextType().withValue("vesselName"))
+                .withIDS(new IDType().withValue("vesselExtId"))
+                .withSpecifiedRegistrationEvents(registrationEvent);
+
+        FishingActivityType fishingActivity = new FishingActivityType()
+                .withRelatedVesselTransportMeans(vessel)
+                .withSpecifiedDelimitedPeriods(new DelimitedPeriodType().withStartDateTime(new DateTimeType().withDateTime(new DateTime(2017, 3, 3, 14, 0))))
+                .withRelatedFLUXLocations(fluxLocation2);
+
+        SalesEventType salesEvent = new SalesEventType()
+                .withOccurrenceDateTime(new DateTimeType().withDateTime(new DateTime(2017, 3, 2, 15, 0)));
+
+        SalesPartyType salesParty1 = new SalesPartyType()
+                .withRoleCodes(new CodeType().withValue("BUYER"))
+                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Mathiblaa")));
+
+        SalesPartyType salesParty2 = new SalesPartyType()
+                .withRoleCodes(new CodeType().withValue("SELLER"))
+                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Superstijn")));
+
+        List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
+
+        SalesDocumentType salesDocument = new SalesDocumentType()
+                .withSpecifiedFLUXLocations(fluxLocation1)
+                .withSpecifiedSalesEvents(salesEvent)
+                .withSpecifiedFishingActivities(fishingActivity)
+                .withSpecifiedSalesParties(salesParties);
+
+        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(fluxReportDocument)
+                .withSalesReports(new SalesReportType().withIncludedSalesDocuments(salesDocument));
+
+        Report report = new Report()
+                .withFLUXSalesReportMessage(fluxSalesReportMessage);
 
         ReportListDto dto = mapper.map(report, ReportListDto.class);
 

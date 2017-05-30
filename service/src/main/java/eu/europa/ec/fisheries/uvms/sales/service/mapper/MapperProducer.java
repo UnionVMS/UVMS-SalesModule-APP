@@ -4,8 +4,10 @@ import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
+import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.ConverterFactory;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -117,6 +119,17 @@ public class MapperProducer {
                 .field("salesNote.location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0]")
                 .field("salesNote.products", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesBatches[0].specifiedAAPProducts")
                 .field("salesNote.category", "auctionSale.salesCategory")
+                .customize(new CustomMapper<SalesDetailsDto, Report>() {
+                    @Override
+                    public void mapBtoA(Report report, SalesDetailsDto salesDetailsDto, MappingContext context) {
+                        super.mapBtoA(report, salesDetailsDto, context);
+
+                        //if no auction sale exists, the sales category is FIRST_SALE.
+                        if (salesDetailsDto.getSalesNote().getCategory() == null) {
+                            salesDetailsDto.getSalesNote().setCategory(SalesCategoryType.FIRST_SALE);
+                        }
+                    }
+                })
                 .register();
     }
 
@@ -197,6 +210,17 @@ public class MapperProducer {
                 .field("location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0].ID.value")
                 .fieldMap("buyer", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("buyerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .fieldMap("seller", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("sellerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
+                .customize(new CustomMapper<ReportListDto, Report>() {
+                    @Override
+                    public void mapBtoA(Report report, ReportListDto reportListDto, MappingContext context) {
+                        super.mapBtoA(report, reportListDto, context);
+
+                        //if no auction sale exists, the sales category is FIRST_SALE.
+                        if (reportListDto.getCategory() == null) {
+                            reportListDto.setCategory(SalesCategoryType.FIRST_SALE);
+                        }
+                    }
+                })
                 .register();
     }
 
