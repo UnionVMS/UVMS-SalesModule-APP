@@ -2,6 +2,8 @@ package eu.europa.ec.fisheries.uvms.sales.rest.service;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.rest.security.RequiresFeature;
+import eu.europa.ec.fisheries.uvms.rest.security.UnionVMSFeature;
 import eu.europa.ec.fisheries.uvms.sales.service.SavedSearchService;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.SavedSearchGroupDto;
 import org.slf4j.Logger;
@@ -30,6 +32,7 @@ public class SavedSearchResource extends UnionVMSResource {
      */
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
+    @RequiresFeature(UnionVMSFeature.viewSalesNotes)
     public Response getSavedSearchesByUser(@QueryParam(value = "user") final String user) {
         return createSuccessResponse(savedSearchService.getSavedSearches(user));
     }
@@ -37,12 +40,14 @@ public class SavedSearchResource extends UnionVMSResource {
     @POST
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
+    @RequiresFeature(UnionVMSFeature.manageSalesNotes)
     public Response createSavedSearch(SavedSearchGroupDto searchGroupDto) {
         return createSuccessResponse(savedSearchService.saveSearch(searchGroupDto));
     }
 
     @DELETE
     @Produces(value = {MediaType.APPLICATION_JSON})
+    @RequiresFeature(UnionVMSFeature.manageSalesNotes)
     public Response deleteSavedSearch(@QueryParam("id") Integer id) throws ServiceException {
         savedSearchService.deleteSearch(id);
 

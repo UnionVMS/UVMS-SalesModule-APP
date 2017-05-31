@@ -2,6 +2,8 @@ package eu.europa.ec.fisheries.uvms.sales.rest.service;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.rest.security.RequiresFeature;
+import eu.europa.ec.fisheries.uvms.rest.security.UnionVMSFeature;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ExportListsDto;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.PageCriteriaDto;
@@ -34,6 +36,7 @@ public class ReportResource extends UnionVMSResource {
     @GET
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
+    @RequiresFeature(UnionVMSFeature.viewSalesNotes)
     public Response findByExtId(@QueryParam(value = "id") final String extId) {
         LOG.info("Find report by ext id invoked in rest layer");
         return createSuccessResponse(reportService.findSalesDetails(extId));
@@ -49,6 +52,7 @@ public class ReportResource extends UnionVMSResource {
     @Path("search")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
+    @RequiresFeature(UnionVMSFeature.viewSalesNotes)
     public Response search(PageCriteriaDto<ReportQueryFilterDto> filters) throws ServiceException {
         LOG.info("Search reports invoked in rest layer");
         return createSuccessResponse(reportService.search(filters));
@@ -58,6 +62,7 @@ public class ReportResource extends UnionVMSResource {
     @Path("export")
     @Consumes(value = MediaType.APPLICATION_JSON)
     @Produces(value = MediaType.APPLICATION_JSON)
+    @RequiresFeature(UnionVMSFeature.viewSalesNotes)
     public Response export(PageCriteriaDto<ReportQueryFilterDto> filters) throws ServiceException {
         return createSuccessResponse(reportService.exportDocuments(filters));
     }
@@ -66,6 +71,7 @@ public class ReportResource extends UnionVMSResource {
     @Path("exportSelected")
     @Consumes(value = MediaType.APPLICATION_JSON)
     @Produces(value = MediaType.APPLICATION_JSON)
+    @RequiresFeature(UnionVMSFeature.viewSalesNotes)
     public Response export(ExportListsDto exportListsDto) throws ServiceException {
         return createSuccessResponse(reportService.exportSelectedDocuments(exportListsDto));
     }
