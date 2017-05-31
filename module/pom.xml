@@ -24,11 +24,11 @@
                     <modules>
                         <ejbModule>
                             <groupId>${project.groupId}</groupId>   
-                            <artifactId>message</artifactId>
+                            <artifactId>sales-message</artifactId>
                         </ejbModule>
                         <ejbModule>
                             <groupId>${project.groupId}</groupId>  
-                            <artifactId>service</artifactId>
+                            <artifactId>sales-service</artifactId>
                         </ejbModule>
                         <ejbModule>
                             <groupId>${project.groupId}</groupId>  
@@ -37,7 +37,7 @@
                         <webModule>
                             <groupId>${project.groupId}</groupId>
                             <context-root>${project.parent.artifactId}</context-root>  
-                            <artifactId>rest</artifactId>							
+                            <artifactId>sales-rest</artifactId>
                         </webModule>
                     </modules>
                     <skinnyWars>true</skinnyWars>
@@ -49,13 +49,13 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>     
-            <artifactId>message</artifactId>
+            <artifactId>sales-message</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>  
-            <artifactId>service</artifactId>
+            <artifactId>sales-service</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
         </dependency>
@@ -67,7 +67,7 @@
         </dependency> 
         <dependency>
             <groupId>${project.groupId}</groupId>  
-            <artifactId>rest</artifactId>
+            <artifactId>sales-rest</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency> 
