@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListDto;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import ma.glasnost.orika.MapperFacade;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -27,6 +29,12 @@ public class SearchReportsHelperTest {
 
     @Mock
     private AssetService assetService;
+
+    @Mock
+    private ReportServiceHelper reportServiceHelper;
+
+    @Mock
+    private MapperFacade mapper;
 
     @Test
     public void testPrepareVesselFreeTextSearchWhenNoFiltersAreProvided() throws Exception {
@@ -224,6 +232,44 @@ public class SearchReportsHelperTest {
         ReportQuerySorting actualSorting = query.getSorting();
         assertEquals(SortDirection.DESCENDING, actualSorting.getDirection());
         assertEquals(ReportQuerySortField.VESSEL_NAME, actualSorting.getField());
+    }
+
+    @Test
+    public void testEnrichWithRelatedReports() {
+        //data set
+        String id1 = "id1";
+        String id2 = "id2";
+
+        Report report1 = new Report()
+                .withFLUXSalesReportMessage(new FLUXSalesReportMessage()
+                        .withFLUXReportDocument(new FLUXReportDocumentType()
+                                .withIDS(new IDType().withValue(id1))));
+        ReportListDto reportListDto1 = new ReportListDto()
+                                        .extId(id1)
+                                        .referencedId(id2);
+
+        Report report2 = new Report()
+                .withFLUXSalesReportMessage(new FLUXSalesReportMessage()
+                        .withFLUXReportDocument(new FLUXReportDocumentType()
+                                .withIDS(new IDType().withValue(id2))));
+        ReportListDto reportListDto2 = new ReportListDto()
+                .extId(id2);
+
+        List<Report> allReferencedReports = Arrays.asList(report1, report2);
+        List<ReportListDto> mappedRelatedReports = Arrays.asList(reportListDto1, reportListDto2);
+
+        //mock
+        doReturn(allReferencedReports).when(reportServiceHelper).findAllReportsThatAreCorrectedOrDeleted(id2);
+        doReturn(mappedRelatedReports).when(mapper).mapAsList(allReferencedReports, ReportListDto.class);
+
+        //execute
+        helper.enrichWithRelatedReports(Arrays.asList(reportListDto1));
+
+        //verify and assert
+        verify(reportServiceHelper).findAllReportsThatAreCorrectedOrDeleted(id2);
+        verify(mapper).mapAsList(allReferencedReports, ReportListDto.class);
+
+        assertEquals(mappedRelatedReports, reportListDto1.getRelatedReports());
     }
 
 }

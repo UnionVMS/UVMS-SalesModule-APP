@@ -235,6 +235,46 @@ public class ReportHelperTest {
         assertEquals("abc", reportHelper.getFLUXReportDocumentReferencedId(report));
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testGetFLLUXReportDocumentReferencedIdWhenNoReferencedId() {
+        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType();
+
+        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(fluxReportDocument);
+
+        Report report = new Report()
+                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+
+        assertEquals("abc", reportHelper.getFLUXReportDocumentReferencedId(report));
+    }
+
+    @Test
+    public void testGetFLLUXReportDocumentReferencedIdOrNull() {
+        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
+                .withReferencedID(new IDType().withValue("abc"));
+
+        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(fluxReportDocument);
+
+        Report report = new Report()
+                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+
+        assertEquals("abc", reportHelper.getFLUXReportDocumentReferencedIdOrNull(report));
+    }
+
+    @Test
+    public void testGetFLLUXReportDocumentReferencedIdOrNullWhenNoReferencedId() {
+        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType();
+
+        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(fluxReportDocument);
+
+        Report report = new Report()
+                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+
+        assertNull(reportHelper.getFLUXReportDocumentReferencedIdOrNull(report));
+    }
+
     @Test
     public void testGetId() {
         FLUXSalesReportMessage reportMessage = new FLUXSalesReportMessage()

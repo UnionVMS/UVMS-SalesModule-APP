@@ -11,8 +11,10 @@ import eu.europa.ec.fisheries.uvms.sales.service.config.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.mother.AAPProductTypeMother;
+import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
+import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,8 +27,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -49,6 +50,12 @@ public class SalesDetailsHelperTest {
 
     @Mock
     private ReportHelper reportHelper;
+
+    @Mock
+    private ReportServiceHelper reportServiceHelper;
+
+    @Mock
+    private MapperFacade mapper;
 
     private List<ReferenceCoordinates> referenceCoordinates;
 
@@ -389,5 +396,33 @@ public class SalesDetailsHelperTest {
 
         assertEquals(new BigDecimal("21.23"), salesNoteDto.getTotals().getTotalPrice());
         assertEquals(new BigDecimal("32.425"), salesNoteDto.getTotals().getTotalWeight());
+    }
+
+    @Test
+    public void enrichWithRelatedReports() {
+        Report a = ReportMother.withId("a");
+        Report b = ReportMother.withId("b");
+        Report c = ReportMother.withId("c");
+        Report d = ReportMother.withId("d");
+        List<SalesDetailsRelation> mappedRelations = Lists.newArrayList(new SalesDetailsRelation().extId("b"),
+                new SalesDetailsRelation().extId("c"), new SalesDetailsRelation().extId("d"));
+
+        SalesDetailsDto salesDetailsDto = new SalesDetailsDto();
+
+        doReturn("a").when(reportHelper).getFLUXReportDocumentId(a);
+        doReturn("b").when(reportHelper).getFLUXReportDocumentReferencedIdOrNull(a);
+        doReturn(Lists.newArrayList(b, c)).when(reportServiceHelper).findAllReportsThatAreCorrectedOrDeleted("b");
+        doReturn(Lists.newArrayList(d)).when(reportServiceHelper).findAllCorrectionsOrDeletionsOf("a");
+        doReturn(mappedRelations).when(mapper).mapAsList(Lists.newArrayList(b, c, d), SalesDetailsRelation.class);
+
+        salesDetailsHelper.enrichWithRelatedReports(salesDetailsDto, a);
+
+        verify(reportHelper).getFLUXReportDocumentId(a);
+        verify(reportHelper).getFLUXReportDocumentReferencedIdOrNull(a);
+        verify(reportServiceHelper).findAllReportsThatAreCorrectedOrDeleted("b");
+        verify(reportServiceHelper).findAllCorrectionsOrDeletionsOf("a");
+        verify(mapper).mapAsList(Lists.newArrayList(b, c, d), SalesDetailsRelation.class);
+
+        assertSame(mappedRelations, salesDetailsDto.getRelatedReports());
     }
 }

@@ -1,9 +1,12 @@
 package eu.europa.ec.fisheries.uvms.sales.service.dto;
 
+import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 /**
  * Represents one item in the list of reports
@@ -57,6 +60,18 @@ public class ReportListDto {
      * seller name
      */
     private String seller;
+
+    /**
+     * If this report is a correction or deletion, all previous
+     * versions of this report are put in this variable.
+     */
+    private List<ReportListDto> relatedReports;
+
+    /**
+     * ExtId/GUID of the previous report. Only filled in if this
+     * is a corrected or deleted report, or a take over document.
+     */
+    private String referencedId;
 
     public ReportListDto() {
         seller = "N/A";
@@ -173,6 +188,21 @@ public class ReportListDto {
         this.seller = seller;
     }
 
+    public List<ReportListDto> getRelatedReports() {
+        return relatedReports;
+    }
+
+    public void setRelatedReports(List<ReportListDto> relatedReports) {
+        this.relatedReports = relatedReports;
+    }
+
+    public String getReferencedId() {
+        return referencedId;
+    }
+
+    public void setReferencedId(String referencedId) {
+        this.referencedId = referencedId;
+    }
 
     public ReportListDto extId(String extId) {
         this.extId = extId;
@@ -237,5 +267,19 @@ public class ReportListDto {
     public ReportListDto seller(String seller) {
         this.setSeller(seller);
         return this;
+    }
+
+    public ReportListDto relatedReports(List<ReportListDto> relatedReports) {
+        this.setRelatedReports(relatedReports);
+        return this;
+    }
+
+    public ReportListDto referencedId(String referencedId) {
+        this.setReferencedId(referencedId);
+        return this;
+    }
+
+    public boolean hasReferencedId() {
+        return !Strings.isNullOrEmpty(referencedId);
     }
 }

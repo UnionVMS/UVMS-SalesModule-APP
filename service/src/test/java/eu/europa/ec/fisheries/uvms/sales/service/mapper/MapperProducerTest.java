@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.mapper;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
+import eu.europa.ec.fisheries.uvms.sales.model.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import ma.glasnost.orika.MapperFacade;
@@ -396,7 +397,8 @@ public class MapperProducerTest {
 
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
-                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")));
+                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")))
+                .withReferencedID(new IDType().withValue("Heya"));
 
         FLUXLocationType fluxLocation1 = new FLUXLocationType()
                 .withID(new IDType().withValue("BEL"));
@@ -458,13 +460,15 @@ public class MapperProducerTest {
         assertEquals("BEL", dto.getLocation());
         assertEquals("Mathiblaa", dto.getBuyer());
         assertEquals("Superstijn", dto.getSeller());
+        assertEquals("Heya", dto.getReferencedId());
     }
 
     @Test
     public void testMapReportTypeToReportListDtoWhenAuctionSalesIsNotProvided() {
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
-                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")));
+                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")))
+                .withReferencedID(new IDType().withValue("Heya"));;
 
         FLUXLocationType fluxLocation1 = new FLUXLocationType()
                 .withID(new IDType().withValue("BEL"));
@@ -525,6 +529,7 @@ public class MapperProducerTest {
         assertEquals("BEL", dto.getLocation());
         assertEquals("Mathiblaa", dto.getBuyer());
         assertEquals("Superstijn", dto.getSeller());
+        assertEquals("Heya", dto.getReferencedId());
     }
 
     @Test
@@ -596,6 +601,30 @@ public class MapperProducerTest {
         assertEquals(startDate, filters.getSalesStartDate());
         assertEquals(endDate, filters.getSalesEndDate());
         assertEquals("BEL", filters.getFlagState());
+    }
+
+    @Test
+    public void testMapSalesDetailsRelation() {
+        //data set
+        DateTime date = new DateTime(2017, 6, 1, 10, 0);
+        String id = "id1";
+
+        Report report = new Report()
+                .withFLUXSalesReportMessage(new FLUXSalesReportMessage()
+                    .withFLUXReportDocument(new FLUXReportDocumentType()
+                        .withIDS(new IDType().withValue(id))
+                        .withCreationDateTime(new DateTimeType().withDateTime(date)))
+                    .withSalesReports(new SalesReportType()
+                        .withItemTypeCode(new CodeType().withValue("SN"))));
+
+
+        //execute
+        SalesDetailsRelation salesDetailsRelation = mapper.map(report, SalesDetailsRelation.class);
+
+        //assert
+        assertEquals(id, salesDetailsRelation.getExtId());
+        assertEquals(date, salesDetailsRelation.getDate());
+        assertEquals(FluxReportItemType.SALES_NOTE, salesDetailsRelation.getType());
     }
 
 }

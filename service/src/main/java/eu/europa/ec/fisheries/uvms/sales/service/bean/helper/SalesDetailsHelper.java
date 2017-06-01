@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
 import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
@@ -13,14 +14,20 @@ import eu.europa.ec.fisheries.uvms.sales.service.config.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import ma.glasnost.orika.MapperFacade;
+import org.apache.commons.collections.ListUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+
+import static eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants.DB_ACCESS_PARAMETER_SERVICE;
+import static eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants.DB_ACCESS_REPORT_DOMAIN_MODEL;
 
 /**
  * Class who's only purpose is to hide low-level logic from the "get sales details" functionality of the ReportServiceBean.
@@ -37,7 +44,7 @@ public class SalesDetailsHelper {
     @EJB
     private AssetService assetService;
 
-    @EJB
+    @EJB(lookup = DB_ACCESS_PARAMETER_SERVICE)
     private ParameterService parameterService;
 
     @EJB
@@ -45,6 +52,15 @@ public class SalesDetailsHelper {
 
     @EJB
     private ReportHelper reportHelper;
+
+    @EJB
+    private ReportServiceHelper reportServiceHelper;
+
+    @EJB(lookup = DB_ACCESS_REPORT_DOMAIN_MODEL)
+    private ReportDomainModel reportDomainModel;
+
+    @Inject
+    private MapperFacade mapper;
 
     public void enrichWithLocation(SalesDetailsDto detailsDto) {
         //find coordinates for a FLUX location in the cache. TODO: this info should come from MDR
@@ -140,4 +156,16 @@ public class SalesDetailsHelper {
                 .getValue();
     }
 
+    public void enrichWithRelatedReports(SalesDetailsDto detailsDto, Report report) {
+        String extId = reportHelper.getFLUXReportDocumentId(report);
+        String referencedId = reportHelper.getFLUXReportDocumentReferencedIdOrNull(report);
+
+
+        List<Report> allReportsThatAreCorrectedOrDeletedByTheInputReport = reportServiceHelper.findAllReportsThatAreCorrectedOrDeleted(referencedId);
+        List<Report> allReportsThatCorrectOrDeleteTheInputReport = reportServiceHelper.findAllCorrectionsOrDeletionsOf(extId);
+        List<Report> relations = ListUtils.union(allReportsThatAreCorrectedOrDeletedByTheInputReport, allReportsThatCorrectOrDeleteTheInputReport);
+
+        List<SalesDetailsRelation> mappedRelations = mapper.mapAsList(relations, SalesDetailsRelation.class);
+        detailsDto.setRelatedReports(mappedRelations);
+    }
 }

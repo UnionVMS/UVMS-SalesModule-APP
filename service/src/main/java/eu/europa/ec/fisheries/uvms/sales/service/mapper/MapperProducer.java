@@ -41,8 +41,28 @@ public class MapperProducer {
         configureReportListDto(factory);
         configureReportListExportDto(factory);
         configureFLUXSalesQueryMessage(factory);
+        configureSalesDetailsRelation(factory);
 
         return factory.getMapperFacade();
+    }
+
+    private void configureConverters(MapperFactory factory) {
+        ConverterFactory converterFactory = factory.getConverterFactory();
+
+        //general converters
+        converterFactory.registerConverter(new PassThroughConverter(org.joda.time.DateTime.class));
+        converterFactory.registerConverter(new ListFLUXLocationTypeConverter());
+        converterFactory.registerConverter(new FluxReportItemTypeConverter());
+
+        //field converters
+        converterFactory.registerConverter("presentation", new PresentationConverter());
+        converterFactory.registerConverter("preservation", new PreservationConverter());
+        converterFactory.registerConverter("freshness", new FreshnessConverter());
+        converterFactory.registerConverter("freshnessBToA", new FreshnessBToAConverter());
+        converterFactory.registerConverter("presentationBToA", new PresentationBToAConverter());
+        converterFactory.registerConverter("preservationBToA", new PreservationBToAConverter());
+        converterFactory.registerConverter("buyerSalesPartyTypeListConverter", new BuyerSalesPartyTypeListConverter());
+        converterFactory.registerConverter("sellerSalesPartyTypeListConverter", new SellerSalesPartyTypeListConverter());
     }
 
     private void configureReportListExportDto(MapperFactory factory) {
@@ -59,26 +79,6 @@ public class MapperProducer {
                 .field("salesLocations", "salesLocations")
                 .byDefault()
                 .register();
-    }
-
-
-    private void configureConverters(MapperFactory factory) {
-        ConverterFactory converterFactory = factory.getConverterFactory();
-
-        converterFactory.registerConverter(new PassThroughConverter(org.joda.time.DateTime.class));
-
-        //general converters
-        converterFactory.registerConverter(new ListFLUXLocationTypeConverter());
-
-        //field converters
-        converterFactory.registerConverter("presentation", new PresentationConverter());
-        converterFactory.registerConverter("preservation", new PreservationConverter());
-        converterFactory.registerConverter("freshness", new FreshnessConverter());
-        converterFactory.registerConverter("freshnessBToA", new FreshnessBToAConverter());
-        converterFactory.registerConverter("presentationBToA", new PresentationBToAConverter());
-        converterFactory.registerConverter("preservationBToA", new PreservationBToAConverter());
-        converterFactory.registerConverter("buyerSalesPartyTypeListConverter", new BuyerSalesPartyTypeListConverter());
-        converterFactory.registerConverter("sellerSalesPartyTypeListConverter", new SellerSalesPartyTypeListConverter());
     }
 
     private void configureSavedSearchGroup(MapperFactory factory) {
@@ -208,6 +208,7 @@ public class MapperProducer {
                 .field("landingDate", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].specifiedDelimitedPeriods[0].startDateTime.dateTime")
                 .field("landingPort", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedFLUXLocations[0].ID.value")
                 .field("location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0].ID.value")
+                .field("referencedId", "FLUXSalesReportMessage.FLUXReportDocument.referencedID.value")
                 .fieldMap("buyer", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("buyerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .fieldMap("seller", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("sellerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .customize(new CustomMapper<ReportListDto, Report>() {
@@ -231,4 +232,13 @@ public class MapperProducer {
                 .customize(new SalesQueryParameterTypeCustomMapper())
                 .register();
     }
+
+    private void configureSalesDetailsRelation(MapperFactory factory) {
+        factory.classMap(Report.class, SalesDetailsRelation.class)
+                .field("FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value", "extId")
+                .field("FLUXSalesReportMessage.salesReports[0].itemTypeCode", "type")
+                .field("FLUXSalesReportMessage.FLUXReportDocument.creationDateTime.dateTime", "date")
+                .register();
+    }
+
 }

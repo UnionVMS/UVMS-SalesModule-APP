@@ -100,6 +100,14 @@ public class ReportHelper {
         return getFluxReportDocument(report).getReferencedID().getValue();
     }
 
+    public String getFLUXReportDocumentReferencedIdOrNull(Report report) {
+        try {
+            return getFLUXReportDocumentReferencedId(report);
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
     //TODO: test
     public String getId(FLUXSalesReportMessage reportMessage) {
         return reportMessage.getFLUXReportDocument().getIDS().get(0).getValue();

@@ -6,11 +6,14 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListDto;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import ma.glasnost.orika.MapperFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,6 +27,12 @@ public class SearchReportsHelper {
 
     @EJB
     private AssetService assetService;
+
+    @EJB
+    private ReportServiceHelper reportServiceHelper;
+
+    @Inject
+    private MapperFacade mapper;
 
     /**
      *  VesselName can also contain a vessel's CFR or IRCS. Because we don't have that kind of data, we ask the asset
@@ -62,6 +71,15 @@ public class SearchReportsHelper {
             query.setSorting(new ReportQuerySorting()
                     .withDirection(SortDirection.ASCENDING)
                     .withField(ReportQuerySortField.SALES_DATE));
+        }
+    }
+
+    public void enrichWithRelatedReports(Collection<ReportListDto> reportListDtos) {
+        for (ReportListDto reportListDto: reportListDtos) {
+            String referencedId = reportListDto.getReferencedId();
+            List<Report> allReferencedReports = reportServiceHelper.findAllReportsThatAreCorrectedOrDeleted(referencedId);
+            List<ReportListDto> mappedRelatedReports = mapper.mapAsList(allReferencedReports, ReportListDto.class);
+            reportListDto.setRelatedReports(mappedRelatedReports);
         }
     }
 

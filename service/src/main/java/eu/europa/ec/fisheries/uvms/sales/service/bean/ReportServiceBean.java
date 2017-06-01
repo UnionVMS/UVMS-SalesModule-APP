@@ -74,6 +74,7 @@ public class ReportServiceBean implements ReportService {
         salesDetailsHelper.calculateTotals(detailsDto);
         salesDetailsHelper.enrichWithLocation(detailsDto);
         salesDetailsHelper.enrichWithVesselInformation(detailsDto, report);
+        salesDetailsHelper.enrichWithRelatedReports(detailsDto, report);
 
         return detailsDto;
     }
@@ -93,6 +94,7 @@ public class ReportServiceBean implements ReportService {
             //enrich results
             List<ReportListDto> reportDtos = mapper.mapAsList(reports, ReportListDto.class);
             searchReportsHelper.enrichWithVesselInformation(reportDtos);
+            searchReportsHelper.enrichWithRelatedReports(reportDtos);
             return new PagedListDto<>(query, amountOfReportsWithoutFilters, reportDtos);
 
         } catch (ServiceException e) {
