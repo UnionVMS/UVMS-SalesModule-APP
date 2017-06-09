@@ -65,7 +65,7 @@ public class ReportListDto {
      * If this report is a correction or deletion, all previous
      * versions of this report are put in this variable.
      */
-    private List<ReportListDto> relatedReports;
+    private List<ReportListDto> olderVersions;
 
     /**
      * ExtId/GUID of the previous report. Only filled in if this
@@ -188,12 +188,12 @@ public class ReportListDto {
         this.seller = seller;
     }
 
-    public List<ReportListDto> getRelatedReports() {
-        return relatedReports;
+    public List<ReportListDto> getOlderVersions() {
+        return olderVersions;
     }
 
-    public void setRelatedReports(List<ReportListDto> relatedReports) {
-        this.relatedReports = relatedReports;
+    public void setOlderVersions(List<ReportListDto> olderVersions) {
+        this.olderVersions = olderVersions;
     }
 
     public String getReferencedId() {
@@ -269,11 +269,6 @@ public class ReportListDto {
         return this;
     }
 
-    public ReportListDto relatedReports(List<ReportListDto> relatedReports) {
-        this.setRelatedReports(relatedReports);
-        return this;
-    }
-
     public ReportListDto referencedId(String referencedId) {
         this.setReferencedId(referencedId);
         return this;
@@ -281,5 +276,10 @@ public class ReportListDto {
 
     public boolean hasReferencedId() {
         return !Strings.isNullOrEmpty(referencedId);
+    }
+
+    public ReportListDto olderVersions(List<ReportListDto> olderVersions) {
+        this.olderVersions = olderVersions;
+        return this;
     }
 }

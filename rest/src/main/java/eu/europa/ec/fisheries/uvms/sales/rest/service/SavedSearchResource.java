@@ -32,7 +32,7 @@ public class SavedSearchResource extends UnionVMSResource {
      */
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
-    @RequiresFeature(UnionVMSFeature.viewSalesNotes)
+    @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response getSavedSearchesByUser(@QueryParam(value = "user") final String user) {
         return createSuccessResponse(savedSearchService.getSavedSearches(user));
     }
@@ -40,14 +40,14 @@ public class SavedSearchResource extends UnionVMSResource {
     @POST
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    @RequiresFeature(UnionVMSFeature.manageSalesNotes)
+    @RequiresFeature(UnionVMSFeature.manageSalesReports)
     public Response createSavedSearch(SavedSearchGroupDto searchGroupDto) {
         return createSuccessResponse(savedSearchService.saveSearch(searchGroupDto));
     }
 
     @DELETE
     @Produces(value = {MediaType.APPLICATION_JSON})
-    @RequiresFeature(UnionVMSFeature.manageSalesNotes)
+    @RequiresFeature(UnionVMSFeature.manageSalesReports)
     public Response deleteSavedSearch(@QueryParam("id") Integer id) throws ServiceException {
         savedSearchService.deleteSearch(id);
 

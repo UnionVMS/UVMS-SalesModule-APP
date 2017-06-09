@@ -2,8 +2,8 @@ package eu.europa.ec.fisheries.uvms.sales.service.factory;
 
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
-import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
 import org.joda.time.DateTime;
 

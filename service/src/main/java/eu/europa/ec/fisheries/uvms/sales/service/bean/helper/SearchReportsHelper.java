@@ -3,7 +3,9 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
+import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListDto;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import ma.glasnost.orika.MapperFacade;
@@ -28,8 +30,8 @@ public class SearchReportsHelper {
     @EJB
     private AssetService assetService;
 
-    @EJB
-    private ReportServiceHelper reportServiceHelper;
+    @EJB(lookup = ServiceConstants.DB_ACCESS_REPORT_DOMAIN_MODEL)
+    private ReportDomainModel reportDomainModel;
 
     @Inject
     private MapperFacade mapper;
@@ -74,12 +76,12 @@ public class SearchReportsHelper {
         }
     }
 
-    public void enrichWithRelatedReports(Collection<ReportListDto> reportListDtos) {
+    public void enrichWithOlderVersions(Collection<ReportListDto> reportListDtos) {
         for (ReportListDto reportListDto: reportListDtos) {
             String referencedId = reportListDto.getReferencedId();
-            List<Report> allReferencedReports = reportServiceHelper.findAllReportsThatAreCorrectedOrDeleted(referencedId);
+            List<Report> allReferencedReports = reportDomainModel.findOlderVersionsOrderedByCreationDateDescending(referencedId);
             List<ReportListDto> mappedRelatedReports = mapper.mapAsList(allReferencedReports, ReportListDto.class);
-            reportListDto.setRelatedReports(mappedRelatedReports);
+            reportListDto.setOlderVersions(mappedRelatedReports);
         }
     }
 

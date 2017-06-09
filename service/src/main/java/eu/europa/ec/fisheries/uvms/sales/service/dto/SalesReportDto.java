@@ -8,7 +8,7 @@ import java.util.List;
 
 @EqualsAndHashCode
 @ToString
-public class SalesNoteDto {
+public class SalesReportDto {
     
     private SalesCategoryType category;
         
@@ -24,7 +24,7 @@ public class SalesNoteDto {
         
     private List<ProductDto> products;
 
-    public SalesNoteDto() {
+    public SalesReportDto() {
     }
 
     public SalesCategoryType getCategory() {
@@ -83,37 +83,37 @@ public class SalesNoteDto {
         this.products = products;
     }
 
-    public SalesNoteDto category(final SalesCategoryType type) {
+    public SalesReportDto category(final SalesCategoryType type) {
         setCategory(type);
         return this;
     }
 
-    public SalesNoteDto document(final DocumentDto document) {
+    public SalesReportDto document(final DocumentDto document) {
         setDocument(document);
         return this;
     }
 
-    public SalesNoteDto fluxReport(final FluxReportDto fluxReport) {
+    public SalesReportDto fluxReport(final FluxReportDto fluxReport) {
         setFluxReport(fluxReport);
         return this;
     }
 
-    public SalesNoteDto location(final LocationDto location) {
+    public SalesReportDto location(final LocationDto location) {
         setLocation(location);
         return this;
     }
 
-    public SalesNoteDto parties(final List<PartyDto> parties) {
+    public SalesReportDto parties(final List<PartyDto> parties) {
         setParties(parties);
         return this;
     }
 
-    public SalesNoteDto totals(final TotalsDto totals) {
+    public SalesReportDto totals(final TotalsDto totals) {
         setTotals(totals);
         return this;
     }
 
-    public SalesNoteDto products(final List<ProductDto> products) {
+    public SalesReportDto products(final List<ProductDto> products) {
         setProducts(products);
         return this;
     }

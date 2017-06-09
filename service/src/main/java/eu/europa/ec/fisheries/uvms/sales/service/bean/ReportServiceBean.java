@@ -75,6 +75,7 @@ public class ReportServiceBean implements ReportService {
         salesDetailsHelper.enrichWithLocation(detailsDto);
         salesDetailsHelper.enrichWithVesselInformation(detailsDto, report);
         salesDetailsHelper.enrichWithRelatedReports(detailsDto, report);
+        salesDetailsHelper.enrichWithOtherRelevantVersions(detailsDto, report);
 
         return detailsDto;
     }
@@ -94,7 +95,7 @@ public class ReportServiceBean implements ReportService {
             //enrich results
             List<ReportListDto> reportDtos = mapper.mapAsList(reports, ReportListDto.class);
             searchReportsHelper.enrichWithVesselInformation(reportDtos);
-            searchReportsHelper.enrichWithRelatedReports(reportDtos);
+            searchReportsHelper.enrichWithOlderVersions(reportDtos);
             return new PagedListDto<>(query, amountOfReportsWithoutFilters, reportDtos);
 
         } catch (ServiceException e) {

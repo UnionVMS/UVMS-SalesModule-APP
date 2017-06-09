@@ -3,22 +3,22 @@ package eu.europa.ec.fisheries.uvms.sales.service.dto;
 import eu.europa.ec.fisheries.uvms.sales.model.constant.FluxReportItemType;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.joda.time.DateTime;
 
 @EqualsAndHashCode
 @ToString
 public class SalesDetailsRelation {
 
-    private String extId;
+    private String reportExtId;
+    private String documentExtId;
     private FluxReportItemType type;
-    private DateTime date;
 
-    public String getExtId() {
-        return extId;
+
+    public String getReportExtId() {
+        return reportExtId;
     }
 
-    public void setExtId(String extId) {
-        this.extId = extId;
+    public void setReportExtId(String reportExtId) {
+        this.reportExtId = reportExtId;
     }
 
     public FluxReportItemType getType() {
@@ -29,17 +29,12 @@ public class SalesDetailsRelation {
         this.type = type;
     }
 
-    public DateTime getDate() {
-        return date;
+    public String getDocumentExtId() {
+        return documentExtId;
     }
 
-    public void setDate(DateTime date) {
-        this.date = date;
-    }
-
-    public SalesDetailsRelation extId(String extId) {
-        this.extId = extId;
-        return this;
+    public void setDocumentExtId(String documentExtId) {
+        this.documentExtId = documentExtId;
     }
 
     public SalesDetailsRelation type(FluxReportItemType type) {
@@ -47,8 +42,13 @@ public class SalesDetailsRelation {
         return this;
     }
 
-    public SalesDetailsRelation date(DateTime date) {
-        this.date = date;
+    public SalesDetailsRelation reportExtId(String reportExtId) {
+        this.reportExtId = reportExtId;
+        return this;
+    }
+
+    public SalesDetailsRelation documentExtId(String documentExtId) {
+        this.documentExtId = documentExtId;
         return this;
     }
 }

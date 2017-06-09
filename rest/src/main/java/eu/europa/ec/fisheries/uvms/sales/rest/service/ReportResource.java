@@ -36,7 +36,7 @@ public class ReportResource extends UnionVMSResource {
     @GET
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    @RequiresFeature(UnionVMSFeature.viewSalesNotes)
+    @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response findByExtId(@QueryParam(value = "id") final String extId) {
         LOG.info("Find report by ext id invoked in rest layer");
         return createSuccessResponse(reportService.findSalesDetails(extId));
@@ -52,7 +52,7 @@ public class ReportResource extends UnionVMSResource {
     @Path("search")
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
-    @RequiresFeature(UnionVMSFeature.viewSalesNotes)
+    @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response search(PageCriteriaDto<ReportQueryFilterDto> filters) throws ServiceException {
         LOG.info("Search reports invoked in rest layer");
         return createSuccessResponse(reportService.search(filters));
@@ -62,7 +62,7 @@ public class ReportResource extends UnionVMSResource {
     @Path("export")
     @Consumes(value = MediaType.APPLICATION_JSON)
     @Produces(value = MediaType.APPLICATION_JSON)
-    @RequiresFeature(UnionVMSFeature.viewSalesNotes)
+    @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response export(PageCriteriaDto<ReportQueryFilterDto> filters) throws ServiceException {
         return createSuccessResponse(reportService.exportDocuments(filters));
     }
@@ -71,7 +71,7 @@ public class ReportResource extends UnionVMSResource {
     @Path("exportSelected")
     @Consumes(value = MediaType.APPLICATION_JSON)
     @Produces(value = MediaType.APPLICATION_JSON)
-    @RequiresFeature(UnionVMSFeature.viewSalesNotes)
+    @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response export(ExportListsDto exportListsDto) throws ServiceException {
         return createSuccessResponse(reportService.exportSelectedDocuments(exportListsDto));
     }
