@@ -2,16 +2,16 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
+import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
-import eu.europa.ec.fisheries.uvms.sales.service.config.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.mother.AAPProductTypeMother;
-import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
 import ma.glasnost.orika.MapperFacade;
@@ -27,7 +27,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -75,7 +76,7 @@ public class SalesDetailsHelperTest {
                 .extId("NON-EXISTENT");
 
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
-                .salesNote(new SalesNoteDto()
+                .salesNote(new SalesReportDto()
                     .location(locationDto));
 
         //mock
@@ -99,7 +100,7 @@ public class SalesDetailsHelperTest {
                 .extId("GBLON");
 
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
-                .salesNote(new SalesNoteDto()
+                .salesNote(new SalesReportDto()
                         .location(locationDto));
 
         //mock
@@ -313,11 +314,11 @@ public class SalesDetailsHelperTest {
         ProductDto productDto1 = new ProductDto();
         ProductDto productDto2 = new ProductDto();
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
-                .salesNote(new SalesNoteDto()
+                .salesNote(new SalesReportDto()
                     .products(Lists.newArrayList(productDto1, productDto2)));
 
         //mock
-        doReturn(localCurrency).when(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
+        doReturn(localCurrency).when(parameterService).getParameterValue(ParameterKey.CURRENCY);
         doReturn(documentCurrency).when(reportHelper).getDocumentCurrency(report);
         doReturn(documentDate).when(reportHelper).getDocumentDate(report);
         doReturn(rate).when(ecbProxyService).findExchangeRate(documentCurrency, localCurrency, documentDate);
@@ -327,7 +328,7 @@ public class SalesDetailsHelperTest {
         salesDetailsHelper.convertPricesInLocalCurrency(salesDetailsDto, report);
 
         //verify and assert
-        verify(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
+        verify(parameterService).getParameterValue(ParameterKey.CURRENCY);
         verify(reportHelper).getDocumentCurrency(report);
         verify(reportHelper).getDocumentDate(report);
         verify(ecbProxyService).findExchangeRate(documentCurrency, localCurrency, documentDate);
@@ -352,11 +353,11 @@ public class SalesDetailsHelperTest {
         ProductDto productDto1 = new ProductDto();
         ProductDto productDto2 = new ProductDto();
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
-                .salesNote(new SalesNoteDto()
+                .salesNote(new SalesReportDto()
                         .products(Lists.newArrayList(productDto1, productDto2)));
 
         //mock
-        doReturn(localCurrency).when(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
+        doReturn(localCurrency).when(parameterService).getParameterValue(ParameterKey.CURRENCY);
         doReturn(documentCurrency).when(reportHelper).getDocumentCurrency(report);
         doReturn(Lists.newArrayList(product1, product2)).when(reportHelper).getProductsOfReport(report);
 
@@ -364,7 +365,7 @@ public class SalesDetailsHelperTest {
         salesDetailsHelper.convertPricesInLocalCurrency(salesDetailsDto, report);
 
         //verify and assert
-        verify(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
+        verify(parameterService).getParameterValue(ParameterKey.CURRENCY);
         verify(reportHelper).getDocumentCurrency(report);
         verify(reportHelper).getProductsOfReport(report);
         verifyNoMoreInteractions(parameterService, ecbProxyService, reportHelper);
@@ -387,42 +388,15 @@ public class SalesDetailsHelperTest {
                 .price(new BigDecimal("6.21"))
                 .weight(new BigDecimal("0.215"));
 
-        SalesNoteDto salesNoteDto = new SalesNoteDto()
+        SalesReportDto salesReportDto = new SalesReportDto()
                                             .products(Lists.newArrayList(productDto1, productDto2, productDto3));
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
-                                            .salesNote(salesNoteDto);
+                                            .salesNote(salesReportDto);
 
         salesDetailsHelper.calculateTotals(salesDetailsDto);
 
-        assertEquals(new BigDecimal("21.23"), salesNoteDto.getTotals().getTotalPrice());
-        assertEquals(new BigDecimal("32.425"), salesNoteDto.getTotals().getTotalWeight());
+        assertEquals(new BigDecimal("21.23"), salesReportDto.getTotals().getTotalPrice());
+        assertEquals(new BigDecimal("32.425"), salesReportDto.getTotals().getTotalWeight());
     }
 
-    @Test
-    public void enrichWithRelatedReports() {
-        Report a = ReportMother.withId("a");
-        Report b = ReportMother.withId("b");
-        Report c = ReportMother.withId("c");
-        Report d = ReportMother.withId("d");
-        List<SalesDetailsRelation> mappedRelations = Lists.newArrayList(new SalesDetailsRelation().extId("b"),
-                new SalesDetailsRelation().extId("c"), new SalesDetailsRelation().extId("d"));
-
-        SalesDetailsDto salesDetailsDto = new SalesDetailsDto();
-
-        doReturn("a").when(reportHelper).getFLUXReportDocumentId(a);
-        doReturn("b").when(reportHelper).getFLUXReportDocumentReferencedIdOrNull(a);
-        doReturn(Lists.newArrayList(b, c)).when(reportServiceHelper).findAllReportsThatAreCorrectedOrDeleted("b");
-        doReturn(Lists.newArrayList(d)).when(reportServiceHelper).findAllCorrectionsOrDeletionsOf("a");
-        doReturn(mappedRelations).when(mapper).mapAsList(Lists.newArrayList(b, c, d), SalesDetailsRelation.class);
-
-        salesDetailsHelper.enrichWithRelatedReports(salesDetailsDto, a);
-
-        verify(reportHelper).getFLUXReportDocumentId(a);
-        verify(reportHelper).getFLUXReportDocumentReferencedIdOrNull(a);
-        verify(reportServiceHelper).findAllReportsThatAreCorrectedOrDeleted("b");
-        verify(reportServiceHelper).findAllCorrectionsOrDeletionsOf("a");
-        verify(mapper).mapAsList(Lists.newArrayList(b, c, d), SalesDetailsRelation.class);
-
-        assertSame(mappedRelations, salesDetailsDto.getRelatedReports());
-    }
 }

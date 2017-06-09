@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListDto;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -31,7 +32,7 @@ public class SearchReportsHelperTest {
     private AssetService assetService;
 
     @Mock
-    private ReportServiceHelper reportServiceHelper;
+    private ReportDomainModel reportDomainModel;
 
     @Mock
     private MapperFacade mapper;
@@ -235,7 +236,7 @@ public class SearchReportsHelperTest {
     }
 
     @Test
-    public void testEnrichWithRelatedReports() {
+    public void testEnrichWithOlderVersions() {
         //data set
         String id1 = "id1";
         String id2 = "id2";
@@ -255,21 +256,21 @@ public class SearchReportsHelperTest {
         ReportListDto reportListDto2 = new ReportListDto()
                 .extId(id2);
 
-        List<Report> allReferencedReports = Arrays.asList(report1, report2);
-        List<ReportListDto> mappedRelatedReports = Arrays.asList(reportListDto1, reportListDto2);
+        List<Report> allOlderVersions = Arrays.asList(report1, report2);
+        List<ReportListDto> mappedOlderVersions = Arrays.asList(reportListDto1, reportListDto2);
 
         //mock
-        doReturn(allReferencedReports).when(reportServiceHelper).findAllReportsThatAreCorrectedOrDeleted(id2);
-        doReturn(mappedRelatedReports).when(mapper).mapAsList(allReferencedReports, ReportListDto.class);
+        doReturn(allOlderVersions).when(reportDomainModel).findOlderVersionsOrderedByCreationDateDescending(id2);
+        doReturn(mappedOlderVersions).when(mapper).mapAsList(allOlderVersions, ReportListDto.class);
 
         //execute
-        helper.enrichWithRelatedReports(Arrays.asList(reportListDto1));
+        helper.enrichWithOlderVersions(Arrays.asList(reportListDto1));
 
         //verify and assert
-        verify(reportServiceHelper).findAllReportsThatAreCorrectedOrDeleted(id2);
-        verify(mapper).mapAsList(allReferencedReports, ReportListDto.class);
+        verify(reportDomainModel).findOlderVersionsOrderedByCreationDateDescending(id2);
+        verify(mapper).mapAsList(allOlderVersions, ReportListDto.class);
 
-        assertEquals(mappedRelatedReports, reportListDto1.getRelatedReports());
+        assertEquals(mappedOlderVersions, reportListDto1.getOlderVersions());
     }
 
 }

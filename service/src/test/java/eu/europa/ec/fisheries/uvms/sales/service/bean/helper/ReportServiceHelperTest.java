@@ -1,8 +1,12 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
 import com.google.common.collect.Lists;
-import eu.europa.ec.fisheries.schema.sales.*;
+import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
+import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
+import eu.europa.ec.fisheries.schema.sales.Report;
+import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
@@ -16,8 +20,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -529,91 +531,4 @@ public class ReportServiceHelperTest {
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
-    @Test
-    public void findAllReportsThatAreCorrectedOrDeletedBy() {
-        //data set
-        String id1 = "1";
-        String id2 = "2";
-
-        Report report1 = new Report()
-                .withFLUXSalesReportMessage(new FLUXSalesReportMessage()
-                        .withFLUXReportDocument(new FLUXReportDocumentType()
-                                .withIDS(new IDType().withValue(id1))
-                                .withReferencedID(new IDType().withValue(id2))));
-
-        Report report2 = new Report()
-                .withFLUXSalesReportMessage(new FLUXSalesReportMessage()
-                        .withFLUXReportDocument(new FLUXReportDocumentType()
-                                .withIDS(new IDType().withValue(id2))));
-
-        doReturn(report1).when(reportDomainModel).findByExtId(id1);
-        doReturn(id2).when(reportHelper).getFLUXReportDocumentReferencedIdOrNull(report1);
-        doReturn(report2).when(reportDomainModel).findByExtId(id2);
-        doReturn(null).when(reportHelper).getFLUXReportDocumentReferencedIdOrNull(report2);
-
-        //execute
-        List<Report> allReferencedReports = reportServiceHelper.findAllReportsThatAreCorrectedOrDeleted(id1);
-
-        //verify and assert
-        verify(reportDomainModel).findByExtId(id1);
-        verify(reportDomainModel).findByExtId(id2);
-
-        assertEquals(2, allReferencedReports.size());
-        assertSame(report1, allReferencedReports.get(0));
-        assertSame(report2, allReferencedReports.get(1));
-    }
-
-    /**
-     * This test contains the following reports in it data set:
-     *
-     * A
-     * B refers to A
-     * C refers to A
-     * D refers to B
-     * E refers to B
-     * F refers to D
-     *
-     */
-    @Test
-    public void findAllCorrectionsOrDeletionsOf() {
-        Report b = ReportMother.withId("b");
-        Report c = ReportMother.withId("c");
-        Report d = ReportMother.withId("d");
-        Report e = ReportMother.withId("e");
-        Report f = ReportMother.withId("f");
-
-        doReturn("b").when(reportHelper).getFLUXReportDocumentId(b);
-        doReturn("c").when(reportHelper).getFLUXReportDocumentId(c);
-        doReturn("d").when(reportHelper).getFLUXReportDocumentId(d);
-        doReturn("e").when(reportHelper).getFLUXReportDocumentId(e);
-        doReturn("f").when(reportHelper).getFLUXReportDocumentId(f);
-
-        doReturn(Lists.newArrayList(b, c)).when(reportDomainModel).findReportsWhichReferTo("a");
-        doReturn(Lists.newArrayList(d, e)).when(reportDomainModel).findReportsWhichReferTo("b");
-        doReturn(Lists.newArrayList()).when(reportDomainModel).findReportsWhichReferTo("c");
-        doReturn(Lists.newArrayList(f)).when(reportDomainModel).findReportsWhichReferTo("d");
-        doReturn(Lists.newArrayList()).when(reportDomainModel).findReportsWhichReferTo("e");
-        doReturn(Lists.newArrayList()).when(reportDomainModel).findReportsWhichReferTo("f");
-
-        List<Report> results = reportServiceHelper.findAllCorrectionsOrDeletionsOf("a");
-
-        verify(reportDomainModel).findReportsWhichReferTo("a");
-        verify(reportHelper).getFLUXReportDocumentId(b);
-        verify(reportDomainModel).findReportsWhichReferTo("b");
-        verify(reportHelper).getFLUXReportDocumentId(c);
-        verify(reportDomainModel).findReportsWhichReferTo("c");
-        verify(reportHelper).getFLUXReportDocumentId(d);
-        verify(reportDomainModel).findReportsWhichReferTo("d");
-        verify(reportHelper).getFLUXReportDocumentId(e);
-        verify(reportDomainModel).findReportsWhichReferTo("e");
-        verify(reportHelper).getFLUXReportDocumentId(f);
-        verify(reportDomainModel).findReportsWhichReferTo("f");
-
-        assertEquals(5, results.size());
-        assertSame(b, results.get(0));
-        assertSame(c, results.get(1));
-        assertSame(d, results.get(2));
-        assertSame(e, results.get(3));
-        assertSame(f, results.get(4));
-    }
 }

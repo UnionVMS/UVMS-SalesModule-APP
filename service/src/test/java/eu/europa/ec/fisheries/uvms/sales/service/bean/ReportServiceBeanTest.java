@@ -88,6 +88,7 @@ public class ReportServiceBeanTest {
         verify(salesDetailsHelper).calculateTotals(salesDetailsDto);
         verify(salesDetailsHelper).enrichWithLocation(salesDetailsDto);
         verify(salesDetailsHelper).enrichWithVesselInformation(salesDetailsDto, report);
+        verify(salesDetailsHelper).enrichWithOtherRelevantVersions(salesDetailsDto, report);
         verify(salesDetailsHelper).enrichWithRelatedReports(salesDetailsDto, report);
         verifyNoMoreInteractions(reportDomainModel, mapper, salesDetailsHelper);
     }
@@ -247,7 +248,7 @@ public class ReportServiceBeanTest {
         verify(reportDomainModel).count(query);
         verify(mapper).mapAsList(reports, ReportListDto.class);
         verify(searchReportsHelper).enrichWithVesselInformation(reportDtos);
-        verify(searchReportsHelper).enrichWithRelatedReports(reportDtos);
+        verify(searchReportsHelper).enrichWithOlderVersions(reportDtos);
         verifyNoMoreInteractions(searchReportsHelper, reportDomainModel, mapper);
 
         assertEquals(1, result.getCurrentPage());

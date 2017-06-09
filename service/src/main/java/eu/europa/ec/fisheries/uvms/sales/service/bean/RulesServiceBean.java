@@ -10,11 +10,11 @@ import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
+import eu.europa.ec.fisheries.uvms.sales.model.helper.FLUXSalesResponseMessageHelper;
+import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
-import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.FLUXSalesResponseMessageHelper;
-import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
 
 import javax.ejb.EJB;

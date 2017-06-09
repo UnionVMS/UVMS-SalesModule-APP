@@ -220,15 +220,15 @@ public class MapperProducerTest {
         assertEquals(new DateTime(2016, 5, 10, 20, 22), salesDetailsDto.getFishingTrip().getLandingDate());
         assertEquals("LUX", salesDetailsDto.getFishingTrip().getLandingLocation());
         assertEquals("FA1", salesDetailsDto.getFishingTrip().getExtId());
-        assertEquals("FRA", salesDetailsDto.getSalesNote().getParties().get(0).getExtId());
-        assertEquals("extId", salesDetailsDto.getSalesNote().getFluxReport().getExtId());
-        assertEquals(new DateTime(2016, 10, 10, 12, 10), salesDetailsDto.getSalesNote().getFluxReport().getCreation());
-        assertEquals("Oh... do I need a reason??", salesDetailsDto.getSalesNote().getFluxReport().getPurposeText());
-        assertEquals("9", salesDetailsDto.getSalesNote().getFluxReport().getPurposeCode());
-        assertEquals("BEL", salesDetailsDto.getSalesNote().getFluxReport().getFluxReportParty());
-        assertEquals("LOC", salesDetailsDto.getSalesNote().getLocation().getExtId());
-        assertEquals("SAL", salesDetailsDto.getSalesNote().getProducts().get(0).getSpecies());
-        assertEquals(SalesCategoryType.NEGOTIATED_SALE, salesDetailsDto.getSalesNote().getCategory());
+        assertEquals("FRA", salesDetailsDto.getSalesReport().getParties().get(0).getExtId());
+        assertEquals("extId", salesDetailsDto.getSalesReport().getFluxReport().getExtId());
+        assertEquals(new DateTime(2016, 10, 10, 12, 10), salesDetailsDto.getSalesReport().getFluxReport().getCreation());
+        assertEquals("Oh... do I need a reason??", salesDetailsDto.getSalesReport().getFluxReport().getPurposeText());
+        assertEquals("9", salesDetailsDto.getSalesReport().getFluxReport().getPurposeCode());
+        assertEquals("BEL", salesDetailsDto.getSalesReport().getFluxReport().getFluxReportParty());
+        assertEquals("LOC", salesDetailsDto.getSalesReport().getLocation().getExtId());
+        assertEquals("SAL", salesDetailsDto.getSalesReport().getProducts().get(0).getSpecies());
+        assertEquals(SalesCategoryType.NEGOTIATED_SALE, salesDetailsDto.getSalesReport().getCategory());
     }
 
     @Test
@@ -266,15 +266,15 @@ public class MapperProducerTest {
         assertEquals(new DateTime(2016, 5, 10, 20, 22), salesDetailsDto.getFishingTrip().getLandingDate());
         assertEquals("LUX", salesDetailsDto.getFishingTrip().getLandingLocation());
         assertEquals("FA1", salesDetailsDto.getFishingTrip().getExtId());
-        assertEquals("FRA", salesDetailsDto.getSalesNote().getParties().get(0).getExtId());
-        assertEquals("extId", salesDetailsDto.getSalesNote().getFluxReport().getExtId());
-        assertEquals(new DateTime(2016, 10, 10, 12, 10), salesDetailsDto.getSalesNote().getFluxReport().getCreation());
-        assertEquals("Oh... do I need a reason??", salesDetailsDto.getSalesNote().getFluxReport().getPurposeText());
-        assertEquals("9", salesDetailsDto.getSalesNote().getFluxReport().getPurposeCode());
-        assertEquals("BEL", salesDetailsDto.getSalesNote().getFluxReport().getFluxReportParty());
-        assertEquals("LOC", salesDetailsDto.getSalesNote().getLocation().getExtId());
-        assertEquals("SAL", salesDetailsDto.getSalesNote().getProducts().get(0).getSpecies());
-        assertEquals(SalesCategoryType.FIRST_SALE, salesDetailsDto.getSalesNote().getCategory());
+        assertEquals("FRA", salesDetailsDto.getSalesReport().getParties().get(0).getExtId());
+        assertEquals("extId", salesDetailsDto.getSalesReport().getFluxReport().getExtId());
+        assertEquals(new DateTime(2016, 10, 10, 12, 10), salesDetailsDto.getSalesReport().getFluxReport().getCreation());
+        assertEquals("Oh... do I need a reason??", salesDetailsDto.getSalesReport().getFluxReport().getPurposeText());
+        assertEquals("9", salesDetailsDto.getSalesReport().getFluxReport().getPurposeCode());
+        assertEquals("BEL", salesDetailsDto.getSalesReport().getFluxReport().getFluxReportParty());
+        assertEquals("LOC", salesDetailsDto.getSalesReport().getLocation().getExtId());
+        assertEquals("SAL", salesDetailsDto.getSalesReport().getProducts().get(0).getSpecies());
+        assertEquals(SalesCategoryType.FIRST_SALE, salesDetailsDto.getSalesReport().getCategory());
     }
 
     @Test
@@ -606,24 +606,25 @@ public class MapperProducerTest {
     @Test
     public void testMapSalesDetailsRelation() {
         //data set
-        DateTime date = new DateTime(2017, 6, 1, 10, 0);
-        String id = "id1";
+        String reportExtId = "id1";
+        String documentExtId = "id2";
 
         Report report = new Report()
                 .withFLUXSalesReportMessage(new FLUXSalesReportMessage()
                     .withFLUXReportDocument(new FLUXReportDocumentType()
-                        .withIDS(new IDType().withValue(id))
-                        .withCreationDateTime(new DateTimeType().withDateTime(date)))
+                        .withIDS(new IDType().withValue(reportExtId)))
                     .withSalesReports(new SalesReportType()
-                        .withItemTypeCode(new CodeType().withValue("SN"))));
+                        .withItemTypeCode(new CodeType().withValue("SN"))
+                        .withIncludedSalesDocuments(new SalesDocumentType()
+                            .withIDS(new IDType().withValue(documentExtId)))));
 
 
         //execute
         SalesDetailsRelation salesDetailsRelation = mapper.map(report, SalesDetailsRelation.class);
 
         //assert
-        assertEquals(id, salesDetailsRelation.getExtId());
-        assertEquals(date, salesDetailsRelation.getDate());
+        assertEquals(reportExtId, salesDetailsRelation.getReportExtId());
+        assertEquals(documentExtId, salesDetailsRelation.getDocumentExtId());
         assertEquals(FluxReportItemType.SALES_NOTE, salesDetailsRelation.getType());
     }
 

@@ -106,27 +106,27 @@ public class MapperProducer {
                 .field("fishingTrip.landingDate", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].specifiedDelimitedPeriods[0].startDateTime.dateTime")
                 .field("fishingTrip.landingLocation", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedFLUXLocations[0].ID.value")
                 .field("fishingTrip.extId", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].IDS[0].value")
-                .field("salesNote.parties", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties")
-                .field("salesNote.fluxReport.extId", "FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value")
-                .field("salesNote.fluxReport.creation", "FLUXSalesReportMessage.FLUXReportDocument.creationDateTime.dateTime")
-                .field("salesNote.fluxReport.purposeCode", "FLUXSalesReportMessage.FLUXReportDocument.purposeCode.value")
-                .field("salesNote.fluxReport.purposeText", "FLUXSalesReportMessage.FLUXReportDocument.purpose.value")
-                .field("salesNote.fluxReport.fluxReportParty", "FLUXSalesReportMessage.FLUXReportDocument.ownerFLUXParty.IDS[0].value")
-                .field("salesNote.location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0]")
-                .field("salesNote.products", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesBatches[0].specifiedAAPProducts")
-                .field("salesNote.fluxReport.fluxReportParty", "FLUXSalesReportMessage.FLUXReportDocument.ownerFLUXParty.IDS[0].value")
-                .field("salesNote.document", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0]")
-                .field("salesNote.location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0]")
-                .field("salesNote.products", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesBatches[0].specifiedAAPProducts")
-                .field("salesNote.category", "auctionSale.salesCategory")
+                .field("salesReport.parties", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties")
+                .field("salesReport.fluxReport.extId", "FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value")
+                .field("salesReport.fluxReport.creation", "FLUXSalesReportMessage.FLUXReportDocument.creationDateTime.dateTime")
+                .field("salesReport.fluxReport.purposeCode", "FLUXSalesReportMessage.FLUXReportDocument.purposeCode.value")
+                .field("salesReport.fluxReport.purposeText", "FLUXSalesReportMessage.FLUXReportDocument.purpose.value")
+                .field("salesReport.fluxReport.fluxReportParty", "FLUXSalesReportMessage.FLUXReportDocument.ownerFLUXParty.IDS[0].value")
+                .field("salesReport.location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0]")
+                .field("salesReport.products", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesBatches[0].specifiedAAPProducts")
+                .field("salesReport.fluxReport.fluxReportParty", "FLUXSalesReportMessage.FLUXReportDocument.ownerFLUXParty.IDS[0].value")
+                .field("salesReport.document", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0]")
+                .field("salesReport.location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0]")
+                .field("salesReport.products", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesBatches[0].specifiedAAPProducts")
+                .field("salesReport.category", "auctionSale.salesCategory")
                 .customize(new CustomMapper<SalesDetailsDto, Report>() {
                     @Override
                     public void mapBtoA(Report report, SalesDetailsDto salesDetailsDto, MappingContext context) {
                         super.mapBtoA(report, salesDetailsDto, context);
 
                         //if no auction sale exists, the sales category is FIRST_SALE.
-                        if (salesDetailsDto.getSalesNote().getCategory() == null) {
-                            salesDetailsDto.getSalesNote().setCategory(SalesCategoryType.FIRST_SALE);
+                        if (salesDetailsDto.getSalesReport().getCategory() == null) {
+                            salesDetailsDto.getSalesReport().setCategory(SalesCategoryType.FIRST_SALE);
                         }
                     }
                 })
@@ -235,9 +235,9 @@ public class MapperProducer {
 
     private void configureSalesDetailsRelation(MapperFactory factory) {
         factory.classMap(Report.class, SalesDetailsRelation.class)
-                .field("FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value", "extId")
+                .field("FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value", "reportExtId")
                 .field("FLUXSalesReportMessage.salesReports[0].itemTypeCode", "type")
-                .field("FLUXSalesReportMessage.FLUXReportDocument.creationDateTime.dateTime", "date")
+                .field("FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].IDS[0].value", "documentExtId")
                 .register();
     }
 

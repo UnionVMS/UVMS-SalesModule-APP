@@ -3,19 +3,18 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 import eu.europa.ec.fisheries.schema.sales.AAPProductType;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
-import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
-import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
+import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
-import eu.europa.ec.fisheries.uvms.sales.service.config.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import ma.glasnost.orika.MapperFacade;
-import org.apache.commons.collections.ListUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +23,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants.DB_ACCESS_PARAMETER_SERVICE;
@@ -67,7 +67,7 @@ public class SalesDetailsHelper {
         List<ReferenceCoordinates> referenceCoordinates = referenceDataCache.getReferenceCoordinates();
 
         for (ReferenceCoordinates referenceCoordinate : referenceCoordinates) {
-            LocationDto location = detailsDto.getSalesNote().getLocation();
+            LocationDto location = detailsDto.getSalesReport().getLocation();
             if (referenceCoordinate.getLocationCode().equals(location.getExtId())) {
                 location.setLatitude(referenceCoordinate.getLatitude());
                 location.setLongitude(referenceCoordinate.getLongitude());
@@ -100,7 +100,7 @@ public class SalesDetailsHelper {
 
     public void convertPricesInLocalCurrency(SalesDetailsDto detailsDto, Report report) {
         try {
-            String localCurrency = parameterService.getStringValue(ParameterKey.CURRENCY.getKey());
+            String localCurrency = parameterService.getParameterValue(ParameterKey.CURRENCY);
             String documentCurrency = reportHelper.getDocumentCurrency(report);
 
             BigDecimal exchangeRate = BigDecimal.ONE;
@@ -110,7 +110,7 @@ public class SalesDetailsHelper {
             }
 
             List<AAPProductType> products = reportHelper.getProductsOfReport(report);
-            List<ProductDto> productDtos = detailsDto.getSalesNote().getProducts();
+            List<ProductDto> productDtos = detailsDto.getSalesReport().getProducts();
 
             for (int i = 0; i < products.size(); i++) {
                 AAPProductType product = products.get(i);
@@ -121,15 +121,13 @@ public class SalesDetailsHelper {
             }
         } catch (NullPointerException | IndexOutOfBoundsException e) {
             LOG.error("Cannot convert product prices in the local currency details because not all required fields are provided in the report.", e);
-        } catch (ConfigServiceException e) {
-            LOG.error("Cannot convert product prices in the local currency, because I cannot retrieve the local currency");
         } catch (ServiceException e) {
             LOG.error("Cannot convert product prices in the local currency, because I cannot retrieve the exchange rate", e);
         }
     }
 
     public void calculateTotals(SalesDetailsDto detailsDto) {
-        List<ProductDto> products = detailsDto.getSalesNote().getProducts();
+        List<ProductDto> products = detailsDto.getSalesReport().getProducts();
         BigDecimal totalPrice = BigDecimal.ZERO;
         BigDecimal totalWeight = BigDecimal.ZERO;
 
@@ -142,7 +140,7 @@ public class SalesDetailsHelper {
             }
         }
 
-        detailsDto.getSalesNote()
+        detailsDto.getSalesReport()
                 .setTotals(new TotalsDto()
                         .totalPrice(totalPrice)
                         .totalWeight(totalWeight));
@@ -156,16 +154,33 @@ public class SalesDetailsHelper {
                 .getValue();
     }
 
+    /**
+     * If the given report is the latest version, the dto is enriched with the previous versions.
+     * If the given report is an older version (a correction/deletion exists), the dto is enriched with the latest
+     * version (only).
+     */
+    public void enrichWithOtherRelevantVersions(SalesDetailsDto detailsDto, Report report) {
+        List<Report> otherRelevantVersions = new ArrayList<>();
+        if (reportDomainModel.isLatestVersion(report)) {
+            otherRelevantVersions.addAll(reportDomainModel.findOlderVersionsOrderedByCreationDateDescending(report));
+        } else {
+            otherRelevantVersions.add(reportDomainModel.findLatestVersion(report));
+        }
+
+        List<SalesDetailsRelation> mappedRelations = mapper.mapAsList(otherRelevantVersions, SalesDetailsRelation.class);
+        detailsDto.setOtherVersions(mappedRelations);
+    }
+
     public void enrichWithRelatedReports(SalesDetailsDto detailsDto, Report report) {
-        String extId = reportHelper.getFLUXReportDocumentId(report);
-        String referencedId = reportHelper.getFLUXReportDocumentReferencedIdOrNull(report);
+        //TODO STIJN
+        // call dao, should combine list of flux reports from fluxReport.relatedTakeOverDocuments and fluxReport.relatedSalesNotes
+        // dao should the the LATEST (use creation date comparator)
+        // map here
+        //
+        //detailsDto.setRelatedReport();
 
+        /*String extId = reportHelper.getFLUXReportDocumentId(report);
+        String referencedId = reportHelper.getFLUXReportDocumentReferencedIdOrNull(report);*/
 
-        List<Report> allReportsThatAreCorrectedOrDeletedByTheInputReport = reportServiceHelper.findAllReportsThatAreCorrectedOrDeleted(referencedId);
-        List<Report> allReportsThatCorrectOrDeleteTheInputReport = reportServiceHelper.findAllCorrectionsOrDeletionsOf(extId);
-        List<Report> relations = ListUtils.union(allReportsThatAreCorrectedOrDeletedByTheInputReport, allReportsThatCorrectOrDeleteTheInputReport);
-
-        List<SalesDetailsRelation> mappedRelations = mapper.mapAsList(relations, SalesDetailsRelation.class);
-        detailsDto.setRelatedReports(mappedRelations);
     }
 }
