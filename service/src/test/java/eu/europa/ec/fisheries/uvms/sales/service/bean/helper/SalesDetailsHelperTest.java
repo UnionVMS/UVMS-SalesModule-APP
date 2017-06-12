@@ -3,15 +3,18 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
+import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.mother.AAPProductTypeMother;
+import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
 import ma.glasnost.orika.MapperFacade;
@@ -25,10 +28,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,7 +56,7 @@ public class SalesDetailsHelperTest {
     private ReportHelper reportHelper;
 
     @Mock
-    private ReportServiceHelper reportServiceHelper;
+    private ReportDomainModel reportDomainModel;
 
     @Mock
     private MapperFacade mapper;
@@ -76,7 +79,7 @@ public class SalesDetailsHelperTest {
                 .extId("NON-EXISTENT");
 
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
-                .salesNote(new SalesReportDto()
+                .salesReport(new SalesReportDto()
                     .location(locationDto));
 
         //mock
@@ -100,7 +103,7 @@ public class SalesDetailsHelperTest {
                 .extId("GBLON");
 
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
-                .salesNote(new SalesReportDto()
+                .salesReport(new SalesReportDto()
                         .location(locationDto));
 
         //mock
@@ -314,7 +317,7 @@ public class SalesDetailsHelperTest {
         ProductDto productDto1 = new ProductDto();
         ProductDto productDto2 = new ProductDto();
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
-                .salesNote(new SalesReportDto()
+                .salesReport(new SalesReportDto()
                     .products(Lists.newArrayList(productDto1, productDto2)));
 
         //mock
@@ -353,7 +356,7 @@ public class SalesDetailsHelperTest {
         ProductDto productDto1 = new ProductDto();
         ProductDto productDto2 = new ProductDto();
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
-                .salesNote(new SalesReportDto()
+                .salesReport(new SalesReportDto()
                         .products(Lists.newArrayList(productDto1, productDto2)));
 
         //mock
@@ -391,12 +394,83 @@ public class SalesDetailsHelperTest {
         SalesReportDto salesReportDto = new SalesReportDto()
                                             .products(Lists.newArrayList(productDto1, productDto2, productDto3));
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
-                                            .salesNote(salesReportDto);
+                                            .salesReport(salesReportDto);
 
         salesDetailsHelper.calculateTotals(salesDetailsDto);
 
         assertEquals(new BigDecimal("21.23"), salesReportDto.getTotals().getTotalPrice());
         assertEquals(new BigDecimal("32.425"), salesReportDto.getTotals().getTotalWeight());
+    }
+
+    @Test
+    public void testEnrichWithRelatedReport() {
+        Report report = ReportMother.withId("yow");
+        List<Report> relatedReports = Arrays.asList(ReportMother.withId("hi"));
+        SalesDetailsRelation salesDetailsRelation = new SalesDetailsRelation()
+                .documentExtId("1")
+                .reportExtId("5")
+                .type(FluxReportItemType.SALES_NOTE);
+        List<SalesDetailsRelation> salesDetailsRelations = Arrays.asList(salesDetailsRelation);
+        SalesDetailsDto detailsDto = new SalesDetailsDto()
+                                            .salesReport(new SalesReportDto());
+
+        doReturn(relatedReports).when(reportDomainModel).findRelatedReportsOf(report);
+        doReturn(salesDetailsRelations).when(mapper).mapAsList(relatedReports, SalesDetailsRelation.class);
+
+        salesDetailsHelper.enrichWithRelatedReport(detailsDto, report);
+
+        verify(reportDomainModel).findRelatedReportsOf(report);
+        verify(mapper).mapAsList(relatedReports, SalesDetailsRelation.class);
+
+        assertEquals(salesDetailsRelations, detailsDto.getSalesReport().getRelatedReports());
+    }
+
+    @Test
+    public void testEnrichWithOtherRelevantVersionsWhenGivenReportIsTheLatestVersion() {
+        Report report = new Report();
+        SalesDetailsDto detailsDto = new SalesDetailsDto()
+                                            .salesReport(new SalesReportDto());
+        List<Report> olderVersions = Arrays.asList(ReportMother.withId("1"), ReportMother.withId("2"));
+        List<SalesDetailsRelation> mappedOlderVersions = Arrays.asList(new SalesDetailsRelation().reportExtId("1"),
+                                                            new SalesDetailsRelation().reportExtId("2"));
+
+        doReturn(true).when(reportDomainModel).isLatestVersion(report);
+        doReturn(olderVersions).when(reportDomainModel).findOlderVersionsOrderedByCreationDateDescending(report);
+        doReturn(mappedOlderVersions).when(mapper).mapAsList(olderVersions, SalesDetailsRelation.class);
+
+        salesDetailsHelper.enrichWithOtherRelevantVersions(detailsDto, report);
+
+        verify(reportDomainModel).isLatestVersion(report);
+        verify(reportDomainModel).findOlderVersionsOrderedByCreationDateDescending(report);
+        verify(mapper).mapAsList(olderVersions, SalesDetailsRelation.class);
+        verifyNoMoreInteractions(reportDomainModel, mapper);
+
+        assertTrue(detailsDto.getSalesReport().isLatestVersion());
+        assertSame(mappedOlderVersions, detailsDto.getSalesReport().getOtherVersions());
+    }
+
+    @Test
+    public void testEnrichWithOtherRelevantVersionsWhenGivenReportIsNotTheLatestVersion() {
+        Report report = new Report();
+        SalesDetailsDto detailsDto = new SalesDetailsDto()
+                                        .salesReport(new SalesReportDto());
+        Report newestVersion = ReportMother.withId("1");
+        List<SalesDetailsRelation> mappedOlderVersions = Arrays.asList(new SalesDetailsRelation().reportExtId("1"),
+                new SalesDetailsRelation().reportExtId("2"));
+
+        doReturn(false).when(reportDomainModel).isLatestVersion(report);
+        doReturn(newestVersion).when(reportDomainModel).findLatestVersion(report);
+        doReturn(mappedOlderVersions).when(mapper).mapAsList(Arrays.asList(newestVersion), SalesDetailsRelation.class);
+
+        salesDetailsHelper.enrichWithOtherRelevantVersions(detailsDto, report);
+
+        verify(reportDomainModel).isLatestVersion(report);
+        verify(reportDomainModel).findLatestVersion(report);
+        verify(mapper).mapAsList(Arrays.asList(newestVersion), SalesDetailsRelation.class);
+        verifyNoMoreInteractions(reportDomainModel, mapper);
+
+        assertFalse(detailsDto.getSalesReport().isLatestVersion());
+        assertSame(mappedOlderVersions, detailsDto.getSalesReport().getOtherVersions());
     }
 
 }

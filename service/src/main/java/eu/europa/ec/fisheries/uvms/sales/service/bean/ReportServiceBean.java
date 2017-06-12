@@ -74,7 +74,7 @@ public class ReportServiceBean implements ReportService {
         salesDetailsHelper.calculateTotals(detailsDto);
         salesDetailsHelper.enrichWithLocation(detailsDto);
         salesDetailsHelper.enrichWithVesselInformation(detailsDto, report);
-        salesDetailsHelper.enrichWithRelatedReports(detailsDto, report);
+        salesDetailsHelper.enrichWithRelatedReport(detailsDto, report);
         salesDetailsHelper.enrichWithOtherRelevantVersions(detailsDto, report);
 
         return detailsDto;

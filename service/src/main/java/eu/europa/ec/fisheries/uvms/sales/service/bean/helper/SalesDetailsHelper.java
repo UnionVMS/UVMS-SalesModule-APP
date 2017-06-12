@@ -160,27 +160,25 @@ public class SalesDetailsHelper {
      * version (only).
      */
     public void enrichWithOtherRelevantVersions(SalesDetailsDto detailsDto, Report report) {
+        SalesReportDto salesReportDto = detailsDto.getSalesReport();
+
         List<Report> otherRelevantVersions = new ArrayList<>();
         if (reportDomainModel.isLatestVersion(report)) {
             otherRelevantVersions.addAll(reportDomainModel.findOlderVersionsOrderedByCreationDateDescending(report));
+            salesReportDto.setLatestVersion(true);
         } else {
             otherRelevantVersions.add(reportDomainModel.findLatestVersion(report));
+            salesReportDto.setLatestVersion(false);
         }
 
         List<SalesDetailsRelation> mappedRelations = mapper.mapAsList(otherRelevantVersions, SalesDetailsRelation.class);
-        detailsDto.setOtherVersions(mappedRelations);
+        salesReportDto.setOtherVersions(mappedRelations);
     }
 
-    public void enrichWithRelatedReports(SalesDetailsDto detailsDto, Report report) {
-        //TODO STIJN
-        // call dao, should combine list of flux reports from fluxReport.relatedTakeOverDocuments and fluxReport.relatedSalesNotes
-        // dao should the the LATEST (use creation date comparator)
-        // map here
-        //
-        //detailsDto.setRelatedReport();
-
-        /*String extId = reportHelper.getFLUXReportDocumentId(report);
-        String referencedId = reportHelper.getFLUXReportDocumentReferencedIdOrNull(report);*/
-
+    public void enrichWithRelatedReport(SalesDetailsDto detailsDto, Report report) {
+        SalesReportDto salesReportDto = detailsDto.getSalesReport();
+        List<Report> latestRelatedReport = reportDomainModel.findRelatedReportsOf(report);
+        List<SalesDetailsRelation> relations = mapper.mapAsList(latestRelatedReport, SalesDetailsRelation.class);
+        salesReportDto.setRelatedReports(relations);
     }
 }

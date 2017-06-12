@@ -63,6 +63,7 @@ public class MapperProducer {
         converterFactory.registerConverter("preservationBToA", new PreservationBToAConverter());
         converterFactory.registerConverter("buyerSalesPartyTypeListConverter", new BuyerSalesPartyTypeListConverter());
         converterFactory.registerConverter("sellerSalesPartyTypeListConverter", new SellerSalesPartyTypeListConverter());
+        converterFactory.registerConverter("fluxReportItemTypeConverter", new FluxReportItemTypeConverter());
     }
 
     private void configureReportListExportDto(MapperFactory factory) {
@@ -119,6 +120,7 @@ public class MapperProducer {
                 .field("salesReport.location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0]")
                 .field("salesReport.products", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesBatches[0].specifiedAAPProducts")
                 .field("salesReport.category", "auctionSale.salesCategory")
+                .field("salesReport.itemType", "FLUXSalesReportMessage.salesReports[0].itemTypeCode")
                 .customize(new CustomMapper<SalesDetailsDto, Report>() {
                     @Override
                     public void mapBtoA(Report report, SalesDetailsDto salesDetailsDto, MappingContext context) {

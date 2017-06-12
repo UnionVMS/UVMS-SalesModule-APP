@@ -203,7 +203,8 @@ public class MapperProducerTest {
                 .withSpecifiedSalesParties(new SalesPartyType().withID(new IDType().withValue("FRA")));
 
         SalesReportType salesReport = new SalesReportType()
-                .withIncludedSalesDocuments(salesDocument);
+                .withIncludedSalesDocuments(salesDocument)
+                .withItemTypeCode(new CodeType().withValue("SN"));
 
         FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
                 .withFLUXReportDocument(fluxReportDocument)
@@ -229,6 +230,7 @@ public class MapperProducerTest {
         assertEquals("LOC", salesDetailsDto.getSalesReport().getLocation().getExtId());
         assertEquals("SAL", salesDetailsDto.getSalesReport().getProducts().get(0).getSpecies());
         assertEquals(SalesCategoryType.NEGOTIATED_SALE, salesDetailsDto.getSalesReport().getCategory());
+        assertEquals(FluxReportItemType.SALES_NOTE, salesDetailsDto.getSalesReport().getItemType());
     }
 
     @Test
@@ -252,7 +254,8 @@ public class MapperProducerTest {
                 .withSpecifiedSalesParties(new SalesPartyType().withID(new IDType().withValue("FRA")));
 
         SalesReportType salesReport = new SalesReportType()
-                .withIncludedSalesDocuments(salesDocument);
+                .withIncludedSalesDocuments(salesDocument)
+                .withItemTypeCode(new CodeType().withValue("SN"));
 
         FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
                 .withFLUXReportDocument(fluxReportDocument)
@@ -275,6 +278,7 @@ public class MapperProducerTest {
         assertEquals("LOC", salesDetailsDto.getSalesReport().getLocation().getExtId());
         assertEquals("SAL", salesDetailsDto.getSalesReport().getProducts().get(0).getSpecies());
         assertEquals(SalesCategoryType.FIRST_SALE, salesDetailsDto.getSalesReport().getCategory());
+        assertEquals(FluxReportItemType.SALES_NOTE, salesDetailsDto.getSalesReport().getItemType());
     }
 
     @Test
