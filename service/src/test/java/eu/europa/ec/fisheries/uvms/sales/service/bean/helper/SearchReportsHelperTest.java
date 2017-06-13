@@ -152,7 +152,7 @@ public class SearchReportsHelperTest {
 
         assertEquals("ircs", reportListDto2.getIrcs());
         assertEquals("external marking", reportListDto2.getExternalMarking());
-        assertEquals("name", reportListDto2.getVesselName());
+        assertNull(reportListDto2.getVesselName());
     }
 
     @Test
@@ -188,11 +188,11 @@ public class SearchReportsHelperTest {
 
         assertEquals("ircs1", reportListDto1.getIrcs());
         assertEquals("external marking1", reportListDto1.getExternalMarking());
-        assertEquals("name1", reportListDto1.getVesselName());
+        assertNull(reportListDto1.getVesselName());
 
         assertEquals("ircs2", reportListDto2.getIrcs());
         assertEquals("external marking2", reportListDto2.getExternalMarking());
-        assertEquals("name2", reportListDto2.getVesselName());
+        assertNull(reportListDto2.getVesselName());
     }
 
     @Test

@@ -59,7 +59,6 @@ public class SearchReportsHelper {
                 Asset vessel = assetService.findByExtId(vesselExtId);
                 reportDto.setIrcs(vessel.getIrcs());
                 reportDto.setExternalMarking(vessel.getExternalMarking());
-                reportDto.setVesselName(vessel.getName());
             } catch (ServiceException e) {
                 LOG.error("Cannot retrieve vessel details of vessel " + vesselExtId, e);
             }
