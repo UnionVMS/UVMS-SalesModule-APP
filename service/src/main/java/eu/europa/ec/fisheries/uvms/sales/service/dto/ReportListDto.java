@@ -73,6 +73,9 @@ public class ReportListDto {
      */
     private String referencedId;
 
+    private String purpose;
+
+
     public ReportListDto() {
         seller = "N/A";
         buyer = "N/A";
@@ -281,5 +284,13 @@ public class ReportListDto {
     public ReportListDto olderVersions(List<ReportListDto> olderVersions) {
         this.olderVersions = olderVersions;
         return this;
+    }
+
+    public String getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
     }
 }
