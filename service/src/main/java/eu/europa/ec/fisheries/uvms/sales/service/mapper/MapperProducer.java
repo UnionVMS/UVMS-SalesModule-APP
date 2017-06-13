@@ -209,6 +209,7 @@ public class MapperProducer {
                 .field("landingPort", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedFLUXLocations[0].ID.value")
                 .field("location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0].ID.value")
                 .field("referencedId", "FLUXSalesReportMessage.FLUXReportDocument.referencedID.value")
+                .field("purpose", "FLUXSalesReportMessage.FLUXReportDocument.purposeCode.value")
                 .fieldMap("buyer", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("buyerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .fieldMap("seller", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("sellerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .customize(new CustomMapper<ReportListDto, Report>() {
