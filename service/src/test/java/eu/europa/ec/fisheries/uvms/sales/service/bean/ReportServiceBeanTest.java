@@ -89,7 +89,7 @@ public class ReportServiceBeanTest {
         verify(salesDetailsHelper).enrichWithLocation(salesDetailsDto);
         verify(salesDetailsHelper).enrichWithVesselInformation(salesDetailsDto, report);
         verify(salesDetailsHelper).enrichWithOtherRelevantVersions(salesDetailsDto, report);
-        verify(salesDetailsHelper).enrichWithRelatedReports(salesDetailsDto, report);
+        verify(salesDetailsHelper).enrichWithRelatedReport(salesDetailsDto, report);
         verifyNoMoreInteractions(reportDomainModel, mapper, salesDetailsHelper);
     }
 

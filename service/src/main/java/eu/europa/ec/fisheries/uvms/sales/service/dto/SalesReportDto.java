@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.sales.service.dto;
 
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
+import eu.europa.ec.fisheries.uvms.sales.model.constant.FluxReportItemType;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -23,6 +24,23 @@ public class SalesReportDto {
     private TotalsDto totals;
         
     private List<ProductDto> products;
+
+    private FluxReportItemType itemType;
+
+    /**
+     * If this report is the latest version, the previous versions are kept here.
+     * If this report is an older version (a correction/deletion exists), the latest version is kept here.
+     */
+    private List<SalesDetailsRelation> otherVersions;
+
+    /**
+     * The related take over document (in case that this is a sales note)
+     * or the related sales note (in case that this is a take over document),
+     * in case there is any.
+     */
+    private List<SalesDetailsRelation> relatedReports;
+
+    private boolean latestVersion;
 
     public SalesReportDto() {
     }
@@ -83,6 +101,38 @@ public class SalesReportDto {
         this.products = products;
     }
 
+    public FluxReportItemType getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(FluxReportItemType itemType) {
+        this.itemType = itemType;
+    }
+
+    public List<SalesDetailsRelation> getOtherVersions() {
+        return otherVersions;
+    }
+
+    public void setOtherVersions(List<SalesDetailsRelation> otherVersions) {
+        this.otherVersions = otherVersions;
+    }
+
+    public List<SalesDetailsRelation> getRelatedReports() {
+        return relatedReports;
+    }
+
+    public void setRelatedReports(List<SalesDetailsRelation> relatedReport) {
+        this.relatedReports = relatedReport;
+    }
+
+    public boolean isLatestVersion() {
+        return latestVersion;
+    }
+
+    public void setLatestVersion(boolean latestVersion) {
+        this.latestVersion = latestVersion;
+    }
+
     public SalesReportDto category(final SalesCategoryType type) {
         setCategory(type);
         return this;
@@ -118,4 +168,23 @@ public class SalesReportDto {
         return this;
     }
 
+    public SalesReportDto itemType(FluxReportItemType itemType) {
+        setItemType(itemType);
+        return this;
+    }
+
+    public SalesReportDto otherVersions(List<SalesDetailsRelation> otherVersions) {
+        this.otherVersions = otherVersions;
+        return this;
+    }
+
+    public SalesReportDto relatedReports(List<SalesDetailsRelation> relatedReport) {
+        this.relatedReports = relatedReport;
+        return this;
+    }
+
+    public SalesReportDto latestVersion(boolean latestVersion) {
+        this.latestVersion = latestVersion;
+        return this;
+    }
 }
