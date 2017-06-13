@@ -64,6 +64,7 @@ public class MapperProducer {
         converterFactory.registerConverter("buyerSalesPartyTypeListConverter", new BuyerSalesPartyTypeListConverter());
         converterFactory.registerConverter("sellerSalesPartyTypeListConverter", new SellerSalesPartyTypeListConverter());
         converterFactory.registerConverter("fluxReportItemTypeConverter", new FluxReportItemTypeConverter());
+        converterFactory.registerConverter("purposeConverter", new PurposeConverter());
     }
 
     private void configureReportListExportDto(MapperFactory factory) {
@@ -110,7 +111,7 @@ public class MapperProducer {
                 .field("salesReport.parties", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties")
                 .field("salesReport.fluxReport.extId", "FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value")
                 .field("salesReport.fluxReport.creation", "FLUXSalesReportMessage.FLUXReportDocument.creationDateTime.dateTime")
-                .field("salesReport.fluxReport.purposeCode", "FLUXSalesReportMessage.FLUXReportDocument.purposeCode.value")
+                .fieldMap("salesReport.fluxReport.purposeCode", "FLUXSalesReportMessage.FLUXReportDocument.purposeCode").converter("purposeConverter").add()
                 .field("salesReport.fluxReport.purposeText", "FLUXSalesReportMessage.FLUXReportDocument.purpose.value")
                 .field("salesReport.fluxReport.fluxReportParty", "FLUXSalesReportMessage.FLUXReportDocument.ownerFLUXParty.IDS[0].value")
                 .field("salesReport.location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0]")

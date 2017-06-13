@@ -9,7 +9,6 @@ import ma.glasnost.orika.metadata.Type;
 import java.util.List;
 
 // TODO: copied these files from the converter in sales-db because we need this here too.
-// TODO: Find a better way to do this.
 public abstract class ProcessTypeConverter extends CustomConverter<List<CodeType>, String> {
 
     private void checkIfProcessTypeIsValid(String toBeValidated) {

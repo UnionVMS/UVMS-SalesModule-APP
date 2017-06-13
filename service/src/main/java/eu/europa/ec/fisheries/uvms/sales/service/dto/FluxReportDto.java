@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.dto;
 
+import eu.europa.ec.fisheries.uvms.sales.model.constant.Purpose;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
@@ -9,7 +10,7 @@ import org.joda.time.DateTime;
 public class FluxReportDto {
     private String extId;
     private DateTime creation;
-    private String purposeCode;
+    private Purpose purposeCode;
     private String purposeText;
     private String fluxReportParty;
 
@@ -32,11 +33,11 @@ public class FluxReportDto {
         this.creation = creation;
     }
 
-    public String getPurposeCode() {
+    public Purpose getPurposeCode() {
         return purposeCode;
     }
 
-    public void setPurposeCode(String purposeCode) {
+    public void setPurposeCode(Purpose purposeCode) {
         this.purposeCode = purposeCode;
     }
 
@@ -66,7 +67,7 @@ public class FluxReportDto {
         return this;
     }
 
-    public FluxReportDto purposeCode(final String purposeCode) {
+    public FluxReportDto purposeCode(final Purpose purposeCode) {
         setPurposeCode(purposeCode);
         return this;
     }

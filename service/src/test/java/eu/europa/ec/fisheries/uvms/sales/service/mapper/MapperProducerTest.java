@@ -4,6 +4,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.mapper;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.model.constant.FluxReportItemType;
+import eu.europa.ec.fisheries.uvms.sales.model.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import ma.glasnost.orika.MapperFacade;
@@ -143,7 +144,7 @@ public class MapperProducerTest {
 
         assertEquals("knees weak, arms are heavy", fluxReportDto.getPurposeText());
         assertEquals("mom's spaghetti", fluxReportDto.getExtId());
-        assertEquals("ORIGINAL", fluxReportDto.getPurposeCode());
+        assertEquals(Purpose.ORIGINAL, fluxReportDto.getPurposeCode());
         assertEquals("party", fluxReportDto.getFluxReportParty());
     }
 
@@ -225,7 +226,7 @@ public class MapperProducerTest {
         assertEquals("extId", salesDetailsDto.getSalesReport().getFluxReport().getExtId());
         assertEquals(new DateTime(2016, 10, 10, 12, 10), salesDetailsDto.getSalesReport().getFluxReport().getCreation());
         assertEquals("Oh... do I need a reason??", salesDetailsDto.getSalesReport().getFluxReport().getPurposeText());
-        assertEquals("9", salesDetailsDto.getSalesReport().getFluxReport().getPurposeCode());
+        assertEquals(Purpose.ORIGINAL, salesDetailsDto.getSalesReport().getFluxReport().getPurposeCode());
         assertEquals("BEL", salesDetailsDto.getSalesReport().getFluxReport().getFluxReportParty());
         assertEquals("LOC", salesDetailsDto.getSalesReport().getLocation().getExtId());
         assertEquals("SAL", salesDetailsDto.getSalesReport().getProducts().get(0).getSpecies());
@@ -273,7 +274,7 @@ public class MapperProducerTest {
         assertEquals("extId", salesDetailsDto.getSalesReport().getFluxReport().getExtId());
         assertEquals(new DateTime(2016, 10, 10, 12, 10), salesDetailsDto.getSalesReport().getFluxReport().getCreation());
         assertEquals("Oh... do I need a reason??", salesDetailsDto.getSalesReport().getFluxReport().getPurposeText());
-        assertEquals("9", salesDetailsDto.getSalesReport().getFluxReport().getPurposeCode());
+        assertEquals(Purpose.ORIGINAL, salesDetailsDto.getSalesReport().getFluxReport().getPurposeCode());
         assertEquals("BEL", salesDetailsDto.getSalesReport().getFluxReport().getFluxReportParty());
         assertEquals("LOC", salesDetailsDto.getSalesReport().getLocation().getExtId());
         assertEquals("SAL", salesDetailsDto.getSalesReport().getProducts().get(0).getSpecies());
