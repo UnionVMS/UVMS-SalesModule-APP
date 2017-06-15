@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:deployApplicationRequest  xmlns:ns2="module.user.wsdl.fisheries.ec.europa.eu">
+    <method>DEPLOY_APPLICATION</method>
+    <application>
+        <name>Sales</name>
+        <description>Deployment descriptor of module "Sales" version "@application.version@".</description>
+        <parent>Union VMS</parent>
+
+        <feature>
+            <name>viewSalesReports</name>
+            <description>Allows user to see the Sales tab and reports</description>
+            <group>Sales</group>
+        </feature>
+        <feature>
+            <name>manageSalesReports</name>
+            <description>Allows user to create and delete saved searches within Sales</description>
+            <group>Sales</group>
+        </feature>
+
+        <!--<option>-->
+            <!--<name>DEFAULT_REPORT_ID</name>-->
+            <!--<description>Default user report id</description>-->
+            <!--<dataType>STRING</dataType>-->
+            <!--<defaultValue></defaultValue>-->
+        <!--</option>-->
+
+    </application>
+</ns2:deployApplicationRequest>
