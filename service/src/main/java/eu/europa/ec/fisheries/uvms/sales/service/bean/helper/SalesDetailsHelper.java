@@ -83,7 +83,7 @@ public class SalesDetailsHelper {
             try {
                 vesselExtId = reportHelper.getVesselExtId(report);
 
-                Asset vessel = assetService.findByExtId(vesselExtId);
+                Asset vessel = assetService.findByCFR(vesselExtId);
 
                 FishingTripDto fishingTrip = detailsDto.getFishingTrip();
                 fishingTrip.setVesselGuid(vessel.getAssetId().getGuid());

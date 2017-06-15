@@ -142,14 +142,14 @@ public class SalesDetailsHelperTest {
 
         //mock
         doReturn(extId).when(reportHelper).getVesselExtId(report);
-        doReturn(vessel).when(assetService).findByExtId(extId);
+        doReturn(vessel).when(assetService).findByCFR(extId);
 
         //execute
         salesDetailsHelper.enrichWithVesselInformation(salesDetailsDto, report);
 
         //verify and assert
         verify(reportHelper).getVesselExtId(report);
-        verify(assetService).findByExtId(extId);
+        verify(assetService).findByCFR(extId);
         verifyNoMoreInteractions(assetService, reportHelper);
 
         assertEquals(extId, salesDetailsDto.getFishingTrip().getVesselGuid());
@@ -183,14 +183,14 @@ public class SalesDetailsHelperTest {
 
         //mock
         doReturn(extId).when(reportHelper).getVesselExtId(report);
-        doReturn(vessel).when(assetService).findByExtId(extId);
+        doReturn(vessel).when(assetService).findByCFR(extId);
 
         //execute
         salesDetailsHelper.enrichWithVesselInformation(salesDetailsDto, report);
 
         //verify and assert
         verify(reportHelper).getVesselExtId(report);
-        verify(assetService).findByExtId(extId);
+        verify(assetService).findByCFR(extId);
         verifyNoMoreInteractions(assetService, reportHelper);
 
         assertEquals(extId, salesDetailsDto.getFishingTrip().getVesselGuid());
@@ -255,14 +255,14 @@ public class SalesDetailsHelperTest {
 
         //mock
         doReturn(extId).when(reportHelper).getVesselExtId(report);
-        doThrow(new ServiceException("oh oooh")).when(assetService).findByExtId(extId);
+        doThrow(new ServiceException("oh oooh")).when(assetService).findByCFR(extId);
 
         //execute
         salesDetailsHelper.enrichWithVesselInformation(salesDetailsDto, report);
 
         //verify and assert
         verify(reportHelper).getVesselExtId(report);
-        verify(assetService).findByExtId(extId);
+        verify(assetService).findByCFR(extId);
         verifyNoMoreInteractions(assetService, reportHelper);
 
         assertNull(salesDetailsDto.getFishingTrip().getVesselGuid());

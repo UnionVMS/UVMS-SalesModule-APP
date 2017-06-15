@@ -134,14 +134,14 @@ public class SearchReportsHelperTest {
         asset.setName("name");
 
         //mock
-        when(assetService.findByExtId("invalid")).thenThrow(new ServiceException("oh oooh"));
-        when(assetService.findByExtId("valid")).thenReturn(asset);
+        when(assetService.findByCFR("invalid")).thenThrow(new ServiceException("oh oooh"));
+        when(assetService.findByCFR("valid")).thenReturn(asset);
 
         //execute
         helper.enrichWithVesselInformation(Lists.newArrayList(reportListDto1, reportListDto2));
 
-        verify(assetService).findByExtId("invalid");
-        verify(assetService).findByExtId("valid");
+        verify(assetService).findByCFR("invalid");
+        verify(assetService).findByCFR("valid");
 
         //verify and assert
         verifyNoMoreInteractions(assetService);
@@ -174,14 +174,14 @@ public class SearchReportsHelperTest {
         asset2.setName("name2");
 
         //mock
-        when(assetService.findByExtId("1")).thenReturn(asset1);
-        when(assetService.findByExtId("2")).thenReturn(asset2);
+        when(assetService.findByCFR("1")).thenReturn(asset1);
+        when(assetService.findByCFR("2")).thenReturn(asset2);
 
         //execute
         helper.enrichWithVesselInformation(Lists.newArrayList(reportListDto1, reportListDto2));
 
-        verify(assetService).findByExtId("1");
-        verify(assetService).findByExtId("2");
+        verify(assetService).findByCFR("1");
+        verify(assetService).findByCFR("2");
 
         //verify and assert
         verifyNoMoreInteractions(assetService);

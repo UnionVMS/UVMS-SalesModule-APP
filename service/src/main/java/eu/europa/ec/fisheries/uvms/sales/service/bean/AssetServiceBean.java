@@ -19,8 +19,8 @@ public class AssetServiceBean implements AssetService {
     private AssetServiceBeanHelper helper;
 
     @Override
-    public Asset findByExtId(String extId) throws ServiceException {
-        String request = helper.createRequestToFindAssetByExtId(extId);
+    public Asset findByCFR(String cfr) throws ServiceException {
+        String request = helper.createRequestToFindAssetByCFR(cfr);
         GetAssetModuleResponse response = helper.callAssetModule(request, GetAssetModuleResponse.class);
         return response.getAsset();
     }

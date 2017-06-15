@@ -19,7 +19,7 @@ public interface AssetService {
      * @return the found asset.
      * @throws ServiceException, when something goes wrong, or the asset is not found.
      */
-    Asset findByExtId(String extId) throws ServiceException;
+    Asset findByCFR(String extId) throws ServiceException;
 
     /**
      * Searches assets by their name, CFR of IRCS.

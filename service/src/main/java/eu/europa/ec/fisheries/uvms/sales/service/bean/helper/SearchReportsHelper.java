@@ -56,7 +56,7 @@ public class SearchReportsHelper {
         for (ReportListDto reportDto : reportDtos) {
             String vesselExtId = reportDto.getVesselExtId();
             try {
-                Asset vessel = assetService.findByExtId(vesselExtId);
+                Asset vessel = assetService.findByCFR(vesselExtId);
                 reportDto.setIrcs(vessel.getIrcs());
                 reportDto.setExternalMarking(vessel.getExternalMarking());
             } catch (ServiceException e) {

@@ -109,6 +109,4 @@ public class AssetServiceBeanHelperTest {
         assertEquals(ConfigSearchField.ASSET_TYPE, result.getKey());
         assertEquals("test", result.getValue());
     }
-
-
 }

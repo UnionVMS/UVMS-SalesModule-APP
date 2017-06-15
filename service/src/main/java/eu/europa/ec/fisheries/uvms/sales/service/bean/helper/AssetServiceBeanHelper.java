@@ -59,6 +59,14 @@ public class AssetServiceBeanHelper {
         }
     }
 
+    public String createRequestToFindAssetByCFR(String cfr) throws ServiceException {
+        try {
+            return AssetModuleRequestMapper.createGetAssetModuleRequest(cfr, AssetIdType.CFR);
+        } catch (AssetModelMapperException e) {
+            throw new ServiceException("Could not create a request to query the Asset Module.", e);
+        }
+    }
+
     public AssetListQuery createAssetListQueryToSearchOnNameOrCFROrIRCS(String searchString) {
         AssetListCriteria criteria = new AssetListCriteria();
         criteria.getCriterias().add(createAssetListCriteriaPair(searchString, ConfigSearchField.NAME));
@@ -77,14 +85,6 @@ public class AssetServiceBeanHelper {
         searchOnName.setKey(name);
         searchOnName.setValue(searchString);
         return searchOnName;
-    }
-
-    public String createRequestToFindAssetByExtId(String extId) throws ServiceException {
-        try {
-            return AssetModuleRequestMapper.createGetAssetModuleRequest(extId, AssetIdType.GUID);
-        } catch (AssetModelMapperException e) {
-            throw new ServiceException("Could not create a request to query the Asset Module.", e);
-        }
     }
 
 }

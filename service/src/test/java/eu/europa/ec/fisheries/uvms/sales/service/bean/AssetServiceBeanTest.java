@@ -5,7 +5,9 @@ import eu.europa.ec.fisheries.wsdl.asset.module.GetAssetModuleResponse;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
 import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,18 +28,21 @@ public class AssetServiceBeanTest {
     @Mock
     private AssetServiceBeanHelper helper;
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     @Test
-    public void testFindByExtId() throws Exception {
+    public void testFindByCFRWhenSuccess() throws Exception {
         Asset asset = new Asset();
-        GetAssetModuleResponse getAssetModuleResponse = new GetAssetModuleResponse();
-        getAssetModuleResponse.setAsset(asset);
+        GetAssetModuleResponse response = new GetAssetModuleResponse();
+        response.setAsset(asset);
 
-        when(helper.createRequestToFindAssetByExtId("extId")).thenReturn("request");
-        when(helper.callAssetModule("request", GetAssetModuleResponse.class)).thenReturn(getAssetModuleResponse);
+        when(helper.createRequestToFindAssetByCFR("cfr")).thenReturn("request");
+        when(helper.callAssetModule("request", GetAssetModuleResponse.class)).thenReturn(response);
 
-        assertSame(asset, assetServiceBean.findByExtId("extId"));
+        assertSame(asset, assetServiceBean.findByCFR("cfr"));
 
-        verify(helper).createRequestToFindAssetByExtId("extId");
+        verify(helper).createRequestToFindAssetByCFR("cfr");
         verify(helper).callAssetModule("request", GetAssetModuleResponse.class);
         verifyNoMoreInteractions(helper);
     }
