@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_saved_search_group
+            id="1"
+            user_id="mr-lonely"
+            name="James Bond"
+    />
+    <sales_saved_search_group_field
+            sales_saved_search_group_id="1"
+            key="Hey there"
+            value="Johny Depp"
+    />
+    <sales_saved_search_group_field
+            sales_saved_search_group_id="1"
+            key="What's it like in"
+            value="New Castle city?"
+    />
+</dataset>

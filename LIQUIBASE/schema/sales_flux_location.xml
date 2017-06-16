@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="stihft" id="fll-01">
+        
+        <createTable tableName="sales_flux_location">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_flux_location_pk"/>
+            </column>
+            <column name="ext_id" type="text" />
+            <column name="country" type="varchar(3)" />
+            <column name="type" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="longitude" type="numeric"/>
+            <column name="latitude" type="numeric" />
+            <column name="sales_address_id" type="integer" />
+        </createTable>
+
+        <createSequence sequenceName="sales_flux_location_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_flux_location" defaultValueSequenceNext="sales_flux_location_id_seq"/>
+
+        <addForeignKeyConstraint
+                constraintName="sales_flux_location_sales_address_id_fk"
+                baseTableName="sales_flux_location"
+                baseColumnNames="sales_address_id"
+                referencedTableName="sales_address"
+                referencedColumnNames="id"/>
+
+        <rollback>
+            <dropSequence
+                    sequenceName="sales_flux_location_id_seq" />
+            <dropTable
+                    tableName="sales_flux_location"
+                    cascadeConstraints="true"/>
+        </rollback>
+        
+    </changeSet>
+        
+</databaseChangeLog>

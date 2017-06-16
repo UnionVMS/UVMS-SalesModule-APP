@@ -2,9 +2,9 @@ package eu.europa.ec.fisheries.uvms.sales.service.factory;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
-import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
+import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -30,7 +30,7 @@ public class FLUXSalesResponseMessageFactoryTest {
     private ReportHelper reportHelper;
 
     @Mock
-    private ParameterService parameterService;
+    private SalesParameterService parameterService;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();

@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.sales.service.dto;
 
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.FluxReportItemType;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

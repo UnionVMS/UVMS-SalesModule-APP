@@ -1,0 +1,16 @@
+## Check status
+mvn liquibase:status -P postgres
+
+##initial creation of the dev database database. This command must be executed 
+mvn liquibase:update -P postgres
+
+## rollback the database to a specified tag
+mvn liquibase:rollback -P postgres -Dliquibase.rollbackTag=version_0.1
+
+## rollback the database a specific number of changes
+mvn liquibase:rollback -P postgres -Dliquibase.rollbackCount=1
+
+## Remove all in the database
+mvn liquibase:dropAll -P postgres
+
+

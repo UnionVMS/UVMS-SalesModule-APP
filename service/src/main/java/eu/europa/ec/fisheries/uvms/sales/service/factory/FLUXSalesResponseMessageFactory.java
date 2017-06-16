@@ -1,10 +1,9 @@
 package eu.europa.ec.fisheries.uvms.sales.service.factory;
 
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
-import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
-import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
+import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import org.joda.time.DateTime;
 
 import javax.ejb.EJB;
@@ -19,8 +18,8 @@ public class FLUXSalesResponseMessageFactory {
     @EJB
     private ReportHelper reportHelper;
 
-    @EJB(lookup = ServiceConstants.DB_ACCESS_PARAMETER_SERVICE)
-    private ParameterService parameterService;
+    @EJB
+    private SalesParameterService parameterService;
 
     public FLUXSalesResponseMessage create(FLUXSalesQueryMessage fluxSalesQueryMessage,
                                            List<Report> reports,

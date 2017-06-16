@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="stihft" id="sntodr-01">
+        
+        <createTable tableName="sales_note_take_over_document_relation">
+            <column name="sales_note_id" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="take_over_document_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="sales_note_take_over_document_relation"
+                       columnNames="sales_note_id, take_over_document_id" />
+        <addForeignKeyConstraint
+                constraintName="sales_note_take_over_document_relation_sales_note_id_fk"
+                baseTableName="sales_note_take_over_document_relation"
+                baseColumnNames="sales_note_id"
+                referencedTableName="sales_flux_report"
+                referencedColumnNames="id"/>
+        <addForeignKeyConstraint
+                constraintName="sales_note_take_over_document_relation_take_over_document_id_fk"
+                baseTableName="sales_note_take_over_document_relation"
+                baseColumnNames="take_over_document_id"
+                referencedTableName="sales_flux_report"
+                referencedColumnNames="id"/>
+
+        <rollback>
+            <dropTable tableName="sales_note_take_over_document_relation" cascadeConstraints="true"/>
+        </rollback>
+        
+    </changeSet>
+        
+</databaseChangeLog>

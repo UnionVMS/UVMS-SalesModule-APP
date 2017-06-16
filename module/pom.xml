@@ -23,6 +23,10 @@
                 <configuration>
                     <modules>
                         <ejbModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>sales-domain</artifactId>
+                        </ejbModule>
+                        <ejbModule>
                             <groupId>${project.groupId}</groupId>   
                             <artifactId>sales-message</artifactId>
                         </ejbModule>
@@ -47,6 +51,12 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sales-domain</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>     
             <artifactId>sales-message</artifactId>

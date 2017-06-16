@@ -3,10 +3,10 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
-import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListDto;
+import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import ma.glasnost.orika.MapperFacade;
 import org.slf4j.Logger;
@@ -30,10 +30,10 @@ public class SearchReportsHelper {
     @EJB
     private AssetService assetService;
 
-    @EJB(lookup = ServiceConstants.DB_ACCESS_REPORT_DOMAIN_MODEL)
+    @EJB
     private ReportDomainModel reportDomainModel;
 
-    @Inject
+    @Inject @DTO
     private MapperFacade mapper;
 
     /**

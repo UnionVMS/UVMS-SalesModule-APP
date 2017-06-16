@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+             xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence">
+
+    <persistence-unit name="h2" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Address</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.AuctionSale</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Contact</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Document</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.FishingActivity</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxLocation</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.entity.FluxReportParty</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Party</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.PartyDocument</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Product</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.SavedSearchGroup</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Vessel</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.VesselContact</class>
+
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.converter.DateTimeAttributeConverter</class>
+        <properties>
+            <property name="hibernate.archive.autodetection" value="class" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+            <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+            <property name="hibernate.connection.url" value="jdbc:h2:mem:unionvms-sales" />
+            <property name="hibernate.connection.user" value="sa" />
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.flushMode" value="FLUSH_AUTO" />
+            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+        </properties>
+    </persistence-unit>
+</persistence>

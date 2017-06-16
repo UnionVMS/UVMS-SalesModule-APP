@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="stihft" id="add-01">
+        
+        <createTable tableName="sales_address">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_address_pk"/>
+            </column>
+            <column name="ext_id" type="text" />
+            <column name="block_name" type="text" />
+            <column name="building_name" type="text" />
+            <column name="city_name" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city_sub_division_name" type="text" />
+            <column name="country" type="varchar(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_name" type="text" />
+            <column name="country_sub_division_name" type="text" />
+            <column name="plot_id" type="text" />
+            <column name="post_office_box" type="text" />
+            <column name="postcode" type="text" />
+            <column name="street_name" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createSequence sequenceName="sales_address_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_address" defaultValueSequenceNext="sales_address_id_seq"/>
+
+        <rollback>
+            <dropSequence sequenceName="sales_address_id_seq" />
+            <dropTable tableName="sales_address" cascadeConstraints="true"/>
+        </rollback>
+        
+    </changeSet>
+        
+</databaseChangeLog>

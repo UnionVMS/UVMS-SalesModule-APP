@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_document
+            id="20"
+            ext_id="DocumentExternalID1"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+    />
+    <sales_document
+            id="21"
+            ext_id="DocumentExternalID2"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+    />
+    <sales_document
+            id="22"
+            ext_id="DocumentExternalID3"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+    />
+    <sales_document
+            id="23"
+            ext_id="DocumentExternalID4"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+    />
+    <sales_flux_report
+            id="123"
+            ext_id="abc"
+            purpose_code="CORRECTION"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_id="[NULL]"
+    />
+    <sales_flux_report
+            id="124"
+            ext_id="def"
+            purpose_code="CORRECTION"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_id="123"
+    />
+    <sales_flux_report
+            id="125"
+            ext_id="ghi"
+            purpose_code="CORRECTION"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_id="123"
+    />
+    <sales_flux_report
+            id="126"
+            ext_id="yoyoyo"
+            purpose_code="CORRECTION"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_id="125"
+    />
+</dataset>

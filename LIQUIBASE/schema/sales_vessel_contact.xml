@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="matbul" id="vco-01">
+        
+        <createTable tableName="sales_vessel_contact">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_vessel_contact_pk"/>
+            </column>
+            <column name="role" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sales_vessel_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sales_contact_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <createSequence sequenceName="sales_vessel_contact_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_vessel_contact" defaultValueSequenceNext="sales_vessel_contact_id_seq"/>
+
+        <addForeignKeyConstraint
+                constraintName="sales_vessel_contact_sales_vessel_id_fk"
+                baseTableName="sales_vessel_contact"
+                baseColumnNames="sales_vessel_id"
+                referencedTableName="sales_vessel"
+                referencedColumnNames="id"/>
+        <addForeignKeyConstraint
+                constraintName="sales_vessel_contact_sales_contact_id_fk"
+                baseTableName="sales_vessel_contact"
+                baseColumnNames="sales_contact_id"
+                referencedTableName="sales_contact"
+                referencedColumnNames="id"/>
+
+        <createIndex
+                indexName="sales_vessel_contact_i_1"
+                tableName="sales_vessel_contact">
+            <column name="sales_vessel_id" type="integer"/>
+        </createIndex>
+
+        <createIndex
+                indexName="sales_vessel_contact_i_2"
+                tableName="sales_vessel_contact">
+            <column name="sales_contact_id" type="integer"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    tableName="sales_vessel_contact"
+                    indexName="sales_vessel_contact_i_1" />
+            <dropIndex
+                    tableName="sales_vessel_contact"
+                    indexName="sales_vessel_contact_i_2" />
+
+            <dropSequence sequenceName="sales_vessel_contact_id_seq" />
+            <dropTable tableName="sales_vessel_contact" cascadeConstraints="true"/>
+        </rollback>
+        
+    </changeSet>
+        
+</databaseChangeLog>

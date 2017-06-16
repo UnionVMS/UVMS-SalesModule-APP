@@ -1,8 +1,11 @@
 package eu.europa.ec.fisheries.uvms.sales.service.mapper;
 
 import eu.europa.ec.fisheries.schema.sales.*;
+import eu.europa.ec.fisheries.uvms.sales.domain.converter.*;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
-import eu.europa.ec.fisheries.uvms.sales.service.converter.*;
+import eu.europa.ec.fisheries.uvms.sales.service.converter.BuyerSalesPartyTypeListConverter;
+import eu.europa.ec.fisheries.uvms.sales.service.converter.ListFLUXLocationTypeConverter;
+import eu.europa.ec.fisheries.uvms.sales.service.converter.SellerSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
@@ -20,6 +23,7 @@ import javax.enterprise.inject.Produces;
 public class MapperProducer {
 
     @Produces
+    @DTO
     public MapperFacade getMapper() {
         MapperFactory factory = new DefaultMapperFactory.Builder()
                 .mapNulls(false)

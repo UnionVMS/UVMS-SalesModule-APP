@@ -3,8 +3,8 @@ package eu.europa.ec.fisheries.uvms.sales.service.mapper;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.FluxReportItemType;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.Purpose;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import ma.glasnost.orika.MapperFacade;

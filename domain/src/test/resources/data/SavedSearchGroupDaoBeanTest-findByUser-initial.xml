@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_saved_search_group
+            id="44"
+            user_id="POTUS"
+            name="Barack Obama"
+    />
+    <sales_saved_search_group_field
+            sales_saved_search_group_id="44"
+            key="Obama"
+            value="rules"
+    />
+</dataset>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="stihft" id="pdo-01">
+
+        <createTable tableName="sales_party_document">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_party_document_pk"/>
+            </column>
+            <column name="sales_party_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sales_document_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="varchar(3)"/>
+        </createTable>
+
+        <createSequence sequenceName="sales_party_document_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_party_document" defaultValueSequenceNext="sales_party_document_id_seq"/>
+
+        <addForeignKeyConstraint
+                constraintName="sales_party_document_sales_party_id_fk"
+                baseTableName="sales_party_document"
+                baseColumnNames="sales_party_id"
+                referencedTableName="sales_party"
+                referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+                constraintName="sales_party_document_sales_document_id_fk"
+                baseTableName="sales_party_document"
+                baseColumnNames="sales_document_id"
+                referencedTableName="sales_document"
+                referencedColumnNames="id"/>
+
+        <createIndex
+                indexName="sales_party_document_i_1"
+                tableName="sales_party_document">
+            <column name="sales_document_id" type="integer"/>
+        </createIndex>
+        <createIndex
+                indexName="sales_party_document_i_2"
+                tableName="sales_party_document">
+            <column name="sales_party_id" type="integer"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    tableName="sales_party_document"
+                    indexName="sales_party_document_i_1" />
+            <dropIndex
+                    tableName="sales_party_document"
+                    indexName="sales_party_document_i_2" />
+            <dropSequence sequenceName="sales_party_id_seq" />
+            <dropTable tableName="sales_party" cascadeConstraints="true"/>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>

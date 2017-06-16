@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_flux_report
+            ext_id="OLD_REPORT"
+            purpose_code="ORIGINAL"
+            item_type="SALES_NOTE"
+            creation="1995-11-17"
+            flux_report_party="BEL"
+    />
+    <sales_flux_report
+            ext_id="ExternalID"
+            purpose_code="CORRECTION"
+            item_type="SALES_NOTE"
+            creation="1995-11-24"
+            flux_report_party="BEL"
+    />
+
+    <sales_document
+            ext_id="abcdef"
+            currency="EURO"
+            occurrence="1990-11-11 00:00:00"
+    />
+    <sales_document
+            ext_id="DocumentExternalID"
+            currency="Euro"
+            occurrence="2001-09-11 00:00:00"
+    />
+    <sales_auction_sale
+            type="FIRST_SALE"
+            country="BEL"
+    />
+
+
+</dataset>
+

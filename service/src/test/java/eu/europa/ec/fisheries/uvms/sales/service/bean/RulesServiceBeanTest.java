@@ -3,13 +3,13 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
+import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.FLUXSalesResponseMessageHelper;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
-import eu.europa.ec.fisheries.uvms.sales.model.helper.FLUXSalesResponseMessageHelper;
-import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +36,7 @@ public class RulesServiceBeanTest {
     private RulesServiceBean rulesServiceBean;
 
     @Mock
-    private ParameterService parameterService;
+    private SalesParameterService parameterService;
 
     @Mock
     private SalesMessageProducer messageProducer;

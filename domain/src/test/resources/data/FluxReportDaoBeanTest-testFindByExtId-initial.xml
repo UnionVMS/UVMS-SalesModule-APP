@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_document
+            id="20"
+            ext_id="DocumentExternalID"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+    />
+    <sales_flux_report
+            id="123"
+            ext_id="ExternalID"
+            purpose_code="CORRECTION"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+    />
+</dataset>

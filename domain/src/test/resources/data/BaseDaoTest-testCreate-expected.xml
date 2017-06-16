@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_address
+            city_name="test-city"
+            country="BEL"
+            street_name="test-street"
+    />
+</dataset>

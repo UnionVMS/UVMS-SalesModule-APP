@@ -5,13 +5,13 @@ import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
-import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
+import eu.europa.ec.fisheries.uvms.sales.domain.mother.ReportMother;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
-import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,7 +35,7 @@ public class ReportServiceHelperTest {
     private ReportHelper reportHelper;
 
     @Mock
-    private ParameterService parameterService;
+    private SalesParameterService parameterService;
 
     @Mock
     private RulesService rulesService;

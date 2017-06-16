@@ -4,15 +4,16 @@ import eu.europa.ec.fisheries.schema.sales.AAPProductType;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
-import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
+import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
@@ -25,9 +26,6 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import static eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants.DB_ACCESS_PARAMETER_SERVICE;
-import static eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants.DB_ACCESS_REPORT_DOMAIN_MODEL;
 
 /**
  * Class who's only purpose is to hide low-level logic from the "get sales details" functionality of the ReportServiceBean.
@@ -44,8 +42,8 @@ public class SalesDetailsHelper {
     @EJB
     private AssetService assetService;
 
-    @EJB(lookup = DB_ACCESS_PARAMETER_SERVICE)
-    private ParameterService parameterService;
+    @EJB
+    private SalesParameterService parameterService;
 
     @EJB
     private EcbProxyService ecbProxyService;
@@ -56,10 +54,10 @@ public class SalesDetailsHelper {
     @EJB
     private ReportServiceHelper reportServiceHelper;
 
-    @EJB(lookup = DB_ACCESS_REPORT_DOMAIN_MODEL)
+    @EJB
     private ReportDomainModel reportDomainModel;
 
-    @Inject
+    @Inject @DTO
     private MapperFacade mapper;
 
     public void enrichWithLocation(SalesDetailsDto detailsDto) {

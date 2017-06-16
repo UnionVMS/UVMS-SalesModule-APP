@@ -3,18 +3,18 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.FluxReportItemType;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
-import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
+import eu.europa.ec.fisheries.uvms.sales.domain.mother.AAPProductTypeMother;
+import eu.europa.ec.fisheries.uvms.sales.domain.mother.ReportMother;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
-import eu.europa.ec.fisheries.uvms.sales.service.mother.AAPProductTypeMother;
-import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
 import ma.glasnost.orika.MapperFacade;
@@ -47,7 +47,7 @@ public class SalesDetailsHelperTest {
     private ReferenceDataCache referenceDataCache;
 
     @Mock
-    private ParameterService parameterService;
+    private SalesParameterService parameterService;
 
     @Mock
     private EcbProxyService ecbProxyService;

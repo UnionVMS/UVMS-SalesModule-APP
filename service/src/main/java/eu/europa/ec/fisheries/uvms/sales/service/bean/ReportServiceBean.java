@@ -3,16 +3,16 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceExportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.SalesDetailsHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.SearchReportsHelper;
-import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
+import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
 import ma.glasnost.orika.MapperFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +30,13 @@ public class ReportServiceBean implements ReportService {
 
     final static Logger LOG = LoggerFactory.getLogger(ReportServiceBean.class);
 
-    @EJB(lookup = ServiceConstants.DB_ACCESS_REPORT_DOMAIN_MODEL)
+    @EJB
     private ReportDomainModel reportDomainModel;
 
     @EJB
     private ReportServiceExportHelper reportServiceExportHelper;
 
-    @Inject
+    @Inject @DTO
     private MapperFacade mapper;
 
     @EJB

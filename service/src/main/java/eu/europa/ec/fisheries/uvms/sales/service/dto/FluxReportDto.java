@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.dto;
 
-import eu.europa.ec.fisheries.uvms.sales.model.constant.Purpose;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;

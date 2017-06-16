@@ -4,12 +4,11 @@ import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.sales.model.constant.ParameterKey;
-import eu.europa.ec.fisheries.uvms.sales.model.helper.ReportHelper;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ParameterService;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
-import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 
 import javax.ejb.EJB;
@@ -26,8 +25,8 @@ public class ReportServiceHelper {
     @EJB
     private FLUXSalesResponseMessageFactory fluxSalesResponseMessageFactory;
 
-    @EJB(lookup = ServiceConstants.DB_ACCESS_PARAMETER_SERVICE)
-    private ParameterService parameterService;
+    @EJB
+    private SalesParameterService parameterService;
 
     @EJB
     private ReportHelper reportHelper;
@@ -35,7 +34,7 @@ public class ReportServiceHelper {
     @EJB
     private RulesService rulesService;
 
-    @EJB(lookup = ServiceConstants.DB_ACCESS_REPORT_DOMAIN_MODEL)
+    @EJB
     private ReportDomainModel reportDomainModel;
 
     public void sendResponseToSenderOfReport(Report report,

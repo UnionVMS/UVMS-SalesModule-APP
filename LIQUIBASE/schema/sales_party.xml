@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="stihft" id="par-01">
+
+        <createTable tableName="sales_party">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_party_pk"/>
+            </column>
+            <column name="ext_id" type="text" />
+            <column name="name" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_organization_name" type="text" />
+            <column name="sales_address_id" type="integer" />
+
+        </createTable>
+
+        <createSequence sequenceName="sales_party_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_party" defaultValueSequenceNext="sales_party_id_seq"/>
+
+        <addForeignKeyConstraint
+                constraintName="sales_party_sales_address_id_fk"
+                baseTableName="sales_party"
+                baseColumnNames="sales_address_id"
+                referencedTableName="sales_address"
+                referencedColumnNames="id"/>
+
+        <rollback>
+            <dropSequence sequenceName="sales_party_id_seq" />
+            <dropTable tableName="sales_party" cascadeConstraints="true"/>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>

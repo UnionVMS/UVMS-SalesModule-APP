@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+	
+    <changeSet id="add_parameter_for_ecb_rest_service_endpoint" author="stihft">
+
+        <insert tableName="parameter">
+            <column name="param_id" value="sales.ebc.proxy.endpoint"/>
+            <column name="param_description" value="The url of the REST service of the European Central Bank, to retrieve currency rates."/>
+            <column name="param_value" value="http://sdw-wsrest.ecb.europa.eu/service/data/EXR/D..EUR.SP00.A"/>
+        </insert>
+        <insert tableName="parameter">
+            <column name="param_id" value="currency"/>
+            <column name="param_description" value="The currency of the country where the software is deployed. In ISO 4217 format."/>
+            <column name="param_value" value="EUR"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

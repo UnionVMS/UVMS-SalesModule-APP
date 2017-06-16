@@ -2,11 +2,11 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.SavedSearchGroup;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.domain.SavedSearchGroupDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesDatabaseException;
-import eu.europa.ec.fisheries.uvms.sales.model.remote.SavedSearchGroupDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.SavedSearchService;
-import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.SavedSearchGroupDto;
+import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
 import ma.glasnost.orika.MapperFacade;
 
 import javax.ejb.EJB;
@@ -18,10 +18,10 @@ import java.util.List;
 @Stateless
 public class SavedSearchServiceBean implements SavedSearchService {
 
-    @EJB(lookup = ServiceConstants.DB_ACCESS_SEARCH_GROUP_DOMAIN_MODEL)
+    @EJB
     private SavedSearchGroupDomainModel savedSearchGroupDomainModel;
 
-    @Inject
+    @Inject @DTO
     private MapperFacade mapper;
 
     @Override

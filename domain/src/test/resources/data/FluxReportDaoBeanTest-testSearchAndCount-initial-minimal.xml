@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_vessel
+            id="60"
+            cfr="60a"
+            name="CoolVessel"
+            country="BEL"
+    />
+    <sales_vessel
+            id="61"
+            cfr="61a"
+            name="AwesomeVessel"
+            country="FRA"
+    />
+
+    <sales_flux_location
+            id="70"
+            ext_id="70a"
+            country="FRA"
+            type="dummy"
+            longitude="1.254654"
+            latitude="40.5256546"
+    />
+    <sales_flux_location
+            id="71"
+            ext_id="71a"
+            country="BEL"
+            type="dummy"
+            longitude="1.254654"
+            latitude="40.5256546"
+    />
+
+    <sales_flux_location
+            id="72"
+            ext_id="72a"
+            country="TUR"
+            type="dummy"
+            longitude="1.254654"
+            latitude="40.5256546"
+    />
+    <sales_flux_location
+            id="73"
+            ext_id="73a"
+            country="SWE"
+            type="dummy"
+            longitude="1.254654"
+            latitude="40.5256546"
+    />
+
+    <sales_fishing_activity
+            id="30"
+            ext_id="30a"
+            type="dummy"
+            union_trip_id="aaaa"
+            start_date="2017-01-01 10:00:00"
+            end_date="2017-01-05 10:00:00"
+            sales_vessel_id="60"
+            sales_flux_location_id="70"
+    />
+    <sales_fishing_activity
+            id="31"
+            ext_id="31a"
+            type="dummy"
+            union_trip_id="12345"
+            start_date="2017-01-01 10:00:00"
+            end_date="2017-02-25 10:00:00"
+            sales_vessel_id="61"
+            sales_flux_location_id="71"
+    />
+
+    <sales_document
+            id="20"
+            ext_id="100"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+            sales_fishing_activity_id="30"
+            sales_flux_location_id="72"
+    />
+    <sales_document
+            id="21"
+            ext_id="100"
+            currency="Euro"
+            occurrence="2017-01-20 00:00:00"
+            sales_fishing_activity_id="31"
+            sales_flux_location_id="73"
+    />
+
+    <sales_product
+            id="90"
+            species="AAA"
+            usage="??"
+            distribution_class="??"
+            distribution_category="??"
+            price="123.12"
+            sales_document_id="20"
+    />
+
+    <sales_product
+            id="91"
+            species="BBB"
+            usage="??"
+            distribution_class="??"
+            distribution_category="??"
+            price="123.12"
+            sales_document_id="20"
+    />
+
+    <sales_product
+            id="92"
+            species="MUS"
+            usage="??"
+            distribution_class="??"
+            distribution_category="??"
+            price="123.12"
+            sales_document_id="21"
+    />
+
+    <sales_product
+            id="93"
+            species="SAL"
+            usage="??"
+            distribution_class="??"
+            distribution_category="??"
+            price="123.12"
+            sales_document_id="21"
+    />
+
+    <sales_product
+            id="94"
+            species="AAA"
+            usage="??"
+            distribution_class="??"
+            distribution_category="??"
+            price="123.12"
+            sales_document_id="21"
+    />
+
+    <sales_auction_sale
+            id="80"
+            type="FIRST_SALE"
+            country="BEL"
+    />
+
+    <sales_auction_sale
+            id="81"
+            type="NEGOTIATED_SALE"
+            country="FRA"
+    />
+
+    <sales_auction_sale
+            id="82"
+            type="VARIOUS_SUPPLY"
+            country="FRA"
+    />
+
+    <sales_flux_report
+            id="1230000"
+            ext_id="abc-outdated"
+            purpose_code="ORIGINAL"
+            item_type="SALES_NOTE"
+            creation="1995-11-27 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_auction_sale_id="80"
+            sales_flux_report_prev_id="[NULL]"
+    />
+
+    <sales_flux_report
+            id="123"
+            ext_id="abc"
+            purpose_code="CORRECTION"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_auction_sale_id="80"
+            sales_flux_report_prev_id="1230000"
+    />
+
+    <sales_flux_report
+            id="125"
+            ext_id="ghi"
+            purpose_code="ORIGINAL"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="21"
+            sales_auction_sale_id="82"
+            sales_flux_report_prev_id="[NULL]"
+    />
+
+    <sales_flux_report
+            id="126"
+            ext_id="abcDELETED"
+            purpose_code="DELETE"
+            item_type="SALES_NOTE"
+            creation="2005-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="[NULL]"
+            sales_auction_sale_id="[NULL]"
+            sales_flux_report_prev_id="125"
+    />
+</dataset>

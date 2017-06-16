@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="matbul" id="ves-01">
+        
+        <createTable tableName="sales_vessel">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_vessel_pk"/>
+            </column>
+            <column name="cfr" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="text"/>
+            <column name="country" type="varchar(3)"/>
+        </createTable>
+
+        <createSequence sequenceName="sales_vessel_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_vessel" defaultValueSequenceNext="sales_vessel_id_seq"/>
+
+        <rollback>
+            <dropSequence sequenceName="sales_vessel_id_seq" />
+            <dropTable tableName="sales_vessel" cascadeConstraints="true"/>
+        </rollback>
+        
+    </changeSet>
+        
+</databaseChangeLog>
