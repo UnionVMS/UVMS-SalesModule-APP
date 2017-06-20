@@ -84,4 +84,19 @@ public class SearchReportsHelper {
         }
     }
 
+    public void includeDeletedReportsInQuery(ReportQuery query) {
+        setIncludeDeletedReportsInQuery(query, true);
+    }
+
+    public void excludeDeletedReportsInQuery(ReportQuery query) {
+        setIncludeDeletedReportsInQuery(query, false);
+    }
+
+    private void setIncludeDeletedReportsInQuery(ReportQuery query, boolean includeDeleted) {
+        if (query.getFilters() == null) {
+            query.setFilters(new ReportQueryFilter());
+        }
+
+        query.getFilters().setIncludeDeleted(includeDeleted);
+    }
 }

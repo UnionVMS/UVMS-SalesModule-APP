@@ -12,6 +12,12 @@
             name="AwesomeVessel"
             country="FRA"
     />
+    <sales_vessel
+            id="62"
+            cfr="62a"
+            name="AwesomeDutchVessel"
+            country="NDL"
+    />
 
     <sales_flux_location
             id="70"
@@ -46,6 +52,14 @@
             longitude="1.254654"
             latitude="40.5256546"
     />
+    <sales_flux_location
+            id="74"
+            ext_id="74a"
+            country="BRA"
+            type="dummy"
+            longitude="1.254654"
+            latitude="40.5256546"
+    />
 
     <sales_fishing_activity
             id="30"
@@ -67,6 +81,16 @@
             sales_vessel_id="61"
             sales_flux_location_id="71"
     />
+    <sales_fishing_activity
+            id="32"
+            ext_id="32a"
+            type="dummy"
+            union_trip_id="12345"
+            start_date="2017-01-01 10:00:00"
+            end_date="2018-02-25 10:00:00"
+            sales_vessel_id="62"
+            sales_flux_location_id="74"
+    />
 
     <sales_document
             id="20"
@@ -83,6 +107,14 @@
             occurrence="2017-01-20 00:00:00"
             sales_fishing_activity_id="31"
             sales_flux_location_id="73"
+    />
+    <sales_document
+            id="22"
+            ext_id="100"
+            currency="Euro"
+            occurrence="2015-01-20 00:00:00"
+            sales_fishing_activity_id="32"
+            sales_flux_location_id="74"
     />
 
     <sales_product
@@ -153,12 +185,19 @@
             country="FRA"
     />
 
+    <sales_auction_sale
+            id="83"
+            type="FIRST_SALE"
+            country="FRA"
+    />
+
     <sales_flux_report
             id="1230000"
             ext_id="abc-outdated"
             purpose_code="ORIGINAL"
             item_type="SALES_NOTE"
             creation="1995-11-27 00:00:00"
+            deletion="[NULL]"
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
@@ -171,6 +210,7 @@
             purpose_code="CORRECTION"
             item_type="SALES_NOTE"
             creation="1995-11-24 00:00:00"
+            deletion="[NULL]"
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
@@ -183,6 +223,7 @@
             purpose_code="ORIGINAL"
             item_type="SALES_NOTE"
             creation="1995-11-24 00:00:00"
+            deletion="[NULL]"
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
@@ -191,13 +232,14 @@
 
     <sales_flux_report
             id="126"
-            ext_id="abcDELETED"
-            purpose_code="DELETE"
+            ext_id="klk"
+            purpose_code="ORIGINAL"
             item_type="SALES_NOTE"
-            creation="2005-11-24 00:00:00"
+            creation="1995-11-24 00:00:00"
+            deletion="1996-11-24 00:00:00"
             flux_report_party="BEL"
-            sales_document_id="[NULL]"
-            sales_auction_sale_id="[NULL]"
-            sales_flux_report_prev_id="125"
+            sales_document_id="22"
+            sales_auction_sale_id="83"
+            sales_flux_report_prev_id="[NULL]"
     />
 </dataset>

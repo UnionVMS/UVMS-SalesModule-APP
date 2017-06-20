@@ -23,7 +23,7 @@ public class ReportHelperTest {
     }
 
     @Test
-    public void testIsReportCorrectedOrDeletedWhenFalse() {
+    public void testIsReportCorrectedWhenFalse() {
         CodeType purpose = new CodeType().withValue(Purpose.ORIGINAL.getNumericCode()+"");
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withPurposeCode(purpose);
@@ -32,7 +32,7 @@ public class ReportHelperTest {
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
 
-        assertFalse(reportHelper.isReportCorrectedOrDeleted(report));
+        assertFalse(reportHelper.isReportCorrected(report));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ReportHelperTest {
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
 
-        assertTrue(reportHelper.isReportCorrectedOrDeleted(report));
+        assertTrue(reportHelper.isReportCorrected(report));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class ReportHelperTest {
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
 
-        assertTrue(reportHelper.isReportCorrectedOrDeleted(report));
+        assertTrue(reportHelper.isReportCorrected(report));
     }
 
     @Test

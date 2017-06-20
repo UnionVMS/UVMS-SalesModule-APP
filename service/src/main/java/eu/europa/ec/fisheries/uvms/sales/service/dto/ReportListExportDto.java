@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.dto;
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.joda.time.DateTime;
 
 /**
  * Represents one item in the list of reports to be exported.
@@ -51,6 +52,8 @@ public class ReportListExportDto {
      * buyer name
      */
     private String buyer;
+
+    private DateTime deletion;
 
     public String getFlagState() {
         return flagState;
@@ -141,6 +144,13 @@ public class ReportListExportDto {
         this.seller = seller;
     }
 
+    public DateTime getDeletion() {
+        return deletion;
+    }
+
+    public void setDeletion(DateTime deletion) {
+        this.deletion = deletion;
+    }
 
     public ReportListExportDto flagState(String flagState) {
         this.flagState = flagState;
@@ -195,6 +205,11 @@ public class ReportListExportDto {
 
     public ReportListExportDto seller(String seller) {
         this.seller = seller;
+        return this;
+    }
+
+    public ReportListExportDto deletion(DateTime deletion) {
+        this.deletion = deletion;
         return this;
     }
 }

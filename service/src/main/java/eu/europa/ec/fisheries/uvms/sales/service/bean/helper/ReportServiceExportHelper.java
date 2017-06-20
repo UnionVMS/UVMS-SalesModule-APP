@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
-import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListExportDto;
 
@@ -61,11 +60,7 @@ public class ReportServiceExportHelper {
                 return "";
             }
 
-            if (!object.getClass().equals(SalesCategoryType.class)) {
-                return (String) object;
-            } else {
-                return object.toString();
-            }
+            return object.toString();
         } catch (IllegalAccessException e) {
             // This is never going to happen because the fields are made accessible before calling this method
             e.printStackTrace();

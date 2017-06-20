@@ -1,13 +1,13 @@
-package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean.helper;
+package eu.europa.ec.fisheries.uvms.sales.domain.helper;
 
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.SalesCategory;
 import eu.europa.ec.fisheries.uvms.sales.domain.dto.FluxReportSearchMode;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
@@ -71,9 +71,9 @@ public class FluxReportQueryToTypedQueryHelper {
             excludeIds(filters.getExcludeFluxReportIds());
             withTripId(filters.getTripId());
             withLandingCountry(filters.getLandingCountry());
+            withoutDeleted(filters.isIncludeDeleted());
         }
         notCorrected();
-        notDeleted();
         return this;
     }
 
@@ -145,28 +145,24 @@ public class FluxReportQueryToTypedQueryHelper {
     }
 
     private void notCorrected() {
-        ParameterExpression<Purpose> purposeSubQueryParameter = addParameter(Purpose.class, "purposeSubQuery", Purpose.CORRECTION);
-
         Subquery<FluxReport> referencingReportSubQuery = query.subquery(FluxReport.class);
         Root<FluxReport> correlatedFluxReport = referencingReportSubQuery.from(FluxReport.class);
 
-        Predicate referencedReportIsACorrection = builder.equal(purposeSubQueryParameter, correlatedFluxReport.get("purpose"));
         Predicate referencedIdEqualsExtId = builder.equal(fluxReport, correlatedFluxReport.get("previousFluxReport"));
 
         Subquery<FluxReport> finishedReferencingReportSubQuery =
                 referencingReportSubQuery
                         .select(correlatedFluxReport)
-                        .where(referencedReportIsACorrection, referencedIdEqualsExtId);
+                        .where(referencedIdEqualsExtId);
 
         addWhereCondition(builder.not(builder.exists(finishedReferencingReportSubQuery)));
     }
 
-    private void notDeleted() {
-        ParameterExpression<Purpose> purposeDeleted = addParameter(Purpose.class, "purposeDeleted", Purpose.DELETE);
-
-        Predicate notDeleted = builder.notEqual(fluxReport.get("purpose"), purposeDeleted);
-
-        addWhereCondition(notDeleted);
+    private void withoutDeleted(Boolean includeDeleted) {
+        if (BooleanUtils.isNotTrue(includeDeleted)) {
+            Predicate notDeleted = builder.isNull(fluxReport.get("deletion"));
+            addWhereCondition(notDeleted);
+        }
     }
 
     private void withVesselName(String vesselName) {
@@ -384,10 +380,6 @@ public class FluxReportQueryToTypedQueryHelper {
 
     private Path<String> pathToSalesCategory() {
         return fluxReport.get("auctionSale").get("category");
-    }
-
-    private Path<String> pathToReferencedId() {
-        return fluxReport.get("previousFluxReport");
     }
 
 }

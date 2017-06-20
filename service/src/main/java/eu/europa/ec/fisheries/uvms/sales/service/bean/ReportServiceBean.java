@@ -85,6 +85,7 @@ public class ReportServiceBean implements ReportService {
         try {
             //prepare query
             ReportQuery query = mapper.map(criteria, ReportQuery.class);
+            searchReportsHelper.includeDeletedReportsInQuery(query);
             searchReportsHelper.prepareVesselFreeTextSearch(query);
             searchReportsHelper.prepareSorting(query);
 
@@ -109,6 +110,8 @@ public class ReportServiceBean implements ReportService {
                        List<ValidationQualityAnalysisType> validationResults,
                        String messageValidationStatus) throws ServiceException {
         ReportQuery query = mapper.map(fluxSalesQueryMessage, ReportQuery.class);
+        searchReportsHelper.excludeDeletedReportsInQuery(query);
+
         List<Report> reports = reportDomainModel.search(query);
 
         FLUXSalesResponseMessage fluxSalesResponse = fluxSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResults, messageValidationStatus);

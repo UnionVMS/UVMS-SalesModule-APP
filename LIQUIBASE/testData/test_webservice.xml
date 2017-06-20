@@ -158,67 +158,67 @@
 
         <insert tableName="sales_vessel">
             <column name="id" value="100000"/>
-            <column name="ext_id" value="bc81e07e-072d-41c0-be50-6f355e8e05ac"/>
+            <column name="cfr" value="aaa123456789"/>
             <column name="country" value="BEL" />
         </insert>
 
         <insert tableName="sales_vessel">
             <column name="id" value="100001"/>
-            <column name="ext_id" value="ae13d7f7-6380-4694-94c6-13442d49adce"/>
+            <column name="cfr" value="sta000000000"/>
             <column name="country" value="FRA" />
         </insert>
 
         <insert tableName="sales_vessel">
             <column name="id" value="100002"/>
-            <column name="ext_id" value="b39e5cab-ce73-4d4a-9f01-0c3ff30a8bc7"/>
+            <column name="cfr" value="pie323232323"/>
             <column name="country" value="NED" />
         </insert>
 
         <insert tableName="sales_vessel">
             <column name="id" value="100003"/>
-            <column name="ext_id" value="52c51381-85a7-4010-b8ae-53da4034305a"/>
+            <column name="cfr" value="zee123456789"/>
             <column name="country" value="LUX" />
         </insert>
 
         <insert tableName="sales_vessel">
             <column name="id" value="100004"/>
-            <column name="ext_id" value="9c0e2df0-1d88-4d5f-b4b5-b6fd5045b80b"/>
+            <column name="cfr" value="DUI696325874"/>
             <column name="country" value="NKO" />
         </insert>
 
         <insert tableName="sales_vessel">
             <column name="id" value="100005"/>
-            <column name="ext_id" value="c26a74ef-883f-4509-8a58-eca1bc4274c3"/>
+            <column name="cfr" value="sub391289238"/>
             <column name="country" value="SWE" />
         </insert>
 
         <insert tableName="sales_vessel">
             <column name="id" value="100006"/>
-            <column name="ext_id" value="b29f0705-92fd-4c2c-a714-8fdcadbac623"/>
+            <column name="cfr" value="flo893129312"/>
             <column name="country" value="BEL" />
         </insert>
 
         <insert tableName="sales_vessel">
             <column name="id" value="100007"/>
-            <column name="ext_id" value="781c5ffe-c29e-4cbe-9356-e9062ceb8ce8"/>
+            <column name="cfr" value="BEL123456789"/>
             <column name="country" value="LUX" />
         </insert>
 
         <insert tableName="sales_vessel">
             <column name="id" value="100008"/>
-            <column name="ext_id" value="42264e43-6c22-42e9-9ac3-01261602eb0d"/>
+            <column name="cfr" value="BEL123456789"/>
             <column name="country" value="BEL" />
         </insert>
 
         <insert tableName="sales_vessel">
             <column name="id" value="100009"/>
-            <column name="ext_id" value="8922af0b-e556-4904-9b14-f519c28930ee"/>
+            <column name="cfr" value="BEL123456789"/>
             <column name="country" value="NOR" />
         </insert>
 
         <insert tableName="sales_vessel">
             <column name="id" value="100010"/>
-            <column name="ext_id" value="43a499a9-6709-470b-b4dc-7caeef827400"/>
+            <column name="cfr" value="bla156548656"/>
             <column name="country" value="JAP" />
         </insert>
 
@@ -491,6 +491,7 @@
             <column name="species" value="SAL"/>
             <column name="quantity" value="123"/>
             <column name="weight" value="123"/>
+            <column name="price" value="123"/>
             <column name="sales_document_id" value="100000"/>
         </insert>
 
@@ -499,6 +500,7 @@
             <column name="species" value="LAS"/>
             <column name="quantity" value="123"/>
             <column name="weight" value="123"/>
+            <column name="price" value="123"/>
             <column name="sales_document_id" value="100001"/>
         </insert>
 
@@ -507,6 +509,7 @@
             <column name="species" value="LAS"/>
             <column name="quantity" value="123"/>
             <column name="weight" value="123"/>
+            <column name="price" value="123"/>
             <column name="sales_document_id" value="100001"/>
         </insert>
 
@@ -515,6 +518,7 @@
             <column name="species" value="LAS"/>
             <column name="quantity" value="123"/>
             <column name="weight" value="123"/>
+            <column name="price" value="123"/>
             <column name="sales_document_id" value="100001"/>
         </insert>
 
@@ -523,9 +527,99 @@
             <column name="species" value="LAS"/>
             <column name="quantity" value="123"/>
             <column name="weight" value="123"/>
+            <column name="price" value="123"/>
             <column name="sales_document_id" value="100001"/>
         </insert>
 
+        <insert tableName="sales_product">
+            <column name="id" value="100005"/>
+            <column name="species" value="LAS"/>
+            <column name="quantity" value="123"/>
+            <column name="weight" value="123"/>
+            <column name="price" value="123"/>
+            <column name="sales_document_id" value="100002"/>
+        </insert>
+
+        <insert tableName="sales_product">
+            <column name="id" value="100006"/>
+            <column name="species" value="LAS"/>
+            <column name="quantity" value="123"/>
+            <column name="weight" value="123"/>
+            <column name="price" value="123"/>
+            <column name="sales_document_id" value="100003"/>
+        </insert>
+
+        <insert tableName="sales_product">
+            <column name="id" value="100007"/>
+            <column name="species" value="LAS"/>
+            <column name="quantity" value="123"/>
+            <column name="weight" value="123"/>
+            <column name="price" value="123"/>
+            <column name="sales_document_id" value="100004"/>
+        </insert>
+
+        <insert tableName="sales_product">
+            <column name="id" value="100008"/>
+            <column name="species" value="LAS"/>
+            <column name="quantity" value="123"/>
+            <column name="weight" value="123"/>
+            <column name="price" value="123"/>
+            <column name="sales_document_id" value="100005"/>
+        </insert>
+
+        <insert tableName="sales_product">
+            <column name="id" value="100009"/>
+            <column name="species" value="LAS"/>
+            <column name="quantity" value="123"/>
+            <column name="weight" value="123"/>
+            <column name="price" value="123"/>
+            <column name="sales_document_id" value="100006"/>
+        </insert>
+
+        <insert tableName="sales_product">
+            <column name="id" value="100010"/>
+            <column name="species" value="LAS"/>
+            <column name="quantity" value="123"/>
+            <column name="weight" value="123"/>
+            <column name="price" value="123"/>
+            <column name="sales_document_id" value="100007"/>
+        </insert>
+
+        <insert tableName="sales_product">
+            <column name="id" value="100011"/>
+            <column name="species" value="LAS"/>
+            <column name="quantity" value="123"/>
+            <column name="weight" value="123"/>
+            <column name="price" value="123"/>
+            <column name="sales_document_id" value="100008"/>
+        </insert>
+
+        <insert tableName="sales_product">
+            <column name="id" value="100012"/>
+            <column name="species" value="LAS"/>
+            <column name="quantity" value="123"/>
+            <column name="weight" value="123"/>
+            <column name="price" value="123"/>
+            <column name="sales_document_id" value="100009"/>
+        </insert>
+
+        <insert tableName="sales_product">
+            <column name="id" value="100013"/>
+            <column name="species" value="LAS"/>
+            <column name="quantity" value="123"/>
+            <column name="weight" value="123"/>
+            <column name="price" value="123"/>
+            <column name="sales_document_id" value="100010"/>
+        </insert>
+
+        <insert tableName="sales_product">
+            <column name="id" value="100014"/>
+            <column name="species" value="LAS"/>
+            <column name="quantity" value="123"/>
+            <column name="weight" value="123"/>
+            <column name="price" value="123"/>
+            <column name="sales_document_id" value="100011"/>
+        </insert>
 
         <insert tableName="sales_flux_report">
             <column name="id" value="100000"/>
@@ -707,11 +801,12 @@
             <column name="id" value="100016"/>
             <column name="ext_id" value="abc16"/>
             <column name="creation" value="2017-02-24 14:33:00"/>
-            <column name="purpose_code" value="ORIGINAL"/>
+            <column name="purpose_code" value="CORRECTION"/>
             <column name="item_type" value="SALES_NOTE"/>
             <column name="flux_report_party" value="BEL"/>
             <column name="sales_auction_sale_id" value="100016"/>
             <column name="sales_document_id" value="100001"/>
+            <column name="sales_flux_report_prev_id" value="100015" />
         </insert>
 
         <insert tableName="sales_flux_report">
@@ -729,11 +824,13 @@
             <column name="id" value="100018"/>
             <column name="ext_id" value="abc18"/>
             <column name="creation" value="2017-02-24 14:33:00"/>
-            <column name="purpose_code" value="ORIGINAL"/>
+            <column name="purpose_code" value="CORRECTION"/>
             <column name="item_type" value="SALES_NOTE"/>
             <column name="flux_report_party" value="BEL"/>
             <column name="sales_auction_sale_id" value="100018"/>
             <column name="sales_document_id" value="100001"/>
+            <column name="sales_flux_report_prev_id" value="100017" />
+            <column name="deletion" value="2017-06-20 10:00:00" />
         </insert>
 
         <insert tableName="sales_flux_report">
@@ -745,6 +842,7 @@
             <column name="flux_report_party" value="BEL"/>
             <column name="sales_auction_sale_id" value="100019"/>
             <column name="sales_document_id" value="100001"/>
+            <column name="deletion" value="2017-07-10 10:00:00" />
         </insert>
 
         <insert tableName="sales_origin">
@@ -770,6 +868,11 @@
         <insert tableName="sales_origin">
             <column name="sales_product_id" value="100004"/>
             <column name="sales_flux_location_id" value="100000"/>
+        </insert>
+
+        <insert tableName="sales_note_take_over_document_relation">
+            <column name="sales_note_id" value="100001"/>
+            <column name="take_over_document_id" value="100006"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

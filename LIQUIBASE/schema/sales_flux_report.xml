@@ -137,5 +137,16 @@
                                   tableName="sales_flux_report"/>
         </rollback>
     </changeSet>
-        
+
+    <changeSet author="stihft" id="flr-05-addColumnDeletion">
+        <addColumn tableName="sales_flux_report">
+            <column name="deletion" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="sales_flux_report" columnName="deletion" />
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

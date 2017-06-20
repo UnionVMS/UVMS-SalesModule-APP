@@ -185,6 +185,8 @@ public class MapperProducerTest {
 
     @Test
     public void testReportTypeToSalesDetailsDtoWhenAuctionSaleIsProvided() {
+        DateTime deletion = new DateTime();
+
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("extId"))
                 .withCreationDateTime(new DateTimeType().withDateTime(new DateTime(2016, 10, 10, 12, 10)))
@@ -215,7 +217,8 @@ public class MapperProducerTest {
 
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage)
-                .withAuctionSale(auctionSale);
+                .withAuctionSale(auctionSale)
+                .withDeletion(deletion);
 
         SalesDetailsDto salesDetailsDto = mapper.map(report, SalesDetailsDto.class);
 
@@ -232,10 +235,13 @@ public class MapperProducerTest {
         assertEquals("SAL", salesDetailsDto.getSalesReport().getProducts().get(0).getSpecies());
         assertEquals(SalesCategoryType.NEGOTIATED_SALE, salesDetailsDto.getSalesReport().getCategory());
         assertEquals(FluxReportItemType.SALES_NOTE, salesDetailsDto.getSalesReport().getItemType());
+        assertEquals(deletion, salesDetailsDto.getSalesReport().getDeletion());
     }
 
     @Test
     public void testReportTypeToSalesDetailsDtoWhenAuctionSaleIsNotProvided() {
+        DateTime deletion = new DateTime();
+
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("extId"))
                 .withCreationDateTime(new DateTimeType().withDateTime(new DateTime(2016, 10, 10, 12, 10)))
@@ -263,7 +269,8 @@ public class MapperProducerTest {
                 .withSalesReports(salesReport);
 
         Report report = new Report()
-                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+                .withFLUXSalesReportMessage(fluxSalesReportMessage)
+                .withDeletion(deletion);
 
         SalesDetailsDto salesDetailsDto = mapper.map(report, SalesDetailsDto.class);
 
@@ -280,6 +287,7 @@ public class MapperProducerTest {
         assertEquals("SAL", salesDetailsDto.getSalesReport().getProducts().get(0).getSpecies());
         assertEquals(SalesCategoryType.FIRST_SALE, salesDetailsDto.getSalesReport().getCategory());
         assertEquals(FluxReportItemType.SALES_NOTE, salesDetailsDto.getSalesReport().getItemType());
+        assertEquals(deletion, salesDetailsDto.getSalesReport().getDeletion());
     }
 
     @Test
@@ -397,6 +405,8 @@ public class MapperProducerTest {
 
     @Test
     public void testMapReportTypeToReportListDtoWhenAuctionSalesIsProvided() {
+        DateTime deletion = new DateTime();
+
         AuctionSaleType auctionSale = new AuctionSaleType()
                 .withSalesCategory(SalesCategoryType.NEGOTIATED_SALE);
 
@@ -410,15 +420,10 @@ public class MapperProducerTest {
         FLUXLocationType fluxLocation2 = new FLUXLocationType()
                 .withID(new IDType().withValue("NED"));
 
-        RegistrationLocationType registrationLocation = new RegistrationLocationType()
-                .withCountryID(new IDType().withValue("FRA"));
-        RegistrationEventType registrationEvent = new RegistrationEventType()
-                .withRelatedRegistrationLocation(registrationLocation);
-
         VesselTransportMeansType vessel = new VesselTransportMeansType()
                 .withNames(new TextType().withValue("vesselName"))
                 .withIDS(new IDType().withValue("vesselExtId"))
-                .withSpecifiedRegistrationEvents(registrationEvent);
+                .withRegistrationVesselCountry(new VesselCountryType().withID(new IDType().withValue("FRA")));
 
         FishingActivityType fishingActivity = new FishingActivityType()
                 .withRelatedVesselTransportMeans(vessel)
@@ -450,7 +455,8 @@ public class MapperProducerTest {
 
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage)
-                .withAuctionSale(auctionSale);
+                .withAuctionSale(auctionSale)
+                .withDeletion(deletion);
 
         ReportListDto dto = mapper.map(report, ReportListDto.class);
 
@@ -466,10 +472,13 @@ public class MapperProducerTest {
         assertEquals("Mathiblaa", dto.getBuyer());
         assertEquals("Superstijn", dto.getSeller());
         assertEquals("Heya", dto.getReferencedId());
+        assertEquals(deletion, dto.getDeletion());
     }
 
     @Test
     public void testMapReportTypeToReportListDtoWhenAuctionSalesIsNotProvided() {
+        DateTime deletion = new DateTime();
+
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
                 .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")))
@@ -480,15 +489,10 @@ public class MapperProducerTest {
         FLUXLocationType fluxLocation2 = new FLUXLocationType()
                 .withID(new IDType().withValue("NED"));
 
-        RegistrationLocationType registrationLocation = new RegistrationLocationType()
-                .withCountryID(new IDType().withValue("FRA"));
-        RegistrationEventType registrationEvent = new RegistrationEventType()
-                .withRelatedRegistrationLocation(registrationLocation);
-
         VesselTransportMeansType vessel = new VesselTransportMeansType()
                 .withNames(new TextType().withValue("vesselName"))
                 .withIDS(new IDType().withValue("vesselExtId"))
-                .withSpecifiedRegistrationEvents(registrationEvent);
+                .withRegistrationVesselCountry(new VesselCountryType().withID(new IDType().withValue("FRA")));
 
         FishingActivityType fishingActivity = new FishingActivityType()
                 .withRelatedVesselTransportMeans(vessel)
@@ -519,7 +523,8 @@ public class MapperProducerTest {
                 .withSalesReports(new SalesReportType().withIncludedSalesDocuments(salesDocument));
 
         Report report = new Report()
-                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+                .withFLUXSalesReportMessage(fluxSalesReportMessage)
+                .withDeletion(deletion);
 
         ReportListDto dto = mapper.map(report, ReportListDto.class);
 
@@ -535,6 +540,7 @@ public class MapperProducerTest {
         assertEquals("Mathiblaa", dto.getBuyer());
         assertEquals("Superstijn", dto.getSeller());
         assertEquals("Heya", dto.getReferencedId());
+        assertEquals(deletion, dto.getDeletion());
     }
 
     @Test

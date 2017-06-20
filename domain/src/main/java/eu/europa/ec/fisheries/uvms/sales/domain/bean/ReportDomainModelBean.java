@@ -7,7 +7,6 @@ import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.comparator.CompareReportOnCreationDateDescending;
-import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
@@ -15,6 +14,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.mapper.FLUX;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,19 +57,38 @@ public class ReportDomainModelBean implements ReportDomainModel {
         checkNotNull(report);
         LOG.debug("Persisting report {}", report.toString());
 
-        FluxReport fluxReportEntity = mapper.map(report, FluxReport.class);
+        FluxReport fluxReport;
 
-        if (reportHelper.isReportCorrectedOrDeleted(report)) {
-            enrichWithPreviousReport(fluxReportEntity, report);
+        if (reportHelper.isReportDeleted(report)) {
+            fluxReport = updateDeletionDateOfReportReferencedBy(report);
+        } else {
+            fluxReport = mapper.map(report, FluxReport.class);
+
+            if (reportHelper.isReportCorrected(report)) {
+                enrichWithPreviousReport(fluxReport, report);
+            }
+
+            if (reportHelper.hasReferencesToTakeOverDocuments(report)) {
+                enrichWithRelatedTakeOverDocuments(fluxReport, report);
+            }
+
+            fluxReport = fluxReportDao.create(fluxReport);
         }
 
-        if (reportHelper.hasReferencesToTakeOverDocuments(report)) {
-            enrichWithRelatedTakeOverDocuments(fluxReportEntity, report);
-        }
+        checkNotNull(fluxReport, "Variable fluxReport should not be nullable at this point");
 
-        fluxReportDao.create(fluxReportEntity);
+        return mapper.map(fluxReport, Report.class);
 
-        return mapper.map(fluxReportEntity, Report.class);
+    }
+
+    private FluxReport updateDeletionDateOfReportReferencedBy(Report report) {
+        DateTime deletionDate = reportHelper.getCreationDate(report);
+        String originalReportExtId = reportHelper.getFLUXReportDocumentReferencedId(report);
+
+        FluxReport originalReport = fluxReportDao.findByExtId(originalReportExtId);
+        originalReport.setDeletion(deletionDate);
+
+        return originalReport;
     }
 
     private void enrichWithRelatedTakeOverDocuments(FluxReport fluxReportEntity, Report report) {
@@ -90,15 +109,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
         String referencedId = reportHelper.getFLUXReportDocumentReferencedId(report);
         FluxReport previousReport = fluxReportDao.findByExtIdOrNull(referencedId);
         if (previousReport != null) {
-
             fluxReportEntity.setPreviousFluxReport(previousReport);
-
-            // When a delete message is sent, there is no itemType available.
-            // Because itemType is not nullable in DB,
-            // we fetch the previous report's itemType and fill it in the new one.
-            if (fluxReportEntity.getPurpose().equals(Purpose.DELETE)) {
-                fluxReportEntity.setItemType(previousReport.getItemType());
-            }
         }
     }
 

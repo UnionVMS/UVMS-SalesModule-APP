@@ -74,6 +74,7 @@ public class MapperProducer {
                 .field("FLUXSalesReportMessage.salesReports[0].itemTypeCode", "itemType")
                 .field("FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0]", "document")
                 .field("auctionSale", "auctionSale")
+                .field("deletion", "deletion")
 
                 //from a to b, the referenced object needs to be searched in the database, by the service calling this mapper. Thaaanks. **/
                 .fieldBToA("previousFluxReport.extId", "FLUXSalesReportMessage.FLUXReportDocument.referencedID.value")
@@ -132,7 +133,7 @@ public class MapperProducer {
         factory.classMap(VesselTransportMeansType.class, Vessel.class)
                 .field("IDS[0].value", "extId")
                 .field("names[0].value", "name")
-                .field("specifiedRegistrationEvents[0].relatedRegistrationLocation.countryID.value", "countryCode")
+                .field("registrationVesselCountry.ID.value", "countryCode")
                 .field("specifiedContactParties", "vesselContacts")
                 .register();
     }

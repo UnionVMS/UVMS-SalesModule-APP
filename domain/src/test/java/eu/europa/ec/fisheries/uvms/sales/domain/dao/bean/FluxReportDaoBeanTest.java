@@ -182,10 +182,11 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
+        assertEquals(3, fluxReports.size());
 
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -548,9 +549,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
+        assertEquals(3, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -565,9 +567,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
+        assertEquals(3, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(126), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(125), fluxReports.get(2).getId());
     }
 
     @Test
@@ -582,9 +585,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
+        assertEquals(3, fluxReports.size());
         assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -599,9 +603,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
-        assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
+        assertEquals(3, fluxReports.size());
+        assertEquals(Integer.valueOf(126), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
     }
 
     @Test
@@ -616,10 +621,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
-
+        assertEquals(3, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -634,11 +639,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
-
-        assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
-
-        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
+        assertEquals(3, fluxReports.size());
+        assertEquals(Integer.valueOf(126), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
     }
 
     @Test
@@ -653,11 +657,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
-
+        assertEquals(3, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
-
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -672,11 +675,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
-
-        assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
-
-        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
+        assertEquals(3, fluxReports.size());
+        assertEquals(Integer.valueOf(126), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
     }
 
 
@@ -692,9 +694,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
-        assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
+        assertEquals(3, fluxReports.size());
+        assertEquals(Integer.valueOf(126), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
     }
 
     @Test
@@ -709,9 +712,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
+        assertEquals(3, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -726,9 +730,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
+        assertEquals(3, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(126), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(125), fluxReports.get(2).getId());
     }
 
     @Test
@@ -743,9 +748,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
+        assertEquals(3, fluxReports.size());
         assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(126), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
     }
 
     @Test
@@ -760,9 +766,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
+        assertEquals(3, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -777,9 +784,10 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(2, fluxReports.size());
-        assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
+        assertEquals(3, fluxReports.size());
+        assertEquals(Integer.valueOf(126), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
     }
 
 

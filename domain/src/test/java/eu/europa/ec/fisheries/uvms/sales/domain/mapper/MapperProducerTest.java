@@ -33,6 +33,7 @@ public class MapperProducerTest {
     @Test
     public void testMapReportTypeToFluxReport() {
         DateTime creation = new DateTime(2017, 2, 17, 16, 35);
+        DateTime deletion = new DateTime(2018, 2, 17, 16, 35);
 
         FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("ID"))
@@ -54,7 +55,8 @@ public class MapperProducerTest {
 
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage)
-                .withAuctionSale(auctionSaleType);
+                .withAuctionSale(auctionSaleType)
+                .withDeletion(deletion);
 
         FluxReport fluxReport = mapper.map(report, FluxReport.class);
 
@@ -66,11 +68,14 @@ public class MapperProducerTest {
         assertEquals(FluxReportItemType.TAKE_OVER_DOCUMENT, fluxReport.getItemType());
         assertEquals("DOC1", fluxReport.getDocument().getExtId());
         assertEquals(SalesCategory.FIRST_SALE, fluxReport.getAuctionSale().getCategory());
+        assertEquals(deletion, fluxReport.getDeletion());
     }
 
     @Test
     public void testMapFluxReportToReportType() {
         DateTime creation = new DateTime(1994, 4, 5, 0, 0);
+        DateTime deletion = new DateTime(1996, 4, 5, 0, 0);
+
         FluxReport fluxReport = new FluxReport()
                 .extId("extId")
                 .purpose(Purpose.ORIGINAL)
@@ -80,7 +85,8 @@ public class MapperProducerTest {
                 .itemType(FluxReportItemType.SALES_NOTE)
                 .document(new Document().extId("docu"))
                 .auctionSale(new AuctionSale().category(SalesCategory.NEGOTIATED_SALE))
-                .previousFluxReport(new FluxReport().extId("100ext"));
+                .previousFluxReport(new FluxReport().extId("100ext"))
+                .deletion(deletion);
 
         Report report = mapper.map(fluxReport, Report.class);
         FLUXSalesReportMessage fluxSalesReportMessageType = report.getFLUXSalesReportMessage();
@@ -95,6 +101,7 @@ public class MapperProducerTest {
         assertEquals("docu", fluxSalesReportMessageType.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
         assertEquals(SalesCategoryType.NEGOTIATED_SALE, auctionSaleType.getSalesCategory());
         assertEquals("100ext", fluxSalesReportMessageType.getFLUXReportDocument().getReferencedID().getValue());
+        assertEquals(deletion, fluxReport.getDeletion());
     }
 
     @Test
@@ -437,15 +444,10 @@ public class MapperProducerTest {
 
     @Test
     public void testMapVesselTransportMeansTypeToVessel() {
-        RegistrationLocationType registrationLocationType = new RegistrationLocationType()
-                .withCountryID(new IDType().withValue("BE"));
-        RegistrationEventType registrationEventType = new RegistrationEventType()
-                .withRelatedRegistrationLocation(registrationLocationType);
-
         VesselTransportMeansType vesselTransportMeansType = new VesselTransportMeansType()
                 .withIDS(new IDType().withValue("ID"))
                 .withNames(new TextType().withValue("name"))
-                .withSpecifiedRegistrationEvents(registrationEventType)
+                .withRegistrationVesselCountry(new VesselCountryType().withID(new IDType().withValue("BE")))
                 .withSpecifiedContactParties(new ContactPartyType());
 
 
@@ -473,8 +475,7 @@ public class MapperProducerTest {
 
         assertEquals("ID", vesselTransportMeansType.getIDS().get(0).getValue());
         assertEquals("name", vesselTransportMeansType.getNames().get(0).getValue());
-        assertEquals("BE", vesselTransportMeansType.getSpecifiedRegistrationEvents().get(0)
-                .getRelatedRegistrationLocation().getCountryID().getValue());
+        assertEquals("BE", vesselTransportMeansType.getRegistrationVesselCountry().getID().getValue());
         assertEquals(Lists.newArrayList(new ContactPartyType()), vesselTransportMeansType.getSpecifiedContactParties());
     }
 

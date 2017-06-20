@@ -75,6 +75,8 @@ public class ReportListDto {
 
     private String purpose;
 
+    private DateTime deletion;
+
 
     public ReportListDto() {
         seller = "N/A";
@@ -207,6 +209,23 @@ public class ReportListDto {
         this.referencedId = referencedId;
     }
 
+    public String getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
+    }
+
+
+    public DateTime getDeletion() {
+        return deletion;
+    }
+
+    public void setDeletion(DateTime deletion) {
+        this.deletion = deletion;
+    }
+
     public ReportListDto extId(String extId) {
         this.extId = extId;
         return this;
@@ -286,11 +305,13 @@ public class ReportListDto {
         return this;
     }
 
-    public String getPurpose() {
-        return purpose;
+    public ReportListDto purpose(String purpose) {
+        this.purpose = purpose;
+        return this;
     }
 
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
+    public ReportListDto deletion(DateTime deletion) {
+        this.deletion = deletion;
+        return this;
     }
 }

@@ -42,10 +42,10 @@ public class ReportServiceExportHelperTest {
         List<List<String>> expected = new ArrayList<>();
         expected.add(Arrays.asList("BEL", "marked for life", "ircs", "vesselName",
                 occurrence, "location", landingDate, "Garagepoort",
-                "FIRST_SALE", "Putin", "Trump"));
+                "FIRST_SALE", "Putin", "Trump", ""));
         expected.add(Arrays.asList("BEL", "marked for life", "ircs", "vesselName",
                 occurrence, "location", landingDate, "Garagepoort",
-                "FIRST_SALE", "Putin", "Trump"));
+                "FIRST_SALE", "Putin", "Trump", new DateTime(2017, 4, 4, 10, 0).toString()));
         return expected;
     }
 
@@ -74,7 +74,8 @@ public class ReportServiceExportHelperTest {
                 .landingPort("Garagepoort")
                 .location("location")
                 .occurrence(occurrence)
-                .vesselName("vesselName");
+                .vesselName("vesselName")
+                .deletion(new DateTime(2017, 4, 4, 10, 0));
 
         return Arrays.asList(reportListExportDto1, reportListExportDto2);
     }

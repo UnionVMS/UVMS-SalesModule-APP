@@ -112,6 +112,7 @@ public class MapperProducer {
                 .field("fishingTrip.landingDate", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].specifiedDelimitedPeriods[0].startDateTime.dateTime")
                 .field("fishingTrip.landingLocation", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedFLUXLocations[0].ID.value")
                 .field("fishingTrip.extId", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].IDS[0].value")
+                .field("salesReport.deletion", "deletion")
                 .field("salesReport.parties", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties")
                 .field("salesReport.fluxReport.extId", "FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value")
                 .field("salesReport.fluxReport.creation", "FLUXSalesReportMessage.FLUXReportDocument.creationDateTime.dateTime")
@@ -206,12 +207,13 @@ public class MapperProducer {
 
     private void configureReportListDto(MapperFactory factory) {
         factory.classMap(ReportListDto.class, Report.class)
+                .field("deletion", "deletion")
                 .field("category", "auctionSale.salesCategory")
                 .field("extId", "FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value")
                 .field("occurrence", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesEvents[0].occurrenceDateTime.dateTime")
                 .field("vesselName", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedVesselTransportMeans[0].names[0].value")
                 .field("vesselExtId", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedVesselTransportMeans[0].IDS[0].value")
-                .field("flagState", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedVesselTransportMeans[0].specifiedRegistrationEvents[0].relatedRegistrationLocation.countryID.value")
+                .field("flagState", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedVesselTransportMeans[0].registrationVesselCountry.ID.value")
                 .field("landingDate", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].specifiedDelimitedPeriods[0].startDateTime.dateTime")
                 .field("landingPort", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedFLUXLocations[0].ID.value")
                 .field("location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0].ID.value")

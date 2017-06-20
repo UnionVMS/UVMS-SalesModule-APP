@@ -126,14 +126,15 @@ public class ReportServiceBeanTest {
         //assert
         String landingDate = new DateTime(2017, 3, 2, 0, 0).toString();
         String occurrence = new DateTime(2017, 3, 1, 0, 0).toString();
+        String deletion = new DateTime(2017, 3, 3, 0, 0).toString();
 
         final List<List<String>> expected = new ArrayList<>();
         expected.add(Arrays.asList("BEL", "marked for life", "ircs", "vesselName",
                 occurrence, "location", landingDate, "Garagepoort",
-                "FIRST_SALE", "Stijn", "Pope"));
+                "FIRST_SALE", "Stijn", "Pope", ""));
         expected.add(Arrays.asList("BEL", "marked for life", "ircs", "vesselName",
                 occurrence, "location", landingDate, "Garagepoort",
-                "FIRST_SALE", "Putin", "Trump"));
+                "FIRST_SALE", "Putin", "Trump", deletion));
         assertEquals(expected, csv);
     }
 
@@ -168,14 +169,15 @@ public class ReportServiceBeanTest {
         //assert
         String landingDate = new DateTime(2017, 3, 2, 0, 0).toString();
         String occurrence = new DateTime(2017, 3, 1, 0, 0).toString();
+        String deletion = new DateTime(2017, 3, 3, 0, 0).toString();
 
         final List<List<String>> expected = new ArrayList<>();
         expected.add(Arrays.asList("BEL", "marked for life", "ircs", "vesselName",
                 occurrence, "location", landingDate, "Garagepoort",
-                "FIRST_SALE", "Stijn", "Pope"));
+                "FIRST_SALE", "Stijn", "Pope", ""));
         expected.add(Arrays.asList("BEL", "marked for life", "ircs", "vesselName",
                 occurrence, "location", landingDate, "Garagepoort",
-                "FIRST_SALE", "Putin", "Trump"));
+                "FIRST_SALE", "Putin", "Trump", deletion));
         assertEquals(expected, csv);
     }
 
@@ -211,7 +213,8 @@ public class ReportServiceBeanTest {
                 .landingPort("Garagepoort")
                 .location("location")
                 .occurrence(new DateTime(2017, 3, 1, 0, 0).toString())
-                .vesselName("vesselName");
+                .vesselName("vesselName")
+                .deletion(new DateTime(2017, 3, 3, 0, 0));
         return Arrays.asList(reportListDto1, reportListDto2);
     }
 
@@ -242,6 +245,7 @@ public class ReportServiceBeanTest {
 
         //verify and assert
         verify(mapper).map(criteria, ReportQuery.class);
+        verify(searchReportsHelper).includeDeletedReportsInQuery(query);
         verify(searchReportsHelper).prepareVesselFreeTextSearch(query);
         verify(searchReportsHelper).prepareSorting(query);
         verify(reportDomainModel).search(query);
@@ -288,6 +292,7 @@ public class ReportServiceBeanTest {
 
         //verify and assert
         verify(mapper).map(fluxSalesQueryMessage, ReportQuery.class);
+        verify(searchReportsHelper).excludeDeletedReportsInQuery(reportQuery);
         verify(reportDomainModel).search(reportQuery);
         verify(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResults, messageValidationResult);
         verify(rulesService).sendResponseToRules(fluxSalesResponseMessage, "BEL", "FLUX");

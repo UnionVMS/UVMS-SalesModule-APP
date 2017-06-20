@@ -64,7 +64,7 @@ public class ReportServiceHelper {
     }
 
     private Report findOriginalReport(Report report) {
-        if (reportHelper.isReportCorrectedOrDeleted(report)) {
+        if (reportHelper.isReportCorrected(report) || reportHelper.isReportDeleted(report)) {
             Report referencedReport = findByExtId(reportHelper.getFLUXReportDocumentReferencedId(report));
             return findOriginalReport(referencedReport);
         } else {

@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class SalesReportDto {
     private List<ProductDto> products;
 
     private FluxReportItemType itemType;
+
+    private DateTime deletion;
 
     /**
      * If this report is the latest version, the previous versions are kept here.
@@ -133,6 +136,14 @@ public class SalesReportDto {
         this.latestVersion = latestVersion;
     }
 
+    public DateTime getDeletion() {
+        return deletion;
+    }
+
+    public void setDeletion(DateTime deletion) {
+        this.deletion = deletion;
+    }
+
     public SalesReportDto category(final SalesCategoryType type) {
         setCategory(type);
         return this;
@@ -185,6 +196,11 @@ public class SalesReportDto {
 
     public SalesReportDto latestVersion(boolean latestVersion) {
         this.latestVersion = latestVersion;
+        return this;
+    }
+
+    public SalesReportDto deletion(DateTime deletion) {
+        this.deletion = deletion;
         return this;
     }
 }

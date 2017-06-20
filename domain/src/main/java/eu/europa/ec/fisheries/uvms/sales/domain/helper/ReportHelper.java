@@ -16,10 +16,16 @@ import java.util.List;
 @Stateless
 public class ReportHelper {
 
-    public boolean isReportCorrectedOrDeleted(Report report) {
+    public boolean isReportCorrected(Report report) {
         String purposeAsString = getFluxReportDocument(report).getPurposeCode().getValue();
         Purpose purpose = Purpose.forNumericCode(Integer.parseInt(purposeAsString));
-        return purpose.equals(Purpose.CORRECTION) || purpose.equals(Purpose.DELETE);
+        return purpose.equals(Purpose.CORRECTION);
+    }
+
+    public boolean isReportDeleted(Report report) {
+        String purposeAsString = getFluxReportDocument(report).getPurposeCode().getValue();
+        Purpose purpose = Purpose.forNumericCode(Integer.parseInt(purposeAsString));
+        return purpose.equals(Purpose.DELETE);
     }
 
     public String getSalesLocationCountry(Report report) {

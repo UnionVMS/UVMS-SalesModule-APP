@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -273,4 +272,39 @@ public class SearchReportsHelperTest {
         assertEquals(mappedOlderVersions, reportListDto1.getOlderVersions());
     }
 
+    @Test
+    public void includeDeletedReportsInQueryWhenNoFiltersHaveBeenDefinedYet() {
+        ReportQuery query = new ReportQuery();
+        helper.includeDeletedReportsInQuery(query);
+        assertTrue(query.getFilters().isIncludeDeleted());
+    }
+
+    @Test
+    public void includeDeletedReportsInQueryWhenThereHaveBeenFiltersDefinedAlready() {
+        ReportQueryFilter filters = new ReportQueryFilter()
+                .withFlagState("BEL");
+        ReportQuery query = new ReportQuery().withFilters(filters);
+
+        helper.includeDeletedReportsInQuery(query);
+        assertTrue(query.getFilters().isIncludeDeleted());
+        assertEquals("BEL", query.getFilters().getFlagState());
+    }
+
+    @Test
+    public void excludeDeletedReportsInQueryWhenNoFiltersHaveBeenDefinedYet() {
+        ReportQuery query = new ReportQuery();
+        helper.excludeDeletedReportsInQuery(query);
+        assertFalse(query.getFilters().isIncludeDeleted());
+    }
+
+    @Test
+    public void excludeDeletedReportsInQueryWhenThereHaveBeenFiltersDefinedAlready() {
+        ReportQueryFilter filters = new ReportQueryFilter()
+                .withFlagState("BEL");
+        ReportQuery query = new ReportQuery().withFilters(filters);
+
+        helper.excludeDeletedReportsInQuery(query);
+        assertFalse(query.getFilters().isIncludeDeleted());
+        assertEquals("BEL", query.getFilters().getFlagState());
+    }
 }

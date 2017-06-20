@@ -9,7 +9,7 @@ import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.ProductDao;
-import eu.europa.ec.fisheries.uvms.sales.domain.dao.bean.helper.FluxReportQueryToTypedQueryHelper;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.FluxReportQueryToTypedQueryHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
 import org.slf4j.Logger;

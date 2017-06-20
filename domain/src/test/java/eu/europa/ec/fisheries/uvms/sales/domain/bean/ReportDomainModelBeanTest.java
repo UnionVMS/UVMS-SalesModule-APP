@@ -60,8 +60,9 @@ public class ReportDomainModelBeanTest {
         FluxReport fluxReportEntity = new FluxReport();
 
         //mock
+        when(reportHelper.isReportDeleted(report)).thenReturn(false);
         when(mapper.map(report, FluxReport.class)).thenReturn(fluxReportEntity);
-        when(reportHelper.isReportCorrectedOrDeleted(report)).thenReturn(false);
+        when(reportHelper.isReportCorrected(report)).thenReturn(false);
         when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
         when(fluxReportDao.create(fluxReportEntity)).thenReturn(fluxReportEntity);
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
@@ -70,8 +71,9 @@ public class ReportDomainModelBeanTest {
         reportDomainModelBean.create(report);
 
         //assert and verify
+        verify(reportHelper).isReportDeleted(report);
         verify(mapper).map(report, FluxReport.class);
-        verify(reportHelper).isReportCorrectedOrDeleted(report);
+        verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
         verify(fluxReportDao).create(fluxReportEntity);
         verify(mapper).map(fluxReportEntity, Report.class);
@@ -93,8 +95,9 @@ public class ReportDomainModelBeanTest {
         FluxReport takeOverDocumentC = new FluxReport().extId("c");
 
         //mock
+        when(reportHelper.isReportDeleted(report)).thenReturn(false);
         when(mapper.map(report, FluxReport.class)).thenReturn(fluxReportEntity);
-        when(reportHelper.isReportCorrectedOrDeleted(report)).thenReturn(false);
+        when(reportHelper.isReportCorrected(report)).thenReturn(false);
         when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(true);
         when(reportHelper.getReferenceIdsToTakeOverDocuments(report)).thenReturn(takeOverDocumentsIds);
         when(fluxReportDao.findByExtIdOrNull("a")).thenReturn(takeOverDocumentA);
@@ -107,8 +110,9 @@ public class ReportDomainModelBeanTest {
         reportDomainModelBean.create(report);
 
         //assert and verify
+        verify(reportHelper).isReportDeleted(report);
         verify(mapper).map(report, FluxReport.class);
-        verify(reportHelper).isReportCorrectedOrDeleted(report);
+        verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
         verify(reportHelper).getReferenceIdsToTakeOverDocuments(report);
         verify(fluxReportDao).findByExtIdOrNull("a");
@@ -124,9 +128,12 @@ public class ReportDomainModelBeanTest {
     @Test
     public void testCreateWhenReportsPurposeIsDeletion() throws Exception {
         //data set
+        DateTime deletionDate = new DateTime();
+
         FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType()
                 .withReferencedID(new IDType().withValue("hello"))
-                .withPurposeCode(new CodeType().withValue(Purpose.DELETE.getNumericCode() + ""));
+                .withPurposeCode(new CodeType().withValue(Purpose.DELETE.getNumericCode() + ""))
+                .withCreationDateTime(new DateTimeType().withDateTime(deletionDate));
 
         FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
                 .withFLUXReportDocument(fluxReportDocumentType);
@@ -137,39 +144,29 @@ public class ReportDomainModelBeanTest {
         FluxReport oldFluxReportEntity = new FluxReport().extId("hello")
                 .itemType(FluxReportItemType.SALES_NOTE);
 
-        FluxReport newFluxReportEntity = new FluxReport().extId("world")
-                .previousFluxReport(oldFluxReportEntity)
-                .purpose(Purpose.DELETE);
-
-        FluxReport persistedReportFromDao = new FluxReport().itemType(FluxReportItemType.SALES_NOTE);
         Report mappedAndPersistedReportFromDao = new Report()
                 .withFLUXSalesReportMessage(new FLUXSalesReportMessage().withSalesReports(new SalesReportType().withItemTypeCode(new CodeType().withValue("SN"))));
 
         //mock
-        when(mapper.map(report, FluxReport.class)).thenReturn(newFluxReportEntity);
-        when(reportHelper.isReportCorrectedOrDeleted(report)).thenReturn(true);
+        when(reportHelper.isReportDeleted(report)).thenReturn(true);
+        when(reportHelper.getCreationDate(report)).thenReturn(deletionDate);
         when(reportHelper.getFLUXReportDocumentReferencedId(report)).thenReturn("hello");
-        when(fluxReportDao.findByExtIdOrNull("hello")).thenReturn(oldFluxReportEntity);
-        when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
-        when(fluxReportDao.create(newFluxReportEntity)).thenReturn(persistedReportFromDao);
-        when(mapper.map(newFluxReportEntity, Report.class)).thenReturn(mappedAndPersistedReportFromDao);
+        when(fluxReportDao.findByExtId("hello")).thenReturn(oldFluxReportEntity);
+        when(mapper.map(oldFluxReportEntity, Report.class)).thenReturn(mappedAndPersistedReportFromDao);
 
         //execute
         Report persistedReport = reportDomainModelBean.create(report);
 
         //assert and verify
-        verify(mapper).map(report, FluxReport.class);
-        verify(reportHelper).isReportCorrectedOrDeleted(report);
+        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper).getCreationDate(report);
         verify(reportHelper).getFLUXReportDocumentReferencedId(report);
-        verify(fluxReportDao).findByExtIdOrNull("hello");
-        verify(reportHelper).hasReferencesToTakeOverDocuments(report);
-        verify(mapper).map(newFluxReportEntity, Report.class);
-        verify(fluxReportDao).create(newFluxReportEntity);
+        verify(fluxReportDao).findByExtId("hello");
+        verify(mapper).map(oldFluxReportEntity, Report.class);
         verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
 
-        assertEquals(oldFluxReportEntity, newFluxReportEntity.getPreviousFluxReport());
-        assertEquals(persistedReport.getFLUXSalesReportMessage().getSalesReports().get(0).getItemTypeCode().getValue(), oldFluxReportEntity.getItemType().getCode());
-        assertNull(oldFluxReportEntity.getPreviousFluxReport());
+        assertSame(mappedAndPersistedReportFromDao, persistedReport);
+        assertEquals(deletionDate, oldFluxReportEntity.getDeletion());
     }
 
     @Test
@@ -189,8 +186,9 @@ public class ReportDomainModelBeanTest {
         FluxReport oldFluxReportEntity = new FluxReport().extId("hello");
 
         //mock
+        when(reportHelper.isReportDeleted(report)).thenReturn(false);
         when(mapper.map(report, FluxReport.class)).thenReturn(newFluxReportEntity);
-        when(reportHelper.isReportCorrectedOrDeleted(report)).thenReturn(true);
+        when(reportHelper.isReportCorrected(report)).thenReturn(true);
         when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
         when(reportHelper.getFLUXReportDocumentReferencedId(report)).thenReturn("hello");
         when(fluxReportDao.findByExtIdOrNull("hello")).thenReturn(oldFluxReportEntity);
@@ -202,8 +200,9 @@ public class ReportDomainModelBeanTest {
         Report persistedReport = reportDomainModelBean.create(report);
 
         //assert and verify
+        verify(reportHelper).isReportDeleted(report);
         verify(mapper).map(report, FluxReport.class);
-        verify(reportHelper).isReportCorrectedOrDeleted(report);
+        verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).getFLUXReportDocumentReferencedId(report);
         verify(fluxReportDao).findByExtIdOrNull("hello");
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
