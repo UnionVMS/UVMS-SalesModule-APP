@@ -68,6 +68,39 @@ public class ReportServiceHelperTest {
     }
 
     @Test
+    public void testForwardReportToOtherRelevantPartiesWhenReportIsNotAFirstSale() throws Exception {
+        //data set
+        String countryOfHost = "BEL";
+        String salesLocationCountry = "FRA";
+        String vesselFlagState = "NLD";
+        String landingCountry = "SWE";
+        Report report = new Report();
+        String pluginToSendResponseThrough = "FLUX";
+
+        //mock
+        doReturn(false).when(reportHelper).isReportCorrected(report);
+        doReturn(false).when(reportHelper).isReportDeleted(report);
+        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
+        doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
+        doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
+        doReturn(false).when(reportHelper).isFirstSale(report);
+
+        //execute
+        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
+
+        //verify
+        verify(reportHelper).isReportCorrected(report);
+        verify(reportHelper).isReportDeleted(report);
+        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(reportHelper).getVesselFlagState(report);
+        verify(reportHelper).getSalesLocationCountry(report);
+        verify(reportHelper).getLandingCountry(report);
+        verify(reportHelper).isFirstSale(report);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+    }
+
+    @Test
     public void testForwardReportToOtherRelevantPartiesWhenReportIsOriginalAndSalesLocationIsNotCountryOfHostAndVesselFlagIsNotCountryOfHostAndLandingCountryIsNotCountryOfHost() throws Exception {
         //data set
         String countryOfHost = "BEL";
@@ -84,6 +117,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
+        doReturn(true).when(reportHelper).isFirstSale(report);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
@@ -95,6 +129,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
+        verify(reportHelper).isFirstSale(report);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -115,6 +150,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
+        doReturn(true).when(reportHelper).isFirstSale(report);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
@@ -126,6 +162,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
+        verify(reportHelper).isFirstSale(report);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -146,6 +183,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
+        doReturn(true).when(reportHelper).isFirstSale(report);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
@@ -157,6 +195,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
+        verify(reportHelper).isFirstSale(report);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -177,6 +216,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
+        doReturn(true).when(reportHelper).isFirstSale(report);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
@@ -188,6 +228,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
+        verify(reportHelper).isFirstSale(report);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -211,6 +252,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
+        doReturn(true).when(reportHelper).isFirstSale(report);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
@@ -222,6 +264,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
+        verify(reportHelper).isFirstSale(report);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
@@ -247,6 +290,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
+        doReturn(true).when(reportHelper).isFirstSale(report);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
@@ -258,6 +302,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
+        verify(reportHelper).isFirstSale(report);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
@@ -282,6 +327,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
+        doReturn(true).when(reportHelper).isFirstSale(report);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
@@ -293,6 +339,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
+        verify(reportHelper).isFirstSale(report);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
@@ -317,6 +364,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
+        doReturn(true).when(reportHelper).isFirstSale(report);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
@@ -328,6 +376,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
+        verify(reportHelper).isFirstSale(report);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -351,6 +400,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
+        doReturn(true).when(reportHelper).isFirstSale(report);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
@@ -362,6 +412,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
+        verify(reportHelper).isFirstSale(report);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
@@ -390,6 +441,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
+        doReturn(true).when(reportHelper).isFirstSale(original);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(correction, pluginToSendResponseThrough);
@@ -404,6 +456,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
+        verify(reportHelper).isFirstSale(original);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
@@ -434,6 +487,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
+        doReturn(true).when(reportHelper).isFirstSale(original);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(deletion, pluginToSendResponseThrough);
@@ -449,6 +503,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
+        verify(reportHelper).isFirstSale(original);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
@@ -477,6 +532,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
+        doReturn(true).when(reportHelper).isFirstSale(original);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(correction, pluginToSendResponseThrough);
@@ -491,6 +547,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
+        verify(reportHelper).isFirstSale(original);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -518,6 +575,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
+        doReturn(true).when(reportHelper).isFirstSale(original);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(deletion, pluginToSendResponseThrough);
@@ -533,6 +591,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
+        verify(reportHelper).isFirstSale(original);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 
@@ -567,6 +626,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
+        doReturn(true).when(reportHelper).isFirstSale(original);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(secondCorrection, pluginToSendResponseThrough);
@@ -586,6 +646,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
+        verify(reportHelper).isFirstSale(original);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
@@ -621,6 +682,7 @@ public class ReportServiceHelperTest {
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
+        doReturn(true).when(reportHelper).isFirstSale(original);
 
         //execute
         reportServiceHelper.forwardReportToOtherRelevantParties(secondCorrection, pluginToSendResponseThrough);
@@ -640,6 +702,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
+        verify(reportHelper).isFirstSale(original);
         verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
     }
 

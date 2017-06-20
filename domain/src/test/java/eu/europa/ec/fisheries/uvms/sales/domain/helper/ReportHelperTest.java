@@ -23,7 +23,7 @@ public class ReportHelperTest {
     }
 
     @Test
-    public void testIsReportCorrectedWhenFalse() {
+    public void testIsReportCorrectedWhenOriginal() {
         CodeType purpose = new CodeType().withValue(Purpose.ORIGINAL.getNumericCode()+"");
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withPurposeCode(purpose);
@@ -36,7 +36,7 @@ public class ReportHelperTest {
     }
 
     @Test
-    public void testIsReportCorrectedOrDeletedWhenCorrected() {
+    public void testIsReportCorrectedWhenCorrected() {
         CodeType purpose = new CodeType().withValue(Purpose.CORRECTION.getNumericCode()+"");
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withPurposeCode(purpose);
@@ -49,7 +49,7 @@ public class ReportHelperTest {
     }
 
     @Test
-    public void testIsReportCorrectedOrDeletedWhenDeleted() {
+    public void testIsReportCorrectedWhenDeleted() {
         CodeType purpose = new CodeType().withValue(Purpose.DELETE.getNumericCode()+"");
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withPurposeCode(purpose);
@@ -58,7 +58,46 @@ public class ReportHelperTest {
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
 
-        assertTrue(reportHelper.isReportCorrected(report));
+        assertFalse(reportHelper.isReportCorrected(report));
+    }
+
+    @Test
+    public void testIsReportDeletedWhenOriginal() {
+        CodeType purpose = new CodeType().withValue(Purpose.ORIGINAL.getNumericCode()+"");
+        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
+                .withPurposeCode(purpose);
+        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(fluxReportDocument);
+        Report report = new Report()
+                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+
+        assertFalse(reportHelper.isReportDeleted(report));
+    }
+
+    @Test
+    public void testIsReportDeletedWhenCorrected() {
+        CodeType purpose = new CodeType().withValue(Purpose.CORRECTION.getNumericCode()+"");
+        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
+                .withPurposeCode(purpose);
+        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(fluxReportDocument);
+        Report report = new Report()
+                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+
+        assertFalse(reportHelper.isReportDeleted(report));
+    }
+
+    @Test
+    public void testIsReportDeletedWhenDeleted() {
+        CodeType purpose = new CodeType().withValue(Purpose.DELETE.getNumericCode()+"");
+        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
+                .withPurposeCode(purpose);
+        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(fluxReportDocument);
+        Report report = new Report()
+                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+
+        assertTrue(reportHelper.isReportDeleted(report));
     }
 
     @Test
@@ -351,5 +390,32 @@ public class ReportHelperTest {
                 .withFLUXSalesReportMessage(new FLUXSalesReportMessage());
 
         assertFalse(reportHelper.hasReferencesToTakeOverDocuments(report));
+    }
+
+    @Test
+    public void testIsFirstSaleWhenTrue() {
+        AuctionSaleType auctionSale = new AuctionSaleType()
+                .withSalesCategory(SalesCategoryType.FIRST_SALE);
+
+        Report report = new Report().withAuctionSale(auctionSale);
+
+        assertTrue(reportHelper.isFirstSale(report));
+    }
+
+    @Test
+    public void testIsFirstSaleWhenFalseBecauseItIsANegotiatedSale() {
+        AuctionSaleType auctionSale = new AuctionSaleType()
+                .withSalesCategory(SalesCategoryType.NEGOTIATED_SALE);
+
+        Report report = new Report().withAuctionSale(auctionSale);
+
+        assertFalse(reportHelper.isFirstSale(report));
+    }
+
+    @Test
+    public void testIsFirstSaleWhenFalseBecauseNoAuctionSaleIsProvided() {
+        Report report = new Report().withAuctionSale(null);
+
+        assertFalse(reportHelper.isFirstSale(report));
     }
 }

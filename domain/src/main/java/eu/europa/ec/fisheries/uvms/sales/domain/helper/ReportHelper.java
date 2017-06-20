@@ -155,5 +155,10 @@ public class ReportHelper {
         }
         return ids;
     }
+
+    public boolean isFirstSale(Report report) {
+        return report.getAuctionSale() != null
+                && report.getAuctionSale().getSalesCategory() == SalesCategoryType.FIRST_SALE;
+    }
 }
 
