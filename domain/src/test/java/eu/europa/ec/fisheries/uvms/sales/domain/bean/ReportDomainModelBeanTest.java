@@ -294,6 +294,40 @@ public class ReportDomainModelBeanTest {
     }
 
     @Test
+    public void testFindByExtIdOrNullWhenSuccess() {
+        String extId = "extId";
+        FluxReport fluxReport = new FluxReport();
+        Report report = new Report();
+
+        doReturn(fluxReport).when(fluxReportDao).findByExtIdOrNull(extId);
+        doReturn(report).when(mapper).map(fluxReport, Report.class);
+
+        Report result = reportDomainModelBean.findByExtIdOrNull(extId);
+
+        verify(fluxReportDao).findByExtIdOrNull(extId);
+        verify(mapper).map(fluxReport, Report.class);
+        verifyNoMoreInteractions(fluxReportDao);
+
+        assertSame(result, report);
+    }
+
+    @Test
+    public void testFindByExtIdOrNullWhenNothingFound() {
+        String extId = "extId";
+
+        doReturn(null).when(fluxReportDao).findByExtIdOrNull(extId);
+        doReturn(null).when(mapper).map(null, Report.class);
+
+        Report result = reportDomainModelBean.findByExtIdOrNull(extId);
+
+        verify(fluxReportDao).findByExtIdOrNull(extId);
+        verify(mapper).map(null, Report.class);
+        verifyNoMoreInteractions(fluxReportDao);
+
+        assertNull(result);
+    }
+
+    @Test
     public void testFindReportWhichRefersToWhenSomethingFound() {
         String extId = "extId";
         FluxReport fluxReport = new FluxReport();
