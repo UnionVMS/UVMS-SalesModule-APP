@@ -58,7 +58,13 @@ public class ReportServiceBean implements ReportService {
     public void saveReport(Report report, String pluginToSendResponseThrough,
                            List<ValidationQualityAnalysisType> validationResults,
                            String messageValidationStatus) throws ServiceException {
-        reportDomainModel.create(report);
+        Report alreadyExistingReport = reportDomainModel.findByExtIdOrNull(report.getFLUXSalesReportMessage().getFLUXReportDocument().getIDS().get(0).getValue());
+
+        //If a report exists with the incoming ID, we don't save the report.
+        if (alreadyExistingReport == null) {
+            reportDomainModel.create(report);
+        }
+
         reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough, validationResults, messageValidationStatus);
         reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
     }

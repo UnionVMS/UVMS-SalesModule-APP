@@ -302,17 +302,51 @@ public class ReportServiceBeanTest {
     @Test
     public void testSaveReportWhenPurposeIsOriginalAndSalesLocationIsNotCountryOfHostAndVesselFlagIsNotCountryOfHost() throws ServiceException {
         Report report = new Report();
+        report.withFLUXSalesReportMessage(
+                new FLUXSalesReportMessage().withFLUXReportDocument(
+                        new FLUXReportDocumentType().withIDS(
+                                new IDType().withValue("bla"))));
         String plugin = "FLUX";
         List<ValidationQualityAnalysisType> validationResults = Lists.newArrayList(new ValidationQualityAnalysisType());
         String messageValidationResult = "OK";
+
+        //mock
+        doReturn(null).when(reportDomainModel).findByExtIdOrNull("bla");
 
         //execute
         reportServiceBean.saveReport(report, plugin, validationResults, messageValidationResult);
 
         //verify and assert
         verify(reportDomainModel).create(report);
+        verify(reportDomainModel).findByExtIdOrNull("bla");
         verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin, validationResults, messageValidationResult);
         verify(reportServiceHelper).forwardReportToOtherRelevantParties(report, plugin);
+        verifyNoMoreInteractions(reportDomainModel, reportServiceHelper);
+    }
+
+    @Test
+    public void testSaveReportWhenIdAlreadyExists() throws ServiceException {
+        Report report = new Report();
+        report.withFLUXSalesReportMessage(
+                new FLUXSalesReportMessage().withFLUXReportDocument(
+                        new FLUXReportDocumentType().withIDS(
+                                new IDType().withValue("bla"))));
+
+        String plugin = "FLUX";
+        List<ValidationQualityAnalysisType> validationResults = Lists.newArrayList(new ValidationQualityAnalysisType());
+        String messageValidationResult = "OK";
+
+        //mock
+        doReturn(new Report()).when(reportDomainModel).findByExtIdOrNull("bla");
+
+        //execute
+        reportServiceBean.saveReport(report, plugin, validationResults, messageValidationResult);
+
+        //verify and assert
+        verify(reportDomainModel).findByExtIdOrNull("bla");
+        verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin, validationResults, messageValidationResult);
+        verify(reportServiceHelper).forwardReportToOtherRelevantParties(report, plugin);
+        verifyNoMoreInteractions(reportDomainModel);
     }
 
 }

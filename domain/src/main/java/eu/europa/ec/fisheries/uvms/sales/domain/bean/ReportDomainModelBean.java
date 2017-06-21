@@ -53,6 +53,14 @@ public class ReportDomainModelBean implements ReportDomainModel {
     }
 
     @Override
+    public Report findByExtIdOrNull(String extId) {
+        LOG.debug("Find report by extId {}", extId);
+
+        FluxReport fluxReport = fluxReportDao.findByExtIdOrNull(extId);
+        return mapper.map(fluxReport, Report.class);
+    }
+
+    @Override
     public Report create(Report report) {
         checkNotNull(report);
         LOG.debug("Persisting report {}", report.toString());

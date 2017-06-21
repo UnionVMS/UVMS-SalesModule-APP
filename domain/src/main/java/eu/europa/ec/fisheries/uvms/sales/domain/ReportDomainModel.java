@@ -19,6 +19,14 @@ public interface ReportDomainModel {
     Report findByExtId(String extId);
 
     /**
+     * Finds a report by its GUID, internally known as extId.
+     *
+     * @param extId internal name for GUID
+     * @return the found report or null
+     */
+    Report findByExtIdOrNull(String extId);
+
+    /**
      * Creates a report.
      *
      * @param report the report to be created
