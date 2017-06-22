@@ -19,7 +19,7 @@ public abstract class SalesPartyTypeListConverter extends CustomConverter<List<S
             if (everyNecessaryFieldIsNotNull(salesParty)) {
                 String role = salesParty.getRoleCodes().get(0).getValue();
                 if (roleToSearchFor().equalsIgnoreCase(role)) {
-                    return salesParty.getSpecifiedFLUXOrganization().getName().getValue();
+                    return salesParty.getName().getValue();
                 }
             }
         }
@@ -31,8 +31,7 @@ public abstract class SalesPartyTypeListConverter extends CustomConverter<List<S
         return CollectionUtils.isNotEmpty(salesParty.getRoleCodes())
                 && salesParty.getRoleCodes().get(0) != null
                 && salesParty.getRoleCodes().get(0).getValue() != null
-                && salesParty.getSpecifiedFLUXOrganization() != null
-                && salesParty.getSpecifiedFLUXOrganization().getName() != null
-                && salesParty.getSpecifiedFLUXOrganization().getName().getValue() != null;
+                && salesParty.getName() != null
+                && salesParty.getName().getValue() != null;
     }
 }

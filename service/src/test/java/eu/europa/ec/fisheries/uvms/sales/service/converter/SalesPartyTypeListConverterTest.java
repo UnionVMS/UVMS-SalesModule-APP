@@ -26,11 +26,11 @@ public class SalesPartyTypeListConverterTest {
     public void convertWhenSuccess() throws Exception {
         SalesPartyType salesParty1 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("BUYER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Mathiblaa")));
+                .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("SELLER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Superstijn")));
+                .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
 
@@ -40,11 +40,11 @@ public class SalesPartyTypeListConverterTest {
     @Test
     public void convertWhenListOfRolesIsNull() throws Exception {
         SalesPartyType salesParty1 = new SalesPartyType()
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Mathiblaa")));
+                .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
                 .withRoleCodes(new CodeType())
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Superstijn")));
+                .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
 
@@ -56,11 +56,11 @@ public class SalesPartyTypeListConverterTest {
     public void convertWhenListOfRolesIsEmpty() throws Exception {
         SalesPartyType salesParty1 = new SalesPartyType()
                 .withRoleCodes(new ArrayList<CodeType>())
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Mathiblaa")));
+                .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
                 .withRoleCodes(new CodeType())
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Superstijn")));
+                .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
 
@@ -70,11 +70,11 @@ public class SalesPartyTypeListConverterTest {
     @Test
     public void convertWhenRoleIsNull() throws Exception {
         SalesPartyType salesParty1 = new SalesPartyType()
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Mathiblaa")));
+                .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
                 .withRoleCodes(new CodeType())
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Superstijn")));
+                .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
 
@@ -86,11 +86,11 @@ public class SalesPartyTypeListConverterTest {
     public void convertWhenRoleValueIsNull() throws Exception {
         SalesPartyType salesParty1 = new SalesPartyType()
                 .withRoleCodes(new CodeType())
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Mathiblaa")));
+                .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
                 .withRoleCodes(new CodeType())
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Superstijn")));
+                .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
 
@@ -101,7 +101,7 @@ public class SalesPartyTypeListConverterTest {
     public void convertWhenFLUXOrganizationIsNull() throws Exception {
         SalesPartyType salesParty1 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("BUYER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Mathiblaa")));
+                .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("SELLER"));
@@ -130,11 +130,11 @@ public class SalesPartyTypeListConverterTest {
     public void convertWhenFLUXOrganizationNameValueIsNull() throws Exception {
         SalesPartyType salesParty1 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("BUYER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType()));
+                .withName(new TextType());
 
         SalesPartyType salesParty2 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("SELLER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType()));
+                .withName(new TextType());
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
 
@@ -145,11 +145,11 @@ public class SalesPartyTypeListConverterTest {
     public void convertWhenNoMatchingRole() throws Exception {
         SalesPartyType salesParty1 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("BUYER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Mathiblaa")));
+                .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("RECEIVER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Superstijn")));
+                .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
 

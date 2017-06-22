@@ -435,11 +435,11 @@ public class MapperProducerTest {
 
         SalesPartyType salesParty1 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("BUYER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Mathiblaa")));
+                .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("SELLER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Superstijn")));
+                .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
 
@@ -482,7 +482,7 @@ public class MapperProducerTest {
         FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
                 .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")))
-                .withReferencedID(new IDType().withValue("Heya"));;
+                .withReferencedID(new IDType().withValue("Heya"));
 
         FLUXLocationType fluxLocation1 = new FLUXLocationType()
                 .withID(new IDType().withValue("BEL"));
@@ -504,11 +504,11 @@ public class MapperProducerTest {
 
         SalesPartyType salesParty1 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("BUYER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Mathiblaa")));
+                .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
                 .withRoleCodes(new CodeType().withValue("SELLER"))
-                .withSpecifiedFLUXOrganization(new FLUXOrganizationType().withName(new TextType().withValue("Superstijn")));
+                .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
 
