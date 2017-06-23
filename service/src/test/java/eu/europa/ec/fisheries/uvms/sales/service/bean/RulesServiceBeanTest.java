@@ -3,13 +3,13 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.FLUXSalesResponseMessageHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +36,7 @@ public class RulesServiceBeanTest {
     private RulesServiceBean rulesServiceBean;
 
     @Mock
-    private SalesParameterService parameterService;
+    private ConfigService configService;
 
     @Mock
     private SalesMessageProducer messageProducer;
@@ -68,7 +68,7 @@ public class RulesServiceBeanTest {
         mockStatic(RulesModuleRequestMapper.class);
 
         when(JAXBMarshaller.marshallJaxBObjectToString(response)).thenReturn(responseAsString);
-        when(parameterService.getParameterValue(ParameterKey.FLUX_DATA_FLOW)).thenReturn(fluxDataFlow);
+        when(configService.getParameter(ParameterKey.FLUX_DATA_FLOW)).thenReturn(fluxDataFlow);
         when(responseHelper.getId(response)).thenReturn(responseGuid);
         when(RulesModuleRequestMapper.createSendSalesResponseRequest(eq(responseAsString), eq(responseGuid), eq(recipient), eq(pluginToSendResponseThrough), eq(fluxDataFlow), isA(Date.class))).thenReturn(request);
 
@@ -79,14 +79,14 @@ public class RulesServiceBeanTest {
         verifyStatic();
         JAXBMarshaller.marshallJaxBObjectToString(response);
 
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_DATA_FLOW);
+        verify(configService).getParameter(ParameterKey.FLUX_DATA_FLOW);
         verify(responseHelper).getId(response);
         verify(messageProducer).sendModuleMessage(request, Union.RULES);
 
         verifyStatic();
         RulesModuleRequestMapper.createSendSalesResponseRequest(eq(responseAsString), eq(responseGuid), eq(recipient), eq(pluginToSendResponseThrough), eq(fluxDataFlow), isA(Date.class));
 
-        verifyNoMoreInteractions(messageProducer, reportHelper, responseHelper, parameterService);
+        verifyNoMoreInteractions(messageProducer, reportHelper, responseHelper, configService);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class RulesServiceBeanTest {
         mockStatic(RulesModuleRequestMapper.class);
 
         when(JAXBMarshaller.marshallJaxBObjectToString(report)).thenReturn(reportAsString);
-        when(parameterService.getParameterValue(ParameterKey.FLUX_DATA_FLOW)).thenReturn(fluxDataFlow);
+        when(configService.getParameter(ParameterKey.FLUX_DATA_FLOW)).thenReturn(fluxDataFlow);
         when(reportHelper.getId(report)).thenReturn(reportGuid);
         when(RulesModuleRequestMapper.createSendSalesReportRequest(eq(reportAsString), eq(reportGuid), eq(recipient), eq(pluginToSendResponseThrough), eq(fluxDataFlow), isA(Date.class))).thenReturn(request);
 
@@ -116,14 +116,14 @@ public class RulesServiceBeanTest {
         verifyStatic();
         JAXBMarshaller.marshallJaxBObjectToString(report);
 
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_DATA_FLOW);
+        verify(configService).getParameter(ParameterKey.FLUX_DATA_FLOW);
         verify(reportHelper).getId(report);
         verify(messageProducer).sendModuleMessage(request, Union.RULES);
 
         verifyStatic();
         RulesModuleRequestMapper.createSendSalesReportRequest(eq(reportAsString), eq(reportGuid), eq(recipient), eq(pluginToSendResponseThrough), eq(fluxDataFlow), isA(Date.class));
 
-        verifyNoMoreInteractions(messageProducer, reportHelper, responseHelper, parameterService);
+        verifyNoMoreInteractions(messageProducer, reportHelper, responseHelper, configService);
     }
 
 }

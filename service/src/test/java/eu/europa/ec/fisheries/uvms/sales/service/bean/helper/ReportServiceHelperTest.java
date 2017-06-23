@@ -6,10 +6,10 @@ import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mother.ReportMother;
+import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class ReportServiceHelperTest {
     private ReportHelper reportHelper;
 
     @Mock
-    private SalesParameterService parameterService;
+    private ConfigService configService;
 
     @Mock
     private RulesService rulesService;
@@ -64,7 +64,7 @@ public class ReportServiceHelperTest {
         verify(fluxSalesResponseMessageFactory).create(report, validationResults, messageValidationResult);
         verify(reportHelper).getFLUXReportDocumentOwnerId(report);
         verify(rulesService).sendResponseToRules(responseToSender, senderOfReport, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(false).when(reportHelper).isReportCorrected(report);
         doReturn(false).when(reportHelper).isReportDeleted(report);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
@@ -92,12 +92,12 @@ public class ReportServiceHelperTest {
         //verify
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).isReportDeleted(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(false).when(reportHelper).isReportCorrected(report);
         doReturn(false).when(reportHelper).isReportDeleted(report);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
@@ -125,12 +125,12 @@ public class ReportServiceHelperTest {
         //verify
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).isReportDeleted(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -146,7 +146,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(false).when(reportHelper).isReportCorrected(report);
         doReturn(false).when(reportHelper).isReportDeleted(report);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
@@ -158,12 +158,12 @@ public class ReportServiceHelperTest {
         //verify
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).isReportDeleted(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -179,7 +179,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(false).when(reportHelper).isReportCorrected(report);
         doReturn(false).when(reportHelper).isReportDeleted(report);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
@@ -191,12 +191,12 @@ public class ReportServiceHelperTest {
         //verify
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).isReportDeleted(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -212,7 +212,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(false).when(reportHelper).isReportCorrected(report);
         doReturn(false).when(reportHelper).isReportDeleted(report);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
@@ -224,12 +224,12 @@ public class ReportServiceHelperTest {
         //verify
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).isReportDeleted(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -248,7 +248,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(false).when(reportHelper).isReportCorrected(report);
         doReturn(false).when(reportHelper).isReportDeleted(report);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
@@ -260,14 +260,14 @@ public class ReportServiceHelperTest {
         //verify
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).isReportDeleted(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSale(report);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -286,7 +286,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(false).when(reportHelper).isReportCorrected(report);
         doReturn(false).when(reportHelper).isReportDeleted(report);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
@@ -298,13 +298,13 @@ public class ReportServiceHelperTest {
         //verify
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).isReportDeleted(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSale(report);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -323,7 +323,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(false).when(reportHelper).isReportCorrected(report);
         doReturn(false).when(reportHelper).isReportDeleted(report);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
@@ -335,13 +335,13 @@ public class ReportServiceHelperTest {
         //verify
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).isReportDeleted(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSale(report);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -360,7 +360,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(false).when(reportHelper).isReportCorrected(report);
         doReturn(false).when(reportHelper).isReportDeleted(report);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
@@ -372,12 +372,12 @@ public class ReportServiceHelperTest {
         //verify
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).isReportDeleted(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -396,7 +396,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(false).when(reportHelper).isReportCorrected(report);
         doReturn(false).when(reportHelper).isReportDeleted(report);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(report);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(report);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(report);
@@ -408,13 +408,13 @@ public class ReportServiceHelperTest {
         //verify
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).isReportDeleted(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSale(report);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -437,7 +437,7 @@ public class ReportServiceHelperTest {
         doReturn(original).when(reportDomainModel).findByExtId(referencedID);
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
@@ -452,14 +452,14 @@ public class ReportServiceHelperTest {
         verify(reportDomainModel).findByExtId(referencedID);
         verify(reportHelper).isReportCorrected(original);
         verify(reportHelper).isReportDeleted(original);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSale(original);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -483,7 +483,7 @@ public class ReportServiceHelperTest {
         doReturn(original).when(reportDomainModel).findByExtId(referencedID);
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
@@ -499,14 +499,14 @@ public class ReportServiceHelperTest {
         verify(reportDomainModel).findByExtId(referencedID);
         verify(reportHelper).isReportCorrected(original);
         verify(reportHelper).isReportDeleted(original);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSale(original);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -528,7 +528,7 @@ public class ReportServiceHelperTest {
         doReturn(original).when(reportDomainModel).findByExtId(referencedID);
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
@@ -543,12 +543,12 @@ public class ReportServiceHelperTest {
         verify(reportDomainModel).findByExtId(referencedID);
         verify(reportHelper).isReportCorrected(original);
         verify(reportHelper).isReportDeleted(original);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSale(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -571,7 +571,7 @@ public class ReportServiceHelperTest {
         doReturn(original).when(reportDomainModel).findByExtId(referencedID);
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
@@ -587,12 +587,12 @@ public class ReportServiceHelperTest {
         verify(reportDomainModel).findByExtId(referencedID);
         verify(reportHelper).isReportCorrected(original);
         verify(reportHelper).isReportDeleted(original);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSale(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -622,7 +622,7 @@ public class ReportServiceHelperTest {
 
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
@@ -642,14 +642,14 @@ public class ReportServiceHelperTest {
 
         verify(reportHelper).isReportCorrected(original);
         verify(reportHelper).isReportDeleted(original);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSale(original);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
         verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
     @Test
@@ -678,7 +678,7 @@ public class ReportServiceHelperTest {
 
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
-        doReturn(countryOfHost).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         doReturn(vesselFlagState).when(reportHelper).getVesselFlagState(original);
         doReturn(salesLocationCountry).when(reportHelper).getSalesLocationCountry(original);
         doReturn(landingCountry).when(reportHelper).getLandingCountry(original);
@@ -698,12 +698,12 @@ public class ReportServiceHelperTest {
 
         verify(reportHelper).isReportCorrected(original);
         verify(reportHelper).isReportDeleted(original);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(original);
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSale(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, parameterService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
     }
 
 }

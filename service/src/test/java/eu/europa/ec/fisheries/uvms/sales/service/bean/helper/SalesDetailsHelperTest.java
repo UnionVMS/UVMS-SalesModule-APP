@@ -4,13 +4,13 @@ import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mother.AAPProductTypeMother;
 import eu.europa.ec.fisheries.uvms.sales.domain.mother.ReportMother;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
+import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
@@ -47,7 +47,7 @@ public class SalesDetailsHelperTest {
     private ReferenceDataCache referenceDataCache;
 
     @Mock
-    private SalesParameterService parameterService;
+    private ConfigService configService;
 
     @Mock
     private EcbProxyService ecbProxyService;
@@ -321,7 +321,7 @@ public class SalesDetailsHelperTest {
                     .products(Lists.newArrayList(productDto1, productDto2)));
 
         //mock
-        doReturn(localCurrency).when(parameterService).getParameterValue(ParameterKey.CURRENCY);
+        doReturn(localCurrency).when(configService).getParameter(ParameterKey.CURRENCY);
         doReturn(documentCurrency).when(reportHelper).getDocumentCurrency(report);
         doReturn(documentDate).when(reportHelper).getDocumentDate(report);
         doReturn(rate).when(ecbProxyService).findExchangeRate(documentCurrency, localCurrency, documentDate);
@@ -331,12 +331,12 @@ public class SalesDetailsHelperTest {
         salesDetailsHelper.convertPricesInLocalCurrency(salesDetailsDto, report);
 
         //verify and assert
-        verify(parameterService).getParameterValue(ParameterKey.CURRENCY);
+        verify(configService).getParameter(ParameterKey.CURRENCY);
         verify(reportHelper).getDocumentCurrency(report);
         verify(reportHelper).getDocumentDate(report);
         verify(ecbProxyService).findExchangeRate(documentCurrency, localCurrency, documentDate);
         verify(reportHelper).getProductsOfReport(report);
-        verifyNoMoreInteractions(parameterService, ecbProxyService, reportHelper);
+        verifyNoMoreInteractions(configService, ecbProxyService, reportHelper);
 
         assertEquals(new BigDecimal(20), productDto1.getPrice());
         assertEquals(new BigDecimal(60), productDto2.getPrice());
@@ -360,7 +360,7 @@ public class SalesDetailsHelperTest {
                         .products(Lists.newArrayList(productDto1, productDto2)));
 
         //mock
-        doReturn(localCurrency).when(parameterService).getParameterValue(ParameterKey.CURRENCY);
+        doReturn(localCurrency).when(configService).getParameter(ParameterKey.CURRENCY);
         doReturn(documentCurrency).when(reportHelper).getDocumentCurrency(report);
         doReturn(Lists.newArrayList(product1, product2)).when(reportHelper).getProductsOfReport(report);
 
@@ -368,10 +368,10 @@ public class SalesDetailsHelperTest {
         salesDetailsHelper.convertPricesInLocalCurrency(salesDetailsDto, report);
 
         //verify and assert
-        verify(parameterService).getParameterValue(ParameterKey.CURRENCY);
+        verify(configService).getParameter(ParameterKey.CURRENCY);
         verify(reportHelper).getDocumentCurrency(report);
         verify(reportHelper).getProductsOfReport(report);
-        verifyNoMoreInteractions(parameterService, ecbProxyService, reportHelper);
+        verifyNoMoreInteractions(configService, ecbProxyService, reportHelper);
 
         assertEquals(new BigDecimal(10), productDto1.getPrice());
         assertEquals(new BigDecimal(30), productDto2.getPrice());

@@ -6,7 +6,6 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMarshallException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.FLUXSalesResponseMessageHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
@@ -14,6 +13,7 @@ import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 
 import javax.ejb.EJB;
@@ -27,7 +27,7 @@ public class RulesServiceBean implements RulesService {
     private SalesMessageProducer messageProducer;
 
     @EJB
-    private SalesParameterService parameterService;
+    private ConfigService configService;
 
     @EJB
     private FLUXSalesResponseMessageHelper responseHelper;
@@ -68,6 +68,6 @@ public class RulesServiceBean implements RulesService {
 
 
     private String getFluxDataFlow() {
-        return parameterService.getParameterValue(ParameterKey.FLUX_DATA_FLOW);
+        return configService.getParameter(ParameterKey.FLUX_DATA_FLOW);
     }
 }

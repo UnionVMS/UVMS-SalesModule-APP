@@ -5,9 +5,9 @@ import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
+import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 
@@ -26,7 +26,7 @@ public class ReportServiceHelper {
     private FLUXSalesResponseMessageFactory fluxSalesResponseMessageFactory;
 
     @EJB
-    private SalesParameterService parameterService;
+    private ConfigService configService;
 
     @EJB
     private ReportHelper reportHelper;
@@ -49,7 +49,7 @@ public class ReportServiceHelper {
     public void forwardReportToOtherRelevantParties(Report report, String pluginToSendResponseThrough) throws ServiceException {
         Report originalReport = findOriginalReport(report);
 
-        String countryOfHost = parameterService.getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        String countryOfHost = configService.getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         String vesselFlagState = reportHelper.getVesselFlagState(originalReport);
         String salesLocationCountry = reportHelper.getSalesLocationCountry(originalReport);
         String landingCountry = reportHelper.getLandingCountry(originalReport);

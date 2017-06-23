@@ -5,10 +5,10 @@ import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
+import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
@@ -43,7 +43,7 @@ public class SalesDetailsHelper {
     private AssetService assetService;
 
     @EJB
-    private SalesParameterService parameterService;
+    private ConfigService configService;
 
     @EJB
     private EcbProxyService ecbProxyService;
@@ -98,7 +98,7 @@ public class SalesDetailsHelper {
 
     public void convertPricesInLocalCurrency(SalesDetailsDto detailsDto, Report report) {
         try {
-            String localCurrency = parameterService.getParameterValue(ParameterKey.CURRENCY);
+            String localCurrency = configService.getParameter(ParameterKey.CURRENCY);
             String documentCurrency = reportHelper.getDocumentCurrency(report);
 
             BigDecimal exchangeRate = BigDecimal.ONE;

@@ -2,9 +2,9 @@ package eu.europa.ec.fisheries.uvms.sales.service.factory;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
+import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -30,7 +30,7 @@ public class FLUXSalesResponseMessageFactoryTest {
     private ReportHelper reportHelper;
 
     @Mock
-    private SalesParameterService parameterService;
+    private ConfigService configService;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -63,13 +63,13 @@ public class FLUXSalesResponseMessageFactoryTest {
         List<ValidationQualityAnalysisType> validationResults = Lists.newArrayList(validationResult);
 
         //mock
-        doReturn(fluxLocalNationCode).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(fluxLocalNationCode).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
 
         //execute
         FLUXSalesResponseMessage fluxSalesResponse = FLUXSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResults, messageValidationStatus);
 
         //verify and assert
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
 
         assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getIDS().get(0).getValue());
         assertEquals("salesQuery", fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getValue());
@@ -95,14 +95,14 @@ public class FLUXSalesResponseMessageFactoryTest {
 
         //mock
         doReturn(referencedId).when(reportHelper).getFLUXReportDocumentId(report);
-        doReturn(fluxLocalNationCode).when(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        doReturn(fluxLocalNationCode).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
 
         //execute
         FLUXSalesResponseMessage fluxSalesResponse = FLUXSalesResponseMessageFactory.create(report, validationResults, messageValidationStatus);
 
         //verify and assert
         verify(reportHelper).getFLUXReportDocumentId(report);
-        verify(parameterService).getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
 
         assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getIDS().get(0).getValue());
         assertEquals(referencedId, fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getValue());

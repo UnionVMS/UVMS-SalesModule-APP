@@ -13,7 +13,6 @@
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.FishingActivity</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxLocation</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport</class>
-        <class>eu.europa.ec.fisheries.uvms.sales.entity.FluxReportParty</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Party</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.PartyDocument</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Product</class>

@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.service.EventService;
 import eu.europa.ec.fisheries.uvms.sales.service.InvalidMessageService;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +90,6 @@ public class EventServiceBean implements EventService {
     @Override
     public void returnError(@Observes @ErrorEvent EventMessage event) {
         salesMessageProducer.sendModuleErrorMessage(event);
-        LOG.info("Received Error event in Sales");
+        LOG.error(event.getErrorMessage());
     }
 }

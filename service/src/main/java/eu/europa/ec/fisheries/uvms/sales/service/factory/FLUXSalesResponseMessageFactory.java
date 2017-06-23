@@ -1,9 +1,9 @@
 package eu.europa.ec.fisheries.uvms.sales.service.factory;
 
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.sales.domain.SalesParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
+import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import org.joda.time.DateTime;
 
 import javax.ejb.EJB;
@@ -19,7 +19,7 @@ public class FLUXSalesResponseMessageFactory {
     private ReportHelper reportHelper;
 
     @EJB
-    private SalesParameterService parameterService;
+    private ConfigService configService;
 
     public FLUXSalesResponseMessage create(FLUXSalesQueryMessage fluxSalesQueryMessage,
                                            List<Report> reports,
@@ -42,7 +42,7 @@ public class FLUXSalesResponseMessageFactory {
     }
 
     private String findFluxLocalNationCode() {
-        return parameterService.getParameterValue(ParameterKey.FLUX_LOCAL_NATION_CODE);
+        return configService.getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
     }
 
     public FLUXSalesResponseMessage create(Report report,

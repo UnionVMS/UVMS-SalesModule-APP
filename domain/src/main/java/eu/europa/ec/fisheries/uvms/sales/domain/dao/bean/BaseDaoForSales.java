@@ -12,7 +12,7 @@ import java.lang.reflect.ParameterizedType;
  */
 public abstract class BaseDaoForSales<T, PK extends Serializable> implements DaoForSales<T, PK> {
 
-    @PersistenceContext(unitName = "domainPU")
+    @PersistenceContext(unitName = "sales")
     protected EntityManager em;
 
     public BaseDaoForSales() {
