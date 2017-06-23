@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.converter.*;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.BuyerSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.ListFLUXLocationTypeConverter;
+import eu.europa.ec.fisheries.uvms.sales.service.converter.RecipientSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.SellerSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import ma.glasnost.orika.CustomMapper;
@@ -67,6 +68,7 @@ public class MapperProducer {
         converterFactory.registerConverter("preservationBToA", new PreservationBToAConverter());
         converterFactory.registerConverter("buyerSalesPartyTypeListConverter", new BuyerSalesPartyTypeListConverter());
         converterFactory.registerConverter("sellerSalesPartyTypeListConverter", new SellerSalesPartyTypeListConverter());
+        converterFactory.registerConverter("recipientSalesPartyTypeListConverter", new RecipientSalesPartyTypeListConverter());
         converterFactory.registerConverter("fluxReportItemTypeConverter", new FluxReportItemTypeConverter());
         converterFactory.registerConverter("purposeConverter", new PurposeConverter());
     }
@@ -221,6 +223,7 @@ public class MapperProducer {
                 .field("purpose", "FLUXSalesReportMessage.FLUXReportDocument.purposeCode.value")
                 .fieldMap("buyer", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("buyerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .fieldMap("seller", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("sellerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
+                .fieldMap("recipient", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("recipientSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .customize(new CustomMapper<ReportListDto, Report>() {
                     @Override
                     public void mapBtoA(Report report, ReportListDto reportListDto, MappingContext context) {

@@ -37,22 +37,6 @@ public class SalesPartyTypeListConverterTest {
         assertEquals("Superstijn", converter.convert(salesParties, null, null));
     }
 
-    @Test
-    public void convertWhenRecipientInsteadOfBuyer() throws Exception {
-        BuyerSalesPartyTypeListConverter converter = new BuyerSalesPartyTypeListConverter();
-
-        SalesPartyType salesParty1 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("RECIPIENT"))
-                .withName(new TextType().withValue("Mathiblaa"));
-
-        SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("SELLER"))
-                .withName(new TextType().withValue("Superstijn"));
-
-        List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
-
-        assertEquals("Mathiblaa", converter.convert(salesParties, null, null));
-    }
 
     @Test
     public void convertWhenListOfRolesIsNull() throws Exception {
