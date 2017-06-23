@@ -15,12 +15,17 @@ public abstract class SalesPartyTypeListConverter extends CustomConverter<List<S
     @Override
     public String convert(List<SalesPartyType> salesParties, Type<? extends String> destinationType, MappingContext mappingContext) {
         for (SalesPartyType salesParty : salesParties) {
+            if (!everyNecessaryFieldIsNotNull(salesParty)) { continue; }
 
-            if (everyNecessaryFieldIsNotNull(salesParty)) {
-                String role = salesParty.getRoleCodes().get(0).getValue();
-                if (roleToSearchFor().equalsIgnoreCase(role)) {
-                    return salesParty.getName().getValue();
-                }
+            String role = salesParty.getRoleCodes().get(0).getValue();
+
+            if (roleToSearchFor().equalsIgnoreCase(role)) {
+                return salesParty.getName().getValue();
+            }
+
+            //Mapping recipient
+            if (salesParty.getRoleCodes().get(0).getValue().equals("RECIPIENT")) {
+                return salesParty.getName().getValue();
             }
         }
 
