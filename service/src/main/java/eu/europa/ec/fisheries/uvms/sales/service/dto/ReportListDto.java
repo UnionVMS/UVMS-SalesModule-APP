@@ -62,6 +62,11 @@ public class ReportListDto {
     private String seller;
 
     /**
+     * recipient name
+     */
+    private String recipient;
+
+    /**
      * If this report is a correction or deletion, all previous
      * versions of this report are put in this variable.
      */
@@ -313,5 +318,13 @@ public class ReportListDto {
     public ReportListDto deletion(DateTime deletion) {
         this.deletion = deletion;
         return this;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 }
