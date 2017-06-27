@@ -71,7 +71,7 @@ public class FluxReportQueryToTypedQueryHelper {
             excludeIds(filters.getExcludeFluxReportIds());
             withTripId(filters.getTripId());
             withLandingCountry(filters.getLandingCountry());
-            withoutDeleted(filters.isIncludeDeleted());
+            withDeleted(filters.isIncludeDeleted());
         }
         notCorrected();
         return this;
@@ -158,7 +158,7 @@ public class FluxReportQueryToTypedQueryHelper {
         addWhereCondition(builder.not(builder.exists(finishedReferencingReportSubQuery)));
     }
 
-    private void withoutDeleted(Boolean includeDeleted) {
+    private void withDeleted(Boolean includeDeleted) {
         if (BooleanUtils.isNotTrue(includeDeleted)) {
             Predicate notDeleted = builder.isNull(fluxReport.get("deletion"));
             addWhereCondition(notDeleted);
