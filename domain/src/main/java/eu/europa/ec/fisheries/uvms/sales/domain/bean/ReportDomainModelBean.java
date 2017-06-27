@@ -94,7 +94,11 @@ public class ReportDomainModelBean implements ReportDomainModel {
         String originalReportExtId = reportHelper.getFLUXReportDocumentReferencedId(report);
 
         FluxReport originalReport = fluxReportDao.findByExtId(originalReportExtId);
-        originalReport.setDeletion(deletionDate);
+
+        // If a report was already deleted, we want to keep the original deletion date and not the date of the 'new' deletion.
+        if (originalReport.getDeletion() == null) {
+            originalReport.setDeletion(deletionDate);
+        }
 
         return originalReport;
     }

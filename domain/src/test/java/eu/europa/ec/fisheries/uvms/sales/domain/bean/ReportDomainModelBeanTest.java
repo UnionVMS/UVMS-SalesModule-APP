@@ -170,6 +170,54 @@ public class ReportDomainModelBeanTest {
     }
 
     @Test
+    public void testCreateWhenReportsPurposeIsDeletionAndTheReportWasAlreadyDeleted() throws Exception {
+        //data set
+        DateTime deletionDate = DateTime.parse("2017-01-01");
+        DateTime now = DateTime.now();
+
+        FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType()
+                .withReferencedID(new IDType().withValue("hello"))
+                .withPurposeCode(new CodeType().withValue(Purpose.DELETE.getNumericCode() + ""))
+                .withCreationDateTime(new DateTimeType().withDateTime(now));
+
+        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(fluxReportDocumentType);
+
+        Report report = new Report()
+                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+
+        FluxReport oldFluxReportEntity = new FluxReport().extId("hello")
+                .itemType(FluxReportItemType.SALES_NOTE)
+                .deletion(deletionDate);
+
+        Report mappedAndPersistedReportFromDao = new Report()
+                .withFLUXSalesReportMessage(new FLUXSalesReportMessage().withSalesReports(new SalesReportType().withItemTypeCode(new CodeType().withValue("SN"))))
+                .withDeletion(deletionDate);
+
+        //mock
+        when(reportHelper.isReportDeleted(report)).thenReturn(true);
+        when(reportHelper.getCreationDate(report)).thenReturn(now);
+        when(reportHelper.getFLUXReportDocumentReferencedId(report)).thenReturn("hello");
+        when(fluxReportDao.findByExtId("hello")).thenReturn(oldFluxReportEntity);
+        when(mapper.map(oldFluxReportEntity, Report.class)).thenReturn(mappedAndPersistedReportFromDao);
+
+        //execute
+        Report persistedReport = reportDomainModelBean.create(report);
+
+        //assert and verify
+        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper).getCreationDate(report);
+        verify(reportHelper).getFLUXReportDocumentReferencedId(report);
+        verify(fluxReportDao).findByExtId("hello");
+        verify(mapper).map(oldFluxReportEntity, Report.class);
+        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
+
+        assertSame(mappedAndPersistedReportFromDao, persistedReport);
+        //check if date of deletion matches the first date of deletion, not the date of the 2nd received deletion
+        assertEquals(deletionDate, persistedReport.getDeletion());
+    }
+
+    @Test
     public void testCreateWhenReportIsACorrection() throws Exception {
         //data set
         FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType()
