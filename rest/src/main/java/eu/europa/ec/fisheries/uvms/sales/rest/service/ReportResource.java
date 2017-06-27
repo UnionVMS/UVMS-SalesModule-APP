@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.rest.service;
 
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.rest.security.RequiresFeature;
 import eu.europa.ec.fisheries.uvms.rest.security.UnionVMSFeature;
@@ -53,7 +52,7 @@ public class ReportResource extends UnionVMSResource {
     @Consumes(value = {MediaType.APPLICATION_JSON})
     @Produces(value = {MediaType.APPLICATION_JSON})
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
-    public Response search(PageCriteriaDto<ReportQueryFilterDto> filters) throws ServiceException {
+    public Response search(PageCriteriaDto<ReportQueryFilterDto> filters) {
         LOG.info("Search reports invoked in rest layer");
         return createSuccessResponse(reportService.search(filters));
     }
@@ -63,7 +62,7 @@ public class ReportResource extends UnionVMSResource {
     @Consumes(value = MediaType.APPLICATION_JSON)
     @Produces(value = MediaType.APPLICATION_JSON)
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
-    public Response export(PageCriteriaDto<ReportQueryFilterDto> filters) throws ServiceException {
+    public Response export(PageCriteriaDto<ReportQueryFilterDto> filters) {
         return createSuccessResponse(reportService.exportDocuments(filters));
     }
 
@@ -72,7 +71,7 @@ public class ReportResource extends UnionVMSResource {
     @Consumes(value = MediaType.APPLICATION_JSON)
     @Produces(value = MediaType.APPLICATION_JSON)
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
-    public Response export(ExportListsDto exportListsDto) throws ServiceException {
+    public Response export(ExportListsDto exportListsDto) {
         return createSuccessResponse(reportService.exportSelectedDocuments(exportListsDto));
     }
 

@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service;
 
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import org.joda.time.DateTime;
 
 import javax.ejb.Local;
@@ -19,8 +19,8 @@ public interface EcbProxyService {
      * @param targetCurrency the currency to which the source amount needs to be converted
      * @param date the date
      * @return the exchange rate
-     * @throws ServiceException when something goes wrong
+     * @throws SalesServiceException when something goes wrong
      */
-    BigDecimal findExchangeRate(String sourceCurrency, String targetCurrency, DateTime date) throws ServiceException;
+    BigDecimal findExchangeRate(String sourceCurrency, String targetCurrency, DateTime date);
 
 }

@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceExportHelper;
@@ -94,7 +93,7 @@ public class ReportServiceBeanTest {
     }
 
     @Test
-    public void testExportSelectedDocuments() throws ServiceException {
+    public void testExportSelectedDocuments() {
         //set up
         reportServiceBean.setReportServiceExportHelper(new ReportServiceExportHelper());
 
@@ -139,7 +138,7 @@ public class ReportServiceBeanTest {
     }
 
     @Test
-    public void testExportDocumentsExportAll() throws ServiceException {
+    public void testExportDocumentsExportAll() {
         //set up
         reportServiceBean.setReportServiceExportHelper(new ReportServiceExportHelper());
 
@@ -263,7 +262,7 @@ public class ReportServiceBeanTest {
     }
 
     @Test
-    public void testSearchWithFluxSalesReportMessage() throws ServiceException {
+    public void testSearchWithFluxSalesReportMessage() {
         //data set
         FLUXSalesQueryMessage fluxSalesQueryMessage = new FLUXSalesQueryMessage()
                 .withSalesQuery(new SalesQueryType()
@@ -300,7 +299,7 @@ public class ReportServiceBeanTest {
     }
 
     @Test
-    public void testSaveReportWhenPurposeIsOriginalAndSalesLocationIsNotCountryOfHostAndVesselFlagIsNotCountryOfHost() throws ServiceException {
+    public void testSaveReportWhenPurposeIsOriginalAndSalesLocationIsNotCountryOfHostAndVesselFlagIsNotCountryOfHost() {
         Report report = new Report();
         report.withFLUXSalesReportMessage(
                 new FLUXSalesReportMessage().withFLUXReportDocument(
@@ -325,7 +324,7 @@ public class ReportServiceBeanTest {
     }
 
     @Test
-    public void testSaveReportWhenIdAlreadyExists() throws ServiceException {
+    public void testSaveReportWhenIdAlreadyExists() {
         Report report = new Report();
         report.withFLUXSalesReportMessage(
                 new FLUXSalesReportMessage().withFLUXReportDocument(

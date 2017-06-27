@@ -2,8 +2,8 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListDto;
 import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
@@ -40,7 +40,7 @@ public class SearchReportsHelper {
      *  VesselName can also contain a vessel's CFR or IRCS. Because we don't have that kind of data, we ask the asset
      *  module to get their ids.
      */
-    public void prepareVesselFreeTextSearch(ReportQuery query) throws ServiceException {
+    public void prepareVesselFreeTextSearch(ReportQuery query) {
         ReportQueryFilter filters = query.getFilters();
         if (query.getFilters() != null && !Strings.isNullOrEmpty(filters.getVesselName())) {
             List<String> vesselExtIds = assetService.findExtIdsByNameOrCFROrIRCS(filters.getVesselName());
@@ -59,7 +59,7 @@ public class SearchReportsHelper {
                 Asset vessel = assetService.findByCFR(vesselExtId);
                 reportDto.setIrcs(vessel.getIrcs());
                 reportDto.setExternalMarking(vessel.getExternalMarking());
-            } catch (ServiceException e) {
+            } catch (SalesServiceException e) {
                 LOG.error("Cannot retrieve vessel details of vessel " + vesselExtId, e);
             }
         }

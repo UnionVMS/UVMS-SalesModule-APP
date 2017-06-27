@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service;
 
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.SavedSearchGroupDto;
 
 import javax.ejb.Local;
@@ -14,5 +13,5 @@ public interface SavedSearchService {
 
     SavedSearchGroupDto saveSearch(@NotNull SavedSearchGroupDto searchGroupDto);
 
-    void deleteSearch(@NotNull Integer id) throws ServiceException;
+    void deleteSearch(@NotNull Integer id);
 }

@@ -5,7 +5,6 @@
  */
 package eu.europa.ec.fisheries.uvms.sales.service;
 
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.message.event.ErrorEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.InvalidMessageReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.QueryReceivedEvent;
@@ -28,13 +27,13 @@ public interface EventService {
      * Execute the received query, and send back a response.
      * @param event the event received event
      */
-    void executeQuery(@Observes @QueryReceivedEvent EventMessage event) throws ServiceException;
+    void executeQuery(@Observes @QueryReceivedEvent EventMessage event);
 
     /**
      * Create a response for a received message that is deemed invalid (by the Rules component, for example)
      * @param event the event received event
      */
-    void respondToInvalidMessage(@Observes @InvalidMessageReceivedEvent EventMessage event) throws ServiceException;
+    void respondToInvalidMessage(@Observes @InvalidMessageReceivedEvent EventMessage event);
 
     /**
      * Sends back an error message over the queue

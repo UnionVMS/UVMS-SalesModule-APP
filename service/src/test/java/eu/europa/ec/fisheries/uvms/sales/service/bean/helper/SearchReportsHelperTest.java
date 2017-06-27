@@ -2,8 +2,8 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListDto;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -75,7 +75,7 @@ public class SearchReportsHelperTest {
         assertEquals(new ArrayList<String>(), reportQuery.getFilters().getVesselExtIds());
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = SalesServiceException.class)
     public void testPrepareVesselFreeTextSearchWhenSomethingGoesWrongContactingAsset() throws Exception {
         ReportQueryFilter reportQueryFilter = new ReportQueryFilter()
                 .withVesselName("vessel");
@@ -83,7 +83,7 @@ public class SearchReportsHelperTest {
         ReportQuery reportQuery = new ReportQuery()
                 .withFilters(reportQueryFilter);
 
-        when(assetService.findExtIdsByNameOrCFROrIRCS("vessel")).thenThrow(new ServiceException("Boo"));
+        when(assetService.findExtIdsByNameOrCFROrIRCS("vessel")).thenThrow(new SalesServiceException("Boo"));
 
         helper.prepareVesselFreeTextSearch(reportQuery);
 
@@ -133,7 +133,7 @@ public class SearchReportsHelperTest {
         asset.setName("name");
 
         //mock
-        when(assetService.findByCFR("invalid")).thenThrow(new ServiceException("oh oooh"));
+        when(assetService.findByCFR("invalid")).thenThrow(new SalesServiceException("oh oooh"));
         when(assetService.findByCFR("valid")).thenReturn(asset);
 
         //execute

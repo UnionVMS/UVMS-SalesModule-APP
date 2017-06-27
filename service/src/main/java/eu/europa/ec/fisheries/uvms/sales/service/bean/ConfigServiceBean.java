@@ -20,7 +20,7 @@ import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
-import eu.europa.ec.fisheries.uvms.sales.service.exception.SalesServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;

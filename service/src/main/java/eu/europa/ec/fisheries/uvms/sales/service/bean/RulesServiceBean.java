@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMarshallException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
@@ -12,6 +11,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
@@ -36,7 +36,7 @@ public class RulesServiceBean implements RulesService {
     private ReportHelper reportHelper;
 
     @Override
-    public void sendResponseToRules(FLUXSalesResponseMessage response, String recipient, String pluginToSendResponseThrough) throws ServiceException {
+    public void sendResponseToRules(FLUXSalesResponseMessage response, String recipient, String pluginToSendResponseThrough) {
         try {
             String responseAsString = JAXBMarshaller.marshallJaxBObjectToString(response);
             String dataFlow = getFluxDataFlow();
@@ -46,13 +46,13 @@ public class RulesServiceBean implements RulesService {
             String request = RulesModuleRequestMapper.createSendSalesResponseRequest(responseAsString, responseGuid, recipient, pluginToSendResponseThrough, dataFlow, now);
             messageProducer.sendModuleMessage(request, Union.RULES);
         } catch (RulesModelMarshallException | SalesMarshallException | MessageException e) {
-            throw new ServiceException("Could not send the sales response to Rules", e);
+            throw new SalesServiceException("Could not send the sales response to Rules", e);
         }
 
     }
 
     @Override
-    public void sendReportToRules(FLUXSalesReportMessage report, String recipient, String pluginToSendResponseThrough) throws ServiceException {
+    public void sendReportToRules(FLUXSalesReportMessage report, String recipient, String pluginToSendResponseThrough) {
         try {
             String reportAsString = JAXBMarshaller.marshallJaxBObjectToString(report);
             String fluxDataFlow = getFluxDataFlow();
@@ -62,7 +62,7 @@ public class RulesServiceBean implements RulesService {
             String request = RulesModuleRequestMapper.createSendSalesReportRequest(reportAsString, reportGuid, recipient, pluginToSendResponseThrough, fluxDataFlow, now);
             messageProducer.sendModuleMessage(request, Union.RULES);
         } catch (RulesModelMarshallException | SalesMarshallException | MessageException e) {
-            throw new ServiceException("Could not send the sales report to Rules", e);
+            throw new SalesServiceException("Could not send the sales report to Rules", e);
         }
     }
 

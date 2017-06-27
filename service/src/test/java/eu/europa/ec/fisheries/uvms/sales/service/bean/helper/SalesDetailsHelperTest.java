@@ -2,13 +2,13 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mother.AAPProductTypeMother;
 import eu.europa.ec.fisheries.uvms.sales.domain.mother.ReportMother;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
@@ -121,7 +121,7 @@ public class SalesDetailsHelperTest {
     }
 
     @Test
-    public void testEnrichWithVesselInformationWhenNoAuctionSale() throws ServiceException {
+    public void testEnrichWithVesselInformationWhenNoAuctionSale() {
         //data set
         String extId = "extId";
         String vesselName = "Opel Corsa";
@@ -158,7 +158,7 @@ public class SalesDetailsHelperTest {
     }
 
     @Test
-    public void testEnrichWithVesselInformationWhenAuctionSaleWithFirstSaleAndSuccess() throws ServiceException {
+    public void testEnrichWithVesselInformationWhenAuctionSaleWithFirstSaleAndSuccess() {
         //data set
         String extId = "extId";
         String vesselName = "Opel Corsa";
@@ -199,7 +199,7 @@ public class SalesDetailsHelperTest {
     }
 
     @Test
-    public void testEnrichWithVesselInformationWhenAuctionSaleWithFirstSaleAndReportIsIncomplete() throws ServiceException {
+    public void testEnrichWithVesselInformationWhenAuctionSaleWithFirstSaleAndReportIsIncomplete() {
         //data set
         String extId = "extId";
         String vesselName = "Opel Corsa";
@@ -240,7 +240,7 @@ public class SalesDetailsHelperTest {
     }
 
     @Test
-    public void testEnrichWithVesselInformationWhenAuctionSaleWithFirstSaleAndCommunicationWithAssetGoesWrong() throws ServiceException {
+    public void testEnrichWithVesselInformationWhenAuctionSaleWithFirstSaleAndCommunicationWithAssetGoesWrong() {
         //data set
         String extId = "extId";
 
@@ -255,7 +255,7 @@ public class SalesDetailsHelperTest {
 
         //mock
         doReturn(extId).when(reportHelper).getVesselExtId(report);
-        doThrow(new ServiceException("oh oooh")).when(assetService).findByCFR(extId);
+        doThrow(new SalesServiceException("oh oooh")).when(assetService).findByCFR(extId);
 
         //execute
         salesDetailsHelper.enrichWithVesselInformation(salesDetailsDto, report);
@@ -273,7 +273,7 @@ public class SalesDetailsHelperTest {
     }
 
     @Test
-    public void testEnrichWithVesselInformationWhenAuctionSaleWithVariousSupply() throws ServiceException {
+    public void testEnrichWithVesselInformationWhenAuctionSaleWithVariousSupply() {
         //data set
         AuctionSaleType auctionSale = new AuctionSaleType()
                 .withSalesCategory(SalesCategoryType.VARIOUS_SUPPLY);

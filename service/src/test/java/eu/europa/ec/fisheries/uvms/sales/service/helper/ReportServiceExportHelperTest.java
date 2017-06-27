@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.helper;
 
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceExportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListExportDto;
 import org.joda.time.DateTime;
@@ -24,7 +23,7 @@ public class ReportServiceExportHelperTest {
     }
 
     @Test
-    public void exportToList() throws ServiceException {
+    public void exportToList() {
         String landingDate = new DateTime(2017, 3, 2, 0, 0).toString();
         String occurrence = new DateTime(2017, 3, 1, 0, 0).toString();
 

@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.rest.service;
 
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.rest.security.RequiresFeature;
 import eu.europa.ec.fisheries.uvms.rest.security.UnionVMSFeature;
@@ -48,7 +47,7 @@ public class SavedSearchResource extends UnionVMSResource {
     @DELETE
     @Produces(value = {MediaType.APPLICATION_JSON})
     @RequiresFeature(UnionVMSFeature.manageSalesReports)
-    public Response deleteSavedSearch(@QueryParam("id") Integer id) throws ServiceException {
+    public Response deleteSavedSearch(@QueryParam("id") Integer id) {
         savedSearchService.deleteSearch(id);
 
         return createSuccessResponse();

@@ -44,7 +44,7 @@ public class SavedSearchGroupDomainModelBean implements SavedSearchGroupDomainMo
         checkNotNull(savedSearchGroup);
         savedSearchGroupDao.delete(mapper.map(savedSearchGroup, eu.europa.ec.fisheries.uvms.sales.domain.entity.SavedSearchGroup.class));
     }
-    public void delete(Integer id) throws SalesDatabaseException {
+    public void delete(Integer id) {
         checkNotNull(id);
 
         eu.europa.ec.fisheries.uvms.sales.domain.entity.SavedSearchGroup savedSearchGroup = savedSearchGroupDao.findByIdOrNull(id);

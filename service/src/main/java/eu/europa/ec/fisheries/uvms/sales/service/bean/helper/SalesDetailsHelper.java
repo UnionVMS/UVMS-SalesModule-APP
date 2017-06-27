@@ -3,10 +3,10 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 import eu.europa.ec.fisheries.schema.sales.AAPProductType;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
@@ -90,7 +90,7 @@ public class SalesDetailsHelper {
 
             } catch (NullPointerException | IndexOutOfBoundsException e) {
                 LOG.error("Cannot retrieve vessel details because not all required fields are provided in the report.", e);
-            } catch (ServiceException e) {
+            } catch (SalesServiceException e) {
                 LOG.error("Cannot retrieve vessel details of vessel " + vesselExtId, e);
             }
         }
@@ -119,7 +119,7 @@ public class SalesDetailsHelper {
             }
         } catch (NullPointerException | IndexOutOfBoundsException e) {
             LOG.error("Cannot convert product prices in the local currency details because not all required fields are provided in the report.", e);
-        } catch (ServiceException e) {
+        } catch (SalesServiceException e) {
             LOG.error("Cannot convert product prices in the local currency, because I cannot retrieve the exchange rate", e);
         }
     }

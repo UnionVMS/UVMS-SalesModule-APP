@@ -1,10 +1,10 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.module.GetAssetModuleResponse;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
@@ -47,7 +47,7 @@ public class AssetServiceBeanHelperTest {
         when(receiver.getMessage("messageId", TextMessage.class)).thenReturn(textMessage);
         when(textMessage.getText()).thenReturn("OOH INVALID XML");
 
-        exception.expect(ServiceException.class);
+        exception.expect(SalesServiceException.class);
         exception.expectMessage("Could not parse the response from the the Asset Module. The response was OOH INVALID XML");
 
         helper.callAssetModule("request", GetAssetModuleResponse.class);
@@ -64,7 +64,7 @@ public class AssetServiceBeanHelperTest {
         when(receiver.getMessage("messageId", TextMessage.class)).thenReturn(textMessage);
         when(textMessage.getText()).thenThrow(new JMSException("I'm feeling funky!"));
 
-        exception.expect(ServiceException.class);
+        exception.expect(SalesServiceException.class);
         exception.expectMessage("Could not parse the response from the the Asset Module.");
 
         helper.callAssetModule("request", GetAssetModuleResponse.class);
@@ -80,7 +80,7 @@ public class AssetServiceBeanHelperTest {
         when(messageProducer.sendModuleMessage("request", Union.ASSET)).thenReturn("messageId");
         when(receiver.getMessage("messageId", TextMessage.class)).thenThrow(new MessageException());
 
-        exception.expect(ServiceException.class);
+        exception.expect(SalesServiceException.class);
         exception.expectMessage("Could not contact the Asset Module");
 
         helper.callAssetModule("request", GetAssetModuleResponse.class);

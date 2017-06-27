@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.rest;
 import eu.europa.ec.fisheries.uvms.rest.security.UnionVMSFeatureFilter;
 import eu.europa.ec.fisheries.uvms.sales.rest.constants.RestConstants;
 import eu.europa.ec.fisheries.uvms.sales.rest.filter.JacksonObjectMapperProvider;
-import eu.europa.ec.fisheries.uvms.sales.rest.filter.ServiceExceptionHandler;
+import eu.europa.ec.fisheries.uvms.sales.rest.filter.SalesServiceExceptionHandler;
 import eu.europa.ec.fisheries.uvms.sales.rest.service.CodeListResource;
 import eu.europa.ec.fisheries.uvms.sales.rest.service.ReportResource;
 import eu.europa.ec.fisheries.uvms.sales.rest.service.SavedSearchResource;
@@ -27,7 +27,7 @@ public class RestActivator extends Application {
         set.add(ReportResource.class);
         set.add(CodeListResource.class);
         set.add(SavedSearchResource.class);
-        set.add(ServiceExceptionHandler.class);
+        set.add(SalesServiceExceptionHandler.class);
         set.add(JacksonObjectMapperProvider.class);
         set.add(UnionVMSFeatureFilter.class);
         LOG.info(RestConstants.MODULE_NAME + " module starting up");

@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service;
 
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 
 import javax.ejb.Local;
@@ -17,18 +17,18 @@ public interface AssetService {
      *
      * @param extId the guid, in the sales internals referred to as extId.
      * @return the found asset.
-     * @throws ServiceException, when something goes wrong, or the asset is not found.
+     * @throws SalesServiceException, when something goes wrong, or the asset is not found.
      */
-    Asset findByCFR(String extId) throws ServiceException;
+    Asset findByCFR(String extId);
 
     /**
      * Searches assets by their name, CFR of IRCS.
      *
      * @param searchString an asset name, CFR or IRCS
      * @return a list of the found assets. This list is empty when nothing is found.
-     * @throws ServiceException, when something goes wrong.
+     * @throws SalesServiceException, when something goes wrong.
      */
-    List<Asset> findByNameOrCFROrIRCS(String searchString) throws ServiceException;
+    List<Asset> findByNameOrCFROrIRCS(String searchString);
 
     /**
      * Searches assets by their name, CFR of IRCS. Only their GUIDs, in Sales called "extIds", are returned.
@@ -36,7 +36,7 @@ public interface AssetService {
      * @param searchString an asset name, CFR or IRCS
      * @return a list containing the GUIDs, in Sales called "extIds", of the found assets. This list is empty when
      * nothing is found.
-     * @throws ServiceException, when something goes wrong.
+     * @throws SalesServiceException, when something goes wrong.
      */
-    List<String> findExtIdsByNameOrCFROrIRCS(String searchString) throws ServiceException;
+    List<String> findExtIdsByNameOrCFROrIRCS(String searchString);
 }

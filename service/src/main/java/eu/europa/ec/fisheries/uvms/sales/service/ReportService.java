@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.service;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesQueryMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 
 import javax.ejb.Local;
@@ -24,9 +24,9 @@ public interface ReportService {
      * Search for sales reports synchronously. Used over REST service.
      * @param filters filter criteria
      * @return page of search results
-     * @throws ServiceException when something goes wrong
+     * @throws SalesServiceException when something goes wrong
      */
-    PagedListDto<ReportListDto> search(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters) throws ServiceException;
+    PagedListDto<ReportListDto> search(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters);
 
     /**
      * Search for sales reports asynchronously. Used over JMS.
@@ -37,23 +37,23 @@ public interface ReportService {
      * @param messageValidationStatus the general validation status of the entire message
      */
     void search(@NotNull FLUXSalesQueryMessage fluxSalesQueryMessage, String pluginToSendResponseThrough,
-                List<ValidationQualityAnalysisType> validationResults, String messageValidationStatus) throws ServiceException;
+                List<ValidationQualityAnalysisType> validationResults, String messageValidationStatus);
 
     /**
      * Exports documents based on the same criterias you can use for search()
      * @param filters criteria to search on
      * @return the matching flux reports formatted in the manner that the frontend expects it to convert to CSV.
-     * @throws ServiceException
+     * @throws SalesServiceException
      */
-    List<List<String>> exportDocuments(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters) throws ServiceException;
+    List<List<String>> exportDocuments(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters);
 
     /**
      * Exports either the selected documents or all documents based on the {@link ExportListsDto} passed.
      * @param exportListsDto
      * @return the matching flux reports formatted in the manner that the frontend expects it to convert to CSV.
-     * @throws ServiceException
+     * @throws SalesServiceException
      */
-    List<List<String>> exportSelectedDocuments(@NotNull ExportListsDto exportListsDto) throws ServiceException;
+    List<List<String>> exportSelectedDocuments(@NotNull ExportListsDto exportListsDto);
 
     /**
      * Saves an incoming report whether it's PurposeCode is 9, 5 or 3
@@ -65,5 +65,5 @@ public interface ReportService {
      */
     void saveReport(Report report, String pluginToSendResponseThrough,
                     List<ValidationQualityAnalysisType> validationResults,
-                    String messageValidationStatus) throws ServiceException;
+                    String messageValidationStatus);
 }

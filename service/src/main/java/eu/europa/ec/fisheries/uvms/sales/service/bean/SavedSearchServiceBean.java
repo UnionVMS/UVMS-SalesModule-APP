@@ -1,9 +1,9 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.SavedSearchGroup;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.SavedSearchGroupDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesDatabaseException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.SavedSearchService;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.SavedSearchGroupDto;
 import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
@@ -42,11 +42,11 @@ public class SavedSearchServiceBean implements SavedSearchService {
     }
 
     @Override
-    public void deleteSearch(@NotNull Integer id) throws ServiceException {
+    public void deleteSearch(@NotNull Integer id) {
         try {
             savedSearchGroupDomainModel.delete(id);
         } catch (SalesDatabaseException e) {
-            throw new ServiceException("Exception when deleting a saved search group with id " + id, e);
+            throw new SalesServiceException("Exception when deleting a saved search group with id " + id, e);
         }
     }
 }

@@ -2,8 +2,8 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceExportHelper;
@@ -57,7 +57,7 @@ public class ReportServiceBean implements ReportService {
     @Override
     public void saveReport(Report report, String pluginToSendResponseThrough,
                            List<ValidationQualityAnalysisType> validationResults,
-                           String messageValidationStatus) throws ServiceException {
+                           String messageValidationStatus) {
         Report alreadyExistingReport = reportDomainModel.findByExtIdOrNull(report.getFLUXSalesReportMessage().getFLUXReportDocument().getIDS().get(0).getValue());
 
         //If a report exists with the incoming ID, we don't save the report.
@@ -87,7 +87,7 @@ public class ReportServiceBean implements ReportService {
     }
 
     @Override
-    public PagedListDto<ReportListDto> search(@NotNull PageCriteriaDto<ReportQueryFilterDto> criteria) throws ServiceException {
+    public PagedListDto<ReportListDto> search(@NotNull PageCriteriaDto<ReportQueryFilterDto> criteria) {
         try {
             //prepare query
             ReportQuery query = mapper.map(criteria, ReportQuery.class);
@@ -105,8 +105,8 @@ public class ReportServiceBean implements ReportService {
             searchReportsHelper.enrichWithOlderVersions(reportDtos);
             return new PagedListDto<>(query, amountOfReportsWithoutFilters, reportDtos);
 
-        } catch (ServiceException e) {
-            throw new ServiceException("Something went wrong searching for reports", e);
+        } catch (SalesServiceException e) {
+            throw new SalesServiceException("Something went wrong searching for reports", e);
         }
     }
 
@@ -114,7 +114,7 @@ public class ReportServiceBean implements ReportService {
     public void search(FLUXSalesQueryMessage fluxSalesQueryMessage,
                        String pluginToSendResponseThrough,
                        List<ValidationQualityAnalysisType> validationResults,
-                       String messageValidationStatus) throws ServiceException {
+                       String messageValidationStatus) {
         ReportQuery query = mapper.map(fluxSalesQueryMessage, ReportQuery.class);
         searchReportsHelper.excludeDeletedReportsInQuery(query);
 
@@ -127,7 +127,7 @@ public class ReportServiceBean implements ReportService {
     }
 
     @Override
-    public List<List<String>> exportDocuments(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters) throws ServiceException {
+    public List<List<String>> exportDocuments(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters) {
         PagedListDto<ReportListDto> search = search(filters.pageSize(Integer.MAX_VALUE).pageIndex(1));
 
         List<ReportListExportDto> reports = mapper.mapAsList(search.getItems(), ReportListExportDto.class);
@@ -136,7 +136,7 @@ public class ReportServiceBean implements ReportService {
     }
 
     @Override
-    public List<List<String>> exportSelectedDocuments(@NotNull ExportListsDto exportListsDto) throws ServiceException {
+    public List<List<String>> exportSelectedDocuments(@NotNull ExportListsDto exportListsDto) {
         PagedListDto<ReportListDto> search;
 
         if (exportListsDto.isExportAll()) {
@@ -150,23 +150,23 @@ public class ReportServiceBean implements ReportService {
         return reportServiceExportHelper.exportToList(reports);
     }
 
-    private PagedListDto<ReportListDto> getSelectedReports(ExportListsDto exportListsDto) throws ServiceException {
+    private PagedListDto<ReportListDto> getSelectedReports(ExportListsDto exportListsDto) {
         PageCriteriaDto<ReportQueryFilterDto> criteria = exportListsDto.getCriteria();
         criteria.getFilters().includeFluxReportIds(exportListsDto.getIds());
         try {
             return search(criteria);
-        } catch (ServiceException e) {
-            throw new ServiceException("Something went wrong during CSV export of selected reports", e);
+        } catch (SalesServiceException e) {
+            throw new SalesServiceException("Something went wrong during CSV export of selected reports", e);
         }
     }
 
-    private PagedListDto<ReportListDto> getAllReports(ExportListsDto exportListsDto) throws ServiceException {
+    private PagedListDto<ReportListDto> getAllReports(ExportListsDto exportListsDto) {
         PageCriteriaDto<ReportQueryFilterDto> criteria = exportListsDto.getCriteria();
         criteria.getFilters().excludeFluxReportIds(exportListsDto.getIds());
         try {
             return search(criteria);
-        } catch (ServiceException e) {
-            throw new ServiceException("Something went wrong during CSV export of all reports", e);
+        } catch (SalesServiceException e) {
+            throw new SalesServiceException("Something went wrong during CSV export of all reports", e);
         }
     }
 

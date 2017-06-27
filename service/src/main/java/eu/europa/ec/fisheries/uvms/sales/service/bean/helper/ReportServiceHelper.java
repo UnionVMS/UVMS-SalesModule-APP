@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
@@ -40,13 +39,13 @@ public class ReportServiceHelper {
     public void sendResponseToSenderOfReport(Report report,
                                              String pluginToSendResponseThrough,
                                              List<ValidationQualityAnalysisType> validationResults,
-                                             String messageValidationStatus) throws ServiceException {
+                                             String messageValidationStatus) {
         FLUXSalesResponseMessage responseToSender = fluxSalesResponseMessageFactory.create(report, validationResults, messageValidationStatus);
         String senderOfReport = reportHelper.getFLUXReportDocumentOwnerId(report);
         rulesService.sendResponseToRules(responseToSender, senderOfReport, pluginToSendResponseThrough);
     }
 
-    public void forwardReportToOtherRelevantParties(Report report, String pluginToSendResponseThrough) throws ServiceException {
+    public void forwardReportToOtherRelevantParties(Report report, String pluginToSendResponseThrough) {
         Report originalReport = findOriginalReport(report);
 
         String countryOfHost = configService.getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);

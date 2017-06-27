@@ -6,7 +6,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.sales.message.event.ErrorEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.InvalidMessageReceivedEvent;
 import eu.europa.ec.fisheries.uvms.sales.message.event.QueryReceivedEvent;
@@ -18,7 +17,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.service.EventService;
 import eu.europa.ec.fisheries.uvms.sales.service.InvalidMessageService;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,13 +53,13 @@ public class EventServiceBean implements EventService {
 
             reportService.saveReport(report, pluginToSendResponseThrough, validationResults, messageValidationResult);
         } catch (SalesMarshallException e) {
-            LOG.error("Something went wrong during unmarshalling of a sales report", e);
-        } catch (ServiceException e) {
-            LOG.error("Something went wrong when saving a sales report", e);
+            throw new SalesServiceException("Something went wrong during unmarshalling of a sales report", e);
+        } catch (SalesServiceException e) {
+            throw new SalesServiceException("Something went wrong when saving a sales report", e);
         }
     }
 
-    public void executeQuery(@Observes @QueryReceivedEvent EventMessage event) throws ServiceException {
+    public void executeQuery(@Observes @QueryReceivedEvent EventMessage event) {
         SalesQueryRequest salesQueryRequest = (SalesQueryRequest) event.getSalesBaseRequest();
 
         try {
@@ -71,12 +70,11 @@ public class EventServiceBean implements EventService {
 
             reportService.search(salesQueryType, pluginToSendResponseThrough, validationResults, messageValidationResult);
         } catch (SalesMarshallException e) {
-            LOG.error("Something went wrong during unmarshalling of a sales query", e);
-            return;
+            throw new SalesServiceException("Something went wrong during unmarshalling of a sales query", e);
         }
     }
 
-    public void respondToInvalidMessage(@Observes @InvalidMessageReceivedEvent EventMessage event) throws ServiceException {
+    public void respondToInvalidMessage(@Observes @InvalidMessageReceivedEvent EventMessage event) {
         RespondToInvalidMessageRequest respondToInvalidMessageRequest = (RespondToInvalidMessageRequest) event.getSalesBaseRequest();
 
         String pluginToSendResponseThrough = respondToInvalidMessageRequest.getPluginToSendResponseThrough();

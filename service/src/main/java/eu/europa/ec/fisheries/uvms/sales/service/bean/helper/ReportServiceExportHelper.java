@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListExportDto;
 
 import javax.ejb.Stateless;
@@ -18,9 +18,9 @@ public class ReportServiceExportHelper {
     /**
      * @param reportListExportDtos The dto's to be exported.
      * @return
-     * @throws ServiceException
+     * @throws SalesServiceException
      */
-    public List<List<String>> exportToList(List<ReportListExportDto> reportListExportDtos) throws ServiceException {
+    public List<List<String>> exportToList(List<ReportListExportDto> reportListExportDtos) {
         List<List<String>> lists = new ArrayList<>();
 
         for (ReportListExportDto reportListExportDto : reportListExportDtos) {
