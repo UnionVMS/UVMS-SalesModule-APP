@@ -179,4 +179,13 @@ public class SalesDetailsHelper {
         List<SalesDetailsRelation> relations = mapper.mapAsList(latestRelatedReport, SalesDetailsRelation.class);
         salesReportDto.setRelatedReports(relations);
     }
+
+    public void enrichProductsWithFactor(SalesDetailsDto detailsDto) {
+        List<ProductDto> products = detailsDto.getSalesReport().getProducts();
+        for (ProductDto product : products) {
+            if (product.getFactor() == null) {
+                product.setFactor(BigDecimal.valueOf(9999)); //TODO: retrieve from MDR
+            }
+        }
+    }
 }
