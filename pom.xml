@@ -186,6 +186,21 @@
                     <outputDirectory>target/dir</outputDirectory>
                 </configuration>
             </plugin>
+
+            <!-- deploy to Nexus -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.1</version>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <modules>
@@ -195,4 +210,12 @@
         <module>message</module>
         <module>module</module>
     </modules>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>lv-snapshots</id>
+            <url>https://apjenp01.dg3.be/nexus/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
