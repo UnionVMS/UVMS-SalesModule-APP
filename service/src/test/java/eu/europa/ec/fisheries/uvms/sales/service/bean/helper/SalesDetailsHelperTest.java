@@ -473,4 +473,17 @@ public class SalesDetailsHelperTest {
         assertSame(mappedOlderVersions, detailsDto.getSalesReport().getOtherVersions());
     }
 
+    @Test
+    public void testEnrichProductWithFactor() {
+        ProductDto productDto1 = new ProductDto().factor(BigDecimal.valueOf(9));
+        ProductDto productDto2 = new ProductDto().factor(null);
+        SalesDetailsDto detailsDto = new SalesDetailsDto()
+                .salesReport(new SalesReportDto()
+                        .products(Arrays.asList(productDto1, productDto2)));
+
+        salesDetailsHelper.enrichProductsWithFactor(detailsDto);
+
+        assertEquals(BigDecimal.valueOf(9), productDto1.getFactor());
+        assertEquals(BigDecimal.valueOf(9999), productDto2.getFactor());
+    }
 }
