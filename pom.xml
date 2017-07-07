@@ -20,7 +20,7 @@
         <orika.version>1.5.0</orika.version>
         <jackson.version>2.4.1</jackson.version>
 
-        <sales.model.version>1.0.0-SNAPSHOT</sales.model.version>
+        <sales.model.version>1.0.0</sales.model.version>
         <asset.model.version>3.0.4</asset.model.version>
         <rules.model.version>3.0.5-SNAPSHOT</rules.model.version>
         <uvms.commons.version>2.0.17</uvms.commons.version>
