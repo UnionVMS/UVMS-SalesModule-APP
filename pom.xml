@@ -22,7 +22,7 @@
 
         <sales.model.version>1.0.0</sales.model.version>
         <asset.model.version>3.0.4</asset.model.version>
-        <rules.model.version>3.0.5-SNAPSHOT</rules.model.version>
+        <rules.model.version>3.0.6-SNAPSHOT</rules.model.version>
         <uvms.commons.version>2.0.17</uvms.commons.version>
         <uvms.config.version>3.0.4</uvms.config.version>
         <usm4uvms.version>3.0.7-SNAPSHOT</usm4uvms.version>
