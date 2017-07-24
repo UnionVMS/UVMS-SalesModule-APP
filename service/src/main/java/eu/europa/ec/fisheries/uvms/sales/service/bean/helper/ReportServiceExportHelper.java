@@ -27,29 +27,12 @@ public class ReportServiceExportHelper {
             List<String> values = new ArrayList<>();
             lists.add(values);
 
-            for (Field field : reportListExportDto.getClass().getDeclaredFields()) {
-                values.add(getValueFromField(reportListExportDto, field));
+            for (Field field : reportListExportDto.getClass().getFields()) {
+                values.add(getStringFromField(reportListExportDto, field));
             }
-
         }
 
         return lists;
-    }
-
-    /**
-     * Uses reflection to get the value of every property in the {@link ReportListExportDto}.
-     * @param reportListExportDto
-     * @param field
-     * @return value of the field in the dto.
-     */
-    private String getValueFromField(ReportListExportDto reportListExportDto, Field field) {
-        field.setAccessible(true);
-
-        String stringFromField = getStringFromField(reportListExportDto, field);
-
-        field.setAccessible(false);
-
-        return stringFromField;
     }
 
     private String getStringFromField(ReportListExportDto reportListExportDto, Field field) {
@@ -62,7 +45,7 @@ public class ReportServiceExportHelper {
 
             return object.toString();
         } catch (IllegalAccessException e) {
-            // This is never going to happen because the fields are made accessible before calling this method
+            // All fields should be public. See comments on DTO.
             e.printStackTrace();
             return "";
         }

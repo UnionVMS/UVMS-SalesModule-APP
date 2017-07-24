@@ -19,6 +19,7 @@
         <guava.version>20.0</guava.version>
         <orika.version>1.5.0</orika.version>
         <jackson.version>2.4.1</jackson.version>
+        <version.jacoco>0.7.9</version.jacoco>
 
         <sales.model.version>1.0.0</sales.model.version>
         <asset.model.version>3.0.4</asset.model.version>
@@ -26,6 +27,8 @@
         <uvms.commons.version>2.0.17</uvms.commons.version>
         <uvms.config.version>3.0.4</uvms.config.version>
         <usm4uvms.version>3.0.7-SNAPSHOT</usm4uvms.version>
+
+        <argLine></argLine>
     </properties>
 
     <dependencyManagement>
@@ -204,8 +207,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -219,6 +220,47 @@
                     <url>https://apjenp01.dg3.be/nexus/repository/maven-snapshots/</url>
                 </snapshotRepository>
             </distributionManagement>
+        </profile>
+
+        <profile>
+            <id>jacoco</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>org.jacoco.core</artifactId>
+                    <version>${version.jacoco}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${version.jacoco}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 

@@ -8,6 +8,15 @@ import org.joda.time.DateTime;
 /**
  * Represents one item in the list of reports to be exported.
  * The properties are defined in the order that the values in CSV format are printed.
+ *
+ *
+ * Why public fields? This DTO can be transformed to a CSV. In order to do that, reflection is used.
+ * Via reflection, it's possible to make private fields accessible and read the contents.
+ *
+ * However, when running with Java agents, like Jacoco, it's possible that these classes are "enriched": extra
+ * private attributes are being added. This messes up the functionality (and the tests).
+ *
+ * The quickest solution to avoid this problem, is to use public fields only. Ugly, I know. :(
  */
 @EqualsAndHashCode
 @ToString
@@ -16,44 +25,44 @@ public class ReportListExportDto {
     /**
      * flag state of the vessel
      */
-    private String flagState;
+    public String flagState;
 
     /**
      * external marking (CFR) of the vessel
      */
-    private String externalMarking;
+    public String externalMarking;
 
     /**
      * IRCS of the vessel
      */
-    private String ircs;
+    public String ircs;
 
-    private String vesselName;
+    public String vesselName;
 
     /**
      * timestamp of the sale
      */
-    private String occurrence;
+    public String occurrence;
 
     /**
      * location of the sale
      */
-    private String location;
-    private String landingDate;
-    private String landingPort;
-    private SalesCategoryType category;
+    public String location;
+    public String landingDate;
+    public String landingPort;
+    public SalesCategoryType category;
 
     /**
      * seller name
      */
-    private String seller;
+    public String seller;
 
     /**
      * buyer name
      */
-    private String buyer;
+    public String buyer;
 
-    private DateTime deletion;
+    public DateTime deletion;
 
     public String getFlagState() {
         return flagState;
