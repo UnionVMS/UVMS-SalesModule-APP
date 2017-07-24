@@ -19,7 +19,7 @@
         <guava.version>20.0</guava.version>
         <orika.version>1.5.0</orika.version>
         <jackson.version>2.4.1</jackson.version>
-        <version.jacoco>0.7.9</version.jacoco>
+        <jacoco.version>0.7.9</jacoco.version>
 
         <sales.model.version>1.0.0</sales.model.version>
         <asset.model.version>3.0.4</asset.model.version>
@@ -27,8 +27,6 @@
         <uvms.commons.version>2.0.17</uvms.commons.version>
         <uvms.config.version>3.0.4</uvms.config.version>
         <usm4uvms.version>3.0.7-SNAPSHOT</usm4uvms.version>
-
-        <argLine></argLine>
     </properties>
 
     <dependencyManagement>
@@ -228,7 +226,7 @@
                 <dependency>
                     <groupId>org.jacoco</groupId>
                     <artifactId>org.jacoco.core</artifactId>
-                    <version>${version.jacoco}</version>
+                    <version>${jacoco.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -238,7 +236,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${version.jacoco}</version>
+                        <version>${jacoco.version}</version>
                         <executions>
                             <execution>
                                 <goals>
