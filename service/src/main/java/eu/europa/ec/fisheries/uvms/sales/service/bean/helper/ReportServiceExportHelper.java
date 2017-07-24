@@ -2,6 +2,8 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListExportDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import java.lang.reflect.Field;
@@ -14,6 +16,8 @@ import java.util.List;
  */
 @Stateless
 public class ReportServiceExportHelper {
+
+    private final static Logger LOG = LoggerFactory.getLogger(ReportServiceExportHelper.class);
 
     /**
      * @param reportListExportDtos The dto's to be exported.
@@ -46,7 +50,7 @@ public class ReportServiceExportHelper {
             return object.toString();
         } catch (IllegalAccessException e) {
             // All fields should be public. See comments on DTO.
-            e.printStackTrace();
+            LOG.error("Very weird bug. All fields should be public of ReportListExportDto!", e);
             return "";
         }
     }
