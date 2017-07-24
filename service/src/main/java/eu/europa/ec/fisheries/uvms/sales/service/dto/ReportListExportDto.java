@@ -25,44 +25,44 @@ public class ReportListExportDto {
     /**
      * flag state of the vessel
      */
-    public String flagState;
+    public String flagState; //NOSONAR
 
     /**
      * external marking (CFR) of the vessel
      */
-    public String externalMarking;
+    public String externalMarking; //NOSONAR
 
     /**
      * IRCS of the vessel
      */
-    public String ircs;
+    public String ircs; //NOSONAR
 
-    public String vesselName;
+    public String vesselName; //NOSONAR
 
     /**
      * timestamp of the sale
      */
-    public String occurrence;
+    public String occurrence; //NOSONAR
 
     /**
      * location of the sale
      */
-    public String location;
-    public String landingDate;
-    public String landingPort;
-    public SalesCategoryType category;
+    public String location; //NOSONAR
+    public String landingDate; //NOSONAR
+    public String landingPort; //NOSONAR
+    public SalesCategoryType category; //NOSONAR
 
     /**
      * seller name
      */
-    public String seller;
+    public String seller; //NOSONAR
 
     /**
      * buyer name
      */
-    public String buyer;
+    public String buyer; //NOSONAR
 
-    public DateTime deletion;
+    public DateTime deletion; //NOSONAR
 
     public String getFlagState() {
         return flagState;
