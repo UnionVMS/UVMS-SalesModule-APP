@@ -37,7 +37,7 @@ public class PagedListDto<T> {
     }
 
     private int calculateTotalNumberOfPages() {
-        return new Double(Math.ceil((double)totalNumberOfRecords / rowsPerPage)).intValue();
+        return (int)Math.ceil((double)totalNumberOfRecords / rowsPerPage);
     }
 
     public int getCurrentPage() {
