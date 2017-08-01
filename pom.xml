@@ -27,6 +27,8 @@
         <uvms.commons.version>2.0.17</uvms.commons.version>
         <uvms.config.version>3.0.4</uvms.config.version>
         <usm4uvms.version>3.0.7-SNAPSHOT</usm4uvms.version>
+
+        <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-SalesModule-APP.git</scm.connection>
     </properties>
 
     <dependencyManagement>
@@ -207,6 +209,20 @@
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
         </plugins>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>1.8.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
@@ -271,10 +287,20 @@
     </modules>
 
     <distributionManagement>
+        <repository>
+            <id>focus-releases</id>
+            <name>UnionVms Repository</name>
+            <url>http://nexus.focus.fish/nexus/content/repositories/releases/</url>
+        </repository>
         <snapshotRepository>
-            <id>lv-snapshots</id>
-            <url>https://apjenp01.dg3.be/nexus/repository/maven-snapshots/</url>
+            <id>focus-snapshots</id>
+            <name>UnionVms Snapshot Repository</name>
+            <url>http://nexus.focus.fish/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+    <scm>
+        <connection>${scm.connection}</connection>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>
