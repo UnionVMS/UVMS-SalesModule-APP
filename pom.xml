@@ -28,6 +28,7 @@
         <uvms.config.version>3.0.4</uvms.config.version>
         <usm4uvms.version>3.0.7-SNAPSHOT</usm4uvms.version>
 
+        <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-SalesModule-APP.git</scm.connection>
     </properties>
 
