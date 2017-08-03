@@ -26,11 +26,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
-            <artifactId>rules-model</artifactId>
-            <classifier>date</classifier>
-        </dependency>
-        <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
         </dependency>
@@ -74,6 +69,15 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
+            <artifactId>rules-model</artifactId>
+            <classifier>date</classifier>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
+            <artifactId>mdr-model</artifactId>
         </dependency>
 
         <dependency>

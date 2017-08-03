@@ -7,10 +7,14 @@ import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCode;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import un.unece.uncefact.data.standard.mdr.communication.ColumnDataType;
+import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -292,9 +296,65 @@ public class MapperProducerTest {
 
     @Test
     public void testReferenceDataCacheToCodeListsDto() {
-        ReferenceDataCache referenceDataCache = new ReferenceDataCache();
+        ReferenceDataCache referenceDataCacheStub = new ReferenceDataCache() {
 
-        CodeListsDto map = mapper.map(referenceDataCache, CodeListsDto.class);
+            @Override
+            public List<ReferenceCode> getFlagStates() {
+                return Lists.newArrayList(new ReferenceCode("test", "test"));
+            }
+
+            @Override
+            public List<ReferenceCode> getSalesCategories() {
+                return Lists.newArrayList(new ReferenceCode("test", "test"));
+            }
+
+            @Override
+            public List<ReferenceCode> getSalesLocations() {
+                return Lists.newArrayList(new ReferenceCode("salesLocations", "salesLocations"));
+            }
+
+            @Override
+            public List<ReferenceCode> getFreshness() {
+                return Lists.newArrayList(new ReferenceCode("test", "test"));
+            }
+
+            @Override
+            public List<ReferenceCode> getPresentations() {
+                return Lists.newArrayList(new ReferenceCode("test", "test"));
+            }
+
+            @Override
+            public List<ReferenceCode> getPreservations() {
+                return Lists.newArrayList(new ReferenceCode("test", "test"));
+            }
+
+            @Override
+            public List<ReferenceCode> getDistributionClasses() {
+                return Lists.newArrayList(new ReferenceCode("test", "test"));
+            }
+
+            @Override
+            public List<ReferenceCode> getUsages() {
+                return Lists.newArrayList(new ReferenceCode("test", "test"));
+            }
+
+            @Override
+            public List<ReferenceCode> getCurrencies() {
+                return Lists.newArrayList(new ReferenceCode("test", "test"));
+            }
+
+            @Override
+            public List<ReferenceCode> getSpecies() {
+                return Lists.newArrayList(new ReferenceCode("test", "test"));
+            }
+
+            @Override
+            public List<ReferenceCoordinates> getMarketAndStorageLocations() {
+                return Lists.newArrayList(new ReferenceCoordinates("test", 12d, 45d));
+            }
+        };
+
+        CodeListsDto map = mapper.map(referenceDataCacheStub, CodeListsDto.class);
 
         assertNotNull(map.getCurrencies());
         assertNotNull(map.getDistributionClasses());
@@ -304,6 +364,7 @@ public class MapperProducerTest {
         assertNotNull(map.getPreservations());
         assertNotNull(map.getLandingPorts());
         assertNotNull(map.getSalesLocations());
+        assertEquals(map.getLandingPorts(), map.getSalesLocations());
         assertNotNull(map.getSalesCategories());
         assertNotNull(map.getSpecies());
         assertNotNull(map.getUsages());
@@ -637,6 +698,41 @@ public class MapperProducerTest {
         assertEquals(reportExtId, salesDetailsRelation.getReportExtId());
         assertEquals(documentExtId, salesDetailsRelation.getDocumentExtId());
         assertEquals(FluxReportItemType.SALES_NOTE, salesDetailsRelation.getType());
+    }
+
+    @Test
+    public void testMapObjectRepresentationToReferenceCode() {
+        String code = "code-sdfsdf";
+        String text = "text";
+        ColumnDataType codeColumn = new ColumnDataType("code", code,"java.lang.String");
+        ColumnDataType textColumn = new ColumnDataType("description", text,"java.lang.String");
+
+        ObjectRepresentation objectRepresentation = new ObjectRepresentation();
+        objectRepresentation.setFields(Lists.newArrayList(codeColumn, textColumn));
+
+        ReferenceCode referenceCode = mapper.map(objectRepresentation, ReferenceCode.class);
+
+        assertEquals(code, referenceCode.getCode());
+        assertEquals(text, referenceCode.getText());
+    }
+
+    @Test
+    public void testMapObjectRepresentationToReferenceCoordinate() {
+        String code = "code-sdfsdf";
+        String latitude = "12.54";
+        String longitude = "2.8975412";
+        ColumnDataType codeColumn = new ColumnDataType("code", code,"java.lang.String");
+        ColumnDataType latitudeColumn = new ColumnDataType("latitude", latitude,"java.lang.Double");
+        ColumnDataType longitudeColumn = new ColumnDataType("longitude", longitude,"java.lang.Double");
+
+        ObjectRepresentation objectRepresentation = new ObjectRepresentation();
+        objectRepresentation.setFields(Lists.newArrayList(codeColumn, latitudeColumn, longitudeColumn));
+
+        ReferenceCoordinates referenceCoordinates = mapper.map(objectRepresentation, ReferenceCoordinates.class);
+
+        assertEquals(code, referenceCoordinates.getLocationCode());
+        assertEquals(Double.valueOf(latitude), referenceCoordinates.getLatitude());
+        assertEquals(Double.valueOf(longitude), referenceCoordinates.getLongitude());
     }
 
 }

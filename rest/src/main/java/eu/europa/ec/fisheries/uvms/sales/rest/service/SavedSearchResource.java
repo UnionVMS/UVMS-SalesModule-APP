@@ -23,12 +23,6 @@ public class SavedSearchResource extends UnionVMSResource {
     @EJB
     private SavedSearchService savedSearchService;
 
-    /**
-     * Returns the MDR code lists
-     *
-     * @return details of a sales report
-     * @responseType eu.europa.ec.fisheries.uvms.sales.rest.dto.ResponseDto<eu.europa.ec.fisheries.uvms.sales.service.dto>
-     */
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
     @RequiresFeature(UnionVMSFeature.viewSalesReports)

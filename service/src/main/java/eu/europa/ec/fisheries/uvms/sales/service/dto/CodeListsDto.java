@@ -1,7 +1,12 @@
 package eu.europa.ec.fisheries.uvms.sales.service.dto;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.List;
 
+@EqualsAndHashCode
+@ToString
 public class CodeListsDto {
     private List<RefCodeListItemDto> flagStates;
     private List<RefCodeListItemDto> salesCategories;

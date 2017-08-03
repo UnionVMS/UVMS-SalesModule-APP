@@ -83,13 +83,13 @@ public class SalesDetailsHelperTest {
                     .location(locationDto));
 
         //mock
-        when(referenceDataCache.getReferenceCoordinates()).thenReturn(referenceCoordinates);
+        when(referenceDataCache.getMarketAndStorageLocations()).thenReturn(referenceCoordinates);
 
         //execute
         salesDetailsHelper.enrichWithLocation(salesDetailsDto);
 
         //verify and assert
-        verify(referenceDataCache).getReferenceCoordinates();
+        verify(referenceDataCache).getMarketAndStorageLocations();
         verifyNoMoreInteractions(referenceDataCache);
 
         assertNull(locationDto.getLatitude());
@@ -107,13 +107,13 @@ public class SalesDetailsHelperTest {
                         .location(locationDto));
 
         //mock
-        when(referenceDataCache.getReferenceCoordinates()).thenReturn(referenceCoordinates);
+        when(referenceDataCache.getMarketAndStorageLocations()).thenReturn(referenceCoordinates);
 
         //execute
         salesDetailsHelper.enrichWithLocation(salesDetailsDto);
 
         //verify and assert
-        verify(referenceDataCache).getReferenceCoordinates();
+        verify(referenceDataCache).getMarketAndStorageLocations();
         verifyNoMoreInteractions(referenceDataCache);
 
         assertEquals(51.5, locationDto.getLatitude(), 0.001);

@@ -1,5 +1,10 @@
 package eu.europa.ec.fisheries.uvms.sales.service.dto;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
 public class RefCodeListItemDto {
     private String code;
     private String text;

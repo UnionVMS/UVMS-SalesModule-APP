@@ -32,6 +32,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
     private Queue ecbProxyQueue;
     private Queue configQueue;
     private Queue rulesQueue;
+    private Queue mdrQueue;
 
     @EJB
     private JMSConnectorBean connector;
@@ -50,6 +51,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
         this.ecbProxyQueue = JMSUtils.lookupQueue(ctx, SalesMessageConstants.QUEUE_ECB_PROXY);
         this.configQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_CONFIG);
         this.rulesQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_MODULE_RULES);
+        this.mdrQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_MDR_EVENT);
     }
 
     @Override
@@ -70,6 +72,9 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
                     break;
                 case RULES:
                     getProducer(session, rulesQueue).send(jmsMessage);
+                    break;
+                case MDR:
+                    getProducer(session, mdrQueue).send(jmsMessage);
                     break;
                 default:
                     throw new UnsupportedOperationException("Sales has no functionality implemented to talk with " + module);

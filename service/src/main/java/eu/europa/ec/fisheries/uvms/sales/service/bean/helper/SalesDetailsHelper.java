@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
+import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
@@ -60,9 +61,11 @@ public class SalesDetailsHelper {
     @Inject @DTO
     private MapperFacade mapper;
 
+    @EJB
+    private MDRService mdrService;
+
     public void enrichWithLocation(SalesDetailsDto detailsDto) {
-        //find coordinates for a FLUX location in the cache. TODO: this info should come from MDR
-        List<ReferenceCoordinates> referenceCoordinates = referenceDataCache.getReferenceCoordinates();
+        List<ReferenceCoordinates> referenceCoordinates = referenceDataCache.getMarketAndStorageLocations();
 
         for (ReferenceCoordinates referenceCoordinate : referenceCoordinates) {
             LocationDto location = detailsDto.getSalesReport().getLocation();

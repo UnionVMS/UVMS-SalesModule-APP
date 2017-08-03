@@ -1,9 +1,18 @@
 package eu.europa.ec.fisheries.uvms.sales.service.dto.cache;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@EqualsAndHashCode
+@ToString
 public class ReferenceCoordinates {
     private String locationCode;
     private Double latitude;
     private Double longitude;
+
+    public ReferenceCoordinates() {
+
+    }
 
     public ReferenceCoordinates(String locationCode, Double latitude, Double longitude) {
         this.locationCode = locationCode;

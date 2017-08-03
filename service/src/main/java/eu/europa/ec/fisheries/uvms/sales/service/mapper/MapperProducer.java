@@ -47,6 +47,8 @@ public class MapperProducer {
         configureReportListExportDto(factory);
         configureFLUXSalesQueryMessage(factory);
         configureSalesDetailsRelation(factory);
+        configureObjectRepresentationToReferenceCode(factory);
+        configureObjectRepresentationToReferenceCoordinates(factory);
 
         return factory.getMapperFacade();
     }
@@ -252,6 +254,14 @@ public class MapperProducer {
                 .field("FLUXSalesReportMessage.salesReports[0].itemTypeCode", "type")
                 .field("FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].IDS[0].value", "documentExtId")
                 .register();
+    }
+
+    private void configureObjectRepresentationToReferenceCoordinates(MapperFactory factory) {
+        factory.registerMapper(new ObjectRepresentationToReferenceCoordinatesCustomMapper());
+    }
+
+    private void configureObjectRepresentationToReferenceCode(MapperFactory factory) {
+        factory.registerMapper(new ObjectRepresentationToReferenceCodeCustomMapper());
     }
 
 }

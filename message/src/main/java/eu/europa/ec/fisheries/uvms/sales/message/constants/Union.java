@@ -5,6 +5,7 @@ public enum Union {
     ASSET,
     ECB_PROXY,
     CONFIG,
-    RULES
+    RULES,
+    MDR
 
 }
