@@ -475,15 +475,24 @@ public class SalesDetailsHelperTest {
 
     @Test
     public void testEnrichProductWithFactor() {
+        //data set
         ProductDto productDto1 = new ProductDto().factor(BigDecimal.valueOf(9));
         ProductDto productDto2 = new ProductDto().factor(null);
         SalesDetailsDto detailsDto = new SalesDetailsDto()
                 .salesReport(new SalesReportDto()
                         .products(Arrays.asList(productDto1, productDto2)));
 
+        //mock
+        doReturn(BigDecimal.valueOf(1234)).when(referenceDataCache).getConversionFactorForProduct(productDto2);
+
+        //execute
         salesDetailsHelper.enrichProductsWithFactor(detailsDto);
 
+        //verify and assert
+        verify(referenceDataCache).getConversionFactorForProduct(productDto2);
+        verifyNoMoreInteractions(referenceDataCache);
+
         assertEquals(BigDecimal.valueOf(9), productDto1.getFactor());
-        assertEquals(BigDecimal.valueOf(9999), productDto2.getFactor());
+        assertEquals(BigDecimal.valueOf(1234), productDto2.getFactor());
     }
 }

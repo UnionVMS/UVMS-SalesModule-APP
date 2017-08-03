@@ -187,7 +187,8 @@ public class SalesDetailsHelper {
         List<ProductDto> products = detailsDto.getSalesReport().getProducts();
         for (ProductDto product : products) {
             if (product.getFactor() == null) {
-                product.setFactor(BigDecimal.valueOf(9999)); //TODO: retrieve from MDR
+                BigDecimal conversionFactor = referenceDataCache.getConversionFactorForProduct(product);
+                product.setFactor(conversionFactor);
             }
         }
     }

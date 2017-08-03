@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
 import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.ProductDto;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCode;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
@@ -18,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -120,5 +122,9 @@ public class ReferenceDataCache {
 
     private List<ObjectRepresentation> getFromCache(MDRCodeListKey mdrCodeListKey) {
         return cache.getUnchecked(mdrCodeListKey);
+    }
+
+    public BigDecimal getConversionFactorForProduct(ProductDto product) {
+        return BigDecimal.valueOf(999); //TODO WHEN CODE LIST "CONVERSION_FACTOR" IS AVAILABLE IN MDR CACHE
     }
 }
