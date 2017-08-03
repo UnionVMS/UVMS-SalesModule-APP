@@ -8,6 +8,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.converter.ListFLUXLocationTypeC
 import eu.europa.ec.fisheries.uvms.sales.service.converter.RecipientSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.SellerSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
@@ -43,12 +44,14 @@ public class MapperProducer {
         configureReportFilterDto(factory);
         configurePageCriteriaDto(factory);
         configureCodeListsDto(factory);
+        configureReferenceTerritory(factory);
         configureReportListDto(factory);
         configureReportListExportDto(factory);
         configureFLUXSalesQueryMessage(factory);
         configureSalesDetailsRelation(factory);
         configureObjectRepresentationToReferenceCode(factory);
         configureObjectRepresentationToReferenceCoordinates(factory);
+        configureObjectRepresentationToReferenceTerritory(factory);
 
         return factory.getMapperFacade();
     }
@@ -88,6 +91,13 @@ public class MapperProducer {
                 .field("landingPorts", "salesLocations")
                 .field("salesLocations", "salesLocations")
                 .byDefault()
+                .register();
+    }
+
+    private void configureReferenceTerritory(MapperFactory factory) {
+        factory.classMap(ReferenceTerritory.class, RefCodeListItemDto.class)
+                .field("code", "code")
+                .field("englishName", "text")
                 .register();
     }
 
@@ -264,4 +274,7 @@ public class MapperProducer {
         factory.registerMapper(new ObjectRepresentationToReferenceCodeCustomMapper());
     }
 
+    private void configureObjectRepresentationToReferenceTerritory(MapperFactory factory) {
+        factory.registerMapper(new ObjectRepresentationToReferenceTerritoryCustomMapper());
+    }
 }

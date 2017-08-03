@@ -41,7 +41,6 @@ public class MDRServiceBean implements MDRService {
         String correlationId = producer.sendModuleMessage(request, Union.MDR);
         TextMessage message = consumer.getMessage(correlationId, TextMessage.class);
 
-
         MdrGetCodeListResponse response = JAXBMarshaller.unmarshallTextMessage(message.getText(), MdrGetCodeListResponse.class);
         return response.getDataSets();
     }

@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCode;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
 import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
 import org.junit.BeforeClass;
@@ -299,8 +300,8 @@ public class MapperProducerTest {
         ReferenceDataCache referenceDataCacheStub = new ReferenceDataCache() {
 
             @Override
-            public List<ReferenceCode> getFlagStates() {
-                return Lists.newArrayList(new ReferenceCode("test", "test"));
+            public List<ReferenceTerritory> getFlagStates() {
+                return Lists.newArrayList(new ReferenceTerritory("test", "test"));
             }
 
             @Override
@@ -733,6 +734,30 @@ public class MapperProducerTest {
         assertEquals(code, referenceCoordinates.getLocationCode());
         assertEquals(Double.valueOf(latitude), referenceCoordinates.getLatitude());
         assertEquals(Double.valueOf(longitude), referenceCoordinates.getLongitude());
+    }
+
+    @Test
+    public void testMapObjectRepresentationToReferenceTerritory() {
+        String code = "code-sdfsdf";
+        String englishName = "englishName";
+        ColumnDataType codeColumn = new ColumnDataType("code", code,"java.lang.String");
+        ColumnDataType textColumn = new ColumnDataType("enName", englishName,"java.lang.String");
+
+        ObjectRepresentation objectRepresentation = new ObjectRepresentation();
+        objectRepresentation.setFields(Lists.newArrayList(codeColumn, textColumn));
+
+        ReferenceTerritory referenceTerritory = mapper.map(objectRepresentation, ReferenceTerritory.class);
+
+        assertEquals(code, referenceTerritory.getCode());
+        assertEquals(englishName, referenceTerritory.getEnglishName());
+    }
+
+    @Test
+    public void testMapReferenceTerritory() {
+        ReferenceTerritory referenceTerritory = new ReferenceTerritory("BEL", "Belgium");
+        RefCodeListItemDto refCodeListItemDto = mapper.map(referenceTerritory, RefCodeListItemDto.class);
+        assertEquals("BEL", refCodeListItemDto.getCode());
+        assertEquals("Belgium", refCodeListItemDto.getText());
     }
 
 }

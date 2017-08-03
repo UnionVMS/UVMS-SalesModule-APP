@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCode;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
 import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
 import ma.glasnost.orika.MapperFacade;
 import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
@@ -57,8 +58,8 @@ public class ReferenceDataCache {
         }
     }
 
-    public List<ReferenceCode> getFlagStates() {
-        return map(todays(MDRCodeListKey.FLAG_STATES), ReferenceCode.class);
+    public List<ReferenceTerritory> getFlagStates() {
+        return map(todays(MDRCodeListKey.FLAG_STATES), ReferenceTerritory.class);
     }
 
     public List<ReferenceCode> getSalesCategories() {
@@ -108,8 +109,13 @@ public class ReferenceDataCache {
     }
 
     private List<ObjectRepresentation> todays(MDRCodeListKey mdrCodeListKey) {
-        //TODO: select only those who are valid today
-        return getFromCache(mdrCodeListKey);
+        List<ObjectRepresentation> objectRepresentations = getFromCache(mdrCodeListKey);
+        //TODO
+        /*return FluentIterable
+                .from(objectRepresentations)
+                .filter(new ObjectRepresentationDateFilter(DateTime.now()))
+                .toList();*/
+        return objectRepresentations;
     }
 
     private List<ObjectRepresentation> getFromCache(MDRCodeListKey mdrCodeListKey) {

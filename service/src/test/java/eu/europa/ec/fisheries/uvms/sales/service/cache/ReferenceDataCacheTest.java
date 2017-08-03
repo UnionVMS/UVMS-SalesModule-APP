@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCode;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,21 +43,23 @@ public class ReferenceDataCacheTest {
 
     @Test
     public void getFlagStates() throws Exception {
+        List<ReferenceTerritory> expectedReferenceTerritories = Lists.newArrayList(new ReferenceTerritory());
+
         doReturn(objectRepresentations).when(mdrService).findCodeList(MDRCodeListKey.FLAG_STATES);
-        doReturn(expectedReferenceCodes).when(mapper).mapAsList(objectRepresentations, ReferenceCode.class);
+        doReturn(expectedReferenceTerritories).when(mapper).mapAsList(objectRepresentations, ReferenceTerritory.class);
 
         //execute first time
-        List<ReferenceCode> result = referenceDataCache.getFlagStates();
+        List<ReferenceTerritory> result = referenceDataCache.getFlagStates();
         
         //execute a second time, to make sure the second time the call to MDR is cached
-        List<ReferenceCode> cachedResult = referenceDataCache.getFlagStates();
+        List<ReferenceTerritory> cachedResult = referenceDataCache.getFlagStates();
 
         verify(mdrService, times(1)).findCodeList(MDRCodeListKey.FLAG_STATES);
-        verify(mapper, times(2)).mapAsList(objectRepresentations, ReferenceCode.class);
+        verify(mapper, times(2)).mapAsList(objectRepresentations, ReferenceTerritory.class);
         verifyNoMoreInteractions(mdrService, mapper);
 
-        assertEquals(expectedReferenceCodes, result);
-        assertEquals(expectedReferenceCodes, cachedResult);
+        assertEquals(expectedReferenceTerritories, result);
+        assertEquals(expectedReferenceTerritories, cachedResult);
     }
 
     @Test

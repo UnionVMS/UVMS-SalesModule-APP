@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.constants;
 
 public enum MDRCodeListKey {
 
-    PRODUCT_FACTOR("FLUX_GP_FACTOR"),
+    CONVERSION_FACTOR("CONVERSION_FACTOR"),
     FLAG_STATES("TERRITORY"),
     SALES_LOCATIONS("LOCATION"),
     FRESHNESS("FISH_FRESHNESS"),
