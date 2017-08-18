@@ -5,7 +5,7 @@
     <artifactId>${project.parent.artifactId}-rest</artifactId>
     <name>${project.parent.artifactId}-rest</name>
     <properties>
-        <javadoc-plugin.version>1.1.2</javadoc-plugin.version>
+        <javadoc-plugin.version>1.0.6</javadoc-plugin.version>
     </properties>
     <packaging>war</packaging>
 
