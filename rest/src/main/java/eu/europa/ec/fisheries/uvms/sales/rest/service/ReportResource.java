@@ -28,7 +28,6 @@ public class ReportResource extends UnionVMSResource {
     /**
      * Finds the details of a sales report by extId
      * @param extId externalId of the sales report
-     * @responseType eu.europa.ec.fisheries.uvms.sales.rest.dto.ResponseDto<eu.europa.ec.fisheries.uvms.sales.service.dto>
      * @return details of a sales report
      *
      */

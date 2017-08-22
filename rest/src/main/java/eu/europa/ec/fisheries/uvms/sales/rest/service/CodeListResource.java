@@ -24,7 +24,6 @@ public class CodeListResource extends UnionVMSResource {
 
     /**
      * Returns the MDR code lists
-     * @responseType eu.europa.ec.fisheries.uvms.sales.rest.dto.ResponseDto<eu.europa.ec.fisheries.uvms.sales.service.dto>
      * @return details of a sales report
      *
      */
