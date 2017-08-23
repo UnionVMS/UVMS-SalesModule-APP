@@ -62,7 +62,7 @@ public class EcbProxyServiceBean implements EcbProxyService {
             return JAXBMarshaller.unmarshallTextMessage(responseText, returnType);
         } catch (SalesMarshallException e) {
             try {
-                throw new SalesNonBlockingException("Could not interpret the response of the ECB proxy. The repsonse was: " + responseText.getText(), e);
+                throw new SalesNonBlockingException("Could not interpret the response of the ECB proxy. The response was: " + responseText.getText(), e);
             } catch (JMSException e1) {
                 throw new SalesNonBlockingException("Could not interpret the response of the ECB proxy.", e);
             }
