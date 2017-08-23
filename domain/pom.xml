@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>${project.parent.artifactId}-domain</name>
-    <artifactId>${project.parent.artifactId}-domain</artifactId>
+    <name>sales-domain</name>
+    <artifactId>sales-domain</artifactId>
     <packaging>ejb</packaging>
 
     <parent>

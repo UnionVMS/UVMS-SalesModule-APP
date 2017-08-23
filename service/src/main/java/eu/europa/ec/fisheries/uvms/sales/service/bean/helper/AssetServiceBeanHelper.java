@@ -7,7 +7,7 @@ import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
-import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
 
 import javax.ejb.EJB;
@@ -34,7 +34,7 @@ public class AssetServiceBeanHelper {
             TextMessage responseText = receiver.getMessage(messageId, TextMessage.class);
             return unmarshallTextMessage(responseText, returnType);
         } catch (MessageException e) {
-            throw new SalesServiceException("Could not contact the Asset Module", e);
+            throw new SalesNonBlockingException("Could not contact the Asset Module", e);
         }
     }
 
@@ -43,9 +43,9 @@ public class AssetServiceBeanHelper {
             return JAXBMarshaller.unmarshallTextMessage(responseText, returnType);
         } catch (AssetModelMapperException e) {
             try {
-                throw new SalesServiceException("Could not parse the response from the the Asset Module. The response was " + responseText.getText(), e);
+                throw new SalesNonBlockingException("Could not parse the response from the the Asset Module. The response was " + responseText.getText(), e);
             } catch (JMSException anotherException) {
-                throw new SalesServiceException("Could not parse the response from the the Asset Module.", e);
+                throw new SalesNonBlockingException("Could not parse the response from the the Asset Module.", e);
             }
         }
     }
@@ -55,7 +55,7 @@ public class AssetServiceBeanHelper {
             AssetListQuery query = createAssetListQueryToSearchOnNameOrCFROrIRCS(searchString);
             return AssetModuleRequestMapper.createAssetListModuleRequest(query);
         } catch (AssetModelMapperException e) {
-            throw new SalesServiceException("Could not create a request to query the Asset Module.", e);
+            throw new SalesNonBlockingException("Could not create a request to query the Asset Module.", e);
         }
     }
 
@@ -63,7 +63,7 @@ public class AssetServiceBeanHelper {
         try {
             return AssetModuleRequestMapper.createGetAssetModuleRequest(cfr, AssetIdType.CFR);
         } catch (AssetModelMapperException e) {
-            throw new SalesServiceException("Could not create a request to query the Asset Module.", e);
+            throw new SalesNonBlockingException("Could not create a request to query the Asset Module.", e);
         }
     }
 

@@ -35,6 +35,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>sales-model</artifactId>
         </dependency>
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sales-domain</artifactId>
