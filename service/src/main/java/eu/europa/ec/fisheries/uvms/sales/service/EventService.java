@@ -5,10 +5,7 @@
  */
 package eu.europa.ec.fisheries.uvms.sales.service;
 
-import eu.europa.ec.fisheries.uvms.sales.message.event.ErrorEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.InvalidMessageReceivedEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.QueryReceivedEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.ReportReceivedEvent;
+import eu.europa.ec.fisheries.uvms.sales.message.event.*;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 
 import javax.ejb.Local;
@@ -40,4 +37,10 @@ public interface EventService {
      * @param event
      */
     void returnError(@Observes @ErrorEvent EventMessage event);
+
+    /**
+     * Queries the DB for a specific extId and sends back the result via JMS.
+     * @param event the incoming event
+     */
+    void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event);
 }

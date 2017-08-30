@@ -6,18 +6,17 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.sales.message.event.ErrorEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.InvalidMessageReceivedEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.QueryReceivedEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.ReportReceivedEvent;
+import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.sales.message.event.*;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.sales.model.mapper.SalesModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.service.EventService;
 import eu.europa.ec.fisheries.uvms.sales.service.InvalidMessageService;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
-import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,6 +82,27 @@ public class EventServiceBean implements EventService {
         String messageGuid = respondToInvalidMessageRequest.getMessageGuid();
 
         invalidMessageService.sendResponseToInvalidIncomingMessage(messageGuid, validationResults, sender, pluginToSendResponseThrough);
+    }
+
+    public void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event) {
+        FindReportByIdRequest request = ((FindReportByIdRequest) event.getSalesBaseRequest());
+        Report report = reportService.findByExtIdOrNull(request.getId());
+
+        try {
+            String marshalledReport = "";
+
+            if (report != null) {
+                marshalledReport = JAXBMarshaller.marshallJaxBObjectToString(report.getFLUXSalesReportMessage());
+            }
+
+            String marshalledFindReportByIdResponse = SalesModuleRequestMapper.createFindReportByIdResponse(marshalledReport);
+            salesMessageProducer.sendModuleResponseMessage(event.getJmsMessage(), marshalledFindReportByIdResponse);
+        } catch (SalesMarshallException e) {
+            throw new SalesServiceException("Something went wrong during marshalling of a FindReportById", e);
+        } catch (MessageException e) {
+            throw new SalesServiceException("Something went wrong while sending a findReportByIdResponse to Rules", e);
+        }
+
     }
 
     @Override

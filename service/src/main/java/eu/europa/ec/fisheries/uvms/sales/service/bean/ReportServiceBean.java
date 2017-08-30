@@ -70,6 +70,11 @@ public class ReportServiceBean implements ReportService {
     }
 
     @Override
+    public Report findByExtIdOrNull(String extId) {
+        return reportDomainModel.findByExtIdOrNull(extId);
+    }
+
+    @Override
     public SalesDetailsDto findSalesDetails(String extId) {
         checkArgument(!Strings.isNullOrEmpty(extId), "extId cannot be null or blank");
 

@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 
 import javax.ejb.Local;
+import javax.jms.TextMessage;
 
 @Local
 public interface SalesMessageProducer {
@@ -17,4 +18,6 @@ public interface SalesMessageProducer {
     String sendModuleMessage(String text, Union module) throws MessageException;
 
     void sendModuleErrorMessage(EventMessage message);
+
+    void sendModuleResponseMessage(TextMessage message, String text) throws MessageException;
 }

@@ -6,6 +6,7 @@ public enum Union {
     ECB_PROXY,
     CONFIG,
     RULES,
+    RULES_RESPONSE,
     MDR
 
 }
