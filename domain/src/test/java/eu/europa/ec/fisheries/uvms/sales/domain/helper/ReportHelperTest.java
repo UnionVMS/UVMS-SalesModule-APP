@@ -393,29 +393,39 @@ public class ReportHelperTest {
     }
 
     @Test
-    public void testIsFirstSaleWhenTrue() {
+    public void testIsFirstSaleOrNegotiatedSaleWhenFirstSale() {
         AuctionSaleType auctionSale = new AuctionSaleType()
                 .withSalesCategory(SalesCategoryType.FIRST_SALE);
 
         Report report = new Report().withAuctionSale(auctionSale);
 
-        assertTrue(reportHelper.isFirstSale(report));
+        assertTrue(reportHelper.isFirstSaleOrNegotiatedSale(report));
     }
 
     @Test
-    public void testIsFirstSaleWhenFalseBecauseItIsANegotiatedSale() {
+    public void testIsFirstSaleOrNegotiatedSaleWhenNegotiatedSale() {
         AuctionSaleType auctionSale = new AuctionSaleType()
                 .withSalesCategory(SalesCategoryType.NEGOTIATED_SALE);
 
         Report report = new Report().withAuctionSale(auctionSale);
 
-        assertFalse(reportHelper.isFirstSale(report));
+        assertTrue(reportHelper.isFirstSaleOrNegotiatedSale(report));
     }
 
     @Test
-    public void testIsFirstSaleWhenFalseBecauseNoAuctionSaleIsProvided() {
+    public void testIsFirstSaleOrNegotiatedSaleWhenVariousSupply() {
+        AuctionSaleType auctionSale = new AuctionSaleType()
+                .withSalesCategory(SalesCategoryType.VARIOUS_SUPPLY);
+
+        Report report = new Report().withAuctionSale(auctionSale);
+
+        assertFalse(reportHelper.isFirstSaleOrNegotiatedSale(report));
+    }
+
+    @Test
+    public void testIsFirstSaleWhenNoAuctionSaleIsProvided() {
         Report report = new Report().withAuctionSale(null);
 
-        assertFalse(reportHelper.isFirstSale(report));
+        assertFalse(reportHelper.isFirstSaleOrNegotiatedSale(report));
     }
 }

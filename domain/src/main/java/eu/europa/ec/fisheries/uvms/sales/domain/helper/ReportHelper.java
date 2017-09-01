@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -156,9 +157,10 @@ public class ReportHelper {
         return ids;
     }
 
-    public boolean isFirstSale(Report report) {
+    public boolean isFirstSaleOrNegotiatedSale(Report report) {
+        List<SalesCategoryType> salesCategoryTypes = Arrays.asList(SalesCategoryType.FIRST_SALE, SalesCategoryType.NEGOTIATED_SALE);
         return report.getAuctionSale() != null
-                && report.getAuctionSale().getSalesCategory() == SalesCategoryType.FIRST_SALE;
+                && salesCategoryTypes.contains(report.getAuctionSale().getSalesCategory());
     }
 }
 

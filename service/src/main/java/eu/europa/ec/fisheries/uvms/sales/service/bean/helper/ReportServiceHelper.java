@@ -53,7 +53,7 @@ public class ReportServiceHelper {
         String salesLocationCountry = reportHelper.getSalesLocationCountry(originalReport);
         String landingCountry = reportHelper.getLandingCountry(originalReport);
 
-        if (reportHelper.isFirstSale(originalReport) && salesLocationCountry.equals(countryOfHost)) {
+        if (reportHelper.isFirstSaleOrNegotiatedSale(originalReport) && salesLocationCountry.equals(countryOfHost)) {
             if (!vesselFlagState.equals(countryOfHost)) {
                 rulesService.sendReportToRules(report.getFLUXSalesReportMessage(), vesselFlagState, pluginToSendResponseThrough);
             }
