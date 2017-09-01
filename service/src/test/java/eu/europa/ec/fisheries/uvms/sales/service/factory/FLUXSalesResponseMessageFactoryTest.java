@@ -72,13 +72,21 @@ public class FLUXSalesResponseMessageFactoryTest {
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
 
         assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getIDS().get(0).getValue());
+        assertEquals("UUID", fluxSalesResponse.getFLUXResponseDocument().getIDS().get(0).getSchemeID());
+
         assertEquals("salesQuery", fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getValue());
+        assertEquals("UUID", fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getSchemeID());
+
         assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty().getIDS().get(0).getValue());
+        assertEquals("FLUX_GP_PARTY", fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty().getIDS().get(0).getSchemeID());
+
         assertEquals(validationResult, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getRelatedValidationQualityAnalysises().get(0));
         assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getCreationDateTime());
         assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getValidatorID().getValue());
         assertEquals(400, fluxSalesResponse.getSalesReports().size());
+
         assertEquals(messageValidationStatus, fluxSalesResponse.getFLUXResponseDocument().getResponseCode().getValue());
+        assertEquals("FLUX_GP_RESPONSE", fluxSalesResponse.getFLUXResponseDocument().getResponseCode().getListID());
     }
 
     @Test
@@ -86,7 +94,6 @@ public class FLUXSalesResponseMessageFactoryTest {
         //data set
         String referencedId = "abc";
         Report report = new Report();
-        FLUXPartyType fluxParty = new FLUXPartyType();
         String fluxLocalNationCode = "BEL";
         String messageValidationStatus = "OK";
 
@@ -105,13 +112,21 @@ public class FLUXSalesResponseMessageFactoryTest {
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
 
         assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getIDS().get(0).getValue());
+        assertEquals("UUID", fluxSalesResponse.getFLUXResponseDocument().getIDS().get(0).getSchemeID());
+
         assertEquals(referencedId, fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getValue());
+        assertEquals("UUID", fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getSchemeID());
+
         assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty().getIDS().get(0).getValue());
+        assertEquals("FLUX_GP_PARTY", fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty().getIDS().get(0).getSchemeID());
+
         assertEquals(validationResult, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getRelatedValidationQualityAnalysises().get(0));
         assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getCreationDateTime());
         assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getValidatorID().getValue());
         assertTrue(fluxSalesResponse.getSalesReports().isEmpty());
+
         assertEquals(messageValidationStatus, fluxSalesResponse.getFLUXResponseDocument().getResponseCode().getValue());
+        assertEquals("FLUX_GP_RESPONSE", fluxSalesResponse.getFLUXResponseDocument().getResponseCode().getListID());
     }
 
 }
