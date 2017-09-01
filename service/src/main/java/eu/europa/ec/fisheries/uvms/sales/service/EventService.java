@@ -43,4 +43,6 @@ public interface EventService {
      * @param event the incoming event
      */
     void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event);
+
+    void respondToUniqueIdMessage(@Observes @UniqueIdReceivedEvent EventMessage event);
 }

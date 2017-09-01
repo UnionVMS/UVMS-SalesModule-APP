@@ -45,6 +45,10 @@ public class MessageConsumerBean implements MessageListener {
     private Event<EventMessage> findReportReceivedEvent;
 
     @Inject
+    @UniqueIdReceivedEvent
+    private Event<EventMessage> uniqueIdReceivedEvent;
+
+    @Inject
     @ErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -68,13 +72,16 @@ public class MessageConsumerBean implements MessageListener {
             return;
         }
 
+        EventMessage eventWithOriginalJmsMessage = new EventMessage(salesRequest);
+        eventWithOriginalJmsMessage.setJmsMessage(textMessage);
+
         switch (method) {
             case REPORT: reportReceivedEvent.fire(new EventMessage(salesRequest)); break;
             case QUERY: queryReceivedEvent.fire(new EventMessage(salesRequest)); break;
             case FIND_REPORT:
-                EventMessage event = new EventMessage(salesRequest);
-                event.setJmsMessage(textMessage);
-                findReportReceivedEvent.fire(event); break;
+                findReportReceivedEvent.fire(eventWithOriginalJmsMessage); break;
+            case UNIQUE_ID:
+                uniqueIdReceivedEvent.fire(eventWithOriginalJmsMessage); break;
             case INVALID_MESSAGE: invalidMessageReceivedEvent.fire(new EventMessage(salesRequest)); break;
             default: errorEvent.fire(new EventMessage(textMessage, "Invalid method '" + method + "' in SalesBaseRequest")); break;
         }

@@ -18,12 +18,14 @@ import java.util.List;
 @ToString(exclude = {"previousFluxReport", "relatedTakeOverDocuments", "relatedSalesNotes"})
 @NamedQueries({
         @NamedQuery(name = FluxReport.FIND_BY_EXT_ID, query = "SELECT report from FluxReport report WHERE report.extId = :extId"),
-        @NamedQuery(name = FluxReport.FIND_BY_REFERRED_ID, query = "SELECT report from FluxReport report WHERE report.previousFluxReport.extId = :extId")
+        @NamedQuery(name = FluxReport.FIND_BY_REFERRED_ID, query = "SELECT report from FluxReport report WHERE report.previousFluxReport.extId = :extId"),
+        @NamedQuery(name = FluxReport.FIND_TOD_BY_EXT_ID, query = "SELECT report from FluxReport report WHERE report.extId = :extId AND report.itemType = eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType.TAKE_OVER_DOCUMENT")
 })
 public class FluxReport {
 
     public static final String FIND_BY_EXT_ID = "FluxReport.FIND_BY_EXT_ID";
     public static final String FIND_BY_REFERRED_ID = "FluxReport.FIND_BY_REFERRED_ID";
+    public static final String FIND_TOD_BY_EXT_ID = "FluxReport.FIND_TOD_BY_REFERRED_ID";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,

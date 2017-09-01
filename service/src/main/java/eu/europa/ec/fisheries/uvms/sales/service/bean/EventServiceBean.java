@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.mapper.SalesModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.service.EventService;
 import eu.europa.ec.fisheries.uvms.sales.service.InvalidMessageService;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
+import eu.europa.ec.fisheries.uvms.sales.service.UniqueIdService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,9 @@ public class EventServiceBean implements EventService {
 
     @EJB
     private SalesMessageProducer salesMessageProducer;
+
+    @EJB
+    private UniqueIdService uniqueIdService;
 
     @Override
     public void createReport(@Observes @ReportReceivedEvent EventMessage event) {
@@ -100,7 +104,38 @@ public class EventServiceBean implements EventService {
         } catch (SalesMarshallException e) {
             throw new SalesServiceException("Something went wrong during marshalling of a FindReportById", e);
         } catch (MessageException e) {
-            throw new SalesServiceException("Something went wrong while sending a findReportByIdResponse to Rules", e);
+            throw new SalesServiceException("Something went wrong while sending a findReportByIdResponse", e);
+        }
+
+    }
+
+    public void respondToUniqueIdMessage(@Observes @UniqueIdReceivedEvent EventMessage event) {
+        CheckForUniqueIdRequest request = ((CheckForUniqueIdRequest) event.getSalesBaseRequest());
+
+        Boolean response = false;
+
+        switch (request.getType()) {
+            case TRANSPORT_DOCUMENT:
+                break;
+            case SALES_DOCUMENT:
+                response = !uniqueIdService.doesAnySalesDocumentExistWithAnyOfTheseIds(request.getIds());
+                break;
+            case TAKEOVER_DOCUMENT:
+                response = !uniqueIdService.doesAnyTakeOverDocumentExistWithAnyOfTheseIds(request.getIds());
+                break;
+            case SALES_QUERY:
+                break;
+            default:
+                throw new RuntimeException("No case implemented for " + request.getType());
+        }
+
+        try {
+            String checkForUniqueIdResponse = SalesModuleRequestMapper.createCheckForUniqueIdResponse(response);
+            salesMessageProducer.sendModuleResponseMessage(event.getJmsMessage(), checkForUniqueIdResponse);
+        } catch (SalesMarshallException e) {
+            throw new SalesServiceException("Something went wrong during marshalling of a uniqueIdResponse", e);
+        } catch (MessageException e) {
+            throw new SalesServiceException("Something went wrong while sending a uniqueIdResponse", e);
         }
 
     }
