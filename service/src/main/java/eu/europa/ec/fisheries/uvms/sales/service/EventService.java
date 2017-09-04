@@ -44,5 +44,9 @@ public interface EventService {
      */
     void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event);
 
+    /**
+     * Queries the DB for a list of extIds to check if any of them already exist and sends back the result via JMS
+     * @param event the incoming event
+     */
     void respondToUniqueIdMessage(@Observes @UniqueIdReceivedEvent EventMessage event);
 }

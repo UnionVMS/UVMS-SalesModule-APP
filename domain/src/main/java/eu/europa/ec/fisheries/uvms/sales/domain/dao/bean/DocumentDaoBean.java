@@ -30,7 +30,7 @@ public class DocumentDaoBean extends BaseDaoForSales<Document, Integer> implemen
 
         if (resultList.size() > 1) {
             throw new SalesNonBlockingException("More than one result found for 'findByExtId' on entity Document in table 'sales_document', " +
-                    "this should not happen");
+                    "id: " + extId);
         }
 
         return Optional.absent();

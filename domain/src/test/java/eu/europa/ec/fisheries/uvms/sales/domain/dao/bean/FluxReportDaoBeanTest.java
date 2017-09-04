@@ -913,11 +913,9 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testMapping-multiple-tod-with-same-id.xml")
     public void findTakeOverDocumentByExtIdWhenMultipleReportsWereFound() throws Exception {
-        exception.expectMessage("More than one result found for 'findByExtId' on entity FluxReport in table 'sales_flux_report', this should not happen");
+        String ID = "abc";
+        exception.expectMessage("More than one result found for 'findByExtId' on entity FluxReport in table 'sales_flux_report', id: " + ID);
         exception.expect(SalesNonBlockingException.class);
-        Optional<FluxReport> report = dao.findTakeOverDocumentByExtId("abc");
-
-        assertTrue(report.isPresent());
-        assertEquals("abc", report.get().getExtId());
+        dao.findTakeOverDocumentByExtId(ID);
     }
 }

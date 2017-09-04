@@ -32,13 +32,12 @@ public class DocumentDaoBeanTest extends AbstractDaoTest<DocumentDaoBean> {
     @Test
     @DataSet(initialData = "data/documentDaoBeanTest-testMapping-initial.xml")
     public void findByExtIdWhenMoreThanOneDocumentWasFound() throws Exception {
+        String ID = "DocumentExternalID5";
+
         exception.expect(SalesNonBlockingException.class);
-        exception.expectMessage("More than one result found for 'findByExtId' on entity Document in table 'sales_document', this should not happen");
+        exception.expectMessage("More than one result found for 'findByExtId' on entity Document in table 'sales_document', id: " + ID);
 
-        Optional<Document> document = dao.findByExtId("DocumentExternalID5");
-
-        assertTrue(document.isPresent());
-        assertEquals("DocumentExternalID4", document.get().getExtId());
+        dao.findByExtId(ID);
     }
 
     @Test

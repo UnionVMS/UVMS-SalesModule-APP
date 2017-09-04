@@ -76,13 +76,13 @@ public class MessageConsumerBean implements MessageListener {
         eventWithOriginalJmsMessage.setJmsMessage(textMessage);
 
         switch (method) {
-            case REPORT: reportReceivedEvent.fire(new EventMessage(salesRequest)); break;
+            case SAVE_REPORT: reportReceivedEvent.fire(new EventMessage(salesRequest)); break;
             case QUERY: queryReceivedEvent.fire(new EventMessage(salesRequest)); break;
-            case FIND_REPORT:
+            case FIND_REPORT_BY_ID:
                 findReportReceivedEvent.fire(eventWithOriginalJmsMessage); break;
-            case UNIQUE_ID:
+            case CHECK_UNIQUE_ID:
                 uniqueIdReceivedEvent.fire(eventWithOriginalJmsMessage); break;
-            case INVALID_MESSAGE: invalidMessageReceivedEvent.fire(new EventMessage(salesRequest)); break;
+            case CREATE_INVALID_MESSAGE: invalidMessageReceivedEvent.fire(new EventMessage(salesRequest)); break;
             default: errorEvent.fire(new EventMessage(textMessage, "Invalid method '" + method + "' in SalesBaseRequest")); break;
         }
     }

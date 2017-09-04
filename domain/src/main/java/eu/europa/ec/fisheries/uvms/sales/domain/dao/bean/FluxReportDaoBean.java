@@ -119,7 +119,7 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
 
         if (resultList.size() > 1) {
             throw new SalesNonBlockingException("More than one result found for 'findByExtId' on entity FluxReport in table 'sales_flux_report', " +
-                    "this should not happen");
+                    "id: " + extId);
         }
 
         return Optional.absent();
