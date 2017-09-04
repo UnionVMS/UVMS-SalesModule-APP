@@ -15,7 +15,13 @@ import java.util.List;
         allocationSize = 50)
 @EqualsAndHashCode
 @ToString
+@NamedQueries({
+        @NamedQuery(name = Document.FIND_BY_EXT_ID, query = "SELECT document from Document document WHERE document.extId = :extId"),
+})
 public class Document {
+
+    public static final String FIND_BY_EXT_ID = "findByExtId";
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "sales_document_id_seq")

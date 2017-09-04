@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.constant.SalesCategory;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.framework.AbstractDaoTest;
 import eu.europa.ec.fisheries.uvms.sales.domain.framework.DataSet;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,9 +24,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
-
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
@@ -681,7 +682,6 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
     }
 
-
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testSearchAndCount-initial-minimal.xml")
     public void testSearchWhenSortingOnVesselNameAscending() throws Exception {
@@ -699,6 +699,7 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
         assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
     }
+
 
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testSearchAndCount-initial-minimal.xml")
@@ -790,7 +791,6 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
     }
 
-
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testSearchAndCount-initial-big.xml")
     public void testCountWhenPageSizeExceeded() throws Exception {
@@ -806,6 +806,7 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
         assertEquals(20, dao.count(reportQuery));
     }
+
 
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testSearchAndCount-initial-big.xml")
@@ -845,12 +846,12 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         assertEquals("yoyoyo", fluxReport.get().getExtId());
     }
 
-
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindReportsWhichReferTo-initial.xml")
     public void testFindReportsWhichReferToWhenNothingFound() {
         assertFalse(dao.findCorrectionOrDeletionOf("bla").isPresent());
     }
+
 
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindLatestVersion-initial.xml")
@@ -898,5 +899,23 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         assertEquals(1, takeOverDocument2.getRelatedSalesNotes().size());
         assertEquals(Integer.valueOf(3), takeOverDocument2.getRelatedSalesNotes().get(0).getId());
         assertEquals(0, takeOverDocument2.getRelatedTakeOverDocuments().size());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testMapping-initial-tod.xml")
+    public void findTakeOverDocumentByExtIdWhenExactlyOneReportWasFound() throws Exception {
+        Optional<FluxReport> report = dao.findTakeOverDocumentByExtId("abc");
+
+        assertTrue(report.isPresent());
+        assertEquals("abc", report.get().getExtId());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testMapping-multiple-tod-with-same-id.xml")
+    public void findTakeOverDocumentByExtIdWhenMultipleReportsWereFound() throws Exception {
+        String ID = "abc";
+        exception.expectMessage("More than one result found for 'findByExtId' on entity FluxReport in table 'sales_flux_report', id: " + ID);
+        exception.expect(SalesNonBlockingException.class);
+        dao.findTakeOverDocumentByExtId(ID);
     }
 }

@@ -5,12 +5,15 @@ import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
+import eu.europa.ec.fisheries.schema.sales.SalesDocumentType;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.comparator.CompareReportOnCreationDateDescending;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
+import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mapper.FLUX;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +32,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 @Stateless
 public class ReportDomainModelBean implements ReportDomainModel {
@@ -210,6 +214,20 @@ public class ReportDomainModelBean implements ReportDomainModel {
         FluxReport fluxReport = fluxReportDao.findByExtId(extId);
         List<FluxReport> relatedReports = ListUtils.union(fluxReport.getRelatedSalesNotes(), fluxReport.getRelatedTakeOverDocuments());
         return mapper.mapAsList(relatedReports, Report.class);
+    }
+
+    @Override
+    public Optional<Report> findTakeOverDocumentByExtId(String extId) {
+        if (isBlank(extId)) {
+            throw new SalesServiceException("extId cannot be blank");
+        }
+
+        Optional<FluxReport> takeOverDocument = fluxReportDao.findTakeOverDocumentByExtId(extId);
+        if (takeOverDocument.isPresent()) {
+            return Optional.of(mapper.map(takeOverDocument.get(), Report.class));
+        }
+
+        return Optional.absent();
     }
 
 

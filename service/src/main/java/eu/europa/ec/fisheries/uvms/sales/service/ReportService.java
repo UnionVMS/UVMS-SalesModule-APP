@@ -66,4 +66,10 @@ public interface ReportService {
     void saveReport(Report report, String pluginToSendResponseThrough,
                     List<ValidationQualityAnalysisType> validationResults,
                     String messageValidationStatus);
+
+    /**
+     * Finds a sales report by extId, null if not found
+     * @param extId the extId of the report
+     */
+    Report findByExtIdOrNull(String extId);
 }

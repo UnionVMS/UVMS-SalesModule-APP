@@ -16,7 +16,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sales-model</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
