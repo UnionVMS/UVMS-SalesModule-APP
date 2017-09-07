@@ -874,5 +874,24 @@
             <column name="sales_note_id" value="100001"/>
             <column name="take_over_document_id" value="100006"/>
         </insert>
+
+        <insert tableName="sales_query">
+            <column name="id" value="100000"/>
+            <column name="ext_id" value="0bd5cac8-72b4-455c-b73a-ce5c16b2a5be"/>
+            <column name="submitted_date" value="2017-07-10 10:00:00"/>
+            <column name="query_type" value="SN+TOD"/>
+            <column name="start_date" value="2017-07-02 10:00:00"/>
+            <column name="end_date" value="2017-07-09 10:00:00"/>
+            <column name="submitted_by" value="PICKLE RIIIIIICK"/>
+        </insert>
+
+        <insert tableName="sales_query_parameter">
+            <column name="id" value="100000"/>
+            <column name="type_code" value="typeCode"/>
+            <column name="value_code" value="valueCode"/>
+            <column name="value_date_time" value="2017-07-10 10:00:00"/>
+            <column name="value_id" value="Morty, it's me! I'm a pickle!"/>
+            <column name="sales_query_id" value="100000"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

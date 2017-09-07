@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
@@ -19,6 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -65,8 +68,18 @@ public class ReportServiceBean implements ReportService {
             reportDomainModel.create(report);
         }
 
-        reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough, validationResults, messageValidationStatus);
-        reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
+        try {
+            reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough, validationResults, messageValidationStatus);
+        } catch (SalesNonBlockingException e) {
+            LOG.error("Error when sending a response to the sender of the report", e);
+        }
+
+        try {
+            reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
+        } catch (SalesNonBlockingException e) {
+            LOG.error("Error when forwarding a report to other relevant parties", e);
+        }
+
     }
 
     @Override
@@ -116,20 +129,25 @@ public class ReportServiceBean implements ReportService {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public void search(FLUXSalesQueryMessage fluxSalesQueryMessage,
                        String pluginToSendResponseThrough,
                        List<ValidationQualityAnalysisType> validationResults,
                        String messageValidationStatus) {
-        ReportQuery query = mapper.map(fluxSalesQueryMessage, ReportQuery.class);
-        searchReportsHelper.excludeDeletedReportsInQuery(query);
+        try {
+            ReportQuery query = mapper.map(fluxSalesQueryMessage, ReportQuery.class);
+            searchReportsHelper.excludeDeletedReportsInQuery(query);
 
-        List<Report> reports = reportDomainModel.search(query);
+            List<Report> reports = reportDomainModel.search(query);
 
-        FLUXSalesResponseMessage fluxSalesResponse = fluxSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResults, messageValidationStatus);
+            FLUXSalesResponseMessage fluxSalesResponse = fluxSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResults, messageValidationStatus);
 
-        String recipient = fluxSalesQueryMessage.getSalesQuery().getSubmitterFLUXParty().getIDS().get(0).getValue();
-        rulesService.sendResponseToRules(fluxSalesResponse, recipient, pluginToSendResponseThrough);
+            String recipient = fluxSalesQueryMessage.getSalesQuery().getSubmitterFLUXParty().getIDS().get(0).getValue();
+            rulesService.sendResponseToRules(fluxSalesResponse, recipient, pluginToSendResponseThrough);
+        } catch (Exception e) {
+            throw new SalesNonBlockingException("Error when sending the response of a query", e);
+        }
     }
 
     @Override

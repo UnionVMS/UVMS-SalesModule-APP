@@ -7,17 +7,16 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.sales.domain.QueryDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.message.event.*;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.SalesModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.sales.service.EventService;
-import eu.europa.ec.fisheries.uvms.sales.service.InvalidMessageService;
-import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
-import eu.europa.ec.fisheries.uvms.sales.service.UniqueIdService;
+import eu.europa.ec.fisheries.uvms.sales.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +42,9 @@ public class EventServiceBean implements EventService {
 
     @EJB
     private UniqueIdService uniqueIdService;
+
+    @EJB
+    private QueryService queryServiceBean;
 
     @Override
     public void createReport(@Observes @ReportReceivedEvent EventMessage event) {
@@ -71,9 +73,12 @@ public class EventServiceBean implements EventService {
             List<ValidationQualityAnalysisType> validationResults = salesQueryRequest.getValidationResults();
             String messageValidationResult = salesQueryRequest.getMessageValidationStatus().name();
 
+            queryServiceBean.saveQuery(salesQueryType.getSalesQuery());
             reportService.search(salesQueryType, pluginToSendResponseThrough, validationResults, messageValidationResult);
         } catch (SalesMarshallException e) {
             throw new SalesServiceException("Something went wrong during unmarshalling of a sales query", e);
+        } catch (SalesNonBlockingException e) {
+            LOG.error("Something went wrong while executing the incoming query", e);
         }
     }
 
@@ -124,6 +129,13 @@ public class EventServiceBean implements EventService {
                 response = !uniqueIdService.doesAnyTakeOverDocumentExistWithAnyOfTheseIds(request.getIds());
                 break;
             case SALES_QUERY:
+                response = uniqueIdService.isQueryIdUnique(request.getIds().get(0));
+                break;
+            case SALES_RESPONSE:
+                response = uniqueIdService.isResponseIdUnique(request.getIds().get(0));
+                break;
+            case SALES_RESPONSE_REFERENCED_ID:
+                response = !uniqueIdService.doesReferencedReportInResponseExist(request.getIds().get(0));
                 break;
             default:
                 throw new RuntimeException("No case implemented for " + request.getType());

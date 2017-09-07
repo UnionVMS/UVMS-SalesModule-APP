@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="matbul" id="que-01">
+        
+        <createTable tableName="sales_query_parameter">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_query_parameter_pk"/>
+            </column>
+
+            <column name="type_code" type="text">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="value_code" type="text" />
+            <column name="value_date_time" type="timestamp" />
+            <column name="value_id" type="text" />
+            <column name="sales_query_id" type="integer" />
+        </createTable>
+
+        <createSequence sequenceName="sales_query_parameter_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_query_parameter" defaultValueSequenceNext="sales_query_parameter_id_seq"/>
+
+        <rollback>
+            <dropSequence sequenceName="sales_query_parameter_id_seq" />
+            <dropTable tableName="sales_query_parameter" cascadeConstraints="true"/>
+        </rollback>
+        
+    </changeSet>
+</databaseChangeLog>

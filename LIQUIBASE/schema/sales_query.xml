@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="matbul" id="que-01">
+
+        <createTable tableName="sales_query">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_query_pk"/>
+            </column>
+            <column name="ext_id" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="submitted_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="query_type" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="timestamp"/>
+            <column name="end_date" type="timestamp"/>
+            <column name="submitted_by" type="text"/>
+        </createTable>
+
+        <createSequence sequenceName="sales_query_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_query" defaultValueSequenceNext="sales_query_id_seq"/>
+
+        <rollback>
+            <dropSequence sequenceName="sales_query_id_seq"/>
+            <dropTable tableName="sales_query" cascadeConstraints="true"/>
+        </rollback>
+
+    </changeSet>
+</databaseChangeLog>

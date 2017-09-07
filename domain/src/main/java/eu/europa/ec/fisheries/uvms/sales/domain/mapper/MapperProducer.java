@@ -42,6 +42,8 @@ public class MapperProducer {
         configureVesselTransportMeans(factory);
         configureAuctionSale(factory);
         configureSavedSearchGroup(factory);
+        configureQuery(factory);
+        configureQueryParameterType(factory);
 
         return factory.getMapperFacade();
     }
@@ -64,6 +66,27 @@ public class MapperProducer {
         converterFactory.registerConverter("preservationBToA", new PreservationBToAConverter());
     }
 
+    private void configureQuery(MapperFactory factory) {
+        factory.classMap(SalesQueryType.class, Query.class)
+                .field("ID.value", "extId")
+                .field("submittedDateTime.dateTime", "submittedDate")
+                .field("typeCode.value", "queryType")
+                .field("specifiedDelimitedPeriod.startDateTime.dateTime", "startDate")
+                .field("specifiedDelimitedPeriod.endDateTime.dateTime", "endDate")
+                .field("submitterFLUXParty.IDS[0].value", "submitterFLUXParty")
+                .field("simpleSalesQueryParameters", "parameters")
+                .register();
+    }
+
+    private void configureQueryParameterType(MapperFactory factory) {
+        factory.classMap(SalesQueryParameterType.class, QueryParameterType.class)
+                .field("typeCode.value", "typeCode")
+                .field("valueCode.value", "valueCode")
+                .field("valueDateTime.dateTime", "valueDateTime")
+                .field("valueID.value", "valueID")
+                .register();
+    }
+
     private void configureReportType(MapperFactory factory) {
         factory.classMap(Report.class, FluxReport.class)
                 .field("FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value", "extId")
@@ -81,6 +104,7 @@ public class MapperProducer {
 
                 .register();
     }
+
     private void configureSavedSearchGroup(MapperFactory factory) {
         factory.classMap(SavedSearchGroup.class, eu.europa.ec.fisheries.schema.sales.SavedSearchGroup.class)
                 .field("fields{key}", "fields{key}")

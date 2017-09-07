@@ -20,6 +20,9 @@
     <include file="/schema/sales_party_document.xml" />
     <include file="/schema/sales_saved_search_group.xml" />
     <include file="/schema/sales_saved_search_group_field.xml" />
+    <include file="/schema/sales_query.xml" />
+    <include file="/schema/sales_query_parameter_type.xml" />
+    <include file="/schema/sales_response.xml" />
     <include file="/schema/parameter.xml" />
 
 </databaseChangeLog>
