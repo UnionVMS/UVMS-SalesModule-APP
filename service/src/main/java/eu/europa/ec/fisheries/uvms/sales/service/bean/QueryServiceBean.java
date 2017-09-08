@@ -7,6 +7,8 @@ import eu.europa.ec.fisheries.uvms.sales.service.QueryService;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 @Stateless
 public class QueryServiceBean implements QueryService {
 
@@ -15,6 +17,7 @@ public class QueryServiceBean implements QueryService {
 
     @Override
     public void saveQuery(SalesQueryType query) {
+        checkNotNull(query);
         queryDomainModel.create(query);
     }
 }

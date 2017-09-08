@@ -20,11 +20,4 @@ public interface ResponseDomainModel {
     Optional<FLUXResponseDocumentType> findByExtId(String extId);
 
 
-    /**
-     * Queries a response by referencedId
-     * @param referencedId of the response
-     */
-    Optional<FLUXResponseDocumentType> findByReferencedId(String referencedId);
-
-
 }

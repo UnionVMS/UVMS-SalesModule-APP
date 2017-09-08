@@ -41,25 +41,10 @@ public class ResponseDomainModelBean implements ResponseDomainModel {
     @Override
     public Optional<FLUXResponseDocumentType> findByExtId(String extId) {
         if (isBlank(extId)) {
-            throw new NullPointerException("extId cannot be null in ResponseDomainModelBean::findByExtId");
+            throw new NullPointerException("extId cannot be null or blank in ResponseDomainModelBean::findByExtId");
         }
 
         Optional<Response> optionalQuery = dao.findByExtId(extId);
-
-        if (optionalQuery.isPresent()) {
-            return Optional.of(mapper.map(optionalQuery.get(), FLUXResponseDocumentType.class));
-        }
-
-        return Optional.absent();
-    }
-
-    @Override
-    public Optional<FLUXResponseDocumentType> findByReferencedId(String referencedId) {
-        if (isBlank(referencedId)) {
-            throw new NullPointerException("extId cannot be null in ResponseDomainModelBean::findByReferencedId");
-        }
-
-        Optional<Response> optionalQuery = dao.findByReferencedId(referencedId);
 
         if (optionalQuery.isPresent()) {
             return Optional.of(mapper.map(optionalQuery.get(), FLUXResponseDocumentType.class));
