@@ -620,6 +620,51 @@ public class MapperProducerTest {
         assertEquals(createSalesQueryType(), mappedQuery);
     }
 
+    @Test
+    public void testMapResponseToFLUXResponseDocumentType() {
+        DateTime now = DateTime.now();
+        Response response = createResponse(now);
+        FLUXResponseDocumentType fluxResponseDocumentType = createFluxResponseDocumentType(now);
+
+        FLUXResponseDocumentType mappedResult = mapper.map(response, FLUXResponseDocumentType.class);
+        assertEquals(fluxResponseDocumentType, mappedResult);
+    }
+
+    @Test
+    public void testMapFLUXResponseDocumentTypeToResponse() {
+        DateTime now = DateTime.now();
+        Response response = createResponse(now);
+        FLUXResponseDocumentType fluxResponseDocumentType = createFluxResponseDocumentType(now);
+
+        Response mappedResult = mapper.map(fluxResponseDocumentType, Response.class);
+        assertEquals(response, mappedResult);
+    }
+
+    private Response createResponse(DateTime now) {
+        return new Response()
+                .extId("extId")
+                .referencedId("referencedId")
+                .creationDateTime(now)
+                .responseCode("responseCode")
+                .remarks("remarks")
+                .rejectionReason("rejectionReason")
+                .typeCode("typeCode")
+                .respondentFLUXParty("respondentFLUXParty");
+    }
+
+    private FLUXResponseDocumentType createFluxResponseDocumentType(DateTime now) {
+        return new FLUXResponseDocumentType()
+                .withIDS(Arrays.asList(new IDType().withValue("extId")))
+                .withReferencedID(new IDType().withValue("referencedId"))
+                .withCreationDateTime(new DateTimeType().withDateTime(now))
+                .withResponseCode(new CodeType().withValue("responseCode"))
+                .withRemarks(new TextType().withValue("remarks"))
+                .withRejectionReason(new TextType().withValue("rejectionReason"))
+                .withTypeCode(new CodeType().withValue("typeCode"))
+                .withRespondentFLUXParty(new FLUXPartyType().withIDS(
+                        new IDType().withValue("respondentFLUXParty")));
+    }
+
     private Query createQuery() {
         QueryParameterType queryParameter = new QueryParameterType()
                 .typeCode("typeCode")
@@ -655,6 +700,8 @@ public class MapperProducerTest {
                 .withSubmitterFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("fluxParty idType")))
                 .withSimpleSalesQueryParameters(salesQueryParameterType);
     }
+
+
 
 
 }

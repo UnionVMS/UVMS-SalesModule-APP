@@ -44,6 +44,7 @@ public class MapperProducer {
         configureSavedSearchGroup(factory);
         configureQuery(factory);
         configureQueryParameterType(factory);
+        configureResponse(factory);
 
         return factory.getMapperFacade();
     }
@@ -64,6 +65,19 @@ public class MapperProducer {
         converterFactory.registerConverter("freshnessBToA", new FreshnessBToAConverter());
         converterFactory.registerConverter("presentationBToA", new PresentationBToAConverter());
         converterFactory.registerConverter("preservationBToA", new PreservationBToAConverter());
+    }
+
+    private void configureResponse(MapperFactory factory) {
+        factory.classMap(FLUXResponseDocumentType.class, Response.class)
+                .field("IDS[0].value", "extId")
+                .field("referencedID.value", "referencedId")
+                .field("creationDateTime.dateTime", "creationDateTime")
+                .field("responseCode.value", "responseCode")
+                .field("remarks.value", "remarks")
+                .field("rejectionReason.value", "rejectionReason")
+                .field("typeCode.value", "typeCode")
+                .field("respondentFLUXParty.IDS[0].value", "respondentFLUXParty")
+                .register();
     }
 
     private void configureQuery(MapperFactory factory) {
