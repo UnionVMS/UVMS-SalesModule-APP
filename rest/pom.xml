@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>${project.parent.artifactId}-rest</artifactId>
-    <name>${project.parent.artifactId}-rest</name>
+    <artifactId>sales-rest</artifactId>
+    <name>sales-rest</name>
     <properties>
         <javadoc-plugin.version>1.0.6</javadoc-plugin.version>
     </properties>
@@ -130,8 +130,8 @@
                                     <reportOutputDirectory>src/main/webapp</reportOutputDirectory>
                                     <useStandardDocletOptions>false</useStandardDocletOptions>
                                     <additionalparam>-apiVersion ${project.version}
-                                        -docBasePath http://${hostname}:${port}/${project.parent.artifactId}/apidocs
-                                        -apiBasePath http://${hostname}:${port}/${project.parent.artifactId}/rest</additionalparam>
+                                        -docBasePath http://${hostname}:${port}/sales/apidocs
+                                        -apiBasePath http://${hostname}:${port}/sales/rest</additionalparam>
                                 </configuration>
                                 <goals>
                                     <goal>javadoc</goal>

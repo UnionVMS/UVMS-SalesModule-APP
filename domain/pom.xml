@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>${project.parent.artifactId}-domain</name>
-    <artifactId>${project.parent.artifactId}-domain</artifactId>
+    <name>sales-domain</name>
+    <artifactId>sales-domain</artifactId>
     <packaging>ejb</packaging>
 
     <parent>
@@ -14,10 +14,10 @@
     
     <!-- PROPERTIES USED FOR LOGBACK -->
     <properties>
-        <application.name>${project.parent.artifactId}</application.name>
+        <application.name>sales</application.name>
         <application.version>${project.parent.version}</application.version>
-        <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
-        <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
+        <application.logfile>/app/logs/sales/sales.log</application.logfile>
+        <application.error.logfile>/app/logs/sales/sales-error.log</application.error.logfile>
 
         <dbunit.version>2.5.3</dbunit.version>
         <h2.version>1.4.193</h2.version>

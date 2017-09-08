@@ -3,7 +3,7 @@
     
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sales-module</artifactId>
-    <name>${project.parent.artifactId}-module</name>
+    <name>sales-module</name>
     <packaging>ear</packaging>
     
     <parent>
@@ -39,7 +39,7 @@
                         </ejbModule>
                         <webModule>
                             <groupId>${project.groupId}</groupId>
-                            <context-root>${project.parent.artifactId}</context-root>  
+                            <context-root>sales</context-root>  
                             <artifactId>sales-rest</artifactId>
                         </webModule>
                     </modules>
