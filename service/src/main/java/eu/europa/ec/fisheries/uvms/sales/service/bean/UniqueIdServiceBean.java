@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import com.google.common.base.Optional;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.SalesDocumentType;
 import eu.europa.ec.fisheries.uvms.sales.domain.DocumentDomainModel;
@@ -9,7 +8,6 @@ import eu.europa.ec.fisheries.uvms.sales.domain.QueryDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.ResponseDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.UniqueIdService;
-import org.xnio.Option;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
