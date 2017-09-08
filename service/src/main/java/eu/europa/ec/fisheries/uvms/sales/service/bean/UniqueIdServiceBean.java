@@ -5,28 +5,34 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.SalesDocumentType;
 import eu.europa.ec.fisheries.uvms.sales.domain.DocumentDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.QueryDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.ResponseDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.UniqueIdService;
+import org.xnio.Option;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.List;
 
-/**
- * Created by MATBUL on 31/08/2017.
- */
+
 @Stateless
 public class UniqueIdServiceBean implements UniqueIdService {
 
     @EJB
-    DocumentDomainModel documentDomainModel;
+    private DocumentDomainModel documentDomainModel;
 
     @EJB
-    ReportDomainModel reportDomainModel;
+    private ReportDomainModel reportDomainModel;
 
+    @EJB
+    private QueryDomainModel queryDomainModel;
+
+    @EJB
+    private ResponseDomainModel responseDomainModel;
 
     @Override
-    public Boolean doesAnySalesDocumentExistWithAnyOfTheseIds(List<String> extIds) {
+    public boolean doesAnySalesDocumentExistWithAnyOfTheseIds(List<String> extIds) {
         for (String extId : extIds) {
             Optional<SalesDocumentType> salesDocumentTypeOptional = documentDomainModel.findByExtId(extId);
             if (salesDocumentTypeOptional.isPresent()) {
@@ -38,7 +44,7 @@ public class UniqueIdServiceBean implements UniqueIdService {
     }
 
     @Override
-    public Boolean doesAnyTakeOverDocumentExistWithAnyOfTheseIds(List<String> extIds) {
+    public boolean doesAnyTakeOverDocumentExistWithAnyOfTheseIds(List<String> extIds) {
         for (String extId : extIds) {
             Optional<Report> takeOverDocumentByExtId = reportDomainModel.findTakeOverDocumentByExtId(extId);
             if (takeOverDocumentByExtId.isPresent()) {
@@ -48,4 +54,33 @@ public class UniqueIdServiceBean implements UniqueIdService {
 
         return false;
     }
+
+    @Override
+    public boolean isQueryIdUnique(String extId) {
+        return !queryDomainModel.findByExtId(extId).isPresent();
+    }
+
+    @Override
+    public boolean isResponseIdUnique(String extId) {
+        return !responseDomainModel.findByExtId(extId).isPresent();
+    }
+
+    @Override
+    public boolean doesReferencedReportInResponseExist(String referencedId) {
+        // We have to check if the referencedId exists either as a report or as a query
+
+        boolean idExistsAsReport = Optional.fromNullable(reportDomainModel.findByExtIdOrNull(referencedId)).isPresent();
+        if (idExistsAsReport) {
+            return true;
+        }
+
+        boolean idExistsAsQuery = queryDomainModel.findByExtId(referencedId).isPresent();
+        if (idExistsAsQuery) {
+            return true;
+        }
+
+        return false;
+    }
+
+
 }

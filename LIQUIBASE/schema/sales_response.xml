@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="matbul" id="res-01">
+
+        <createTable tableName="sales_response">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_response_pk"/>
+            </column>
+            <column name="ext_id" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="referenced_id" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="response_code" type="text">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="remarks" type="text"/>
+            <column name="rejection_reason" type="text"/>
+            <column name="type_code" type="text"/>
+            <column name="respondent_flux_party" type="text"/>
+        </createTable>
+
+        <createSequence sequenceName="sales_response_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_response" defaultValueSequenceNext="sales_response_id_seq"/>
+
+        <rollback>
+            <dropSequence sequenceName="sales_response_id_seq"/>
+            <dropTable tableName="sales_response" cascadeConstraints="true"/>
+        </rollback>
+
+    </changeSet>
+</databaseChangeLog>
