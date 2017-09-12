@@ -8,10 +8,13 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AssetServiceBean implements AssetService {
 
     @EJB
