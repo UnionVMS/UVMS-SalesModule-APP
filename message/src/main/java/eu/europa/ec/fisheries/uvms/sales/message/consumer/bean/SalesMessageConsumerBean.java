@@ -22,7 +22,7 @@ import javax.jms.Session;
 @Stateless
 public class SalesMessageConsumerBean implements SalesMessageConsumer {
 
-    private static final long TIMEOUT = 30000;
+    private static final long TIMEOUT = 10000;
 
     final static Logger LOG = LoggerFactory.getLogger(SalesMessageConsumerBean.class);
 

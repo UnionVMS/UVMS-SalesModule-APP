@@ -23,10 +23,13 @@ import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.TextMessage;
 import java.util.List;
 
 @Singleton
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MDRServiceBean implements MDRService {
 
     @EJB
