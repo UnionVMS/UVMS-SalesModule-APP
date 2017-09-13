@@ -5,6 +5,10 @@
     <persistence-unit name="sales" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>jdbc/uvms_sales</jta-data-source>
+
+        <!-- used by the uvms config library to sync Sales settings with the Config module -->
+        <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
+
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
             <property name="hibernate.show_sql" value="true"/>

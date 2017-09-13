@@ -65,7 +65,9 @@ public class FLUXSalesResponseMessageFactory {
     }
 
     private FLUXPartyType createFluxParty(String fluxLocalNationCode) {
-        return new FLUXPartyType().withIDS(new IDType().withValue(fluxLocalNationCode));
+        return new FLUXPartyType()
+                .withIDS(new IDType() .withValue(fluxLocalNationCode)
+                                      .withSchemeID("FLUX_GP_PARTY"));
     }
 
     private ValidationResultDocumentType createValidationResultDocument(Collection<ValidationQualityAnalysisType> validationResults, String fluxLocalNationCode) {
@@ -77,15 +79,25 @@ public class FLUXSalesResponseMessageFactory {
 
     private FLUXResponseDocumentType createFluxResponseDocumentType(String referencedId, ValidationResultDocumentType validationResultDocument, FLUXPartyType fluxParty, String messageValidationStatus) {
         FLUXResponseDocumentType fluxResponseDocumentType = new FLUXResponseDocumentType()
-                .withIDS(new IDType().withValue(UUID.randomUUID().toString()))
+                .withIDS(createRandomUUID())
                 .withCreationDateTime(new DateTimeType().withDateTime(DateTime.now()))
-                .withReferencedID(new IDType().withValue(referencedId))
+                .withReferencedID(createUUID(referencedId))
                 .withRespondentFLUXParty(fluxParty);
 
-        fluxResponseDocumentType.withResponseCode(new CodeType().withValue(messageValidationStatus));
+        fluxResponseDocumentType.withResponseCode(new CodeType().withValue(messageValidationStatus)
+                                                                .withListID("FLUX_GP_RESPONSE"));
         fluxResponseDocumentType.withRelatedValidationResultDocuments(validationResultDocument);
 
         return fluxResponseDocumentType;
+    }
+
+    private IDType createUUID(String uuidValue) {
+        return new IDType() .withValue(uuidValue)
+                            .withSchemeID("UUID");
+    }
+
+    private IDType createRandomUUID() {
+        return createUUID(UUID.randomUUID().toString());
     }
 
 }

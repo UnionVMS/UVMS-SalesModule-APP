@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_response
+            id="1"
+            ext_id="abc123"
+            referenced_id="321cba"
+            creation="2001-9-11 00:00:00"
+            response_code="OK"
+    />
+    <sales_response
+            id="2"
+            ext_id="abc"
+            referenced_id="321cba"
+            creation="2001-9-11 00:00:00"
+            response_code="OK"
+    />
+    <sales_response
+            id="3"
+            ext_id="abc"
+            referenced_id="321cba"
+            creation="2001-9-11 00:00:00"
+            response_code="OK"
+    />
+    <sales_response
+            id="4"
+            ext_id="abc321"
+            referenced_id="find me"
+            creation="2001-9-11 00:00:00"
+            response_code="OK"
+    />
+</dataset>

@@ -4,10 +4,7 @@ import eu.europa.ec.fisheries.schema.sales.SalesBaseRequest;
 import eu.europa.ec.fisheries.schema.sales.SalesModuleMethod;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.SalesMessageConstants;
-import eu.europa.ec.fisheries.uvms.sales.message.event.ErrorEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.InvalidMessageReceivedEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.QueryReceivedEvent;
-import eu.europa.ec.fisheries.uvms.sales.message.event.ReportReceivedEvent;
+import eu.europa.ec.fisheries.uvms.sales.message.event.*;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
@@ -44,6 +41,14 @@ public class MessageConsumerBean implements MessageListener {
     private Event<EventMessage> invalidMessageReceivedEvent;
 
     @Inject
+    @FindReportReceivedEvent
+    private Event<EventMessage> findReportReceivedEvent;
+
+    @Inject
+    @UniqueIdReceivedEvent
+    private Event<EventMessage> uniqueIdReceivedEvent;
+
+    @Inject
     @ErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -62,16 +67,22 @@ public class MessageConsumerBean implements MessageListener {
         }
 
         SalesModuleMethod method = salesRequest.getMethod();
-
         if (method == null) {
             errorEvent.fire(new EventMessage(textMessage, "Invalid method 'null' in SalesBaseRequest. Did you add the enum value to the contract?"));
             return;
         }
 
+        EventMessage eventWithOriginalJmsMessage = new EventMessage(salesRequest);
+        eventWithOriginalJmsMessage.setJmsMessage(textMessage);
+
         switch (method) {
-            case REPORT: reportReceivedEvent.fire(new EventMessage(salesRequest)); break;
+            case SAVE_REPORT: reportReceivedEvent.fire(new EventMessage(salesRequest)); break;
             case QUERY: queryReceivedEvent.fire(new EventMessage(salesRequest)); break;
-            case INVALID_MESSAGE: invalidMessageReceivedEvent.fire(new EventMessage(salesRequest)); break;
+            case FIND_REPORT_BY_ID:
+                findReportReceivedEvent.fire(eventWithOriginalJmsMessage); break;
+            case CHECK_UNIQUE_ID:
+                uniqueIdReceivedEvent.fire(eventWithOriginalJmsMessage); break;
+            case CREATE_INVALID_MESSAGE: invalidMessageReceivedEvent.fire(new EventMessage(salesRequest)); break;
             default: errorEvent.fire(new EventMessage(textMessage, "Invalid method '" + method + "' in SalesBaseRequest")); break;
         }
     }

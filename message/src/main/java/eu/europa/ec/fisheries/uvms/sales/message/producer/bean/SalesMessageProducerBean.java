@@ -31,8 +31,9 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
     private Queue assetQueue;
     private Queue ecbProxyQueue;
     private Queue configQueue;
-    private Queue rulesQueue;
+    private Queue rulesEventQueue;
     private Queue mdrQueue;
+    private Queue rulesQueue;
 
     @EJB
     private JMSConnectorBean connector;
@@ -50,8 +51,26 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
         this.salesQueue = JMSUtils.lookupQueue(ctx, SalesMessageConstants.INTERNAL_QUEUE_JNDI);
         this.ecbProxyQueue = JMSUtils.lookupQueue(ctx, SalesMessageConstants.QUEUE_ECB_PROXY);
         this.configQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_CONFIG);
-        this.rulesQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_MODULE_RULES);
+        this.rulesEventQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_MODULE_RULES);
+        this.rulesQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_RULES);
+
         this.mdrQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_MDR_EVENT);
+    }
+
+    @Override
+    public void sendModuleResponseMessage(TextMessage originalJMSMessage, String messageToBeSent) throws MessageException {
+        try {
+            LOG.info("Sending message back to recipient from Sales with correlationId {} on queue: {}", originalJMSMessage.getJMSMessageID(),
+                    originalJMSMessage.getJMSReplyTo());
+
+            Session session = connector.getNewSession();
+            TextMessage response = session.createTextMessage(messageToBeSent);
+            response.setJMSCorrelationID(originalJMSMessage.getJMSMessageID());
+            MessageProducer producer = getProducer(session, originalJMSMessage.getJMSReplyTo());
+            producer.send(response);
+        } catch (JMSException e) {
+            LOG.error("[ Error when returning module request. ] {}", e.getMessage()); //TODO: check error handling
+        }
     }
 
     @Override
@@ -71,6 +90,9 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
                     getProducer(session, configQueue).send(jmsMessage);
                     break;
                 case RULES:
+                    getProducer(session, rulesEventQueue).send(jmsMessage);
+                    break;
+                case RULES_RESPONSE:
                     getProducer(session, rulesQueue).send(jmsMessage);
                     break;
                 case MDR:

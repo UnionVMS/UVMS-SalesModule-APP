@@ -19,6 +19,9 @@
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.SavedSearchGroup</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Vessel</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.VesselContact</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Query</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.QueryParameterType</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Response</class>
 
         <class>eu.europa.ec.fisheries.uvms.sales.domain.converter.DateTimeAttributeConverter</class>
         <properties>

@@ -6,9 +6,6 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.Map;
 
-/**
- * Created by MATBUL on 2/02/2017.
- */
 @Entity
 @Table(name = "sales_saved_search_group")
 @SequenceGenerator(name = "sales_saved_search_group_id_seq",

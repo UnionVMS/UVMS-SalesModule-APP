@@ -601,4 +601,107 @@ public class MapperProducerTest {
         assertEquals(Integer.valueOf(10), searchGroup.getId());
 
     }
+
+    @Test
+    public void testMapSalesQueryTypeToQuery() {
+        SalesQueryType salesQueryType = createSalesQueryType();
+
+        Query mappedQuery = mapper.map(salesQueryType, Query.class);
+
+        assertEquals(createQuery(), mappedQuery);
+    }
+
+    @Test
+    public void testMapQueryToSalesQueryType() {
+        Query query = createQuery();
+
+        SalesQueryType mappedQuery = mapper.map(query, SalesQueryType.class);
+
+        assertEquals(createSalesQueryType(), mappedQuery);
+    }
+
+    @Test
+    public void testMapResponseToFLUXResponseDocumentType() {
+        DateTime now = DateTime.now();
+        Response response = createResponse(now);
+        FLUXResponseDocumentType fluxResponseDocumentType = createFluxResponseDocumentType(now);
+
+        FLUXResponseDocumentType mappedResult = mapper.map(response, FLUXResponseDocumentType.class);
+        assertEquals(fluxResponseDocumentType, mappedResult);
+    }
+
+    @Test
+    public void testMapFLUXResponseDocumentTypeToResponse() {
+        DateTime now = DateTime.now();
+        Response response = createResponse(now);
+        FLUXResponseDocumentType fluxResponseDocumentType = createFluxResponseDocumentType(now);
+
+        Response mappedResult = mapper.map(fluxResponseDocumentType, Response.class);
+        assertEquals(response, mappedResult);
+    }
+
+    private Response createResponse(DateTime now) {
+        return new Response()
+                .extId("extId")
+                .referencedId("referencedId")
+                .creationDateTime(now)
+                .responseCode("responseCode")
+                .remarks("remarks")
+                .rejectionReason("rejectionReason")
+                .typeCode("typeCode")
+                .respondentFLUXParty("respondentFLUXParty");
+    }
+
+    private FLUXResponseDocumentType createFluxResponseDocumentType(DateTime now) {
+        return new FLUXResponseDocumentType()
+                .withIDS(Arrays.asList(new IDType().withValue("extId")))
+                .withReferencedID(new IDType().withValue("referencedId"))
+                .withCreationDateTime(new DateTimeType().withDateTime(now))
+                .withResponseCode(new CodeType().withValue("responseCode"))
+                .withRemarks(new TextType().withValue("remarks"))
+                .withRejectionReason(new TextType().withValue("rejectionReason"))
+                .withTypeCode(new CodeType().withValue("typeCode"))
+                .withRespondentFLUXParty(new FLUXPartyType().withIDS(
+                        new IDType().withValue("respondentFLUXParty")));
+    }
+
+    private Query createQuery() {
+        QueryParameterType queryParameter = new QueryParameterType()
+                .typeCode("typeCode")
+                .valueCode("valueCode")
+                .valueDateTime(DateTime.parse("1995-11-24"))
+                .valueID("idType");
+
+        return new Query()
+                .queryType("typeCode")
+                .extId("id")
+                .startDate(DateTime.parse("2016-08-01"))
+                .endDate(DateTime.parse("2060-08-01"))
+                .submittedDate(DateTime.parse("2017-09-05"))
+                .submitterFLUXParty("fluxParty idType")
+                .parameters(Arrays.asList(queryParameter));
+    }
+
+    private SalesQueryType createSalesQueryType() {
+        SalesQueryParameterType salesQueryParameterType = new SalesQueryParameterType()
+                .withTypeCode(new CodeType().withValue("typeCode"))
+                .withValueCode(new CodeType().withValue("valueCode"))
+                .withValueDateTime(new DateTimeType().withDateTime(DateTime.parse("1995-11-24")))
+                .withValueID(new IDType().withValue("idType"));
+
+        return new SalesQueryType()
+                .withTypeCode(new CodeType().withValue("typeCode"))
+                .withID(new IDType().withValue("id"))
+                .withSpecifiedDelimitedPeriod(
+                        new DelimitedPeriodType()
+                                .withStartDateTime(new DateTimeType().withDateTime(DateTime.parse("2016-08-01")))
+                                .withEndDateTime(new DateTimeType().withDateTime(DateTime.parse("2060-08-01"))))
+                .withSubmittedDateTime(new DateTimeType().withDateTime(DateTime.parse("2017-09-05")))
+                .withSubmitterFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("fluxParty idType")))
+                .withSimpleSalesQueryParameters(salesQueryParameterType);
+    }
+
+
+
+
 }

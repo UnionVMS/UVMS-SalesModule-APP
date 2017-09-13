@@ -6,7 +6,7 @@ import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
-import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.EcbProxyRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
@@ -30,18 +30,19 @@ public class EcbProxyServiceBean implements EcbProxyService {
     @Override
     public BigDecimal findExchangeRate(String sourceCurrency, String targetCurrency, DateTime date) {
 
-        String request = null;
+        String request;
+
         try {
             request = EcbProxyRequestMapper.createGetExchangeRateRequest(sourceCurrency, targetCurrency, date);
         } catch (SalesMarshallException e) {
-            throw new SalesServiceException("Could not create the request for the ECB proxy", e);
+            throw new SalesNonBlockingException("Could not create the request for the ECB proxy", e);
         }
 
         try {
             GetExchangeRateResponse response = callEcbProxy(request, GetExchangeRateResponse.class);
             return response.getExchangeRate();
-        } catch (SalesServiceException e) {
-            throw new SalesServiceException("Could not convert the currency, because something went wrong contacting the ECB Proxy module. Sent message: " + request, e);
+        } catch (SalesNonBlockingException e) {
+            throw new SalesNonBlockingException("Could not convert the currency, because something went wrong contacting the ECB Proxy module. Sent message: " + request, e);
         }
 
     }
@@ -52,7 +53,7 @@ public class EcbProxyServiceBean implements EcbProxyService {
             TextMessage responseText = receiver.getMessage(messageId, TextMessage.class);
             return unmarshallTextMessage(responseText, returnType);
         } catch (MessageException e) {
-            throw new SalesServiceException("Could not contact the ECB proxy Module", e);
+            throw new SalesNonBlockingException("Could not contact the ECB proxy Module", e);
         }
     }
 
@@ -61,9 +62,9 @@ public class EcbProxyServiceBean implements EcbProxyService {
             return JAXBMarshaller.unmarshallTextMessage(responseText, returnType);
         } catch (SalesMarshallException e) {
             try {
-                throw new SalesServiceException("Could not interpret the response of the ECB proxy. The repsonse was: " + responseText.getText(), e);
+                throw new SalesNonBlockingException("Could not interpret the response of the ECB proxy. The response was: " + responseText.getText(), e);
             } catch (JMSException e1) {
-                throw new SalesServiceException("Could not interpret the response of the ECB proxy.", e);
+                throw new SalesNonBlockingException("Could not interpret the response of the ECB proxy.", e);
             }
         }
     }

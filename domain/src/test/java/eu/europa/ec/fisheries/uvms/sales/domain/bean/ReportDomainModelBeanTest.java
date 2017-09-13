@@ -8,6 +8,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mother.ReportMother;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
 import org.junit.Rule;
@@ -28,7 +29,6 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReportDomainModelBeanTest {
-
     @Mock
     private MapperFacade mapper;
 
@@ -554,5 +554,42 @@ public class ReportDomainModelBeanTest {
         verifyNoMoreInteractions(reportHelper, fluxReportDao, mapper);
 
         assertSame(relatedReports, result);
+    }
+
+    @Test
+    public void findTakeOverDocumentByExtIdWhenADocumentWasFound() throws Exception {
+        Optional<FluxReport> fluxReport = Optional.of(new FluxReport());
+        Report report = new Report();
+
+        doReturn(fluxReport).when(fluxReportDao).findTakeOverDocumentByExtId("aaaa");
+        doReturn(report).when(mapper).map(fluxReport.get(), Report.class);
+
+        Optional<Report> takeOverDocumentByExtId = reportDomainModelBean.findTakeOverDocumentByExtId("aaaa");
+
+        verify(fluxReportDao).findTakeOverDocumentByExtId("aaaa");
+        verify(mapper).map(fluxReport.get(), Report.class);
+        verifyNoMoreInteractions(fluxReportDao, mapper);
+
+        assertEquals(Optional.of(report), takeOverDocumentByExtId);
+    }
+
+    @Test
+    public void findTakeOverDocumentByExtIdWhenNoDocumentWasFound() throws Exception {
+        doReturn(Optional.absent()).when(fluxReportDao).findTakeOverDocumentByExtId("aaaa");
+
+        Optional<Report> takeOverDocumentByExtId = reportDomainModelBean.findTakeOverDocumentByExtId("aaaa");
+
+        verify(fluxReportDao).findTakeOverDocumentByExtId("aaaa");
+        verifyNoMoreInteractions(fluxReportDao, mapper);
+
+        assertEquals(Optional.absent(), takeOverDocumentByExtId);
+    }
+
+    @Test
+    public void findTakeOverDocumentByExtIdWhenExtIdIsBlank() throws Exception {
+        exception.expect(SalesServiceException.class);
+        exception.expectMessage("extId cannot be blank");
+
+        reportDomainModelBean.findTakeOverDocumentByExtId("");
     }
 }

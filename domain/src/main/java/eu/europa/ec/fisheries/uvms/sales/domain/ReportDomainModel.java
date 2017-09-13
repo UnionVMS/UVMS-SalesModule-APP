@@ -95,4 +95,6 @@ public interface ReportDomainModel {
      * @param report
      */
     List<Report> findRelatedReportsOf(Report report);
+
+    Optional<Report> findTakeOverDocumentByExtId(String extId);
 }

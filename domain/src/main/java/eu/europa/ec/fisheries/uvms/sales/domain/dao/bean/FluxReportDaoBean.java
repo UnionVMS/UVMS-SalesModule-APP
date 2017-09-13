@@ -6,12 +6,15 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
 import com.google.common.base.Optional;
+import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.ProductDao;
+import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.FluxReportQueryToTypedQueryHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +104,25 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
         } else {
             return fluxReport;
         }
+    }
+
+    @Override
+    public Optional<FluxReport> findTakeOverDocumentByExtId(String extId) {
+        TypedQuery<FluxReport> query = em.createNamedQuery(FluxReport.FIND_BY_EXT_ID, FluxReport.class);
+        query.setParameter("extId", extId);
+
+        List<FluxReport> resultList = query.getResultList();
+
+        if (resultList.size() == 1) {
+            return Optional.of(resultList.get(0));
+        }
+
+        if (resultList.size() > 1) {
+            throw new SalesNonBlockingException("More than one result found for 'findByExtId' on entity FluxReport in table 'sales_flux_report', " +
+                    "id: " + extId);
+        }
+
+        return Optional.absent();
     }
 
 }

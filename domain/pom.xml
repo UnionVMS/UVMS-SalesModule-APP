@@ -9,7 +9,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
         <artifactId>sales</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     
     <!-- PROPERTIES USED FOR LOGBACK -->
@@ -71,6 +71,10 @@
             <artifactId>dbunit</artifactId>
             <version>${dbunit.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
         </dependency>
 
     </dependencies>

@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.dao;
 
 import com.google.common.base.Optional;
+import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
@@ -58,4 +59,9 @@ public interface FluxReportDao extends DaoForSales<FluxReport, Integer> {
      */
     FluxReport findLatestVersion(FluxReport fluxReport);
 
+    /**
+     * Finds the take over document by id.
+     * @return an optional that might contain a FluxReport
+     */
+    Optional<FluxReport> findTakeOverDocumentByExtId(String extId);
 }

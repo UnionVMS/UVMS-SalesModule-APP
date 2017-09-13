@@ -17,7 +17,8 @@ public interface AssetService {
      *
      * @param extId the guid, in the sales internals referred to as extId.
      * @return the found asset.
-     * @throws SalesServiceException, when something goes wrong, or the asset is not found.
+     * @throws SalesServiceException when something goes wrong
+     * @throws SalesNonBlockingException when the asset is not found.
      */
     Asset findByCFR(String extId);
 
