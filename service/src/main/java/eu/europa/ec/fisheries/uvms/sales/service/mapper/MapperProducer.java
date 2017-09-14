@@ -125,7 +125,7 @@ public class MapperProducer {
         factory.classMap(SalesDetailsDto.class, Report.class)
                 .field("fishingTrip.landingDate", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].specifiedDelimitedPeriods[0].startDateTime.dateTime")
                 .field("fishingTrip.landingLocation", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedFLUXLocations[0].ID.value")
-                .field("fishingTrip.extId", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].IDS[0].value")
+                .field("fishingTrip.extId", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].specifiedFishingTrip.IDS[0].value")
                 .field("salesReport.deletion", "deletion")
                 .field("salesReport.parties", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties")
                 .field("salesReport.fluxReport.extId", "FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value")
