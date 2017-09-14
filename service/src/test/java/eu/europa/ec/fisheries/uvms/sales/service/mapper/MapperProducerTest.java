@@ -200,7 +200,7 @@ public class MapperProducerTest {
                 .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("BEL")));
 
         FishingActivityType fishingActivity = new FishingActivityType()
-                .withIDS(new IDType().withValue("FA1"))
+                .withSpecifiedFishingTrip(new FishingTripType().withIDS(new IDType().withValue("FA1")))
                 .withRelatedFLUXLocations(new FLUXLocationType().withID(new IDType().withValue("LUX")))
                 .withSpecifiedDelimitedPeriods(new DelimitedPeriodType().withStartDateTime(new DateTimeType().withDateTime(new DateTime(2016, 5, 10, 20, 22))));
 
@@ -255,7 +255,7 @@ public class MapperProducerTest {
                 .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("BEL")));
 
         FishingActivityType fishingActivity = new FishingActivityType()
-                .withIDS(new IDType().withValue("FA1"))
+                .withSpecifiedFishingTrip(new FishingTripType().withIDS(new IDType().withValue("FA1")))
                 .withRelatedFLUXLocations(new FLUXLocationType().withID(new IDType().withValue("LUX")))
                 .withSpecifiedDelimitedPeriods(new DelimitedPeriodType().withStartDateTime(new DateTimeType().withDateTime(new DateTime(2016, 5, 10, 20, 22))));
 

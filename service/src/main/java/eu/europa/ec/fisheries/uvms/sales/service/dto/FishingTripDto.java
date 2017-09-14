@@ -20,14 +20,6 @@ public class FishingTripDto {
 
     private DateTime landingDate;
 
-    private String departureLocation;
-
-    private DateTime departureDate;
-
-    private String arrivalLocation;
-        
-    private DateTime arrivalDate;
-
     public FishingTripDto() {
     }
 
@@ -79,38 +71,6 @@ public class FishingTripDto {
         this.landingDate = landingDate;
     }
 
-    public String getDepartureLocation() {
-        return departureLocation;
-    }
-
-    public void setDepartureLocation(String departureLocation) {
-        this.departureLocation = departureLocation;
-    }
-
-    public DateTime getDepartureDate() {
-        return departureDate;
-    }
-
-    public void setDepartureDate(DateTime departureDate) {
-        this.departureDate = departureDate;
-    }
-
-    public String getArrivalLocation() {
-        return arrivalLocation;
-    }
-
-    public void setArrivalLocation(String arrivalLocation) {
-        this.arrivalLocation = arrivalLocation;
-    }
-
-    public DateTime getArrivalDate() {
-        return arrivalDate;
-    }
-
-    public void setArrivalDate(DateTime arrivalDate) {
-        this.arrivalDate = arrivalDate;
-    }
-
     public FishingTripDto extId(final String extId) {
         setExtId(extId);
         return this;
@@ -141,23 +101,4 @@ public class FishingTripDto {
         return this;
     }
 
-    public FishingTripDto departureLocation(final String departureLocation) {
-        setDepartureLocation(departureLocation);
-        return this;
-    }
-
-    public FishingTripDto departureDate(final DateTime departureDate) {
-        setDepartureDate(departureDate);
-        return this;
-    }
-
-    public FishingTripDto arrivalLocation(final String arrivalLocation) {
-        setArrivalLocation(arrivalLocation);
-        return this;
-    }
-
-    public FishingTripDto arrivalDate(final DateTime arrivalDate) {
-        setArrivalDate(arrivalDate);
-        return this;
-    }
 }
