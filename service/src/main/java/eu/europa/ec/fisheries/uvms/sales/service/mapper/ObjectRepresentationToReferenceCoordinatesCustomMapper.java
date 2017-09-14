@@ -9,6 +9,7 @@ import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 import java.util.List;
 
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class ObjectRepresentationToReferenceCoordinatesCustomMapper extends CustomMapper<ObjectRepresentation, ReferenceCoordinates> {
 
@@ -25,7 +26,7 @@ public class ObjectRepresentationToReferenceCoordinatesCustomMapper extends Cust
     }
 
     private void mapField(ColumnDataType field, ReferenceCoordinates referenceCoordinates) {
-        if (field.getColumnName() != null) {
+        if (isNotEmpty(field.getColumnName()) && isNotEmpty(field.getColumnValue())) {
             switch (field.getColumnName()) {
                 case "code":
                     referenceCoordinates.setLocationCode(field.getColumnValue());
