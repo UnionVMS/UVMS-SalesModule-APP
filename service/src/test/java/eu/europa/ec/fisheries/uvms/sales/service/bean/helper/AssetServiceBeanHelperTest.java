@@ -43,8 +43,8 @@ public class AssetServiceBeanHelperTest {
 
     @Test
     public void testCallAssetModuleWhenResponseIsInvalid() throws Exception {
-        when(messageProducer.sendModuleMessage("request", Union.ASSET)).thenReturn("messageId");
-        when(receiver.getMessage("messageId", TextMessage.class)).thenReturn(textMessage);
+        when(messageProducer.sendModuleMessage("request", Union.ASSET, 2500L)).thenReturn("messageId");
+        when(receiver.getMessage("messageId", TextMessage.class, 2500L)).thenReturn(textMessage);
         when(textMessage.getText()).thenReturn("OOH INVALID XML");
 
         exception.expect(SalesServiceException.class);
@@ -52,16 +52,16 @@ public class AssetServiceBeanHelperTest {
 
         helper.callAssetModule("request", GetAssetModuleResponse.class);
 
-        verify(messageProducer).sendModuleMessage("request", Union.ASSET);
-        verify(receiver).getMessage("messageId", TextMessage.class);
+        verify(messageProducer).sendModuleMessage("request", Union.ASSET, 2500L);
+        verify(receiver).getMessage("messageId", TextMessage.class, 2500L);
         verify(textMessage).getText();
         verifyNoMoreInteractions(messageProducer, receiver, textMessage);
     }
 
     @Test
     public void testCallAssetModuleWhenResponseIsInvalidAndJMSIsBehavingFunky() throws Exception {
-        when(messageProducer.sendModuleMessage("request", Union.ASSET)).thenReturn("messageId");
-        when(receiver.getMessage("messageId", TextMessage.class)).thenReturn(textMessage);
+        when(messageProducer.sendModuleMessage("request", Union.ASSET, 2500L)).thenReturn("messageId");
+        when(receiver.getMessage("messageId", TextMessage.class, 2500L)).thenReturn(textMessage);
         when(textMessage.getText()).thenThrow(new JMSException("I'm feeling funky!"));
 
         exception.expect(SalesServiceException.class);
@@ -69,24 +69,24 @@ public class AssetServiceBeanHelperTest {
 
         helper.callAssetModule("request", GetAssetModuleResponse.class);
 
-        verify(messageProducer).sendModuleMessage("request", Union.ASSET);
-        verify(receiver).getMessage("messageId", TextMessage.class);
+        verify(messageProducer).sendModuleMessage("request", Union.ASSET, 2500L);
+        verify(receiver).getMessage("messageId", TextMessage.class, 2500L);
         verify(textMessage).getText();
         verifyNoMoreInteractions(messageProducer, receiver, textMessage);
     }
 
     @Test
     public void testCallAssetModuleWhenAuditCannotBeContacted() throws Exception {
-        when(messageProducer.sendModuleMessage("request", Union.ASSET)).thenReturn("messageId");
-        when(receiver.getMessage("messageId", TextMessage.class)).thenThrow(new MessageException());
+        when(messageProducer.sendModuleMessage("request", Union.ASSET, 2500L)).thenReturn("messageId");
+        when(receiver.getMessage("messageId", TextMessage.class, 2500L)).thenThrow(new MessageException());
 
         exception.expect(SalesServiceException.class);
         exception.expectMessage("Could not contact the Asset Module");
 
         helper.callAssetModule("request", GetAssetModuleResponse.class);
 
-        verify(messageProducer).sendModuleMessage("request", Union.ASSET);
-        verify(receiver).getMessage("messageId", TextMessage.class);
+        verify(messageProducer).sendModuleMessage("request", Union.ASSET, 2500L);
+        verify(receiver).getMessage("messageId", TextMessage.class, 2500L);
         verifyNoMoreInteractions(messageProducer, receiver, textMessage);
     }
 
