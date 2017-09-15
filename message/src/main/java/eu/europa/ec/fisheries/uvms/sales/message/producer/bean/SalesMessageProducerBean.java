@@ -66,7 +66,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
             Session session = connector.getNewSession();
             TextMessage response = session.createTextMessage(messageToBeSent);
             response.setJMSCorrelationID(originalJMSMessage.getJMSMessageID());
-            MessageProducer producer = getProducer(session, originalJMSMessage.getJMSReplyTo());
+            MessageProducer producer = getProducer(session, originalJMSMessage.getJMSReplyTo(), TIME_TO_LIVE);
             producer.send(response);
         } catch (JMSException e) {
             LOG.error("[ Error when returning module request. ] {}", e.getMessage()); //TODO: check error handling
@@ -75,28 +75,33 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
 
     @Override
     public String sendModuleMessage(String text, Union module) throws MessageException {
+        return sendModuleMessage(text, module, TIME_TO_LIVE);
+    }
+
+    @Override
+    public String sendModuleMessage(String text, Union module, long timeout) throws MessageException {
         try {
             Session session = connector.getNewSession();
             TextMessage jmsMessage = createJMSMessage(text, session);
 
             switch (module) {
                 case ASSET:
-                    getProducer(session, assetQueue).send(jmsMessage);
+                    getProducer(session, assetQueue, timeout).send(jmsMessage);
                     break;
                 case ECB_PROXY:
-                    getProducer(session, ecbProxyQueue).send(jmsMessage);
+                    getProducer(session, ecbProxyQueue, timeout).send(jmsMessage);
                     break;
                 case CONFIG:
-                    getProducer(session, configQueue).send(jmsMessage);
+                    getProducer(session, configQueue, timeout).send(jmsMessage);
                     break;
                 case RULES:
-                    getProducer(session, rulesEventQueue).send(jmsMessage);
+                    getProducer(session, rulesEventQueue,timeout).send(jmsMessage);
                     break;
                 case RULES_RESPONSE:
-                    getProducer(session, rulesQueue).send(jmsMessage);
+                    getProducer(session, rulesQueue, timeout).send(jmsMessage);
                     break;
                 case MDR:
-                    getProducer(session, mdrQueue).send(jmsMessage);
+                    getProducer(session, mdrQueue, timeout).send(jmsMessage);
                     break;
                 default:
                     throw new UnsupportedOperationException("Sales has no functionality implemented to talk with " + module);
@@ -120,7 +125,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
 
             TextMessage response = session.createTextMessage(data);
             response.setJMSCorrelationID(message.getJmsMessage().getJMSMessageID());
-            getProducer(session, message.getJmsMessage().getJMSReplyTo()).send(response);
+            getProducer(session, message.getJmsMessage().getJMSReplyTo(), TIME_TO_LIVE).send(response);
 
         } catch (JMSException e) {
             LOG.error("Error when returning Error message to recipient", e);
@@ -134,10 +139,10 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
         return jmsMessage;
     }
 
-    private javax.jms.MessageProducer getProducer(Session session, Destination destination) throws JMSException {
+    private javax.jms.MessageProducer getProducer(Session session, Destination destination, long timeout) throws JMSException {
         javax.jms.MessageProducer producer = session.createProducer(destination);
         producer.setDeliveryMode(DeliveryMode.PERSISTENT);
-        producer.setTimeToLive(TIME_TO_LIVE);
+        producer.setTimeToLive(timeout);
         return producer;
     }
 

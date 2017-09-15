@@ -30,8 +30,8 @@ public class AssetServiceBeanHelper {
 
     public <T> T callAssetModule(String assetListModuleRequest, Class<T> returnType) {
         try {
-            String messageId = messageProducer.sendModuleMessage(assetListModuleRequest, Union.ASSET);
-            TextMessage responseText = receiver.getMessage(messageId, TextMessage.class);
+            String messageId = messageProducer.sendModuleMessage(assetListModuleRequest, Union.ASSET, 2500L);
+            TextMessage responseText = receiver.getMessage(messageId, TextMessage.class, 2500L);
             return unmarshallTextMessage(responseText, returnType);
         } catch (MessageException e) {
             throw new SalesNonBlockingException("Could not contact the Asset Module", e);

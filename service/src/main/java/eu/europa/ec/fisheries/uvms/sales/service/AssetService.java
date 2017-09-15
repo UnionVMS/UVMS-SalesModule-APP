@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service;
 
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 
