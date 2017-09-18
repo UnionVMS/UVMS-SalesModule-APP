@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ProductDto;
@@ -12,6 +13,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCode;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
 import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
+@Slf4j
 public class ReferenceDataCache {
 
     private LoadingCache<MDRCodeListKey, List<ObjectRepresentation>> cache;
@@ -53,7 +56,12 @@ public class ReferenceDataCache {
                             new CacheLoader<MDRCodeListKey, List<ObjectRepresentation>>() {
                                 @Override
                                 public List<ObjectRepresentation> load(MDRCodeListKey key) throws Exception {
-                                    return mdrService.findCodeList(key);
+                                    try {
+                                        return mdrService.findCodeList(key);
+                                    } catch(SalesNonBlockingException e) {
+                                        log.error("Couldn't load MDR list with key " + key.getInternalName(), e);
+                                        return Lists.newArrayList();
+                                    }
                                 }
                             }
                     );

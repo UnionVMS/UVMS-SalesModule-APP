@@ -10,11 +10,14 @@
 
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
+import eu.europa.ec.fisheries.uvms.mdr.model.exception.MdrModelMarshallException;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.MdrModuleMapper;
+import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import lombok.SneakyThrows;
@@ -25,6 +28,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import java.util.List;
 
@@ -38,13 +42,18 @@ public class MDRServiceBean implements MDRService {
     @EJB
     private SalesMessageProducer producer;
 
-    @SneakyThrows
+    //    @SneakyThrows
     public List<ObjectRepresentation> findCodeList(MDRCodeListKey acronym) {
-        String request = MdrModuleMapper.createFluxMdrGetCodeListRequest(acronym.getInternalName());
-        String correlationId = producer.sendModuleMessage(request, Union.MDR);
-        TextMessage message = consumer.getMessage(correlationId, TextMessage.class);
+        try {
+            String request = MdrModuleMapper.createFluxMdrGetCodeListRequest(acronym.getInternalName());
+            String correlationId = producer.sendModuleMessage(request, Union.MDR);
 
-        MdrGetCodeListResponse response = JAXBMarshaller.unmarshallTextMessage(message.getText(), MdrGetCodeListResponse.class);
-        return response.getDataSets();
+            TextMessage message = consumer.getMessage(correlationId, TextMessage.class);
+
+            MdrGetCodeListResponse response = JAXBMarshaller.unmarshallTextMessage(message.getText(), MdrGetCodeListResponse.class);
+            return response.getDataSets();
+        } catch (MdrModelMarshallException | MessageException | JMSException e) {
+            throw new SalesNonBlockingException("Exception thrown when retrieving codelist '" + acronym.getInternalName() + "' from MDR" , e);
+        }
     }
 }
