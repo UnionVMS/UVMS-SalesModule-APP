@@ -101,20 +101,6 @@ public class QueryDomainModelBeanTest {
         queryDomainModelBean.findByExtId("");
     }
 
-    /**
-     * @Override
-    public SalesQueryType create(SalesQueryType query) {
-    Query domainQuery = mapper.map(query, Query.class);
-    return mapper.map(dao.create(domainQuery), SalesQueryType.class);
-    }
-
-     @Override
-     public Optional<SalesQueryType> findByExtId(String extId) {
-     checkNotNull(extId, "extId cannot be null in QueryDomainModelBean.findByExtId");
-
-     return dao.findByExtId(extId);
-     }
-     */
 
     private SalesQueryType createSalesQueryType() {
         SalesQueryParameterType salesQueryParameterType = new SalesQueryParameterType()

@@ -109,24 +109,6 @@ public class ResponseDomainModelBeanTest {
         domainModelBean.findByExtId("");
     }
 
-    /**
-     * @Override
-    public Optional<FLUXResponseDocumentType> findByExtId(String extId) {
-    if (isBlank(extId)) {
-    throw new NullPointerException("extId cannot be null in ResponseDomainModelBean::findByExtId");
-    }
-
-    Optional<Response> optionalQuery = dao.findByExtId(extId);
-
-    if (optionalQuery.isPresent()) {
-    return Optional.of(mapper.map(optionalQuery.get(), FLUXResponseDocumentType.class));
-    }
-
-    return Optional.absent();
-    }
-
-     * @throws Exception
-     */
     @Test
     public void findByReferencedId() throws Exception {
     }
