@@ -3,18 +3,15 @@ package eu.europa.ec.fisheries.uvms.sales.service;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 
 /**
- * A temporary hack. To sync settings with config, we ought to use
- * the UVMS-ConfigLibrary, as described here:
- * https://focusfish.atlassian.net/wiki/display/UVMS/Config.
+ * When starting up Sales, the settings in the config module are synced with the Sales parameter table.
+ * This means that the most up to date settings can be found in the parameter table.
  *
- * Though, we could not get this library to work. Strangely,
- * when config sends the settings to sales, and sales wants to persist
- * the settings in its parameter table, no transaction is active.
- *
- * In order to move forward, this temporary hack is implemented: to
- * retrieve each setting live from config.
+ * Config provides a ParameterService to retrieve this configuration from the Sales parameter table.
+ * This service acts as a kind wrapper to invoke the Config ParameterService, to avoid having a hard dependency
+ * on Config everywhere.
  */
 public interface ConfigService {
 
     String getParameter(ParameterKey parameterKey);
+
 }

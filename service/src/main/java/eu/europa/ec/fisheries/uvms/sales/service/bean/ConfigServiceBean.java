@@ -10,61 +10,28 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import eu.europa.ec.fisheries.schema.config.types.v1.SettingType;
-import eu.europa.ec.fisheries.uvms.config.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.config.model.mapper.ModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.config.model.mapper.ModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
+import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
-import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
-import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
-import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
-import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
+import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import java.util.List;
 
-/**
- * A temporary hack. To sync settings with config, we ought to use
- * the UVMS-ConfigLibrary, as described here:
- * https://focusfish.atlassian.net/wiki/display/UVMS/Config.
- *
- * Though, we could not get this library to work. Strangely,
- * when config sends the settings to sales, and sales wants to persist
- * the settings in its parameter table, no transaction is active.
- *
- * In order to move forward, this temporary hack is implemented: to
- * retrieve each setting live from config.
- */
 @Stateless
 @Slf4j
 public class ConfigServiceBean implements ConfigService {
 
     @EJB
-    private SalesMessageConsumer consumer;
-
-    @EJB
-    private SalesMessageProducer producer;
+    private ParameterService parameterService;
 
     public String getParameter(ParameterKey parameterKey) {
         try {
-            String request = ModuleRequestMapper.toPullSettingsRequest("sales");
-            String jmsMessageID = producer.sendModuleMessage(request, Union.CONFIG);
-            TextMessage message = consumer.getMessage(jmsMessageID, TextMessage.class);
-            List<SettingType> settingTypeList = ModuleResponseMapper.getSettingsFromPullSettingsResponse(message);
-            for(SettingType setting : settingTypeList){
-                if(parameterKey.getKey().equals(setting.getKey())){
-                    return setting.getValue();
-                }
-            }
-        } catch (MessageException | JMSException | ModelMapperException e) {
+            return parameterService.getStringValue(parameterKey.getKey());
+        } catch (ConfigServiceException e) {
             throw new SalesServiceException("Could not retrieve a setting with key " + parameterKey.getKey() + " from Config.", e);
         }
-        return null;
     }
 }
