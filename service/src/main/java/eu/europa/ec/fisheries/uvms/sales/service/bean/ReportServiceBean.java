@@ -136,13 +136,6 @@ public class ReportServiceBean implements ReportService {
                        List<ValidationQualityAnalysisType> validationResults,
                        String messageValidationStatus) {
         try {
-            Exception exception = new RuntimeException();
-            boolean doThrow = false;
-
-            if (doThrow) {
-                throw exception;
-            }
-
             ReportQuery query = mapper.map(fluxSalesQueryMessage, ReportQuery.class);
             searchReportsHelper.excludeDeletedReportsInQuery(query);
 
