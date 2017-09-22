@@ -15,6 +15,4 @@ import javax.ejb.Stateless;
 @Stateless
 public class AddressDaoBean extends BaseDaoForSales<Address, Integer> implements AddressDao {
 
-    final static Logger LOG = LoggerFactory.getLogger(AddressDaoBean.class);
-
 }

@@ -13,7 +13,7 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class SalesServiceExceptionHandler extends UnionVMSResource implements ExceptionMapper<SalesServiceException> {
 
-    final static Logger LOG = LoggerFactory.getLogger(SalesServiceExceptionHandler.class);
+    static final Logger LOG = LoggerFactory.getLogger(SalesServiceExceptionHandler.class);
 
     @Override
     @Produces("application/json")

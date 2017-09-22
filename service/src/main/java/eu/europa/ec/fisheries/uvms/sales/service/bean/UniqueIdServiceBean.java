@@ -73,11 +73,8 @@ public class UniqueIdServiceBean implements UniqueIdService {
         }
 
         boolean idExistsAsQuery = queryDomainModel.findByExtId(referencedId).isPresent();
-        if (idExistsAsQuery) {
-            return true;
-        }
 
-        return false;
+        return idExistsAsQuery;
     }
 
 

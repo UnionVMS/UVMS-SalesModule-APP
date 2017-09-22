@@ -18,8 +18,6 @@ import javax.ws.rs.core.Response;
 @Stateless
 public class SavedSearchResource extends UnionVMSResource {
 
-    final static Logger LOG = LoggerFactory.getLogger(SavedSearchResource.class);
-
     @EJB
     private SavedSearchService savedSearchService;
 

@@ -20,9 +20,6 @@ public class CodeListsDto {
     private List<RefCodeListItemDto> currencies;
     private List<RefCodeListItemDto> species;
 
-    public CodeListsDto() {
-    }
-
     public List<RefCodeListItemDto> getFlagStates() {
         return flagStates;
     }

@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 @Stateless
 public class ReportResource extends UnionVMSResource {
 
-    final static Logger LOG = LoggerFactory.getLogger(ReportResource.class);
+    static final Logger LOG = LoggerFactory.getLogger(ReportResource.class);
 
     @EJB
     private ReportService reportService;

@@ -2,12 +2,8 @@ package eu.europa.ec.fisheries.uvms.sales.domain.bean;
 
 import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.FLUXResponseDocumentType;
-import eu.europa.ec.fisheries.schema.sales.SalesQueryType;
-import eu.europa.ec.fisheries.uvms.sales.domain.QueryDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.ResponseDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.domain.dao.QueryDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.ResponseDao;
-import eu.europa.ec.fisheries.uvms.sales.domain.entity.Query;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Response;
 import eu.europa.ec.fisheries.uvms.sales.domain.mapper.FLUX;
 import ma.glasnost.orika.MapperFacade;

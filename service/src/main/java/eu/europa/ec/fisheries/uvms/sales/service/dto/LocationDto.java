@@ -12,9 +12,6 @@ public class LocationDto {
     private Double latitude;
     private String country;
 
-    public LocationDto() {
-    }
-
     public String getExtId() {
         return extId;
     }

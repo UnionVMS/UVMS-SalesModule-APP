@@ -17,8 +17,6 @@ import javax.ws.rs.core.Response;
 @Stateless
 public class CodeListResource extends UnionVMSResource {
 
-    final static Logger LOG = LoggerFactory.getLogger(CodeListResource.class);
-
     @EJB
     private CodeListService codeListService;
 

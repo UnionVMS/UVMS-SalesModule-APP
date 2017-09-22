@@ -15,7 +15,7 @@ public class ConfigMessageConsumerBean implements ConfigMessageConsumer {
 
     private static final long TIMEOUT = 10000;
 
-    final static Logger LOG = LoggerFactory.getLogger(ConfigMessageConsumerBean.class);
+    static final Logger LOG = LoggerFactory.getLogger(ConfigMessageConsumerBean.class);
 
     @EJB
     private SalesMessageConsumer salesMessageConsumer;

@@ -9,9 +9,6 @@ public class RefCodeListItemDto {
     private String code;
     private String text;
 
-    public RefCodeListItemDto() {
-    }
-
     public String getCode() {
         return code;
     }

@@ -58,9 +58,6 @@ public class Document {
     @OneToMany(mappedBy = "document", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Product> products;
 
-    public Document() {
-    }
-
     public Integer getId() {
         return id;
     }

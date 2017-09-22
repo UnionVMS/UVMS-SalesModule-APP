@@ -60,9 +60,6 @@ public class Address {
     @Column(name = "street_name", nullable = false)
     private String street;
 
-    public Address() {
-    }
-
     public Integer getId() {
         return id;
     }

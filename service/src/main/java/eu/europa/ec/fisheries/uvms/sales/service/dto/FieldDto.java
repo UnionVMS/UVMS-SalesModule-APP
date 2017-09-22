@@ -10,9 +10,6 @@ public class FieldDto {
 
     private String value;
 
-    public FieldDto() {
-    }
-
     public String getKey() {
         return key;
     }
