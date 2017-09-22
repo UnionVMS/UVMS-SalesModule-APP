@@ -25,8 +25,8 @@ import javax.naming.NamingException;
 @Startup
 @Singleton
 public class JMSConnectorBean {
-    
-    final static org.slf4j.Logger LOG = LoggerFactory.getLogger(JMSConnectorBean.class);
+
+    static final org.slf4j.Logger LOG = LoggerFactory.getLogger(JMSConnectorBean.class);
 
     private InitialContext context;
     private Connection connection;
@@ -44,8 +44,7 @@ public class JMSConnectorBean {
         if (connection == null) {
             connectToQueue();
         }
-        Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-        return session;
+        return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
     }
 
     public TextMessage createTextMessage(Session session, String message) throws JMSException {
@@ -58,9 +57,9 @@ public class JMSConnectorBean {
 
     private Connection createConnection() {
         try {
-            Connection connection = connectionFactory.createConnection();
-            connection.start();
-            return connection;
+            Connection createdConnection = connectionFactory.createConnection();
+            createdConnection.start();
+            return createdConnection;
         } catch (JMSException ex) {
             LOG.error("Error when open connection to JMS broker");
         }
@@ -79,22 +78,22 @@ public class JMSConnectorBean {
     }
 
     private ConnectionFactory createConnectionFactory(InitialContext ctx) {
-        ConnectionFactory connectionFactory;
+        ConnectionFactory createdConnectionFactory;
         try {
-            connectionFactory = (QueueConnectionFactory) ctx.lookup(MessageConstants.CONNECTION_FACTORY);
+            createdConnectionFactory = (QueueConnectionFactory) ctx.lookup(MessageConstants.CONNECTION_FACTORY);
         } catch (NamingException ne) {
             //if we did not find the connection factory we might need to add java:/ at the start
             LOG.debug("Connection Factory lookup failed for " + MessageConstants.CONNECTION_FACTORY);
             String wfName = "java:/" + MessageConstants.CONNECTION_FACTORY;
             try {
                 LOG.debug("trying " + wfName);
-                connectionFactory = (QueueConnectionFactory) ctx.lookup(wfName);
+                createdConnectionFactory = (QueueConnectionFactory) ctx.lookup(wfName);
             } catch (Exception e) {
                 LOG.error("Connection Factory lookup failed for both " + MessageConstants.CONNECTION_FACTORY  + " and " + wfName);
                 throw new RuntimeException(e);
             }
         }
-        return connectionFactory;
+        return createdConnectionFactory;
     }
 
     @PreDestroy

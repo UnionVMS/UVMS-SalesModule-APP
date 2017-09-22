@@ -7,7 +7,6 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
-import eu.europa.ec.fisheries.uvms.sales.domain.QueryDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.message.event.*;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
@@ -29,7 +28,7 @@ import java.util.List;
 @Stateless
 public class EventServiceBean implements EventService {
 
-    final static Logger LOG = LoggerFactory.getLogger(EventServiceBean.class);
+    static final Logger LOG = LoggerFactory.getLogger(EventServiceBean.class);
 
     @EJB
     private ReportService reportService;

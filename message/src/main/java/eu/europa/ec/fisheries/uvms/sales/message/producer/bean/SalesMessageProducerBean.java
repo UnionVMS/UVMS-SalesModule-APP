@@ -24,7 +24,7 @@ import javax.naming.InitialContext;
 @Stateless
 public class SalesMessageProducerBean implements SalesMessageProducer {
 
-    private final static Logger LOG = LoggerFactory.getLogger(SalesMessageProducerBean.class);
+    final private static Logger LOG = LoggerFactory.getLogger(SalesMessageProducerBean.class);
     private static final long TIME_TO_LIVE = 60000L;
 
     private Queue salesQueue;

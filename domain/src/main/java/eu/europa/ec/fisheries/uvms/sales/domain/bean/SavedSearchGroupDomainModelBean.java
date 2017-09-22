@@ -21,8 +21,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Stateless
 public class SavedSearchGroupDomainModelBean implements SavedSearchGroupDomainModel {
 
-    final static Logger LOG = LoggerFactory.getLogger(SavedSearchGroupDomainModelBean.class);
-
     @EJB
     private SavedSearchGroupDao savedSearchGroupDao;
 

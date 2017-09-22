@@ -11,7 +11,6 @@ import ma.glasnost.orika.MapperFacade;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.NoResultException;
 
 /**
  * Created by MATBUL on 31/08/2017.

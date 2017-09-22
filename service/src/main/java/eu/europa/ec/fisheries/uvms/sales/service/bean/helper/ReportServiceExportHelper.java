@@ -17,7 +17,7 @@ import java.util.List;
 @Stateless
 public class ReportServiceExportHelper {
 
-    private final static Logger LOG = LoggerFactory.getLogger(ReportServiceExportHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ReportServiceExportHelper.class);
 
     /**
      * @param reportListExportDtos The dto's to be exported.

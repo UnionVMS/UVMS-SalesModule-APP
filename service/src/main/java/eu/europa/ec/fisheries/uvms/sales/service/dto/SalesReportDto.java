@@ -45,9 +45,6 @@ public class SalesReportDto {
 
     private boolean latestVersion;
 
-    public SalesReportDto() {
-    }
-
     public SalesCategoryType getCategory() {
         return category;
     }

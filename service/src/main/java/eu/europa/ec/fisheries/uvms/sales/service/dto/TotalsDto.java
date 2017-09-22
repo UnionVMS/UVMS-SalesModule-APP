@@ -11,9 +11,6 @@ public class TotalsDto {
     private BigDecimal totalPrice;
     private BigDecimal totalWeight;
 
-    public TotalsDto() {
-    }
-
     public BigDecimal getTotalPrice() {
         return totalPrice;
     }

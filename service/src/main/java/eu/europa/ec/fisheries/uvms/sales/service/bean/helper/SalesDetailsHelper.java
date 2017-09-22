@@ -35,7 +35,7 @@ import java.util.List;
 @Stateless
 public class SalesDetailsHelper {
 
-    final static Logger LOG = LoggerFactory.getLogger(SalesDetailsHelper.class);
+    static final Logger LOG = LoggerFactory.getLogger(SalesDetailsHelper.class);
 
     @EJB
     private ReferenceDataCache referenceDataCache;

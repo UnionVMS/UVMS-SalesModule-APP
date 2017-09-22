@@ -10,14 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-/**
- *
- * @author jojoha
- */
+
 @WebFilter("/*")
 public class RequestFilter implements Filter {
 
-    final static Logger LOG = LoggerFactory.getLogger(RequestFilter.class);
+    static final Logger LOG = LoggerFactory.getLogger(RequestFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

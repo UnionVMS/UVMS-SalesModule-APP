@@ -15,9 +15,6 @@ public abstract class BaseDaoForSales<T, PK extends Serializable> implements Dao
     @PersistenceContext(unitName = "sales")
     protected EntityManager em;
 
-    public BaseDaoForSales() {
-    }
-
     public T findByIdOrNull(PK id) {
         return em.find(getEntityClass(), id);
     }

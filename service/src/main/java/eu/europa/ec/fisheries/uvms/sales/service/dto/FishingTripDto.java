@@ -20,9 +20,6 @@ public class FishingTripDto {
 
     private DateTime landingDate;
 
-    public FishingTripDto() {
-    }
-
     public String getExtId() {
         return extId;
     }

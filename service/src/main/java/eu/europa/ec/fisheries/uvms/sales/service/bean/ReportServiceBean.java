@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Stateless
 public class ReportServiceBean implements ReportService {
 
-    final static Logger LOG = LoggerFactory.getLogger(ReportServiceBean.class);
+    static final Logger LOG = LoggerFactory.getLogger(ReportServiceBean.class);
 
     @EJB
     private ReportDomainModel reportDomainModel;
@@ -136,6 +136,13 @@ public class ReportServiceBean implements ReportService {
                        List<ValidationQualityAnalysisType> validationResults,
                        String messageValidationStatus) {
         try {
+            Exception exception = new RuntimeException();
+            boolean doThrow = false;
+
+            if (doThrow) {
+                throw exception;
+            }
+
             ReportQuery query = mapper.map(fluxSalesQueryMessage, ReportQuery.class);
             searchReportsHelper.excludeDeletedReportsInQuery(query);
 
