@@ -2,8 +2,6 @@ package eu.europa.ec.fisheries.uvms.sales.rest.service;
 
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.sales.service.CodeListService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;

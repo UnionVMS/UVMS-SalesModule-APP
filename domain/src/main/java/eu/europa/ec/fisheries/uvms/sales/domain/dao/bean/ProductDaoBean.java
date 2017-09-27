@@ -8,8 +8,6 @@ package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.ProductDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;

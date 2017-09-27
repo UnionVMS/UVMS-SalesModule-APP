@@ -7,8 +7,6 @@ import eu.europa.ec.fisheries.uvms.sales.domain.dao.SavedSearchGroupDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.mapper.FLUX;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesDatabaseException;
 import ma.glasnost.orika.MapperFacade;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;

@@ -7,8 +7,6 @@ package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.SavedSearchGroupDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.SavedSearchGroup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
