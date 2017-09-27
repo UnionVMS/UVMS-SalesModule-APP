@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.europa.ec.fisheries.uvms.sales.message.producer.bean;
 
 import eu.europa.ec.fisheries.uvms.message.JMSUtils;
@@ -10,18 +6,18 @@ import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.SalesMessageConstants;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.sales.message.helper.bean.JMSConnectorBean;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.*;
-import javax.naming.InitialContext;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class SalesMessageProducerBean implements SalesMessageProducer {
 
     private final static Logger LOG = LoggerFactory.getLogger(SalesMessageProducerBean.class);
@@ -35,41 +31,39 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
     private Queue mdrQueue;
     private Queue rulesQueue;
 
-    @EJB
-    private JMSConnectorBean connector;
+    private ConnectionFactory connectionFactory;
+
 
     @PostConstruct
     public void init() {
-        InitialContext ctx;
-        try {
-            ctx = new InitialContext();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to get InitialContext", e);
-        }
+        connectionFactory = JMSUtils.lookupConnectionFactory();
 
-        this.assetQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_ASSET_EVENT);
-        this.salesQueue = JMSUtils.lookupQueue(ctx, SalesMessageConstants.INTERNAL_QUEUE_JNDI);
-        this.ecbProxyQueue = JMSUtils.lookupQueue(ctx, SalesMessageConstants.QUEUE_ECB_PROXY);
-        this.configQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_CONFIG);
-        this.rulesEventQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_MODULE_RULES);
-        this.rulesQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_RULES);
-
-        this.mdrQueue = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_MDR_EVENT);
+        this.assetQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ASSET_EVENT);
+        this.salesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
+        this.ecbProxyQueue = JMSUtils.lookupQueue(SalesMessageConstants.QUEUE_ECB_PROXY);
+        this.configQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_CONFIG);
+        this.rulesEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_MODULE_RULES);
+        this.rulesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_RULES);
+        this.mdrQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_MDR_EVENT);
     }
 
     @Override
     public void sendModuleResponseMessage(TextMessage originalJMSMessage, String messageToBeSent) throws MessageException {
+        Connection connection = null;
         try {
             LOG.info("Sending message back to recipient from Sales with correlationId {} on queue: {}", originalJMSMessage.getJMSMessageID(),
                     originalJMSMessage.getJMSReplyTo());
 
-            Session session = connector.getNewSession();
+            connection = connectionFactory.createConnection();
+            final Session session = JMSUtils.connectToQueue(connection);
             TextMessage response = session.createTextMessage(messageToBeSent);
             response.setJMSCorrelationID(originalJMSMessage.getJMSMessageID());
             MessageProducer producer = getProducer(session, originalJMSMessage.getJMSReplyTo(), TIME_TO_LIVE);
             producer.send(response);
         } catch (JMSException e) {
             LOG.error("[ Error when returning module request. ] {}", e.getMessage()); //TODO: check error handling
+        } finally {
+            JMSUtils.disconnectQueue(connection);
         }
     }
 
@@ -80,8 +74,10 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
 
     @Override
     public String sendModuleMessage(String text, Union module, long timeout) throws MessageException {
+        Connection connection = null;
         try {
-            Session session = connector.getNewSession();
+            connection = connectionFactory.createConnection();
+            final Session session = JMSUtils.connectToQueue(connection);
             TextMessage jmsMessage = createJMSMessage(text, session);
 
             switch (module) {
@@ -111,15 +107,19 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
         } catch (Exception e) {
             LOG.error("[ Error when sending a message to " + module+ ". ] {}", e.getMessage());
             throw new MessageException(e.getMessage());
+        } finally {
+            JMSUtils.disconnectQueue(connection);
         }
     }
 
     @Override
     public void sendModuleErrorMessage(EventMessage message) {
+        Connection connection = null;
         try {
-            Session session = connector.getNewSession();
-
             LOG.debug("Sending error message back from Sales module to recipient on JMS Queue with correlationID: {} ", message.getJmsMessage().getJMSMessageID());
+
+            connection = connectionFactory.createConnection();
+            final Session session = JMSUtils.connectToQueue(connection);
 
             String data = message.getErrorMessage();
 
@@ -129,6 +129,8 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
 
         } catch (JMSException e) {
             LOG.error("Error when returning Error message to recipient", e);
+        } finally {
+            JMSUtils.disconnectQueue(connection);
         }
     }
 
@@ -141,7 +143,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
 
     private javax.jms.MessageProducer getProducer(Session session, Destination destination, long timeout) throws JMSException {
         javax.jms.MessageProducer producer = session.createProducer(destination);
-        producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         producer.setTimeToLive(timeout);
         return producer;
     }

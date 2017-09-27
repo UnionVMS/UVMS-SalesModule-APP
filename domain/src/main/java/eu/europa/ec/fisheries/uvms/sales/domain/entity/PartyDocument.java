@@ -12,8 +12,8 @@ import javax.validation.constraints.Size;
 @SequenceGenerator( name = "sales_party_document_id_seq",
         sequenceName = "sales_party_document_id_seq",
         allocationSize = 50)
-@EqualsAndHashCode(exclude = "document")
-@ToString(exclude = "document")
+@EqualsAndHashCode
+@ToString
 public class PartyDocument {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,

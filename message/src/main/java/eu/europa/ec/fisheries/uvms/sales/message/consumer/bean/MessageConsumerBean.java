@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.sales.message.consumer.bean;
 import eu.europa.ec.fisheries.schema.sales.SalesBaseRequest;
 import eu.europa.ec.fisheries.schema.sales.SalesModuleMethod;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
-import eu.europa.ec.fisheries.uvms.sales.message.constants.SalesMessageConstants;
 import eu.europa.ec.fisheries.uvms.sales.message.event.*;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
@@ -19,10 +18,10 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-@MessageDriven(mappedName = SalesMessageConstants.EVENT_QUEUE_JNDI, activationConfig = {
+@MessageDriven(mappedName = MessageConstants.QUEUE_SALES_EVENT, activationConfig = {
     @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
-    @ActivationConfigProperty(propertyName = "destination", propertyValue = SalesMessageConstants.EVENT_QUEUE_NAME)
+    @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSSalesEvent")
 })
 public class MessageConsumerBean implements MessageListener {
 
