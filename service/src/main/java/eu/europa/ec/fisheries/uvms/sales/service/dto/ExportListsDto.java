@@ -7,9 +7,6 @@ public class ExportListsDto {
     private List<String> ids;
     private PageCriteriaDto<ReportQueryFilterDto> criteria;
 
-    public ExportListsDto() {
-    }
-
     public boolean isExportAll() {
         return exportAll;
     }

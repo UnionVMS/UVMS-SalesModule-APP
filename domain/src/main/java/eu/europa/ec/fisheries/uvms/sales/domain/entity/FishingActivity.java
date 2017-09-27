@@ -43,9 +43,6 @@ public class FishingActivity {
     @JoinColumn(name = "sales_flux_location_id", nullable = false)
     private FluxLocation location;
 
-    public FishingActivity() {
-    }
-
     public Integer getId() {
         return id;
     }

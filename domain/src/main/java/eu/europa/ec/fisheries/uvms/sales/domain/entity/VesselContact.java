@@ -26,9 +26,6 @@ public class VesselContact {
     @JoinColumn(name = "sales_contact_id", nullable = false)
     private Contact contact;
 
-    public VesselContact() {
-    }
-
     public Integer getId() {
         return id;
     }

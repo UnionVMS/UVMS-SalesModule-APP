@@ -10,9 +10,6 @@ public class PartyDto {
     private String name;
     private String role;
 
-    public PartyDto() {
-    }
-
     public String getExtId() {
         return extId;
     }

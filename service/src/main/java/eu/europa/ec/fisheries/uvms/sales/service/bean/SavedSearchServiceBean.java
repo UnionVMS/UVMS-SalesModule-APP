@@ -28,8 +28,7 @@ public class SavedSearchServiceBean implements SavedSearchService {
     public List<SavedSearchGroupDto> getSavedSearches(@NotNull String user) {
         List<SavedSearchGroup> savedSearchGroups = savedSearchGroupDomainModel.findByUser(user);
 
-        List<SavedSearchGroupDto> savedSearchGroupDtos = mapper.mapAsList(savedSearchGroups, SavedSearchGroupDto.class);
-        return savedSearchGroupDtos;
+        return mapper.mapAsList(savedSearchGroups, SavedSearchGroupDto.class);
     }
 
     @Override

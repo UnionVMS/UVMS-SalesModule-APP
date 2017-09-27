@@ -33,9 +33,6 @@ public class PartyDocument {
     @JoinColumn(name = "sales_party_id", nullable = false)
     private Party party;
 
-    public PartyDocument() {
-    }
-
     public Integer getId() {
         return id;
     }

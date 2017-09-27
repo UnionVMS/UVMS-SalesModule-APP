@@ -14,9 +14,6 @@ public class FluxReportDto {
     private String purposeText;
     private String fluxReportParty;
 
-    public FluxReportDto() {
-    }
-
     public String getExtId() {
         return extId;
     }

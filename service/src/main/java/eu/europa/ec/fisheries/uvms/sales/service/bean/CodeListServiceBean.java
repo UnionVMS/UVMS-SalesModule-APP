@@ -21,7 +21,6 @@ public class CodeListServiceBean implements CodeListService {
 
     @Override
     public CodeListsDto getCodeLists() {
-        CodeListsDto codeListsDto = mapper.map(referenceDataCache, CodeListsDto.class);
-        return codeListsDto;
+        return mapper.map(referenceDataCache, CodeListsDto.class);
     }
 }

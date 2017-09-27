@@ -35,9 +35,6 @@ public class Vessel {
     @JoinColumn(name = "sales_vessel_id", nullable = false)
     private List<VesselContact> vesselContacts;
 
-    public Vessel() {
-    }
-
     public Integer getId() {
         return id;
     }

@@ -26,7 +26,7 @@ public class SalesMessageConsumerBean implements SalesMessageConsumer {
 
     private static final long TIMEOUT = 30000;
 
-    final static Logger LOG = LoggerFactory.getLogger(SalesMessageConsumerBean.class);
+    static final Logger LOG = LoggerFactory.getLogger(SalesMessageConsumerBean.class);
 
     private ConnectionFactory connectionFactory;
     private Queue responseQueue;

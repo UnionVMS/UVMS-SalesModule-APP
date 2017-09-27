@@ -70,10 +70,6 @@ public class Product {
                 inverseJoinColumns = @JoinColumn(name = "sales_flux_location_id"))
     private List<FluxLocation> origins;
 
-
-    public Product() {
-    }
-
     public Integer getId() {
         return id;
     }

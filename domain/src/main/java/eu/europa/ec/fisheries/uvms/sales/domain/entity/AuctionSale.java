@@ -28,9 +28,6 @@ public class AuctionSale {
     @Column(name = "country")
     private String countryCode;
 
-    public AuctionSale() {
-    }
-
     public Integer getId() {
         return id;
     }

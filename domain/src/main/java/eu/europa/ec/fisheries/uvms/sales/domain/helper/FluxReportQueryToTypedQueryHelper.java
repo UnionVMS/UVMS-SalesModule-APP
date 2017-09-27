@@ -28,6 +28,10 @@ import static eu.europa.ec.fisheries.uvms.sales.domain.dto.FluxReportSearchMode.
  * {@link ReportQuery#paging} properties of the given {@link ReportQuery}. **/
 public class FluxReportQueryToTypedQueryHelper {
 
+    public static final String FISHING_ACTIVITY = "fishingActivity";
+    public static final String EXT_ID = "extId";
+    public static final String DOCUMENT = "document";
+    public static final String VESSEL = "vessel";
     private final EntityManager em;
     private Map<Parameter, Object> parameters = new HashMap<>();
     private CriteriaBuilder builder;
@@ -92,7 +96,7 @@ public class FluxReportQueryToTypedQueryHelper {
                     sortOn(pathToFlagState(), direction);
                     break;
                 case LANDING_DATE:
-                    sortOn(fluxReport.get("document").get("fishingActivity").get("endDate"), direction);
+                    sortOn(fluxReport.get(DOCUMENT).get(FISHING_ACTIVITY).get("endDate"), direction);
                     break;
                 case LANDING_PORT:
                     sortOn(pathToLandingPort(), direction);
@@ -190,7 +194,7 @@ public class FluxReportQueryToTypedQueryHelper {
             ParameterExpression<Collection> vesselExternalIdsParameter = addParameter(Collection.class, "vesselExtIds", vesselExternalIds);
 
             Predicate vesselExternalIdInParameterList =
-                    fluxReport.get("document").get("fishingActivity").get("vessel").get("extId")
+                    fluxReport.get(DOCUMENT).get(FISHING_ACTIVITY).get(VESSEL).get(EXT_ID)
                             .in(vesselExternalIdsParameter);
 
             addWhereCondition(vesselExternalIdInParameterList);
@@ -254,7 +258,7 @@ public class FluxReportQueryToTypedQueryHelper {
         if (CollectionUtils.isNotEmpty(species)) {
             ParameterExpression<Collection> speciesAnyParameter = addParameter(Collection.class, "speciesAny", species);
 
-            Join<FluxReport, Document> document = fluxReport.join("document");
+            Join<FluxReport, Document> document = fluxReport.join(DOCUMENT);
             Join<Document, Product> product = document.join("products");
             Predicate productContainsAnyOfSpecies = product.get("species").in(speciesAnyParameter);
 
@@ -264,7 +268,7 @@ public class FluxReportQueryToTypedQueryHelper {
 
     private void withAllSpecies(List<String> species) {
         if (CollectionUtils.isNotEmpty(species)) {
-            Join<FluxReport, Document> document = fluxReport.join("document");
+            Join<FluxReport, Document> document = fluxReport.join(DOCUMENT);
 
             for (int i = 0; i < species.size(); i++) {
                 ParameterExpression<String> speciesAllParameter = addParameter(String.class, "speciesAll" + i, species.get(i));
@@ -285,7 +289,7 @@ public class FluxReportQueryToTypedQueryHelper {
         if (CollectionUtils.isNotEmpty(includedFluxReportIds)) {
             ParameterExpression<Collection> includeFluxReportIdsParameter = addParameter(Collection.class, "includeFluxReportIds", includedFluxReportIds);
 
-            Predicate fluxReportIdInGivenIds = fluxReport.get("extId").in(includeFluxReportIdsParameter);
+            Predicate fluxReportIdInGivenIds = fluxReport.get(EXT_ID).in(includeFluxReportIdsParameter);
 
             addWhereCondition(fluxReportIdInGivenIds);
         }
@@ -295,7 +299,7 @@ public class FluxReportQueryToTypedQueryHelper {
         if (CollectionUtils.isNotEmpty(excludedFluxReportIds)) {
             ParameterExpression<Collection> excludeFluxReportIdsParameter = addParameter(Collection.class, "excludeFluxReportIds", excludedFluxReportIds);
 
-            Predicate fluxReportNotIdInGivenIds = builder.not(fluxReport.get("extId").in(excludeFluxReportIdsParameter));
+            Predicate fluxReportNotIdInGivenIds = builder.not(fluxReport.get(EXT_ID).in(excludeFluxReportIdsParameter));
 
             addWhereCondition(fluxReportNotIdInGivenIds);
         }
@@ -306,7 +310,7 @@ public class FluxReportQueryToTypedQueryHelper {
             ParameterExpression<String> landingCountryParameter = addParameter(String.class,"landingCountry", landingCountry);
 
             Predicate landingCountryEqualsToParameter = builder.equal(
-                    fluxReport.get("document").get("fishingActivity").get("location").get("countryCode"),
+                    fluxReport.get(DOCUMENT).get(FISHING_ACTIVITY).get("location").get("countryCode"),
                     landingCountryParameter);
 
             addWhereCondition(landingCountryEqualsToParameter);
@@ -318,7 +322,7 @@ public class FluxReportQueryToTypedQueryHelper {
             ParameterExpression<String> landingCountryParameter = addParameter(String.class,"tripId", tripId);
 
             Predicate tripIdEqualsToParameter = builder.equal(
-                    fluxReport.get("document").get("fishingActivity").get("fishingTripId"),
+                    fluxReport.get(DOCUMENT).get(FISHING_ACTIVITY).get("fishingTripId"),
                     landingCountryParameter);
 
             addWhereCondition(tripIdEqualsToParameter);
@@ -359,23 +363,23 @@ public class FluxReportQueryToTypedQueryHelper {
     }
 
     private Path<String> pathToFlagState() {
-        return fluxReport.get("document").get("fishingActivity").get("vessel").get("countryCode");
+        return fluxReport.get(DOCUMENT).get(FISHING_ACTIVITY).get(VESSEL).get("countryCode");
     }
 
     private Path<DateTime> pathToSalesDate() {
-        return fluxReport.get("document").get("occurrence");
+        return fluxReport.get(DOCUMENT).get("occurrence");
     }
 
     private Path<String> pathToLandingPort() {
-        return fluxReport.get("document").get("fishingActivity").get("location").get("extId");
+        return fluxReport.get(DOCUMENT).get(FISHING_ACTIVITY).get("location").get(EXT_ID);
     }
 
     private Path<String> pathToVesselName() {
-        return fluxReport.get("document").get("fishingActivity").get("vessel").get("name");
+        return fluxReport.get(DOCUMENT).get(FISHING_ACTIVITY).get(VESSEL).get("name");
     }
 
     private Path<String> pathToSalesLocation() {
-        return fluxReport.get("document").get("fluxLocation").get("extId");
+        return fluxReport.get(DOCUMENT).get("fluxLocation").get(EXT_ID);
     }
 
     private Path<String> pathToSalesCategory() {

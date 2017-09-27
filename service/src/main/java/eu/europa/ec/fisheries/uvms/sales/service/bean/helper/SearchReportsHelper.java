@@ -25,7 +25,7 @@ import java.util.List;
 @Stateless
 public class SearchReportsHelper {
 
-    final static Logger LOG = LoggerFactory.getLogger(SearchReportsHelper.class);
+    static final Logger LOG = LoggerFactory.getLogger(SearchReportsHelper.class);
 
     @EJB
     private AssetService assetService;

@@ -5,11 +5,9 @@ import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
-import eu.europa.ec.fisheries.schema.sales.SalesDocumentType;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.comparator.CompareReportOnCreationDateDescending;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
-import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mapper.FLUX;
@@ -37,7 +35,7 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 @Stateless
 public class ReportDomainModelBean implements ReportDomainModel {
 
-    private final static Logger LOG = LoggerFactory.getLogger(ReportDomainModelBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ReportDomainModelBean.class);
 
     @EJB
     private FluxReportDao fluxReportDao;

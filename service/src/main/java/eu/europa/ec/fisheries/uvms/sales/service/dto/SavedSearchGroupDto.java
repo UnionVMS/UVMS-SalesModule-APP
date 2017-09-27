@@ -16,9 +16,6 @@ public class SavedSearchGroupDto {
 
     private List<FieldDto> fields;
 
-    public SavedSearchGroupDto() {
-    }
-
     public Integer getId() {
         return id;
     }

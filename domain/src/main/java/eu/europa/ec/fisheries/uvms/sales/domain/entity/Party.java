@@ -35,9 +35,6 @@ public class Party {
     @JoinColumn(name = "sales_address_id")
     private Address address;
 
-    public Party() {
-    }
-
     public Integer getId() {
         return id;
     }

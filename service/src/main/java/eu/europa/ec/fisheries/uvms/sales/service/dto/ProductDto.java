@@ -22,9 +22,6 @@ public class ProductDto {
     private BigDecimal quantity;
     private BigDecimal price;
 
-    public ProductDto() {
-    }
-
     public String getSpecies() {
         return species;
     }

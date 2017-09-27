@@ -1,15 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.europa.ec.fisheries.uvms.sales.rest.constants;
 
-/**
- *
- * @author jojoha
- */
+
 public class RestConstants {
+
+    private RestConstants() {
+        //Sonar wanted a private constructor here, but it'll start crying about an empty method if I don't do this
+    }
 
     public static final String MODULE_REST = "/rest";
     public static final String MODULE_NAME = "/sales";

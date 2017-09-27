@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Stateless
 public class ReportServiceBean implements ReportService {
 
-    final static Logger LOG = LoggerFactory.getLogger(ReportServiceBean.class);
+    static final Logger LOG = LoggerFactory.getLogger(ReportServiceBean.class);
 
     @EJB
     private ReportDomainModel reportDomainModel;

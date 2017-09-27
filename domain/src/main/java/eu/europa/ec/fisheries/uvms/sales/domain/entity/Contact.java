@@ -44,9 +44,6 @@ public class Contact {
     @Column(name = "alias")
     private String alias;
 
-    public Contact() {
-    }
-
     public Integer getId() {
         return id;
     }

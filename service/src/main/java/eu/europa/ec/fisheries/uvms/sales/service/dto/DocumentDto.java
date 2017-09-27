@@ -11,9 +11,6 @@ public class DocumentDto {
     private String currency;
     private DateTime occurrence;
 
-    public DocumentDto() {
-    }
-
     public String getExtId() {
         return extId;
     }

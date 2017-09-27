@@ -6,14 +6,12 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
 import com.google.common.base.Optional;
-import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.ProductDao;
-import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
-import eu.europa.ec.fisheries.uvms.sales.domain.helper.FluxReportQueryToTypedQueryHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.FluxReportQueryToTypedQueryHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +28,7 @@ import java.util.List;
 public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> implements FluxReportDao {
 
     final static Logger LOG = LoggerFactory.getLogger(FluxReportDaoBean.class);
+    public static final String EXT_ID = "extId";
 
     @EJB
     protected ProductDao productDao;
@@ -46,7 +45,7 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
     @Override
     public FluxReport findByExtId(String extId) throws NoResultException {
         TypedQuery<FluxReport> query = em.createNamedQuery(FluxReport.FIND_BY_EXT_ID, FluxReport.class);
-        query.setParameter("extId", extId);
+        query.setParameter(EXT_ID, extId);
 
         return query.getSingleResult();
     }
@@ -84,7 +83,7 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
     @Override
     public Optional<FluxReport> findCorrectionOrDeletionOf(@NotNull String extId) {
         TypedQuery<FluxReport> query = em.createNamedQuery(FluxReport.FIND_BY_REFERRED_ID, FluxReport.class);
-        query.setParameter("extId", extId);
+        query.setParameter(EXT_ID, extId);
 
         List<FluxReport> results = query.getResultList();
         if (results.size() == 1) {
@@ -109,7 +108,7 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
     @Override
     public Optional<FluxReport> findTakeOverDocumentByExtId(String extId) {
         TypedQuery<FluxReport> query = em.createNamedQuery(FluxReport.FIND_BY_EXT_ID, FluxReport.class);
-        query.setParameter("extId", extId);
+        query.setParameter(EXT_ID, extId);
 
         List<FluxReport> resultList = query.getResultList();
 

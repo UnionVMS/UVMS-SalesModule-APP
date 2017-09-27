@@ -18,8 +18,6 @@ import java.util.List;
 @Stateless
 public class ProductDaoBean extends BaseDaoForSales<Product, Integer> implements ProductDao {
 
-    final static Logger LOG = LoggerFactory.getLogger(ProductDaoBean.class);
-
     @Override
     public List<Product> getProductsForFluxReport(FluxReport fluxReport) {
         TypedQuery<Product> productQuery = em.createNamedQuery(Product.FIND_PRODUCTS_BY_DOCUMENT, Product.class);

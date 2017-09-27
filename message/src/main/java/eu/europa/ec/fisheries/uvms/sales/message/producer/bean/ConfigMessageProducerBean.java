@@ -14,7 +14,7 @@ import javax.ejb.Stateless;
 @Stateless
 public class ConfigMessageProducerBean implements ConfigMessageProducer {
 
-    final static Logger LOG = LoggerFactory.getLogger(ConfigMessageProducerBean.class);
+    static final Logger LOG = LoggerFactory.getLogger(ConfigMessageProducerBean.class);
 
     @EJB
     private SalesMessageProducer salesMessageProducer;

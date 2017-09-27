@@ -18,8 +18,6 @@ import java.util.List;
 @Stateless
 public class SavedSearchGroupDaoBean extends BaseDaoForSales<SavedSearchGroup, Integer> implements SavedSearchGroupDao {
 
-    final static Logger LOG = LoggerFactory.getLogger(SavedSearchGroupDaoBean.class);
-
     @Override
     public SavedSearchGroup createOrUpdate(SavedSearchGroup savedSearchGroup) {
         em.merge(savedSearchGroup);
