@@ -11,7 +11,7 @@ public class LocationObjectRepresentationToReferenceCodeCustomMapper extends Obj
 
     @Override
     protected String columnNameForCode() {
-        return "unlo_code";
+        return "unloCode";
     }
 
     public List<ReferenceCode> mapAsList(Collection<ObjectRepresentation> locations) {

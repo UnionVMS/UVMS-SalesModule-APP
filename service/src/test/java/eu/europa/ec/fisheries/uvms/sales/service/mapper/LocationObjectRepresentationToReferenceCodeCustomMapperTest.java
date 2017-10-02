@@ -25,7 +25,7 @@ public class LocationObjectRepresentationToReferenceCodeCustomMapperTest {
     public void mapAtoBWhenAllFieldsAreFilledIn() throws Exception {
         String code = "code-sdfsdf";
         String text = "text";
-        ColumnDataType codeColumn = new ColumnDataType("unlo_code", code,"java.lang.String");
+        ColumnDataType codeColumn = new ColumnDataType("unloCode", code,"java.lang.String");
         ColumnDataType textColumn = new ColumnDataType("description", text,"java.lang.String");
 
         ObjectRepresentation objectRepresentation = new ObjectRepresentation();
@@ -82,14 +82,14 @@ public class LocationObjectRepresentationToReferenceCodeCustomMapperTest {
     public void mapAsList() throws Exception {
         String code1 = "code-sdfsdf";
         String text1 = "text";
-        ColumnDataType codeColumn1 = new ColumnDataType("unlo_code", code1,"java.lang.String");
+        ColumnDataType codeColumn1 = new ColumnDataType("unloCode", code1,"java.lang.String");
         ColumnDataType textColumn1 = new ColumnDataType("description", text1,"java.lang.String");
         ObjectRepresentation objectRepresentation1 = new ObjectRepresentation();
         objectRepresentation1.setFields(Lists.newArrayList(codeColumn1, textColumn1));
 
         String code2 = "code-kljlkjlk";
         String text2 = "lkjlk";
-        ColumnDataType codeColumn2 = new ColumnDataType("unlo_code", code2,"java.lang.String");
+        ColumnDataType codeColumn2 = new ColumnDataType("unloCode", code2,"java.lang.String");
         ColumnDataType textColumn2 = new ColumnDataType("description", text2,"java.lang.String");
         ObjectRepresentation objectRepresentation2 = new ObjectRepresentation();
         objectRepresentation2.setFields(Lists.newArrayList(codeColumn2, textColumn2));
