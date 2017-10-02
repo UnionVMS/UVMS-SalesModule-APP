@@ -13,6 +13,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCode;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
 import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
+import eu.europa.ec.fisheries.uvms.sales.service.mapper.LocationObjectRepresentationToReferenceCodeCustomMapper;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
@@ -79,7 +80,9 @@ public class ReferenceDataCache {
     }
 
     public List<ReferenceCode> getSalesLocations() {
-        return map(todays(MDRCodeListKey.SALES_LOCATIONS), ReferenceCode.class);
+        List<ObjectRepresentation> salesLocations = todays(MDRCodeListKey.SALES_LOCATIONS);
+        return new LocationObjectRepresentationToReferenceCodeCustomMapper()
+                .mapAsList(salesLocations);
     }
 
     public List<ReferenceCode> getFreshness() {
