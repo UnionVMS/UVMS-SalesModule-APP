@@ -2,3 +2,5 @@
 **/*.iml
 **/target
 **/apidocs
+**/logging.properties
+**/plugin.properties
