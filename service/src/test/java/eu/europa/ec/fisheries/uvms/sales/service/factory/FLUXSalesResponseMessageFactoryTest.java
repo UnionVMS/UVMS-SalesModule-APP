@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
+import org.joda.time.DateTimeZone;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -77,11 +78,15 @@ public class FLUXSalesResponseMessageFactoryTest {
         assertEquals("salesQuery", fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getValue());
         assertEquals("UUID", fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getSchemeID());
 
+        assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getCreationDateTime());
+        assertEquals(DateTimeZone.UTC, fluxSalesResponse.getFLUXResponseDocument().getCreationDateTime().getDateTime().getZone());
+
         assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty().getIDS().get(0).getValue());
         assertEquals("FLUX_GP_PARTY", fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty().getIDS().get(0).getSchemeID());
 
         assertEquals(validationResult, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getRelatedValidationQualityAnalysises().get(0));
         assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getCreationDateTime());
+        assertEquals(DateTimeZone.UTC, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getCreationDateTime().getDateTime().getZone());
         assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getValidatorID().getValue());
         assertEquals(400, fluxSalesResponse.getSalesReports().size());
 
@@ -117,11 +122,15 @@ public class FLUXSalesResponseMessageFactoryTest {
         assertEquals(referencedId, fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getValue());
         assertEquals("UUID", fluxSalesResponse.getFLUXResponseDocument().getReferencedID().getSchemeID());
 
+        assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getCreationDateTime());
+        assertEquals(DateTimeZone.UTC, fluxSalesResponse.getFLUXResponseDocument().getCreationDateTime().getDateTime().getZone());
+
         assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty().getIDS().get(0).getValue());
         assertEquals("FLUX_GP_PARTY", fluxSalesResponse.getFLUXResponseDocument().getRespondentFLUXParty().getIDS().get(0).getSchemeID());
 
         assertEquals(validationResult, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getRelatedValidationQualityAnalysises().get(0));
         assertNotNull(fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getCreationDateTime());
+        assertEquals(DateTimeZone.UTC, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getCreationDateTime().getDateTime().getZone());
         assertEquals(fluxLocalNationCode, fluxSalesResponse.getFLUXResponseDocument().getRelatedValidationResultDocuments().get(0).getValidatorID().getValue());
         assertTrue(fluxSalesResponse.getSalesReports().isEmpty());
 

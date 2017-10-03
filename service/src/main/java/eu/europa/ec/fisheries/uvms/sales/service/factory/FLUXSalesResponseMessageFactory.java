@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -73,14 +74,14 @@ public class FLUXSalesResponseMessageFactory {
     private ValidationResultDocumentType createValidationResultDocument(Collection<ValidationQualityAnalysisType> validationResults, String fluxLocalNationCode) {
         return new ValidationResultDocumentType()
                     .withValidatorID(new IDType().withValue(fluxLocalNationCode))
-                    .withCreationDateTime(new DateTimeType().withDateTime(DateTime.now()))
+                    .withCreationDateTime(new DateTimeType().withDateTime(DateTime.now().withZone(DateTimeZone.UTC)))
                     .withRelatedValidationQualityAnalysises(validationResults);
     }
 
     private FLUXResponseDocumentType createFluxResponseDocumentType(String referencedId, ValidationResultDocumentType validationResultDocument, FLUXPartyType fluxParty, String messageValidationStatus) {
         FLUXResponseDocumentType fluxResponseDocumentType = new FLUXResponseDocumentType()
                 .withIDS(createRandomUUID())
-                .withCreationDateTime(new DateTimeType().withDateTime(DateTime.now()))
+                .withCreationDateTime(new DateTimeType().withDateTime(DateTime.now().withZone(DateTimeZone.UTC)))
                 .withReferencedID(createUUID(referencedId))
                 .withRespondentFLUXParty(fluxParty);
 
