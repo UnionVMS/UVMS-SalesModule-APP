@@ -26,14 +26,15 @@ public class ObjectRepresentationToReferenceCodeCustomMapper extends CustomMappe
 
     private void mapField(ColumnDataType field, ReferenceCode referenceCode) {
         if (field.getColumnName() != null) {
-            switch (field.getColumnName()) {
-                case "code":
-                    referenceCode.setCode(field.getColumnValue());
-                    break;
-                case "description":
-                    referenceCode.setText(field.getColumnValue());
-                    break;
+            if (field.getColumnName().equals(columnNameForCode())) {
+                referenceCode.setCode(field.getColumnValue());
+            } else if (field.getColumnName().equals("description")) {
+                referenceCode.setText(field.getColumnValue());
             }
         }
+    }
+
+    protected String columnNameForCode() {
+        return "code";
     }
 }

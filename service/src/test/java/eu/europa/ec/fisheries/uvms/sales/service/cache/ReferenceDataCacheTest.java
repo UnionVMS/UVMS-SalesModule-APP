@@ -18,6 +18,7 @@ import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -70,7 +71,6 @@ public class ReferenceDataCacheTest {
     @Test
     public void getSalesLocations() throws Exception {
         doReturn(objectRepresentations).when(mdrService).findCodeList(MDRCodeListKey.SALES_LOCATIONS);
-        doReturn(expectedReferenceCodes).when(mapper).mapAsList(objectRepresentations, ReferenceCode.class);
 
         //execute first time
         List<ReferenceCode> result = referenceDataCache.getSalesLocations();
@@ -79,11 +79,10 @@ public class ReferenceDataCacheTest {
         List<ReferenceCode> cachedResult = referenceDataCache.getSalesLocations();
 
         verify(mdrService, times(1)).findCodeList(MDRCodeListKey.SALES_LOCATIONS);
-        verify(mapper, times(2)).mapAsList(objectRepresentations, ReferenceCode.class);
         verifyNoMoreInteractions(mdrService, mapper);
 
-        assertEquals(expectedReferenceCodes, result);
-        assertEquals(expectedReferenceCodes, cachedResult);
+        assertNotNull(result);
+        assertEquals(result, cachedResult);
     }
 
     @Test
