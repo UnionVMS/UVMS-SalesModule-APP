@@ -149,4 +149,15 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="flr-06" author="stihft">
+        <addUniqueConstraint columnNames="ext_id"
+                             constraintName="sales_flux_report_ext_id_unique"
+                             tableName="sales_flux_report"/>
+
+        <rollback>
+            <dropUniqueConstraint tableName="sales_flux_report"
+                                  constraintName="sales_flux_report_ext_id_unique" />
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
