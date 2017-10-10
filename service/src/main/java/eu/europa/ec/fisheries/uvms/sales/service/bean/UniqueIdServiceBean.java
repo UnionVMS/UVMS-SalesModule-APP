@@ -1,12 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import com.google.common.base.Optional;
-import eu.europa.ec.fisheries.schema.sales.Report;
-import eu.europa.ec.fisheries.schema.sales.SalesDocumentType;
-import eu.europa.ec.fisheries.uvms.sales.domain.DocumentDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.domain.QueryDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.domain.ResponseDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.*;
 import eu.europa.ec.fisheries.uvms.sales.service.UniqueIdService;
 
 import javax.ejb.EJB;
@@ -29,11 +23,13 @@ public class UniqueIdServiceBean implements UniqueIdService {
     @EJB
     private ResponseDomainModel responseDomainModel;
 
+    @EJB
+    private ErroneousMessageDomainModel erroneousMessageDomainModel;
+
     @Override
     public boolean doesAnySalesDocumentExistWithAnyOfTheseIds(List<String> extIds) {
         for (String extId : extIds) {
-            Optional<SalesDocumentType> salesDocumentTypeOptional = documentDomainModel.findByExtId(extId);
-            if (salesDocumentTypeOptional.isPresent()) {
+            if (documentDomainModel.findByExtId(extId).isPresent()) {
                 return true;
             }
         }
@@ -44,8 +40,9 @@ public class UniqueIdServiceBean implements UniqueIdService {
     @Override
     public boolean doesAnySalesReportExistWithAnyOfTheseIds(List<String> extIds) {
         for (String extId : extIds) {
-            Optional<Report> takeOverDocumentByExtId = reportDomainModel.findByExtId(extId);
-            if (takeOverDocumentByExtId.isPresent()) {
+            if (reportDomainModel.findByExtId(extId).isPresent()) {
+                return true;
+            } else if (erroneousMessageDomainModel.exists(extId)) {
                 return true;
             }
         }
@@ -55,7 +52,8 @@ public class UniqueIdServiceBean implements UniqueIdService {
 
     @Override
     public boolean isQueryIdUnique(String extId) {
-        return !queryDomainModel.findByExtId(extId).isPresent();
+        return !(queryDomainModel.findByExtId(extId).isPresent()
+                || erroneousMessageDomainModel.exists(extId));
     }
 
     @Override
@@ -65,16 +63,9 @@ public class UniqueIdServiceBean implements UniqueIdService {
 
     @Override
     public boolean doesReferencedReportInResponseExist(String referencedId) {
-        // We have to check if the referencedId exists either as a report or as a query
-
-        boolean idExistsAsReport = reportDomainModel.findByExtId(referencedId).isPresent();
-        if (idExistsAsReport) {
-            return true;
-        }
-
-        boolean idExistsAsQuery = queryDomainModel.findByExtId(referencedId).isPresent();
-
-        return idExistsAsQuery;
+        return reportDomainModel.findByExtId(referencedId).isPresent()
+                || queryDomainModel.findByExtId(referencedId).isPresent()
+                || erroneousMessageDomainModel.exists(referencedId);
     }
 
 

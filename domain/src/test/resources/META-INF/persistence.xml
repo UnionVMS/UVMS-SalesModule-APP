@@ -10,6 +10,7 @@
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.AuctionSale</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Contact</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.Document</class>
+        <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.ErroneousMessage</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.FishingActivity</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxLocation</class>
         <class>eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport</class>

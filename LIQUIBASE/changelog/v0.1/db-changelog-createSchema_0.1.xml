@@ -24,5 +24,6 @@
     <include file="/schema/sales_query_parameter_type.xml" />
     <include file="/schema/sales_response.xml" />
     <include file="/schema/parameter.xml" />
+    <include file="/schema/sales_erroneous_message.xml" />
 
 </databaseChangeLog>
