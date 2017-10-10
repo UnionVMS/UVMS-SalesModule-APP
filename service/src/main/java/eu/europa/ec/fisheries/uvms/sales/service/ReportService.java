@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service;
 
+import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesQueryMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
@@ -68,8 +69,8 @@ public interface ReportService {
                     String messageValidationStatus);
 
     /**
-     * Finds a sales report by extId, null if not found
+     * Finds a sales report by extId
      * @param extId the extId of the report
      */
-    Report findByExtIdOrNull(String extId);
+    Optional<Report> findByExtId(String extId);
 }

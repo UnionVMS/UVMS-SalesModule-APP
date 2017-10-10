@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
@@ -61,7 +62,8 @@ public class ReportServiceBean implements ReportService {
     public void saveReport(Report report, String pluginToSendResponseThrough,
                            List<ValidationQualityAnalysisType> validationResults,
                            String messageValidationStatus) {
-        Report alreadyExistingReport = reportDomainModel.findByExtIdOrNull(report.getFLUXSalesReportMessage().getFLUXReportDocument().getIDS().get(0).getValue());
+        Report alreadyExistingReport = reportDomainModel.findByExtId(report.getFLUXSalesReportMessage().getFLUXReportDocument().getIDS().get(0).getValue())
+                                                        .orNull();
 
         //If a report exists with the incoming ID, we don't save the report.
         if (alreadyExistingReport == null) {
@@ -83,8 +85,8 @@ public class ReportServiceBean implements ReportService {
     }
 
     @Override
-    public Report findByExtIdOrNull(String extId) {
-        return reportDomainModel.findByExtIdOrNull(extId);
+    public Optional<Report> findByExtId(String extId) {
+        return reportDomainModel.findByExtId(extId);
     }
 
     @Override

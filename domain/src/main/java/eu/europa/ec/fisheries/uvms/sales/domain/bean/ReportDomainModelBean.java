@@ -11,7 +11,6 @@ import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mapper.FLUX;
-import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
@@ -30,7 +29,6 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.apache.commons.lang.StringUtils.isBlank;
 
 @Stateless
 public class ReportDomainModelBean implements ReportDomainModel {
@@ -47,19 +45,15 @@ public class ReportDomainModelBean implements ReportDomainModel {
     private ReportHelper reportHelper;
 
     @Override
-    public Report findByExtId(String extId) {
+    public Optional<Report> findByExtId(String extId) {
         LOG.debug("Find report by extId {}", extId);
 
-        FluxReport fluxReport = fluxReportDao.findByExtId(extId);
-        return mapper.map(fluxReport, Report.class);
-    }
-
-    @Override
-    public Report findByExtIdOrNull(String extId) {
-        LOG.debug("Find report by extId {}", extId);
-
-        FluxReport fluxReport = fluxReportDao.findByExtIdOrNull(extId);
-        return mapper.map(fluxReport, Report.class);
+        Optional<FluxReport> fluxReport = fluxReportDao.findByExtId(extId);
+        if (fluxReport.isPresent()) {
+            return Optional.of(mapper.map(fluxReport.get(), Report.class));
+        } else {
+            return Optional.absent();
+        }
     }
 
     @Override
@@ -95,7 +89,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
         DateTime deletionDate = reportHelper.getCreationDate(report);
         String originalReportExtId = reportHelper.getFLUXReportDocumentReferencedId(report);
 
-        FluxReport originalReport = fluxReportDao.findByExtId(originalReportExtId);
+        FluxReport originalReport = fluxReportDao.findByExtId(originalReportExtId).get();
 
         // If a report was already deleted, we want to keep the original deletion date and not the date of the 'new' deletion.
         if (originalReport.getDeletion() == null) {
@@ -110,7 +104,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
         List<FluxReport> takeOverDocuments = new ArrayList<>();
 
         for (String takeOverDocumentId : takeOverDocumentIds) {
-            FluxReport takeOverDocument = fluxReportDao.findByExtIdOrNull(takeOverDocumentId);
+            FluxReport takeOverDocument = fluxReportDao.findByExtId(takeOverDocumentId).get();
             if (takeOverDocument != null) {
                 takeOverDocuments.add(takeOverDocument);
             }
@@ -121,9 +115,9 @@ public class ReportDomainModelBean implements ReportDomainModel {
 
     private void enrichWithPreviousReport(FluxReport fluxReportEntity, Report report) {
         String referencedId = reportHelper.getFLUXReportDocumentReferencedId(report);
-        FluxReport previousReport = fluxReportDao.findByExtIdOrNull(referencedId);
-        if (previousReport != null) {
-            fluxReportEntity.setPreviousFluxReport(previousReport);
+        Optional<FluxReport> previousReport = fluxReportDao.findByExtId(referencedId);
+        if (previousReport.isPresent()) {
+            fluxReportEntity.setPreviousFluxReport(previousReport.get());
         }
     }
 
@@ -169,7 +163,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
         List<Report> referencedReports = new ArrayList<>();
 
         if (StringUtils.isNotBlank(firstReferencedId)) {
-            Report referencedReport = findByExtId(firstReferencedId);
+            Report referencedReport = findByExtId(firstReferencedId).get();
             referencedReports.add(referencedReport);
 
             String nextReferencedId = reportHelper.getFLUXReportDocumentReferencedIdOrNull(referencedReport);
@@ -209,24 +203,9 @@ public class ReportDomainModelBean implements ReportDomainModel {
     @Override
     public List<Report> findRelatedReportsOf(Report report) {
         String extId = reportHelper.getFLUXReportDocumentId(report);
-        FluxReport fluxReport = fluxReportDao.findByExtId(extId);
+        FluxReport fluxReport = fluxReportDao.findByExtId(extId).get();
         List<FluxReport> relatedReports = ListUtils.union(fluxReport.getRelatedSalesNotes(), fluxReport.getRelatedTakeOverDocuments());
         return mapper.mapAsList(relatedReports, Report.class);
     }
-
-    @Override
-    public Optional<Report> findTakeOverDocumentByExtId(String extId) {
-        if (isBlank(extId)) {
-            throw new SalesServiceException("extId cannot be blank");
-        }
-
-        Optional<FluxReport> takeOverDocument = fluxReportDao.findTakeOverDocumentByExtId(extId);
-        if (takeOverDocument.isPresent()) {
-            return Optional.of(mapper.map(takeOverDocument.get(), Report.class));
-        }
-
-        return Optional.absent();
-    }
-
 
 }

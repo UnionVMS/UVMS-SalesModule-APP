@@ -8,7 +8,6 @@ import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mother.ReportMother;
-import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
 import org.junit.Rule;
@@ -100,9 +99,9 @@ public class ReportDomainModelBeanTest {
         when(reportHelper.isReportCorrected(report)).thenReturn(false);
         when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(true);
         when(reportHelper.getReferenceIdsToTakeOverDocuments(report)).thenReturn(takeOverDocumentsIds);
-        when(fluxReportDao.findByExtIdOrNull("a")).thenReturn(takeOverDocumentA);
-        when(fluxReportDao.findByExtIdOrNull("b")).thenReturn(takeOverDocumentB);
-        when(fluxReportDao.findByExtIdOrNull("c")).thenReturn(takeOverDocumentC);
+        when(fluxReportDao.findByExtId("a")).thenReturn(Optional.of(takeOverDocumentA));
+        when(fluxReportDao.findByExtId("b")).thenReturn(Optional.of(takeOverDocumentB));
+        when(fluxReportDao.findByExtId("c")).thenReturn(Optional.of(takeOverDocumentC));
         when(fluxReportDao.create(fluxReportEntity)).thenReturn(fluxReportEntity);
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
 
@@ -115,9 +114,9 @@ public class ReportDomainModelBeanTest {
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
         verify(reportHelper).getReferenceIdsToTakeOverDocuments(report);
-        verify(fluxReportDao).findByExtIdOrNull("a");
-        verify(fluxReportDao).findByExtIdOrNull("b");
-        verify(fluxReportDao).findByExtIdOrNull("c");
+        verify(fluxReportDao).findByExtId("a");
+        verify(fluxReportDao).findByExtId("b");
+        verify(fluxReportDao).findByExtId("c");
         verify(fluxReportDao).create(fluxReportEntity);
         verify(mapper).map(fluxReportEntity, Report.class);
         verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
@@ -151,7 +150,7 @@ public class ReportDomainModelBeanTest {
         when(reportHelper.isReportDeleted(report)).thenReturn(true);
         when(reportHelper.getCreationDate(report)).thenReturn(deletionDate);
         when(reportHelper.getFLUXReportDocumentReferencedId(report)).thenReturn("hello");
-        when(fluxReportDao.findByExtId("hello")).thenReturn(oldFluxReportEntity);
+        when(fluxReportDao.findByExtId("hello")).thenReturn(Optional.of(oldFluxReportEntity));
         when(mapper.map(oldFluxReportEntity, Report.class)).thenReturn(mappedAndPersistedReportFromDao);
 
         //execute
@@ -198,7 +197,7 @@ public class ReportDomainModelBeanTest {
         when(reportHelper.isReportDeleted(report)).thenReturn(true);
         when(reportHelper.getCreationDate(report)).thenReturn(now);
         when(reportHelper.getFLUXReportDocumentReferencedId(report)).thenReturn("hello");
-        when(fluxReportDao.findByExtId("hello")).thenReturn(oldFluxReportEntity);
+        when(fluxReportDao.findByExtId("hello")).thenReturn(Optional.of(oldFluxReportEntity));
         when(mapper.map(oldFluxReportEntity, Report.class)).thenReturn(mappedAndPersistedReportFromDao);
 
         //execute
@@ -239,7 +238,7 @@ public class ReportDomainModelBeanTest {
         when(reportHelper.isReportCorrected(report)).thenReturn(true);
         when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
         when(reportHelper.getFLUXReportDocumentReferencedId(report)).thenReturn("hello");
-        when(fluxReportDao.findByExtIdOrNull("hello")).thenReturn(oldFluxReportEntity);
+        when(fluxReportDao.findByExtId("hello")).thenReturn(Optional.of(oldFluxReportEntity));
 
         when(fluxReportDao.create(newFluxReportEntity)).thenReturn(newFluxReportEntity);
         when(mapper.map(newFluxReportEntity, Report.class)).thenReturn(report);
@@ -252,7 +251,7 @@ public class ReportDomainModelBeanTest {
         verify(mapper).map(report, FluxReport.class);
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).getFLUXReportDocumentReferencedId(report);
-        verify(fluxReportDao).findByExtIdOrNull("hello");
+        verify(fluxReportDao).findByExtId("hello");
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
         verify(mapper).map(newFluxReportEntity, Report.class);
         verify(fluxReportDao).create(newFluxReportEntity);
@@ -320,16 +319,17 @@ public class ReportDomainModelBeanTest {
         FluxReport fluxReport = new FluxReport();
         Report report = new Report();
 
-        doReturn(fluxReport).when(fluxReportDao).findByExtId(extId);
+        doReturn(Optional.of(fluxReport)).when(fluxReportDao).findByExtId(extId);
         doReturn(report).when(mapper).map(fluxReport, Report.class);
 
-        Report result = reportDomainModelBean.findByExtId(extId);
+        Optional<Report> result = reportDomainModelBean.findByExtId(extId);
 
         verify(fluxReportDao).findByExtId(extId);
         verify(mapper).map(fluxReport, Report.class);
         verifyNoMoreInteractions(fluxReportDao);
 
-        assertSame(result, report);
+        assertTrue(result.isPresent());
+        assertSame(report, result.get());
     }
 
     @Test(expected = NoResultException.class)
@@ -339,40 +339,6 @@ public class ReportDomainModelBeanTest {
         doThrow(new NoResultException()).when(fluxReportDao).findByExtId(extId);
 
         reportDomainModelBean.findByExtId(extId);
-    }
-
-    @Test
-    public void testFindByExtIdOrNullWhenSuccess() {
-        String extId = "extId";
-        FluxReport fluxReport = new FluxReport();
-        Report report = new Report();
-
-        doReturn(fluxReport).when(fluxReportDao).findByExtIdOrNull(extId);
-        doReturn(report).when(mapper).map(fluxReport, Report.class);
-
-        Report result = reportDomainModelBean.findByExtIdOrNull(extId);
-
-        verify(fluxReportDao).findByExtIdOrNull(extId);
-        verify(mapper).map(fluxReport, Report.class);
-        verifyNoMoreInteractions(fluxReportDao);
-
-        assertSame(result, report);
-    }
-
-    @Test
-    public void testFindByExtIdOrNullWhenNothingFound() {
-        String extId = "extId";
-
-        doReturn(null).when(fluxReportDao).findByExtIdOrNull(extId);
-        doReturn(null).when(mapper).map(null, Report.class);
-
-        Report result = reportDomainModelBean.findByExtIdOrNull(extId);
-
-        verify(fluxReportDao).findByExtIdOrNull(extId);
-        verify(mapper).map(null, Report.class);
-        verifyNoMoreInteractions(fluxReportDao);
-
-        assertNull(result);
     }
 
     @Test
@@ -420,11 +386,11 @@ public class ReportDomainModelBeanTest {
         Report report2 = ReportMother.with(id2, null);
 
         //mock
-        doReturn(fluxReport1).when(fluxReportDao).findByExtId(id1);
+        doReturn(Optional.of(fluxReport1)).when(fluxReportDao).findByExtId(id1);
         doReturn(report1).when(mapper).map(fluxReport1, Report.class);
         doReturn(id2).when(reportHelper).getFLUXReportDocumentReferencedIdOrNull(report1);
 
-        doReturn(fluxReport2).when(fluxReportDao).findByExtId(id2);
+        doReturn(Optional.of(fluxReport2)).when(fluxReportDao).findByExtId(id2);
         doReturn(report2).when(mapper).map(fluxReport2, Report.class);
         doReturn(null).when(reportHelper).getFLUXReportDocumentReferencedIdOrNull(report2);
 
@@ -541,7 +507,7 @@ public class ReportDomainModelBeanTest {
 
         //mock
         doReturn(extId).when(reportHelper).getFLUXReportDocumentId(report);
-        doReturn(fluxReport).when(fluxReportDao).findByExtId(extId);
+        doReturn(Optional.of(fluxReport)).when(fluxReportDao).findByExtId(extId);
         doReturn(relatedReports).when(mapper).mapAsList(relatedFluxReports, Report.class);
 
         //execute
@@ -556,40 +522,4 @@ public class ReportDomainModelBeanTest {
         assertSame(relatedReports, result);
     }
 
-    @Test
-    public void findTakeOverDocumentByExtIdWhenADocumentWasFound() throws Exception {
-        Optional<FluxReport> fluxReport = Optional.of(new FluxReport());
-        Report report = new Report();
-
-        doReturn(fluxReport).when(fluxReportDao).findTakeOverDocumentByExtId("aaaa");
-        doReturn(report).when(mapper).map(fluxReport.get(), Report.class);
-
-        Optional<Report> takeOverDocumentByExtId = reportDomainModelBean.findTakeOverDocumentByExtId("aaaa");
-
-        verify(fluxReportDao).findTakeOverDocumentByExtId("aaaa");
-        verify(mapper).map(fluxReport.get(), Report.class);
-        verifyNoMoreInteractions(fluxReportDao, mapper);
-
-        assertEquals(Optional.of(report), takeOverDocumentByExtId);
-    }
-
-    @Test
-    public void findTakeOverDocumentByExtIdWhenNoDocumentWasFound() throws Exception {
-        doReturn(Optional.absent()).when(fluxReportDao).findTakeOverDocumentByExtId("aaaa");
-
-        Optional<Report> takeOverDocumentByExtId = reportDomainModelBean.findTakeOverDocumentByExtId("aaaa");
-
-        verify(fluxReportDao).findTakeOverDocumentByExtId("aaaa");
-        verifyNoMoreInteractions(fluxReportDao, mapper);
-
-        assertEquals(Optional.absent(), takeOverDocumentByExtId);
-    }
-
-    @Test
-    public void findTakeOverDocumentByExtIdWhenExtIdIsBlank() throws Exception {
-        exception.expect(SalesServiceException.class);
-        exception.expectMessage("extId cannot be blank");
-
-        reportDomainModelBean.findTakeOverDocumentByExtId("");
-    }
 }

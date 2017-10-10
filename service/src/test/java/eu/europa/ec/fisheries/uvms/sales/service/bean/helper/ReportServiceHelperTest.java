@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
@@ -434,7 +435,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(true).when(reportHelper).isReportCorrected(correction);
         doReturn(referencedID).when(reportHelper).getFLUXReportDocumentReferencedId(correction);
-        doReturn(original).when(reportDomainModel).findByExtId(referencedID);
+        doReturn(Optional.of(original)).when(reportDomainModel).findByExtId(referencedID);
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
         doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
@@ -480,7 +481,7 @@ public class ReportServiceHelperTest {
         doReturn(false).when(reportHelper).isReportCorrected(deletion);
         doReturn(true).when(reportHelper).isReportDeleted(deletion);
         doReturn(referencedID).when(reportHelper).getFLUXReportDocumentReferencedId(deletion);
-        doReturn(original).when(reportDomainModel).findByExtId(referencedID);
+        doReturn(Optional.of(original)).when(reportDomainModel).findByExtId(referencedID);
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
         doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
@@ -525,7 +526,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(true).when(reportHelper).isReportCorrected(correction);
         doReturn(referencedID).when(reportHelper).getFLUXReportDocumentReferencedId(correction);
-        doReturn(original).when(reportDomainModel).findByExtId(referencedID);
+        doReturn(Optional.of(original)).when(reportDomainModel).findByExtId(referencedID);
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
         doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
@@ -568,7 +569,7 @@ public class ReportServiceHelperTest {
         doReturn(false).when(reportHelper).isReportCorrected(deletion);
         doReturn(true).when(reportHelper).isReportDeleted(deletion);
         doReturn(referencedID).when(reportHelper).getFLUXReportDocumentReferencedId(deletion);
-        doReturn(original).when(reportDomainModel).findByExtId(referencedID);
+        doReturn(Optional.of(original)).when(reportDomainModel).findByExtId(referencedID);
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
         doReturn(countryOfHost).when(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
@@ -614,11 +615,11 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(true).when(reportHelper).isReportCorrected(secondCorrection);
         doReturn(referencedIDOfSecondCorrection).when(reportHelper).getFLUXReportDocumentReferencedId(secondCorrection);
-        doReturn(firstCorrection).when(reportDomainModel).findByExtId(referencedIDOfSecondCorrection);
+        doReturn(Optional.of(firstCorrection)).when(reportDomainModel).findByExtId(referencedIDOfSecondCorrection);
 
         doReturn(true).when(reportHelper).isReportCorrected(firstCorrection);
         doReturn(referencedIDOfFirstCorrection).when(reportHelper).getFLUXReportDocumentReferencedId(firstCorrection);
-        doReturn(original).when(reportDomainModel).findByExtId(referencedIDOfFirstCorrection);
+        doReturn(Optional.of(original)).when(reportDomainModel).findByExtId(referencedIDOfFirstCorrection);
 
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);
@@ -670,11 +671,11 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(true).when(reportHelper).isReportCorrected(secondCorrection);
         doReturn(referencedIDOfSecondCorrection).when(reportHelper).getFLUXReportDocumentReferencedId(secondCorrection);
-        doReturn(firstCorrection).when(reportDomainModel).findByExtId(referencedIDOfSecondCorrection);
+        doReturn(Optional.of(firstCorrection)).when(reportDomainModel).findByExtId(referencedIDOfSecondCorrection);
 
         doReturn(true).when(reportHelper).isReportCorrected(firstCorrection);
         doReturn(referencedIDOfFirstCorrection).when(reportHelper).getFLUXReportDocumentReferencedId(firstCorrection);
-        doReturn(original).when(reportDomainModel).findByExtId(referencedIDOfFirstCorrection);
+        doReturn(Optional.of(original)).when(reportDomainModel).findByExtId(referencedIDOfFirstCorrection);
 
         doReturn(false).when(reportHelper).isReportCorrected(original);
         doReturn(false).when(reportHelper).isReportDeleted(original);

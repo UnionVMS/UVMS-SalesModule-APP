@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
@@ -34,20 +33,22 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
     protected ProductDao productDao;
 
     @Override
-    public FluxReport findByExtIdOrNull(String extId) {
-        try {
-            return findByExtId(extId);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    @Override
-    public FluxReport findByExtId(String extId) throws NoResultException {
+    public Optional<FluxReport> findByExtId(String extId) {
         TypedQuery<FluxReport> query = em.createNamedQuery(FluxReport.FIND_BY_EXT_ID, FluxReport.class);
         query.setParameter(EXT_ID, extId);
 
-        return query.getSingleResult();
+        List<FluxReport> resultList = query.getResultList();
+
+        if (resultList.size() == 1) {
+            return Optional.of(resultList.get(0));
+        }
+
+        if (resultList.size() > 1) {
+            throw new SalesNonBlockingException("More than one result found for 'findByExtId' on entity FluxReport in table 'sales_flux_report', " +
+                    "id: " + extId);
+        }
+
+        return Optional.absent();
     }
 
     @Override
@@ -72,7 +73,7 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
 
     @Override
     public FluxReport findDetailsByExtId(String extId) {
-        FluxReport fluxReport = findByExtId(extId);
+        FluxReport fluxReport = findByExtId(extId).get();
 
         List<Product> products = productDao.getProductsForFluxReport(fluxReport);
         fluxReport.getDocument().setProducts(products);
@@ -103,25 +104,6 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
         } else {
             return fluxReport;
         }
-    }
-
-    @Override
-    public Optional<FluxReport> findTakeOverDocumentByExtId(String extId) {
-        TypedQuery<FluxReport> query = em.createNamedQuery(FluxReport.FIND_BY_EXT_ID, FluxReport.class);
-        query.setParameter(EXT_ID, extId);
-
-        List<FluxReport> resultList = query.getResultList();
-
-        if (resultList.size() == 1) {
-            return Optional.of(resultList.get(0));
-        }
-
-        if (resultList.size() > 1) {
-            throw new SalesNonBlockingException("More than one result found for 'findByExtId' on entity FluxReport in table 'sales_flux_report', " +
-                    "id: " + extId);
-        }
-
-        return Optional.absent();
     }
 
 }

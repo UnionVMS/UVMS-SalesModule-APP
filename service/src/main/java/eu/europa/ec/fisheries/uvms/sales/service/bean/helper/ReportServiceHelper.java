@@ -78,17 +78,11 @@ public class ReportServiceHelper {
 
     private Report findOriginalReport(Report report) {
         if (reportHelper.isReportCorrected(report) || reportHelper.isReportDeleted(report)) {
-            Report referencedReport = findByExtId(reportHelper.getFLUXReportDocumentReferencedId(report));
+            Report referencedReport = reportDomainModel.findByExtId(reportHelper.getFLUXReportDocumentReferencedId(report)).get();
             return findOriginalReport(referencedReport);
         } else {
             return report;
         }
     }
-
-    private Report findByExtId(String extId) {
-        return reportDomainModel.findByExtId(extId);
-    }
-
-
 
 }

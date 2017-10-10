@@ -17,14 +17,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     @Rule
@@ -153,7 +151,7 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
                 .purpose(Purpose.CORRECTION)
                 .auctionSale(auctionSale);
 
-        FluxReport reportToBeCorrected = dao.findByExtId("OLD_REPORT");
+        FluxReport reportToBeCorrected = dao.findByExtId("OLD_REPORT").get();
         currentReport.setPreviousFluxReport(reportToBeCorrected);
 
         dao.create(currentReport);
@@ -162,7 +160,7 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindByExtId-initial.xml")
     public void testFindByExtIdWhenNotNull() {
-        FluxReport fluxReport = dao.findByExtId("ExternalID");
+        FluxReport fluxReport = dao.findByExtId("ExternalID").get();
 
         assertEquals("ExternalID", fluxReport.getExtId());
     }
@@ -170,10 +168,7 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindByExtId-initial.xml")
     public void testFindByExtIdWhenNoResultFound() {
-        exception.expect(NoResultException.class);
-        exception.expectMessage("No entity found for query");
-
-        dao.findByExtId("");
+        assertFalse(dao.findByExtId("").isPresent());
     }
 
     @Test
@@ -902,20 +897,11 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     }
 
     @Test
-    @DataSet(initialData = "data/FluxReportDaoBeanTest-testMapping-initial-tod.xml")
-    public void findTakeOverDocumentByExtIdWhenExactlyOneReportWasFound() throws Exception {
-        Optional<FluxReport> report = dao.findTakeOverDocumentByExtId("abc");
-
-        assertTrue(report.isPresent());
-        assertEquals("abc", report.get().getExtId());
-    }
-
-    @Test
-    @DataSet(initialData = "data/FluxReportDaoBeanTest-testMapping-multiple-tod-with-same-id.xml")
-    public void findTakeOverDocumentByExtIdWhenMultipleReportsWereFound() throws Exception {
-        String ID = "abc";
-        exception.expectMessage("More than one result found for 'findByExtId' on entity FluxReport in table 'sales_flux_report', id: " + ID);
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testMapping-multiple-reports-with-same-id.xml")
+    public void findByExtIdWhenMultipleReportsWereFound() throws Exception {
+        String extId = "abc";
+        exception.expectMessage("More than one result found for 'findByExtId' on entity FluxReport in table 'sales_flux_report', id: " + extId);
         exception.expect(SalesNonBlockingException.class);
-        dao.findTakeOverDocumentByExtId(ID);
+        dao.findByExtId(extId);
     }
 }

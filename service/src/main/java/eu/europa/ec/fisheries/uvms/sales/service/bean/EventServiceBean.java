@@ -94,7 +94,8 @@ public class EventServiceBean implements EventService {
 
     public void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event) {
         FindReportByIdRequest request = ((FindReportByIdRequest) event.getSalesBaseRequest());
-        Report report = reportService.findByExtIdOrNull(request.getId());
+        Report report = reportService.findByExtId(request.getId())
+                                                .orNull();
 
         try {
             String marshalledReport = "";
@@ -124,8 +125,8 @@ public class EventServiceBean implements EventService {
             case SALES_DOCUMENT:
                 response = !uniqueIdService.doesAnySalesDocumentExistWithAnyOfTheseIds(request.getIds());
                 break;
-            case TAKEOVER_DOCUMENT:
-                response = !uniqueIdService.doesAnyTakeOverDocumentExistWithAnyOfTheseIds(request.getIds());
+            case SALES_REPORT:
+                response = !uniqueIdService.doesAnySalesReportExistWithAnyOfTheseIds(request.getIds());
                 break;
             case SALES_QUERY:
                 response = uniqueIdService.isQueryIdUnique(request.getIds().get(0));

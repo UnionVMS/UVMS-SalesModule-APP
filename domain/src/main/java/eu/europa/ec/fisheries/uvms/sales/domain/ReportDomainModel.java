@@ -14,17 +14,8 @@ public interface ReportDomainModel {
      *
      * @param extId internal name for GUID
      * @return the found report
-     * @throws javax.persistence.NoResultException if nothing is found
      */
-    Report findByExtId(String extId);
-
-    /**
-     * Finds a report by its GUID, internally known as extId.
-     *
-     * @param extId internal name for GUID
-     * @return the found report or null
-     */
-    Report findByExtIdOrNull(String extId);
+    Optional<Report> findByExtId(String extId);
 
     /**
      * Creates a report.
@@ -96,5 +87,4 @@ public interface ReportDomainModel {
      */
     List<Report> findRelatedReportsOf(Report report);
 
-    Optional<Report> findTakeOverDocumentByExtId(String extId);
 }

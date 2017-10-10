@@ -16,10 +16,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -69,29 +68,29 @@ public class UniqueIdServiceBeanTest {
     }
 
     @Test
-    public void doesAnyTakeOverDocumentExistWithAnyOfTheseIdsWhenNoTODExistsWithGivenIds() throws Exception {
-        doReturn(Optional.absent()).when(reportDomainModel).findTakeOverDocumentByExtId("aaa");
-        doReturn(Optional.absent()).when(reportDomainModel).findTakeOverDocumentByExtId("bbb");
-        doReturn(Optional.absent()).when(reportDomainModel).findTakeOverDocumentByExtId("ccc");
+    public void doesAnySalesReportExistWithAnyOfTheseIdsWhenNoReportsExistsWithGivenIds() throws Exception {
+        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("aaa");
+        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bbb");
+        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("ccc");
 
-        Boolean notUnique = service.doesAnyTakeOverDocumentExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
+        Boolean notUnique = service.doesAnySalesReportExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
 
-        verify(reportDomainModel).findTakeOverDocumentByExtId("aaa");
-        verify(reportDomainModel).findTakeOverDocumentByExtId("bbb");
-        verify(reportDomainModel).findTakeOverDocumentByExtId("ccc");
+        verify(reportDomainModel).findByExtId("aaa");
+        verify(reportDomainModel).findByExtId("bbb");
+        verify(reportDomainModel).findByExtId("ccc");
         verifyNoMoreInteractions(reportDomainModel);
         assertFalse(notUnique);
     }
 
     @Test
-    public void doesAnyTakeOverDocumentExistWithAnyOfTheseIdsWhenATODExistsWithGivenIds() throws Exception {
-        doReturn(Optional.absent()).when(reportDomainModel).findTakeOverDocumentByExtId("aaa");
-        doReturn(Optional.of(new Report())).when(reportDomainModel).findTakeOverDocumentByExtId("bbb");
+    public void doesAnySalesReportExistWithAnyOfTheseIdsWhenAReportExistsWithGivenIds() throws Exception {
+        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("aaa");
+        doReturn(Optional.of(new Report())).when(reportDomainModel).findByExtId("bbb");
 
-        Boolean notUnique = service.doesAnyTakeOverDocumentExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
+        Boolean notUnique = service.doesAnySalesReportExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
 
-        verify(reportDomainModel).findTakeOverDocumentByExtId("aaa");
-        verify(reportDomainModel).findTakeOverDocumentByExtId("bbb");
+        verify(reportDomainModel).findByExtId("aaa");
+        verify(reportDomainModel).findByExtId("bbb");
         verifyNoMoreInteractions(reportDomainModel);
         assertTrue(notUnique);
     }
@@ -118,11 +117,11 @@ public class UniqueIdServiceBeanTest {
     public void doesReferencedReportInResponseExistWhenItExistsAsReport() throws Exception {
         String id = "extId";
 
-        doReturn(new Report()).when(reportDomainModel).findByExtIdOrNull(id);
+        doReturn(Optional.of(new Report())).when(reportDomainModel).findByExtId(id);
 
         boolean doesExist = service.doesReferencedReportInResponseExist(id);
 
-        verify(reportDomainModel).findByExtIdOrNull(id);
+        verify(reportDomainModel).findByExtId(id);
         verifyNoMoreInteractions(reportDomainModel, documentDomainModel, queryDomainModel, responseDomainModel);
 
         assertTrue(doesExist);
@@ -132,12 +131,12 @@ public class UniqueIdServiceBeanTest {
     public void doesReferencedReportInResponseExistWhenItExistsAsQuery() throws Exception {
         String id = "extId";
 
-        doReturn(null).when(reportDomainModel).findByExtIdOrNull(id);
+        doReturn(Optional.absent()).when(reportDomainModel).findByExtId(id);
         doReturn(Optional.of(new SalesQueryType())).when(queryDomainModel).findByExtId(id);
 
         boolean doesExist = service.doesReferencedReportInResponseExist(id);
 
-        verify(reportDomainModel).findByExtIdOrNull(id);
+        verify(reportDomainModel).findByExtId(id);
         verify(queryDomainModel).findByExtId(id);
         verifyNoMoreInteractions(reportDomainModel, documentDomainModel, queryDomainModel, responseDomainModel);
 
@@ -148,12 +147,12 @@ public class UniqueIdServiceBeanTest {
     public void doesReferencedReportInResponseExistWhenItDoesNotExist() throws Exception {
         String id = "extId";
 
-        doReturn(null).when(reportDomainModel).findByExtIdOrNull(id);
+        doReturn(Optional.absent()).when(reportDomainModel).findByExtId(id);
         doReturn(Optional.absent()).when(queryDomainModel).findByExtId(id);
 
         boolean doesExist = service.doesReferencedReportInResponseExist(id);
 
-        verify(reportDomainModel).findByExtIdOrNull(id);
+        verify(reportDomainModel).findByExtId(id);
         verify(queryDomainModel).findByExtId(id);
         verifyNoMoreInteractions(reportDomainModel, documentDomainModel, queryDomainModel, responseDomainModel);
 

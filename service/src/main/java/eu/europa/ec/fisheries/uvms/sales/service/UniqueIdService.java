@@ -5,7 +5,7 @@ import java.util.List;
 public interface UniqueIdService {
     boolean doesAnySalesDocumentExistWithAnyOfTheseIds(List<String> extId);
 
-    boolean doesAnyTakeOverDocumentExistWithAnyOfTheseIds(List<String> extId);
+    boolean doesAnySalesReportExistWithAnyOfTheseIds(List<String> extId);
 
     boolean isQueryIdUnique(String extId);
 

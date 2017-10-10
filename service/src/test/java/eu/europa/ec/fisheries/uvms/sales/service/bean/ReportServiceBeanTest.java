@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
@@ -311,14 +312,14 @@ public class ReportServiceBeanTest {
         String messageValidationResult = "OK";
 
         //mock
-        doReturn(null).when(reportDomainModel).findByExtIdOrNull("bla");
+        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bla");
 
         //execute
         reportServiceBean.saveReport(report, plugin, validationResults, messageValidationResult);
 
         //verify and assert
         verify(reportDomainModel).create(report);
-        verify(reportDomainModel).findByExtIdOrNull("bla");
+        verify(reportDomainModel).findByExtId("bla");
         verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin, validationResults, messageValidationResult);
         verify(reportServiceHelper).forwardReportToOtherRelevantParties(report, plugin);
         verifyNoMoreInteractions(reportDomainModel, reportServiceHelper);
@@ -337,13 +338,13 @@ public class ReportServiceBeanTest {
         String messageValidationResult = "OK";
 
         //mock
-        doReturn(new Report()).when(reportDomainModel).findByExtIdOrNull("bla");
+        doReturn(Optional.of(new Report())).when(reportDomainModel).findByExtId("bla");
 
         //execute
         reportServiceBean.saveReport(report, plugin, validationResults, messageValidationResult);
 
         //verify and assert
-        verify(reportDomainModel).findByExtIdOrNull("bla");
+        verify(reportDomainModel).findByExtId("bla");
         verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin, validationResults, messageValidationResult);
         verify(reportServiceHelper).forwardReportToOtherRelevantParties(report, plugin);
         verifyNoMoreInteractions(reportDomainModel);

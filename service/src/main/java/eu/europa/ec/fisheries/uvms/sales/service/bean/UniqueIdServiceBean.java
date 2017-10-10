@@ -42,9 +42,9 @@ public class UniqueIdServiceBean implements UniqueIdService {
     }
 
     @Override
-    public boolean doesAnyTakeOverDocumentExistWithAnyOfTheseIds(List<String> extIds) {
+    public boolean doesAnySalesReportExistWithAnyOfTheseIds(List<String> extIds) {
         for (String extId : extIds) {
-            Optional<Report> takeOverDocumentByExtId = reportDomainModel.findTakeOverDocumentByExtId(extId);
+            Optional<Report> takeOverDocumentByExtId = reportDomainModel.findByExtId(extId);
             if (takeOverDocumentByExtId.isPresent()) {
                 return true;
             }
@@ -67,7 +67,7 @@ public class UniqueIdServiceBean implements UniqueIdService {
     public boolean doesReferencedReportInResponseExist(String referencedId) {
         // We have to check if the referencedId exists either as a report or as a query
 
-        boolean idExistsAsReport = Optional.fromNullable(reportDomainModel.findByExtIdOrNull(referencedId)).isPresent();
+        boolean idExistsAsReport = reportDomainModel.findByExtId(referencedId).isPresent();
         if (idExistsAsReport) {
             return true;
         }
