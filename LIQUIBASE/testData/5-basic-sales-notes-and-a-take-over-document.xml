@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
     <changeSet author="stihft (generated)" id="1504876604581-2">
         <insert tableName="sales_contact">
             <column name="id" valueNumeric="2"/>
@@ -333,7 +335,7 @@
         <insert tableName="sales_party">
             <column name="id" valueNumeric="6"/>
             <column name="ext_id"/>
-            <column name="name" value="Mr SELLER"/>
+            <column name="name" value="Mr PROVIDER"/>
             <column name="flux_organization_name"/>
             <column name="sales_address_id"/>
         </insert>
@@ -354,7 +356,7 @@
         <insert tableName="sales_party">
             <column name="id" valueNumeric="9"/>
             <column name="ext_id"/>
-            <column name="name" value="Mr SELLER"/>
+            <column name="name" value="Mr PROVIDER"/>
             <column name="flux_organization_name"/>
             <column name="sales_address_id"/>
         </insert>
@@ -577,7 +579,7 @@
             <column name="id" valueNumeric="6"/>
             <column name="sales_party_id" valueNumeric="6"/>
             <column name="sales_document_id" valueNumeric="2"/>
-            <column name="role" value="SELLER"/>
+            <column name="role" value="PROVIDER"/>
             <column name="country"/>
         </insert>
         <insert tableName="sales_party_document">
@@ -598,7 +600,7 @@
             <column name="id" valueNumeric="9"/>
             <column name="sales_party_id" valueNumeric="9"/>
             <column name="sales_document_id" valueNumeric="3"/>
-            <column name="role" value="SELLER"/>
+            <column name="role" value="PROVIDER"/>
             <column name="country"/>
         </insert>
         <insert tableName="sales_party_document">
@@ -619,7 +621,7 @@
             <column name="id" valueNumeric="12"/>
             <column name="sales_party_id" valueNumeric="12"/>
             <column name="sales_document_id" valueNumeric="4"/>
-            <column name="role" value="SELLER"/>
+            <column name="role" value="PROVIDER"/>
             <column name="country"/>
         </insert>
         <insert tableName="sales_party_document">
@@ -640,7 +642,7 @@
             <column name="id" valueNumeric="15"/>
             <column name="sales_party_id" valueNumeric="15"/>
             <column name="sales_document_id" valueNumeric="5"/>
-            <column name="role" value="SELLER"/>
+            <column name="role" value="PROVIDER"/>
             <column name="country"/>
         </insert>
         <insert tableName="sales_party_document">
@@ -661,7 +663,7 @@
             <column name="id" valueNumeric="18"/>
             <column name="sales_party_id" valueNumeric="18"/>
             <column name="sales_document_id" valueNumeric="6"/>
-            <column name="role" value="SELLER"/>
+            <column name="role" value="PROVIDER"/>
             <column name="country"/>
         </insert>
     </changeSet>
