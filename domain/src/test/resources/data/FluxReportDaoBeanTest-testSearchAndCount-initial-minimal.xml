@@ -66,8 +66,7 @@
             ext_id="30a"
             type="dummy"
             union_trip_id="aaaa"
-            start_date="2017-01-01 10:00:00"
-            end_date="2017-01-05 10:00:00"
+            start_date="2017-01-05 10:00:00"
             sales_vessel_id="60"
             sales_flux_location_id="70"
     />
@@ -76,8 +75,7 @@
             ext_id="31a"
             type="dummy"
             union_trip_id="12345"
-            start_date="2017-01-01 10:00:00"
-            end_date="2017-02-25 10:00:00"
+            start_date="2017-02-25 10:00:00"
             sales_vessel_id="61"
             sales_flux_location_id="71"
     />
@@ -86,8 +84,7 @@
             ext_id="32a"
             type="dummy"
             union_trip_id="12345"
-            start_date="2017-01-01 10:00:00"
-            end_date="2018-02-25 10:00:00"
+            start_date="2018-02-25 10:00:00"
             sales_vessel_id="62"
             sales_flux_location_id="74"
     />
