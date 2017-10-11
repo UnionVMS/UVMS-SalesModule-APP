@@ -19,7 +19,7 @@ public class SalesPartyTypeListConverterTest {
 
     @Before
     public void setUp() throws Exception {
-        converter = new SellerSalesPartyTypeListConverter();
+        converter = new ProviderSalesPartyTypeListConverter();
     }
 
     @Test
@@ -29,7 +29,7 @@ public class SalesPartyTypeListConverterTest {
                 .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("SELLER"))
+                .withRoleCodes(new CodeType().withValue("PROVIDER"))
                 .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
@@ -105,7 +105,7 @@ public class SalesPartyTypeListConverterTest {
                 .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("SELLER"));
+                .withRoleCodes(new CodeType().withValue("PROVIDER"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
 
@@ -119,7 +119,7 @@ public class SalesPartyTypeListConverterTest {
                 .withSpecifiedFLUXOrganization(new FLUXOrganizationType());
 
         SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("SELLER"))
+                .withRoleCodes(new CodeType().withValue("PROVIDER"))
                 .withSpecifiedFLUXOrganization(new FLUXOrganizationType());
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
@@ -134,7 +134,7 @@ public class SalesPartyTypeListConverterTest {
                 .withName(new TextType());
 
         SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("SELLER"))
+                .withRoleCodes(new CodeType().withValue("PROVIDER"))
                 .withName(new TextType());
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
