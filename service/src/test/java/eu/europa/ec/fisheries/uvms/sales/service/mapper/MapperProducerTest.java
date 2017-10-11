@@ -500,7 +500,7 @@ public class MapperProducerTest {
                 .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("SELLER"))
+                .withRoleCodes(new CodeType().withValue("PROVIDER"))
                 .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
@@ -569,7 +569,7 @@ public class MapperProducerTest {
                 .withName(new TextType().withValue("Mathiblaa"));
 
         SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("SELLER"))
+                .withRoleCodes(new CodeType().withValue("PROVIDER"))
                 .withName(new TextType().withValue("Superstijn"));
 
         List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);

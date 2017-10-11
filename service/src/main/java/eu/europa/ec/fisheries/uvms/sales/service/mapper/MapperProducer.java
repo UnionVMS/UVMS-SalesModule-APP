@@ -6,7 +6,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.BuyerSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.ListFLUXLocationTypeConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.RecipientSalesPartyTypeListConverter;
-import eu.europa.ec.fisheries.uvms.sales.service.converter.SellerSalesPartyTypeListConverter;
+import eu.europa.ec.fisheries.uvms.sales.service.converter.ProviderSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
 import ma.glasnost.orika.CustomMapper;
@@ -72,7 +72,7 @@ public class MapperProducer {
         converterFactory.registerConverter("presentationBToA", new PresentationBToAConverter());
         converterFactory.registerConverter("preservationBToA", new PreservationBToAConverter());
         converterFactory.registerConverter("buyerSalesPartyTypeListConverter", new BuyerSalesPartyTypeListConverter());
-        converterFactory.registerConverter("sellerSalesPartyTypeListConverter", new SellerSalesPartyTypeListConverter());
+        converterFactory.registerConverter("sellerSalesPartyTypeListConverter", new ProviderSalesPartyTypeListConverter());
         converterFactory.registerConverter("recipientSalesPartyTypeListConverter", new RecipientSalesPartyTypeListConverter());
         converterFactory.registerConverter("fluxReportItemTypeConverter", new FluxReportItemTypeConverter());
         converterFactory.registerConverter("purposeConverter", new PurposeConverter());
