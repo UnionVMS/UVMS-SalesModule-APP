@@ -17,5 +17,5 @@ public interface InvalidMessageService {
      * @param plugin the plugin over which the message should be sent
      * @throws SalesServiceException when something goes wrong
      */
-    void sendResponseToInvalidIncomingMessage(String messageGuid, Collection<ValidationQualityAnalysisType> validationResults, String recipient, String plugin);
+    void sendResponseToInvalidIncomingMessage(String messageGuid, Collection<ValidationQualityAnalysisType> validationResults, String recipient, String plugin, String schemeId);
 }
