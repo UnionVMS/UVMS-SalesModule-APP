@@ -5,8 +5,8 @@ import eu.europa.ec.fisheries.uvms.sales.domain.converter.*;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.BuyerSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.ListFLUXLocationTypeConverter;
-import eu.europa.ec.fisheries.uvms.sales.service.converter.RecipientSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.ProviderSalesPartyTypeListConverter;
+import eu.europa.ec.fisheries.uvms.sales.service.converter.RecipientSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
 import ma.glasnost.orika.CustomMapper;
@@ -72,7 +72,7 @@ public class MapperProducer {
         converterFactory.registerConverter("presentationBToA", new PresentationBToAConverter());
         converterFactory.registerConverter("preservationBToA", new PreservationBToAConverter());
         converterFactory.registerConverter("buyerSalesPartyTypeListConverter", new BuyerSalesPartyTypeListConverter());
-        converterFactory.registerConverter("sellerSalesPartyTypeListConverter", new ProviderSalesPartyTypeListConverter());
+        converterFactory.registerConverter("providerSalesPartyTypeListConverter", new ProviderSalesPartyTypeListConverter());
         converterFactory.registerConverter("recipientSalesPartyTypeListConverter", new RecipientSalesPartyTypeListConverter());
         converterFactory.registerConverter("fluxReportItemTypeConverter", new FluxReportItemTypeConverter());
         converterFactory.registerConverter("purposeConverter", new PurposeConverter());
@@ -234,7 +234,7 @@ public class MapperProducer {
                 .field("referencedId", "FLUXSalesReportMessage.FLUXReportDocument.referencedID.value")
                 .field("purpose", "FLUXSalesReportMessage.FLUXReportDocument.purposeCode.value")
                 .fieldMap("buyer", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("buyerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
-                .fieldMap("seller", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("sellerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
+                .fieldMap("seller", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("providerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .fieldMap("recipient", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("recipientSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .customize(new CustomMapper<ReportListDto, Report>() {
                     @Override

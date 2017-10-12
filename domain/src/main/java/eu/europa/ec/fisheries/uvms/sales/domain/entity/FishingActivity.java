@@ -32,7 +32,7 @@ public class FishingActivity {
     @Column(name = "start_date", nullable = false)
     private DateTime startDate;
 
-    @Column(name = "end_date", nullable = false)
+    @Column(name = "end_date")
     private DateTime endDate;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })

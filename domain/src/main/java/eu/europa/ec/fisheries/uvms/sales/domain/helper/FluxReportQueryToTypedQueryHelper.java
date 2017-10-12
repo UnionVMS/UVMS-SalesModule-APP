@@ -96,7 +96,7 @@ public class FluxReportQueryToTypedQueryHelper {
                     sortOn(pathToFlagState(), direction);
                     break;
                 case LANDING_DATE:
-                    sortOn(fluxReport.get(DOCUMENT).get(FISHING_ACTIVITY).get("endDate"), direction);
+                    sortOn(fluxReport.get(DOCUMENT).get(FISHING_ACTIVITY).get("startDate"), direction);
                     break;
                 case LANDING_PORT:
                     sortOn(pathToLandingPort(), direction);
