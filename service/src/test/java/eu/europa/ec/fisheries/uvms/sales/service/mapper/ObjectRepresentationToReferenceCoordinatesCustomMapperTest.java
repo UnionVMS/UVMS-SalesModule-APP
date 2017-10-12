@@ -24,7 +24,7 @@ public class ObjectRepresentationToReferenceCoordinatesCustomMapperTest {
         String code = "code-sdfsdf";
         String latitude = "12.54";
         String longitude = "2.8975412";
-        ColumnDataType codeColumn = new ColumnDataType("code", code,"java.lang.String");
+        ColumnDataType codeColumn = new ColumnDataType("unloCode", code,"java.lang.String");
         ColumnDataType latitudeColumn = new ColumnDataType("latitude", latitude,"java.lang.Double");
         ColumnDataType longitudeColumn = new ColumnDataType("longitude", longitude,"java.lang.Double");
 

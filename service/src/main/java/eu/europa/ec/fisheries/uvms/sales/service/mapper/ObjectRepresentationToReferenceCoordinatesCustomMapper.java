@@ -28,7 +28,7 @@ public class ObjectRepresentationToReferenceCoordinatesCustomMapper extends Cust
     private void mapField(ColumnDataType field, ReferenceCoordinates referenceCoordinates) {
         if (isNotEmpty(field.getColumnName()) && isNotEmpty(field.getColumnValue())) {
             switch (field.getColumnName()) {
-                case "code":
+                case "unloCode":
                     referenceCoordinates.setLocationCode(field.getColumnValue());
                     break;
                 case "latitude":

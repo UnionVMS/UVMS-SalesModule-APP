@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import ma.glasnost.orika.MapperFacade;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,7 @@ public class SalesDetailsHelper {
 
         for (ReferenceCoordinates referenceCoordinate : referenceCoordinates) {
             LocationDto location = detailsDto.getSalesReport().getLocation();
-            if (referenceCoordinate.getLocationCode().equals(location.getExtId())) {
+            if (StringUtils.equals(referenceCoordinate.getLocationCode(), location.getExtId())) {
                 location.setLatitude(referenceCoordinate.getLatitude());
                 location.setLongitude(referenceCoordinate.getLongitude());
             }
