@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.domain.helper;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.SalesCategory;
 import eu.europa.ec.fisheries.uvms.sales.domain.dto.FluxReportSearchMode;
+import eu.europa.ec.fisheries.uvms.sales.domain.entity.AuctionSale;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
@@ -243,12 +244,12 @@ public class FluxReportQueryToTypedQueryHelper {
 
     private void withSalesCategory(SalesCategoryType salesCategoryType) {
         if (salesCategoryType != null) {
+
             SalesCategory salesCategory = SalesCategory.valueOf(salesCategoryType.name());
             ParameterExpression<SalesCategory> salesTypeParameter = addParameter(SalesCategory.class, "salesCategory", salesCategory);
 
             Predicate salesTypeEqualsToParameter = builder.equal(
-                    fluxReport.get("auctionSale").get("category"),
-                    salesTypeParameter);
+                    pathToSalesCategory(), salesTypeParameter);
 
             addWhereCondition(salesTypeEqualsToParameter);
         }
@@ -347,7 +348,7 @@ public class FluxReportQueryToTypedQueryHelper {
         return paging.getItemsPerPage();
     }
 
-    private void sortOn(Path<?> path, SortDirection sortDirection) {
+    private void sortOn(Expression<?> path, SortDirection sortDirection) {
         checkNotNull(sortDirection, "sortDirection not provided");
         switch (sortDirection) {
             case ASCENDING:
@@ -382,8 +383,9 @@ public class FluxReportQueryToTypedQueryHelper {
         return fluxReport.get(DOCUMENT).get("fluxLocation").get(EXT_ID);
     }
 
-    private Path<String> pathToSalesCategory() {
-        return fluxReport.get("auctionSale").get("category");
+    private Expression<String> pathToSalesCategory() {
+        Join<FluxReport, AuctionSale> leftJoinWithAuctionSale = fluxReport.join("auctionSale", JoinType.LEFT);
+        return builder.coalesce(leftJoinWithAuctionSale.get("category"), builder.literal("FIRST_SALE"));
     }
 
 }

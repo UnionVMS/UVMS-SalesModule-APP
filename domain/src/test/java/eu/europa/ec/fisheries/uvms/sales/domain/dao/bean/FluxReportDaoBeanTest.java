@@ -339,6 +339,21 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     }
 
     @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testSearchWithSalesTypeFilterWhenFirstSaleAndThereIsAReportWithoutAuctionSale-initial.xml")
+    public void testSearchWithSalesTypeFilterWhenFirstSaleAndThereIsAReportWithoutAuctionSale() throws Exception {
+        ReportQueryFilter filters = new ReportQueryFilter();
+        filters.setSalesCategory(SalesCategoryType.FIRST_SALE);
+        ReportQuery reportQuery = new ReportQuery();
+        reportQuery.setFilters(filters);
+
+        List<FluxReport> fluxReports = dao.search(reportQuery);
+
+        assertEquals(2, fluxReports.size());
+        assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(127), fluxReports.get(1).getId());
+    }
+
+    @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testSearchAndCount-initial-minimal.xml")
     public void testSearchWithAnySpeciesFilterAndSomethingFound() throws Exception {
         ReportQueryFilter filters = new ReportQueryFilter().withAnySpecies("SAL", "ADQ", "MTP");
