@@ -98,8 +98,8 @@ public class MapperProducerTest {
         AAPProductType aapProductType = new AAPProductType()
                 .withAppliedAAPProcesses(new AAPProcessType().withTypeCodes(new CodeType().withListID("FISH_FRESHNESS").withValue("FRESH")))
                 .withOriginFLUXLocations(
-                        new FLUXLocationType().withCountryID(new IDType().withValue("BEL")),
-                        new FLUXLocationType().withCountryID(new IDType().withValue("FRA")))
+                        new FLUXLocationType().withID(new IDType().withValue("27.3.1")),
+                        new FLUXLocationType().withID(new IDType().withValue("27.3.2")))
                 .withSpeciesCode(new CodeType().withValue("SAL"))
                 .withUnitQuantity(new QuantityType().withValue(BigDecimal.TEN))
                 .withWeightMeasure(new MeasureType().withValue(BigDecimal.ZERO))
@@ -111,7 +111,7 @@ public class MapperProducerTest {
         ProductDto productDto = mapper.map(aapProductType, ProductDto.class);
 
         assertEquals("SAL", productDto.getSpecies());
-        assertEquals(Lists.newArrayList("BEL", "FRA"), productDto.getAreas());
+        assertEquals(Lists.newArrayList("27.3.1", "27.3.2"), productDto.getAreas());
         assertEquals(BigDecimal.TEN, productDto.getQuantity());
         assertEquals(BigDecimal.ZERO, productDto.getWeight());
         assertEquals("EAT", productDto.getUsage());

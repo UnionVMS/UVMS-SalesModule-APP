@@ -4,7 +4,7 @@ import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.converter.*;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.BuyerSalesPartyTypeListConverter;
-import eu.europa.ec.fisheries.uvms.sales.service.converter.ListFLUXLocationTypeConverter;
+import eu.europa.ec.fisheries.uvms.sales.service.converter.FLUXLocationsToListOfIdsConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.ProviderSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.RecipientSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
@@ -61,7 +61,6 @@ public class MapperProducer {
 
         //general converters
         converterFactory.registerConverter(new PassThroughConverter(org.joda.time.DateTime.class));
-        converterFactory.registerConverter(new ListFLUXLocationTypeConverter());
         converterFactory.registerConverter(new FluxReportItemTypeConverter());
 
         //field converters
@@ -76,6 +75,7 @@ public class MapperProducer {
         converterFactory.registerConverter("recipientSalesPartyTypeListConverter", new RecipientSalesPartyTypeListConverter());
         converterFactory.registerConverter("fluxReportItemTypeConverter", new FluxReportItemTypeConverter());
         converterFactory.registerConverter("purposeConverter", new PurposeConverter());
+        converterFactory.registerConverter("fluxLocationsToListOfIdsConverter", new FLUXLocationsToListOfIdsConverter());
     }
 
     private void configureReportListExportDto(MapperFactory factory) {
@@ -159,7 +159,7 @@ public class MapperProducer {
     private void configureProductDto(MapperFactory factory) {
         factory.classMap(AAPProductType.class, ProductDto.class)
                 .field("speciesCode.value", "species")
-                .field("originFLUXLocations", "areas")
+                .fieldMap("originFLUXLocations", "areas").converter("fluxLocationsToListOfIdsConverter").add()
                 .field("unitQuantity.value", "quantity")
                 .field("weightMeasure.value", "weight")
                 .field("usageCode.value", "usage")
