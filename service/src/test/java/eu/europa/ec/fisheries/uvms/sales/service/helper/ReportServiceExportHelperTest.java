@@ -51,7 +51,7 @@ public class ReportServiceExportHelperTest {
     private List<ReportListExportDto> createReportListExportDtos(String landingDate, String occurrence) {
         ReportListExportDto reportListExportDto1 = new ReportListExportDto()
                 .buyer("Trump")
-                .seller("Putin")
+                .provider("Putin")
                 .category(SalesCategoryType.FIRST_SALE)
                 .externalMarking("marked for life")
                 .flagState("BEL")
@@ -64,7 +64,7 @@ public class ReportServiceExportHelperTest {
 
         ReportListExportDto reportListExportDto2 = new ReportListExportDto()
                 .buyer("Trump")
-                .seller("Putin")
+                .provider("Putin")
                 .category(SalesCategoryType.FIRST_SALE)
                 .externalMarking("marked for life")
                 .flagState("BEL")

@@ -53,9 +53,9 @@ public class ReportListExportDto {
     public SalesCategoryType category; //NOSONAR
 
     /**
-     * seller name
+     * provider name
      */
-    public String seller; //NOSONAR
+    public String provider; //NOSONAR
 
     /**
      * buyer name
@@ -145,12 +145,12 @@ public class ReportListExportDto {
         this.buyer = buyer;
     }
 
-    public String getSeller() {
-        return seller;
+    public String getProvider() {
+        return provider;
     }
 
-    public void setSeller(String seller) {
-        this.seller = seller;
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 
     public DateTime getDeletion() {
@@ -212,8 +212,8 @@ public class ReportListExportDto {
         return this;
     }
 
-    public ReportListExportDto seller(String seller) {
-        this.seller = seller;
+    public ReportListExportDto provider(String provider) {
+        this.provider = provider;
         return this;
     }
 

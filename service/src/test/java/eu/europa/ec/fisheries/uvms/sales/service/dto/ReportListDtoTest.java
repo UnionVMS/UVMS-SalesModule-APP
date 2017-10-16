@@ -7,81 +7,81 @@ import static org.junit.Assert.assertEquals;
 public class ReportListDtoTest {
 
     @Test
-    public void testThatBuyerAndSellerHaveADefaultValue() {
+    public void testThatBuyerAndProviderHaveADefaultValue() {
         ReportListDto reportListDto = new ReportListDto();
         assertEquals("N/A", reportListDto.getBuyer());
-        assertEquals("N/A", reportListDto.getSeller());
+        assertEquals("N/A", reportListDto.getProvider());
     }
 
     @Test
-    public void testThatBuyerAndSellerHavaADefaultValueWhenYouTryToOverrideTheDefaultsWithNullWithSetters() {
+    public void testThatBuyerAndProviderHavaADefaultValueWhenYouTryToOverrideTheDefaultsWithNullWithSetters() {
         ReportListDto reportListDto = new ReportListDto();
 
-        reportListDto.setSeller(null);
+        reportListDto.setProvider(null);
         reportListDto.setBuyer(null);
 
         assertEquals("N/A", reportListDto.getBuyer());
-        assertEquals("N/A", reportListDto.getSeller());
+        assertEquals("N/A", reportListDto.getProvider());
     }
 
     @Test
-    public void testThatBuyerAndSellerHaveADefaultValueWhenYouTryToOverrideAnEarlierSetValueWithNullWithSetters() {
+    public void testThatBuyerAndProviderHaveADefaultValueWhenYouTryToOverrideAnEarlierSetValueWithNullWithSetters() {
         ReportListDto reportListDto = new ReportListDto();
-        reportListDto.setSeller("Stijn");
+        reportListDto.setProvider("Stijn");
         reportListDto.setBuyer("Mathias");
 
-        reportListDto.setSeller(null);
+        reportListDto.setProvider(null);
         reportListDto.setBuyer(null);
 
         assertEquals("N/A", reportListDto.getBuyer());
-        assertEquals("N/A", reportListDto.getSeller());
+        assertEquals("N/A", reportListDto.getProvider());
     }
 
     @Test
-    public void testThatDefaultValuesForBuyerAndSellerCanBeOverwrittenWithSetters() {
+    public void testThatDefaultValuesForBuyerAndProviderCanBeOverwrittenWithSetters() {
         ReportListDto reportListDto = new ReportListDto();
-        reportListDto.setSeller(null);
+        reportListDto.setProvider(null);
         reportListDto.setBuyer(null);
 
-        reportListDto.setSeller("Stijn");
+        reportListDto.setProvider("Stijn");
         reportListDto.setBuyer("Mathias");
 
-        assertEquals("Stijn", reportListDto.getSeller());
+        assertEquals("Stijn", reportListDto.getProvider());
         assertEquals("Mathias", reportListDto.getBuyer());
     }
 
     @Test
-    public void testThatBuyerAndSellerHaveADefaultValueWhenYouTryToOverrideTheDefaultsWithNullWithFluentAPI() {
+    public void testThatBuyerAndProviderHaveADefaultValueWhenYouTryToOverrideTheDefaultsWithNullWithFluentAPI() {
         ReportListDto reportListDto = new ReportListDto()
-                .seller(null)
+                .provider(null)
                 .buyer(null);
         assertEquals("N/A", reportListDto.getBuyer());
-        assertEquals("N/A", reportListDto.getSeller());
+        assertEquals("N/A", reportListDto.getProvider());
     }
 
     @Test
-    public void testThatBuyerAndSellerHaveADefaultValueWhenYouTryToOverrideAnEarlierSetValueWithNullWithFluentAPI() {
+    public void testThatBuyerAndProviderHaveADefaultValueWhenYouTryToOverrideAnEarlierSetValueWithNullWithFluentAPI() {
         ReportListDto reportListDto = new ReportListDto()
-                .seller("Stijn")
+                .provider("Stijn")
                 .buyer("Mathias")
 
-                .seller(null)
+                .provider(null)
                 .buyer(null);
 
         assertEquals("N/A", reportListDto.getBuyer());
-        assertEquals("N/A", reportListDto.getSeller());
+        assertEquals("N/A", reportListDto.getProvider());
     }
 
     @Test
-    public void testThatDefaultValuesForBuyerAndSellerCanBeOverwrittenWithFluentAPI() {
+    public void testThatDefaultValuesForBuyerAndProviderCanBeOverwrittenWithFluentAPI() {
         ReportListDto reportListDto = new ReportListDto()
-                .seller(null)
+                .provider(null)
                 .buyer(null)
 
-                .seller("Stijn")
+                .provider("Stijn")
                 .buyer("Mathias");
 
-        assertEquals("Stijn", reportListDto.getSeller());
+        assertEquals("Stijn", reportListDto.getProvider());
         assertEquals("Mathias", reportListDto.getBuyer());
     }
 }

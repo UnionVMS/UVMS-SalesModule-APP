@@ -57,9 +57,9 @@ public class ReportListDto {
     private String buyer;
 
     /**
-     * seller name
+     * provider name
      */
-    private String seller;
+    private String provider;
 
     /**
      * recipient name
@@ -84,7 +84,7 @@ public class ReportListDto {
 
 
     public ReportListDto() {
-        seller = "N/A";
+        provider = "N/A";
         buyer = "N/A";
     }
 
@@ -187,15 +187,15 @@ public class ReportListDto {
         this.buyer = buyer;
     }
 
-    public String getSeller() {
-        return seller;
+    public String getProvider() {
+        return provider;
     }
 
-    public void setSeller(String seller) {
-        if (seller == null) {
-            seller = "N/A";
+    public void setProvider(String provider) {
+        if (provider == null) {
+            provider = "N/A";
         }
-        this.seller = seller;
+        this.provider = provider;
     }
 
     public List<ReportListDto> getOlderVersions() {
@@ -291,8 +291,8 @@ public class ReportListDto {
         return this;
     }
 
-    public ReportListDto seller(String seller) {
-        this.setSeller(seller);
+    public ReportListDto provider(String provider) {
+        this.setProvider(provider);
         return this;
     }
 

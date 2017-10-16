@@ -234,7 +234,7 @@ public class MapperProducer {
                 .field("referencedId", "FLUXSalesReportMessage.FLUXReportDocument.referencedID.value")
                 .field("purpose", "FLUXSalesReportMessage.FLUXReportDocument.purposeCode.value")
                 .fieldMap("buyer", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("buyerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
-                .fieldMap("seller", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("providerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
+                .fieldMap("provider", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("providerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .fieldMap("recipient", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("recipientSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
                 .customize(new CustomMapper<ReportListDto, Report>() {
                     @Override

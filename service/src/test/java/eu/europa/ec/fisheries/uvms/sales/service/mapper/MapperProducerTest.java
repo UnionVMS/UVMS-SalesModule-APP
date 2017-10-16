@@ -532,7 +532,7 @@ public class MapperProducerTest {
         assertEquals("NED", dto.getLandingPort());
         assertEquals("BEL", dto.getLocation());
         assertEquals("Mathiblaa", dto.getBuyer());
-        assertEquals("Superstijn", dto.getSeller());
+        assertEquals("Superstijn", dto.getProvider());
         assertEquals("Heya", dto.getReferencedId());
         assertEquals(deletion, dto.getDeletion());
     }
@@ -600,7 +600,7 @@ public class MapperProducerTest {
         assertEquals("NED", dto.getLandingPort());
         assertEquals("BEL", dto.getLocation());
         assertEquals("Mathiblaa", dto.getBuyer());
-        assertEquals("Superstijn", dto.getSeller());
+        assertEquals("Superstijn", dto.getProvider());
         assertEquals("Heya", dto.getReferencedId());
         assertEquals(deletion, dto.getDeletion());
     }
@@ -609,7 +609,7 @@ public class MapperProducerTest {
     public void testMapReportListDtoToReportListExportDto() {
         ReportListDto reportListDto = new ReportListDto()
                 .buyer("Pope")
-                .seller("Stijn")
+                .provider("Stijn")
                 .category(SalesCategoryType.FIRST_SALE)
                 .externalMarking("marked for life")
                 .extId("GUID")
@@ -624,7 +624,7 @@ public class MapperProducerTest {
 
         ReportListExportDto reportListExportDto = new ReportListExportDto()
                 .buyer("Pope")
-                .seller("Stijn")
+                .provider("Stijn")
                 .category(SalesCategoryType.FIRST_SALE)
                 .externalMarking("marked for life")
                 .flagState("BEL")

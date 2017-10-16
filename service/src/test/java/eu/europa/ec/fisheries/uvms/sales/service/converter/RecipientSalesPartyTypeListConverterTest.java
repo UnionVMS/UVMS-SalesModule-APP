@@ -30,7 +30,7 @@ public class RecipientSalesPartyTypeListConverterTest {
                         .withRoleCodes(new CodeType().withValue("RECIPIENT"))
                         .withName(new TextType().withValue("value")),
                 new SalesPartyType()
-                        .withRoleCodes(new CodeType().withValue("SELLER"))
+                        .withRoleCodes(new CodeType().withValue("PROVIDER"))
                         .withName(new TextType().withValue("bla")));
 
         String recipient = converter.convert(salesParties, null, null);

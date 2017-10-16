@@ -192,7 +192,7 @@ public class ReportServiceBeanTest {
     private List<ReportListExportDto> getReportListExportDtos() {
         ReportListExportDto reportListDto1 = new ReportListExportDto()
                 .buyer("Pope")
-                .seller("Stijn")
+                .provider("Stijn")
                 .category(SalesCategoryType.FIRST_SALE)
                 .externalMarking("marked for life")
                 .flagState("BEL")
@@ -205,7 +205,7 @@ public class ReportServiceBeanTest {
 
         ReportListExportDto reportListDto2 = new ReportListExportDto()
                 .buyer("Trump")
-                .seller("Putin")
+                .provider("Putin")
                 .category(SalesCategoryType.FIRST_SALE)
                 .externalMarking("marked for life")
                 .flagState("BEL")
