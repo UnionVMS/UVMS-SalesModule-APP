@@ -101,31 +101,53 @@ public class SalesDetailsHelper {
     }
 
     public void convertPricesInLocalCurrency(SalesDetailsDto detailsDto, Report report) {
+        //fetch data
+        List<AAPProductType> products = reportHelper.getProductsOfReport(report);
+        List<ProductDto> productDtos = detailsDto.getSalesReport().getProducts();
+
+        String localCurrency = configService.getParameter(ParameterKey.CURRENCY);
+        String documentCurrency = reportHelper.getDocumentCurrency(report);
+
+        // determine exchange rate, and if it can be determined, update the document currency,
+        BigDecimal exchangeRate = BigDecimal.ONE;
         try {
-            String localCurrency = configService.getParameter(ParameterKey.CURRENCY);
-            String documentCurrency = reportHelper.getDocumentCurrency(report);
-
-            BigDecimal exchangeRate = BigDecimal.ONE;
-            if (!localCurrency.equals(documentCurrency)) {
-                DateTime documentDate = reportHelper.getDocumentDate(report);
-                exchangeRate = ecbProxyService.findExchangeRate(documentCurrency, localCurrency, documentDate);
-            }
-
-            List<AAPProductType> products = reportHelper.getProductsOfReport(report);
-            List<ProductDto> productDtos = detailsDto.getSalesReport().getProducts();
-
-            for (int i = 0; i < products.size(); i++) {
-                AAPProductType product = products.get(i);
-                BigDecimal originalPrice = getPriceOfProduct(product);
-
-                ProductDto productDto = productDtos.get(i);
-                productDto.setPrice(originalPrice.multiply(exchangeRate));
-            }
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
-            LOG.error("Cannot convert product prices in the local currency details because not all required fields are provided in the report.", e);
+            exchangeRate = determineExchangeRate(report, localCurrency, documentCurrency);
+            updateCurrency(detailsDto, localCurrency);
         } catch (SalesServiceException e) {
             LOG.error("Cannot convert product prices in the local currency, because I cannot retrieve the exchange rate", e);
         }
+
+        // copy over the prices. If determination of exchange rate has failed, prices are multiplied with one and the
+        // currency has not been updated in the document
+        copyOverPricesInNewExchangeRate(products, productDtos, exchangeRate);
+    }
+
+    private void updateCurrency(SalesDetailsDto detailsDto, String currency) {
+        //update currency
+        detailsDto.getSalesReport()
+                .getDocument()
+                .setCurrency(currency);
+    }
+
+    private void copyOverPricesInNewExchangeRate(List<AAPProductType> products, List<ProductDto> productDtos, BigDecimal exchangeRate) {
+        //update prices
+        for (int i = 0; i < products.size(); i++) {
+            AAPProductType product = products.get(i);
+            BigDecimal originalPrice = getPriceOfProduct(product);
+
+            ProductDto productDto = productDtos.get(i);
+            productDto.setPrice(originalPrice.multiply(exchangeRate));
+        }
+    }
+
+    private BigDecimal determineExchangeRate(Report report, String localCurrency, String documentCurrency) {
+        BigDecimal exchangeRate;
+        exchangeRate = BigDecimal.ONE;
+        if (!localCurrency.equals(documentCurrency)) {
+            DateTime documentDate = reportHelper.getDocumentDate(report);
+            exchangeRate = ecbProxyService.findExchangeRate(documentCurrency, localCurrency, documentDate);
+        }
+        return exchangeRate;
     }
 
     public void calculateTotals(SalesDetailsDto detailsDto) {

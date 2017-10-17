@@ -8,6 +8,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mother.AAPProductTypeMother;
 import eu.europa.ec.fisheries.uvms.sales.domain.mother.ReportMother;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
@@ -296,7 +297,7 @@ public class SalesDetailsHelperTest {
     }
 
     @Test
-    public void testConvertPricesInLocalCurrencyWhenDocumentCurrencyIsDifferentThanLocalCurrency() throws Exception {
+    public void convertPricesInLocalCurrencyWhenDocumentCurrencyIsDifferentThanLocalCurrency() throws Exception {
         //data set
         String localCurrency = "EUR";
         String documentCurrency = "USD";
@@ -318,32 +319,34 @@ public class SalesDetailsHelperTest {
         ProductDto productDto2 = new ProductDto();
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
                 .salesReport(new SalesReportDto()
-                    .products(Lists.newArrayList(productDto1, productDto2)));
+                    .products(Lists.newArrayList(productDto1, productDto2))
+                    .document(new DocumentDto().currency(documentCurrency)));
 
         //mock
+        doReturn(Lists.newArrayList(product1, product2)).when(reportHelper).getProductsOfReport(report);
         doReturn(localCurrency).when(configService).getParameter(ParameterKey.CURRENCY);
         doReturn(documentCurrency).when(reportHelper).getDocumentCurrency(report);
         doReturn(documentDate).when(reportHelper).getDocumentDate(report);
         doReturn(rate).when(ecbProxyService).findExchangeRate(documentCurrency, localCurrency, documentDate);
-        doReturn(Lists.newArrayList(product1, product2)).when(reportHelper).getProductsOfReport(report);
 
         //execute
         salesDetailsHelper.convertPricesInLocalCurrency(salesDetailsDto, report);
 
         //verify and assert
+        verify(reportHelper).getProductsOfReport(report);
         verify(configService).getParameter(ParameterKey.CURRENCY);
         verify(reportHelper).getDocumentCurrency(report);
         verify(reportHelper).getDocumentDate(report);
         verify(ecbProxyService).findExchangeRate(documentCurrency, localCurrency, documentDate);
-        verify(reportHelper).getProductsOfReport(report);
         verifyNoMoreInteractions(configService, ecbProxyService, reportHelper);
 
+        assertEquals("EUR", salesDetailsDto.getSalesReport().getDocument().getCurrency());
         assertEquals(new BigDecimal(20), productDto1.getPrice());
         assertEquals(new BigDecimal(60), productDto2.getPrice());
     }
 
     @Test
-    public void testConvertPricesInLocalCurrencyWhenDocumentCurrencyIsSamesAsLocalCurrency() throws Exception {
+    public void convertPricesInLocalCurrencyWhenDocumentCurrencyIsSamesAsLocalCurrency() throws Exception {
         //data set
         String localCurrency = "EUR";
         String documentCurrency = "EUR";
@@ -357,22 +360,66 @@ public class SalesDetailsHelperTest {
         ProductDto productDto2 = new ProductDto();
         SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
                 .salesReport(new SalesReportDto()
-                        .products(Lists.newArrayList(productDto1, productDto2)));
+                        .products(Lists.newArrayList(productDto1, productDto2))
+                        .document(new DocumentDto().currency(documentCurrency)));
 
         //mock
+        doReturn(Lists.newArrayList(product1, product2)).when(reportHelper).getProductsOfReport(report);
         doReturn(localCurrency).when(configService).getParameter(ParameterKey.CURRENCY);
         doReturn(documentCurrency).when(reportHelper).getDocumentCurrency(report);
-        doReturn(Lists.newArrayList(product1, product2)).when(reportHelper).getProductsOfReport(report);
 
         //execute
         salesDetailsHelper.convertPricesInLocalCurrency(salesDetailsDto, report);
 
         //verify and assert
+        verify(reportHelper).getProductsOfReport(report);
         verify(configService).getParameter(ParameterKey.CURRENCY);
         verify(reportHelper).getDocumentCurrency(report);
-        verify(reportHelper).getProductsOfReport(report);
         verifyNoMoreInteractions(configService, ecbProxyService, reportHelper);
 
+        assertEquals("EUR", salesDetailsDto.getSalesReport().getDocument().getCurrency());
+        assertEquals(new BigDecimal(10), productDto1.getPrice());
+        assertEquals(new BigDecimal(30), productDto2.getPrice());
+    }
+
+    @Test
+    public void convertPricesInLocalCurrencyWhenExchangeRateCannotBeDetermined() throws Exception {
+        //data set
+        String localCurrency = "EUR";
+        String documentCurrency = "DKK";
+        DateTime documentDate = new DateTime();
+
+        AAPProductType product1 = AAPProductTypeMother.withTotalPrice(10);
+        AAPProductType product2 = AAPProductTypeMother.withTotalPrice(30);
+
+        Report report = new Report();
+
+        ProductDto productDto1 = new ProductDto();
+        ProductDto productDto2 = new ProductDto();
+        SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
+                .salesReport(new SalesReportDto()
+                        .products(Lists.newArrayList(productDto1, productDto2))
+                        .document(new DocumentDto().currency(documentCurrency)));
+
+        //mock
+        doReturn(Lists.newArrayList(product1, product2)).when(reportHelper).getProductsOfReport(report);
+        doReturn(localCurrency).when(configService).getParameter(ParameterKey.CURRENCY);
+        doReturn(documentCurrency).when(reportHelper).getDocumentCurrency(report);
+        doReturn(documentDate).when(reportHelper).getDocumentDate(report);
+        doThrow(new SalesNonBlockingException("test")).when(ecbProxyService).findExchangeRate(documentCurrency, localCurrency, documentDate);
+
+        //execute
+        salesDetailsHelper.convertPricesInLocalCurrency(salesDetailsDto, report);
+
+        //verify and assert
+        verify(reportHelper).getProductsOfReport(report);
+        verify(configService).getParameter(ParameterKey.CURRENCY);
+        verify(reportHelper).getDocumentCurrency(report);
+        verify(reportHelper).getDocumentDate(report);
+        verify(ecbProxyService).findExchangeRate(documentCurrency, localCurrency, documentDate);
+        verifyNoMoreInteractions(configService, ecbProxyService, reportHelper);
+
+        assertEquals("DKK", salesDetailsDto.getSalesReport().getDocument().getCurrency());
         assertEquals(new BigDecimal(10), productDto1.getPrice());
         assertEquals(new BigDecimal(30), productDto2.getPrice());
     }
