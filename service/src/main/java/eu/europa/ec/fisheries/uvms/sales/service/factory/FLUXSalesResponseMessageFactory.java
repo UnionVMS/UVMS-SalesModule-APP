@@ -56,10 +56,17 @@ public class FLUXSalesResponseMessageFactory {
     public FLUXSalesResponseMessage create(String referencedId,
                                            Collection<ValidationQualityAnalysisType> validationResults,
                                            String messageValidationStatus) {
+        return create(referencedId, validationResults, messageValidationStatus, "UUID");
+    }
+
+    public FLUXSalesResponseMessage create(String referencedId,
+                                           Collection<ValidationQualityAnalysisType> validationResults,
+                                           String messageValidationStatus,
+                                           String schemeId) {
         String fluxLocationNationCode = findFluxLocalNationCode();
         FLUXPartyType fluxParty = createFluxParty(fluxLocationNationCode);
         ValidationResultDocumentType validationResultDocument = createValidationResultDocument(validationResults, fluxLocationNationCode);
-        FLUXResponseDocumentType fluxResponseDocument = createFluxResponseDocumentType(referencedId, validationResultDocument, fluxParty, messageValidationStatus);
+        FLUXResponseDocumentType fluxResponseDocument = createFluxResponseDocumentType(referencedId, validationResultDocument, fluxParty, messageValidationStatus, schemeId);
 
         return new FLUXSalesResponseMessage()
                 .withFLUXResponseDocument(fluxResponseDocument);
@@ -92,9 +99,28 @@ public class FLUXSalesResponseMessageFactory {
         return fluxResponseDocumentType;
     }
 
+    private FLUXResponseDocumentType createFluxResponseDocumentType(String referencedId, ValidationResultDocumentType validationResultDocument, FLUXPartyType fluxParty, String messageValidationStatus, String schemeId) {
+        FLUXResponseDocumentType fluxResponseDocumentType = new FLUXResponseDocumentType()
+                .withIDS(createRandomUUID())
+                .withCreationDateTime(new DateTimeType().withDateTime(DateTime.now().withZone(DateTimeZone.UTC)))
+                .withReferencedID(createID(referencedId, schemeId))
+                .withRespondentFLUXParty(fluxParty);
+
+        fluxResponseDocumentType.withResponseCode(new CodeType().withValue(messageValidationStatus)
+                                                                .withListID("FLUX_GP_RESPONSE"));
+        fluxResponseDocumentType.withRelatedValidationResultDocuments(validationResultDocument);
+
+        return fluxResponseDocumentType;
+    }
+
     private IDType createUUID(String uuidValue) {
         return new IDType() .withValue(uuidValue)
                             .withSchemeID("UUID");
+    }
+
+    private IDType createID(String id, String schemeId) {
+        return new IDType() .withValue(id)
+                            .withSchemeID(schemeId);
     }
 
     private IDType createRandomUUID() {

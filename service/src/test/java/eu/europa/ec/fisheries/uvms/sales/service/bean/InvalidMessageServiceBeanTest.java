@@ -35,14 +35,14 @@ public class InvalidMessageServiceBeanTest {
     @Test
     public void sendResponseToInvalidIncomingMessage() throws Exception {
         String messageGuid = "extId";
-        Collection<ValidationQualityAnalysisType > validationResults = new ArrayList<>();
+        Collection<ValidationQualityAnalysisType> validationResults = new ArrayList<>();
         String recipient = "rec";
         String plugin = "FLUX";
         FLUXSalesResponseMessage fluxSalesResponseMessage = new FLUXSalesResponseMessage();
 
         doReturn(fluxSalesResponseMessage).when(fluxSalesResponseMessageFactory).create(messageGuid, validationResults, FLUXGPResponse.NOK.name());
 
-        invalidMessageService.sendResponseToInvalidIncomingMessage(messageGuid, validationResults, recipient, plugin);
+        invalidMessageService.sendResponseToInvalidIncomingMessage(messageGuid, validationResults, recipient, plugin, null);
 
         verify(erroneousMessageDomainModel).save(messageGuid);
         verify(fluxSalesResponseMessageFactory).create(messageGuid, validationResults, FLUXGPResponse.NOK.name());
