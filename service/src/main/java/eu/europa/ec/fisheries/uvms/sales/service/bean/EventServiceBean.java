@@ -51,9 +51,9 @@ public class EventServiceBean implements EventService {
             SalesReportRequest salesReportRequest = (SalesReportRequest) event.getSalesBaseRequest();
 
             Report report = JAXBMarshaller.unmarshallString(salesReportRequest.getReport(), Report.class);
-            List<ValidationQualityAnalysisType> validationResults = salesReportRequest.getValidationResults();
+            List<ValidationQualityAnalysisType> validationResults = salesReportRequest.getValidationQualityAnalysises();
             String pluginToSendResponseThrough = salesReportRequest.getPluginToSendResponseThrough();
-            String messageValidationResult = salesReportRequest.getMessageValidationStatus().name();
+            String messageValidationResult = salesReportRequest.getMessageValidationStatus();
 
             reportService.saveReport(report, pluginToSendResponseThrough, validationResults, messageValidationResult);
         } catch (SalesMarshallException e) {
@@ -69,8 +69,8 @@ public class EventServiceBean implements EventService {
         try {
             FLUXSalesQueryMessage salesQueryType = JAXBMarshaller.unmarshallString(salesQueryRequest.getQuery(), FLUXSalesQueryMessage.class);
             String pluginToSendResponseThrough = salesQueryRequest.getPluginToSendResponseThrough();
-            List<ValidationQualityAnalysisType> validationResults = salesQueryRequest.getValidationResults();
-            String messageValidationResult = salesQueryRequest.getMessageValidationStatus().name();
+            List<ValidationQualityAnalysisType> validationResults = salesQueryRequest.getValidationQualityAnalysises();
+            String messageValidationResult = salesQueryRequest.getMessageValidationStatus();
 
             queryServiceBean.saveQuery(salesQueryType.getSalesQuery());
             reportService.search(salesQueryType, pluginToSendResponseThrough, validationResults, messageValidationResult);
@@ -85,7 +85,7 @@ public class EventServiceBean implements EventService {
         RespondToInvalidMessageRequest respondToInvalidMessageRequest = (RespondToInvalidMessageRequest) event.getSalesBaseRequest();
 
         String pluginToSendResponseThrough = respondToInvalidMessageRequest.getPluginToSendResponseThrough();
-        List<ValidationQualityAnalysisType> validationResults = respondToInvalidMessageRequest.getValidationResults();
+        List<ValidationQualityAnalysisType> validationResults = respondToInvalidMessageRequest.getValidationQualityAnalysises();
         String sender = respondToInvalidMessageRequest.getSender();
         String messageGuid = respondToInvalidMessageRequest.getMessageGuid();
 
