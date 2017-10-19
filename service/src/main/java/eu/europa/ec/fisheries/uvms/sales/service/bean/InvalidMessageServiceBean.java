@@ -12,6 +12,8 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.Collection;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
+
 @Stateless
 public class InvalidMessageServiceBean implements InvalidMessageService {
 
@@ -26,10 +28,16 @@ public class InvalidMessageServiceBean implements InvalidMessageService {
 
     @Override
     public void sendResponseToInvalidIncomingMessage(String messageGuid, Collection<ValidationQualityAnalysisType> validationResults,
-                                                     String recipient, String plugin) {
+                                                     String recipient, String plugin, String schemeId) {
         erroneousMessageDomainModel.save(messageGuid);
-        FLUXSalesResponseMessage fluxSalesResponseMessage =
-                fluxSalesResponseMessageFactory.create(messageGuid, validationResults, FLUXGPResponse.NOK.name());
+
+        FLUXSalesResponseMessage fluxSalesResponseMessage;
+        if (isBlank(schemeId)) {
+            fluxSalesResponseMessage = fluxSalesResponseMessageFactory.create(messageGuid, validationResults, FLUXGPResponse.NOK.name());
+        } else {
+            fluxSalesResponseMessage = fluxSalesResponseMessageFactory.create(messageGuid, validationResults, FLUXGPResponse.NOK.name(), schemeId);
+        }
+
         rulesService.sendResponseToRules(fluxSalesResponseMessage, recipient, plugin);
     }
 

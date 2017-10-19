@@ -88,8 +88,9 @@ public class EventServiceBean implements EventService {
         List<ValidationQualityAnalysisType> validationResults = respondToInvalidMessageRequest.getValidationQualityAnalysises();
         String sender = respondToInvalidMessageRequest.getSender();
         String messageGuid = respondToInvalidMessageRequest.getMessageGuid();
+        String schemeId = respondToInvalidMessageRequest.getSchemeId();
 
-        invalidMessageService.sendResponseToInvalidIncomingMessage(messageGuid, validationResults, sender, pluginToSendResponseThrough);
+        invalidMessageService.sendResponseToInvalidIncomingMessage(messageGuid, validationResults, sender, pluginToSendResponseThrough, schemeId);
     }
 
     public void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event) {
