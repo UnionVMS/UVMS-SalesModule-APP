@@ -27,7 +27,7 @@ public class FLUXLocationsToListOfIdsConverterTest {
 
     @Test
     public void convertToWhenListOfFluxLocationsIsEmpty() throws Exception {
-        assertEquals(new ArrayList<FLUXLocationType>(), converter.convertTo(new ArrayList<>(), null, null));
+        assertEquals(new ArrayList<FLUXLocationType>(), converter.convertTo(new ArrayList<FLUXLocationType>(), null, null));
     }
 
     @Test
