@@ -385,7 +385,7 @@ public class FluxReportQueryToTypedQueryHelper {
 
     private Expression<String> pathToSalesCategory() {
         Join<FluxReport, AuctionSale> leftJoinWithAuctionSale = fluxReport.join("auctionSale", JoinType.LEFT);
-        return builder.coalesce(leftJoinWithAuctionSale.get("category"), builder.literal("FIRST_SALE"));
+        return builder.<String>coalesce(leftJoinWithAuctionSale.<String>get("category"), builder.<String>literal("FIRST_SALE"));
     }
 
 }
