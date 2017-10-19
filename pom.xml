@@ -18,7 +18,7 @@
         <guava.version>20.0</guava.version>
         <orika.version>1.5.0</orika.version>
         <jackson.version>2.4.1</jackson.version>
-        <sales.model.version>1.0.6-SNAPSHOT</sales.model.version>
+        <sales.model.version>1.0.6</sales.model.version>
         <asset.model.version>3.0.7</asset.model.version>
         <rules.model.version>3.0.6</rules.model.version>
         <uvms.commons.version>2.0.29</uvms.commons.version>
