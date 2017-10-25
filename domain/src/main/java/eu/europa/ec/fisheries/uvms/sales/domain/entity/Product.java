@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(exclude = "document")
 @ToString(exclude = "document")
 @NamedQueries(
-    @NamedQuery(name = Product.FIND_PRODUCTS_BY_DOCUMENT, query="SELECT product FROM Product product JOIN FETCH product.origins WHERE product.document = :document")
+        @NamedQuery(name = Product.FIND_PRODUCTS_BY_DOCUMENT, query="SELECT product FROM Product product LEFT JOIN FETCH product.origins WHERE product.document = :document")
 )
 public class Product {
 
