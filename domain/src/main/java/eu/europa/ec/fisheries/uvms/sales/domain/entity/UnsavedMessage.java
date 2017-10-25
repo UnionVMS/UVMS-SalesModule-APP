@@ -6,22 +6,22 @@ import lombok.ToString;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sales_erroneous_message")
-@SequenceGenerator(name = "sales_erroneous_message_id_seq",
-        sequenceName = "sales_erroneous_message_id_seq",
+@Table(name = "sales_unsaved_message")
+@SequenceGenerator(name = "sales_unsaved_message_id_seq",
+        sequenceName = "sales_unsaved_message_id_seq",
         allocationSize = 50)
 @NamedQueries({
-        @NamedQuery(name = ErroneousMessage.FIND, query = "SELECT erroneousMessage from ErroneousMessage erroneousMessage WHERE erroneousMessage.extId = :extId")
+        @NamedQuery(name = UnsavedMessage.FIND, query = "SELECT unsavedMessage from UnsavedMessage unsavedMessage WHERE unsavedMessage.extId = :extId")
 })
 @EqualsAndHashCode
 @ToString
-public class ErroneousMessage {
+public class UnsavedMessage {
 
-    public static final String FIND = "ErroneousMessage.FIND";
+    public static final String FIND = "UnsavedMessage.FIND";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "sales_erroneous_message_id_seq")
+            generator = "sales_unsaved_message_id_seq")
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -29,9 +29,9 @@ public class ErroneousMessage {
     private String extId;
 
 
-    public ErroneousMessage() {}
+    public UnsavedMessage() {}
 
-    public ErroneousMessage(String extId) {
+    public UnsavedMessage(String extId) {
         this.extId = extId;
     }
 

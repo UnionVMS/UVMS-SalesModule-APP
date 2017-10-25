@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.domain.bean;
 
 import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.*;
+import eu.europa.ec.fisheries.uvms.sales.domain.UnsavedMessageDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
@@ -36,6 +37,9 @@ public class ReportDomainModelBeanTest {
 
     @Mock
     private ReportHelper reportHelper;
+
+    @Mock
+    private UnsavedMessageDomainModel unsavedMessageDomainModel;
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -130,6 +134,7 @@ public class ReportDomainModelBeanTest {
         DateTime deletionDate = new DateTime();
 
         FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType()
+                .withIDS(new IDType().withValue("id"))
                 .withReferencedID(new IDType().withValue("hello"))
                 .withPurposeCode(new CodeType().withValue(Purpose.DELETE.getNumericCode() + ""))
                 .withCreationDateTime(new DateTimeType().withDateTime(deletionDate));
@@ -150,6 +155,7 @@ public class ReportDomainModelBeanTest {
         when(reportHelper.isReportDeleted(report)).thenReturn(true);
         when(reportHelper.getCreationDate(report)).thenReturn(deletionDate);
         when(reportHelper.getFLUXReportDocumentReferencedId(report)).thenReturn("hello");
+        when(reportHelper.getFLUXReportDocumentId(report)).thenReturn("id");
         when(fluxReportDao.findByExtId("hello")).thenReturn(Optional.of(oldFluxReportEntity));
         when(mapper.map(oldFluxReportEntity, Report.class)).thenReturn(mappedAndPersistedReportFromDao);
 
@@ -160,8 +166,10 @@ public class ReportDomainModelBeanTest {
         verify(reportHelper).isReportDeleted(report);
         verify(reportHelper).getCreationDate(report);
         verify(reportHelper).getFLUXReportDocumentReferencedId(report);
+        verify(reportHelper).getFLUXReportDocumentId(report);
         verify(fluxReportDao).findByExtId("hello");
         verify(mapper).map(oldFluxReportEntity, Report.class);
+        verify(unsavedMessageDomainModel).save("id");
         verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
 
         assertSame(mappedAndPersistedReportFromDao, persistedReport);
@@ -175,6 +183,7 @@ public class ReportDomainModelBeanTest {
         DateTime now = DateTime.now();
 
         FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType()
+                .withIDS(new IDType().withValue("id"))
                 .withReferencedID(new IDType().withValue("hello"))
                 .withPurposeCode(new CodeType().withValue(Purpose.DELETE.getNumericCode() + ""))
                 .withCreationDateTime(new DateTimeType().withDateTime(now));
@@ -197,6 +206,7 @@ public class ReportDomainModelBeanTest {
         when(reportHelper.isReportDeleted(report)).thenReturn(true);
         when(reportHelper.getCreationDate(report)).thenReturn(now);
         when(reportHelper.getFLUXReportDocumentReferencedId(report)).thenReturn("hello");
+        when(reportHelper.getFLUXReportDocumentId(report)).thenReturn("id");
         when(fluxReportDao.findByExtId("hello")).thenReturn(Optional.of(oldFluxReportEntity));
         when(mapper.map(oldFluxReportEntity, Report.class)).thenReturn(mappedAndPersistedReportFromDao);
 
@@ -209,6 +219,9 @@ public class ReportDomainModelBeanTest {
         verify(reportHelper).getFLUXReportDocumentReferencedId(report);
         verify(fluxReportDao).findByExtId("hello");
         verify(mapper).map(oldFluxReportEntity, Report.class);
+        verify(unsavedMessageDomainModel).save("id");
+        verify(reportHelper).getFLUXReportDocumentId(report);
+        verify(unsavedMessageDomainModel).save("id");
         verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
 
         assertSame(mappedAndPersistedReportFromDao, persistedReport);

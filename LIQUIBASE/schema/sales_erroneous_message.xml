@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <changeSet author="stihft" id="erm-01">
-        
+
         <createTable tableName="sales_erroneous_message">
             <column name="id" type="integer">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="sales_erroneous_message_pk"/>
@@ -31,7 +31,33 @@
             <dropSequence sequenceName="sales_erroneous_message_id_seq" />
             <dropTable tableName="sales_erroneous_message" cascadeConstraints="true"/>
         </rollback>
-        
     </changeSet>
-        
+    <changeSet author="matbul" id="erm-02">
+        <dropIndex
+                tableName="sales_erroneous_message"
+                indexName="sales_erroneous_message_i_1" />
+        <dropSequence sequenceName="sales_erroneous_message_id_seq" />
+        <dropTable tableName="sales_erroneous_message" cascadeConstraints="true"/>
+
+        <rollback>
+            <createTable tableName="sales_erroneous_message">
+                <column name="id" type="integer">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="sales_erroneous_message_pk"/>
+                </column>
+                <column name="ext_id" type="text">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+
+            <createSequence sequenceName="sales_erroneous_message_id_seq"
+                            incrementBy="50"/>
+            <addDefaultValue columnName="id" tableName="sales_erroneous_message" defaultValueSequenceNext="sales_erroneous_message_id_seq"/>
+
+            <createIndex
+                    indexName="sales_erroneous_message_i_1"
+                    tableName="sales_erroneous_message">
+                <column name="ext_id" type="text"/>
+            </createIndex>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

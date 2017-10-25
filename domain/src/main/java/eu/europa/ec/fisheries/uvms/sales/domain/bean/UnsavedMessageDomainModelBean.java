@@ -1,17 +1,17 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.bean;
 
-import eu.europa.ec.fisheries.uvms.sales.domain.ErroneousMessageDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.domain.dao.ErroneousMessageDao;
+import eu.europa.ec.fisheries.uvms.sales.domain.UnsavedMessageDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.dao.UnsavedMessageDao;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 
 @Stateless
-public class ErroneousMessageDomainModelBean implements ErroneousMessageDomainModel {
+public class UnsavedMessageDomainModelBean implements UnsavedMessageDomainModel {
 
     @EJB
-    private ErroneousMessageDao dao;
+    private UnsavedMessageDao dao;
 
 
     @Override

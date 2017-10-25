@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 import eu.europa.ec.fisheries.schema.sales.FLUXGPResponse;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
-import eu.europa.ec.fisheries.uvms.sales.domain.ErroneousMessageDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.UnsavedMessageDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import org.junit.Test;
@@ -18,16 +18,16 @@ import java.util.Collection;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InvalidMessageServiceBeanTest {
+public class UnsavedMessageServiceBeanTest {
 
     @InjectMocks
-    private InvalidMessageServiceBean invalidMessageService;
+    private UnsavedMessageServiceBean invalidMessageService;
 
     @Mock
     private FLUXSalesResponseMessageFactory fluxSalesResponseMessageFactory;
 
     @Mock
-    private ErroneousMessageDomainModel erroneousMessageDomainModel;
+    private UnsavedMessageDomainModel unsavedMessageDomainModel;
 
     @Mock
     private RulesService rulesService;
@@ -44,10 +44,10 @@ public class InvalidMessageServiceBeanTest {
 
         invalidMessageService.sendResponseToInvalidIncomingMessage(messageGuid, validationResults, recipient, plugin, null);
 
-        verify(erroneousMessageDomainModel).save(messageGuid);
+        verify(unsavedMessageDomainModel).save(messageGuid);
         verify(fluxSalesResponseMessageFactory).create(messageGuid, validationResults, FLUXGPResponse.NOK.name());
         verify(rulesService).sendResponseToRules(fluxSalesResponseMessage, recipient, plugin);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, erroneousMessageDomainModel, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, unsavedMessageDomainModel, rulesService);
     }
 
 }

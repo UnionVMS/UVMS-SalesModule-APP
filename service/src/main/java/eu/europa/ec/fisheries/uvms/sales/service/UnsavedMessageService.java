@@ -7,7 +7,7 @@ import javax.ejb.Local;
 import java.util.Collection;
 
 @Local
-public interface InvalidMessageService {
+public interface UnsavedMessageService {
 
     /**
      * Respond to invalid incoming message

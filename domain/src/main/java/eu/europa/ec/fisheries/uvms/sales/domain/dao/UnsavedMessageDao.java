@@ -1,6 +1,6 @@
-package eu.europa.ec.fisheries.uvms.sales.domain;
+package eu.europa.ec.fisheries.uvms.sales.domain.dao;
 
-public interface ErroneousMessageDomainModel {
+public interface UnsavedMessageDao {
 
     /**
      * Saves a record of the event that a message came
