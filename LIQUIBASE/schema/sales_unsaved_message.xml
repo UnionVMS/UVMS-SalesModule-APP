@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="matbul" id="unm-01">
+        <createTable tableName="sales_unsaved_message">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_unsaved_message_pk"/>
+            </column>
+            <column name="ext_id" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createSequence sequenceName="sales_unsaved_message_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_unsaved_message" defaultValueSequenceNext="sales_unsaved_message_id_seq"/>
+
+        <createIndex
+                indexName="sales_unsaved_message_i_1"
+                tableName="sales_unsaved_message">
+            <column name="ext_id" type="text"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    tableName="sales_unsaved_message"
+                    indexName="sales_unsaved_message_i_1" />
+            <dropSequence sequenceName="sales_unsaved_message_id_seq" />
+            <dropTable tableName="sales_unsaved_message" cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+        
+</databaseChangeLog>

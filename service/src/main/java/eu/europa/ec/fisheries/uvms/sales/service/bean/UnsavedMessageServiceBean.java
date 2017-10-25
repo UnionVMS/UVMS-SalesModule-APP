@@ -3,9 +3,9 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 import eu.europa.ec.fisheries.schema.sales.FLUXGPResponse;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
-import eu.europa.ec.fisheries.uvms.sales.domain.ErroneousMessageDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.service.InvalidMessageService;
+import eu.europa.ec.fisheries.uvms.sales.domain.UnsavedMessageDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
+import eu.europa.ec.fisheries.uvms.sales.service.UnsavedMessageService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 
 import javax.ejb.EJB;
@@ -15,13 +15,13 @@ import java.util.Collection;
 import static org.apache.commons.lang.StringUtils.isBlank;
 
 @Stateless
-public class InvalidMessageServiceBean implements InvalidMessageService {
+public class UnsavedMessageServiceBean implements UnsavedMessageService {
 
     @EJB
     private FLUXSalesResponseMessageFactory fluxSalesResponseMessageFactory;
 
     @EJB
-    private ErroneousMessageDomainModel erroneousMessageDomainModel;
+    private UnsavedMessageDomainModel unsavedMessageDomainModel;
 
     @EJB
     private RulesService rulesService;
@@ -29,7 +29,7 @@ public class InvalidMessageServiceBean implements InvalidMessageService {
     @Override
     public void sendResponseToInvalidIncomingMessage(String messageGuid, Collection<ValidationQualityAnalysisType> validationResults,
                                                      String recipient, String plugin, String schemeId) {
-        erroneousMessageDomainModel.save(messageGuid);
+        unsavedMessageDomainModel.save(messageGuid);
 
         FLUXSalesResponseMessage fluxSalesResponseMessage;
         if (isBlank(schemeId)) {

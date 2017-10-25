@@ -37,7 +37,7 @@ public class UniqueIdServiceBeanTest {
     private ResponseDomainModel responseDomainModel;
 
     @Mock
-    private ErroneousMessageDomainModel erroneousMessageDomainModel;
+    private UnsavedMessageDomainModel unsavedMessageDomainModel;
 
     @Test
     public void doesAnySalesDocumentExistWithAnyOfTheseIdsWhenADocumentExistsWithGivenIds() throws Exception {
@@ -48,7 +48,7 @@ public class UniqueIdServiceBeanTest {
 
         verify(documentDomainModel).findByExtId("aaa");
         verify(documentDomainModel).findByExtId("bbb");
-        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, erroneousMessageDomainModel);
+        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, unsavedMessageDomainModel);
         assertTrue(notUnique);
     }
 
@@ -63,60 +63,60 @@ public class UniqueIdServiceBeanTest {
         verify(documentDomainModel).findByExtId("aaa");
         verify(documentDomainModel).findByExtId("bbb");
         verify(documentDomainModel).findByExtId("ccc");
-        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, erroneousMessageDomainModel);
+        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, unsavedMessageDomainModel);
         assertFalse(notUnique);
     }
 
     @Test
     public void doesAnySalesReportExistWithAnyOfTheseIdsWhenNoReportsExistsWithGivenIds() throws Exception {
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId("aaa");
-        doReturn(false).when(erroneousMessageDomainModel).exists("aaa");
+        doReturn(false).when(unsavedMessageDomainModel).exists("aaa");
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bbb");
-        doReturn(false).when(erroneousMessageDomainModel).exists("bbb");
+        doReturn(false).when(unsavedMessageDomainModel).exists("bbb");
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId("ccc");
-        doReturn(false).when(erroneousMessageDomainModel).exists("ccc");
+        doReturn(false).when(unsavedMessageDomainModel).exists("ccc");
 
         Boolean notUnique = service.doesAnySalesReportExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
 
         verify(reportDomainModel).findByExtId("aaa");
-        verify(erroneousMessageDomainModel).exists("aaa");
+        verify(unsavedMessageDomainModel).exists("aaa");
         verify(reportDomainModel).findByExtId("bbb");
-        verify(erroneousMessageDomainModel).exists("bbb");
+        verify(unsavedMessageDomainModel).exists("bbb");
         verify(reportDomainModel).findByExtId("ccc");
-        verify(erroneousMessageDomainModel).exists("ccc");
-        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, erroneousMessageDomainModel);
+        verify(unsavedMessageDomainModel).exists("ccc");
+        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, unsavedMessageDomainModel);
         assertFalse(notUnique);
     }
 
     @Test
     public void doesAnySalesReportExistWithAnyOfTheseIdsWhenAReportExistsWithGivenIds() throws Exception {
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId("aaa");
-        doReturn(false).when(erroneousMessageDomainModel).exists("aaa");
+        doReturn(false).when(unsavedMessageDomainModel).exists("aaa");
         doReturn(Optional.of(new Report())).when(reportDomainModel).findByExtId("bbb");
 
         Boolean notUnique = service.doesAnySalesReportExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
 
         verify(reportDomainModel).findByExtId("aaa");
-        verify(erroneousMessageDomainModel).exists("aaa");
+        verify(unsavedMessageDomainModel).exists("aaa");
         verify(reportDomainModel).findByExtId("bbb");
-        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, erroneousMessageDomainModel);
+        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, unsavedMessageDomainModel);
         assertTrue(notUnique);
     }
 
     @Test
     public void doesAnySalesReportExistWithAnyOfTheseIdsWhenAnErroneousReportExistsWithGivenIds() throws Exception {
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId("aaa");
-        doReturn(false).when(erroneousMessageDomainModel).exists("aaa");
+        doReturn(false).when(unsavedMessageDomainModel).exists("aaa");
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bbb");
-        doReturn(true).when(erroneousMessageDomainModel).exists("bbb");
+        doReturn(true).when(unsavedMessageDomainModel).exists("bbb");
 
         Boolean notUnique = service.doesAnySalesReportExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
 
         verify(reportDomainModel).findByExtId("aaa");
-        verify(erroneousMessageDomainModel).exists("aaa");
+        verify(unsavedMessageDomainModel).exists("aaa");
         verify(reportDomainModel).findByExtId("bbb");
-        verify(erroneousMessageDomainModel).exists("bbb");
-        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, erroneousMessageDomainModel);
+        verify(unsavedMessageDomainModel).exists("bbb");
+        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, unsavedMessageDomainModel);
         assertTrue(notUnique);
     }
 
@@ -129,7 +129,7 @@ public class UniqueIdServiceBeanTest {
         boolean doesExist = service.doesReferencedReportInResponseExist(id);
 
         verify(reportDomainModel).findByExtId(id);
-        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, erroneousMessageDomainModel);
+        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, unsavedMessageDomainModel);
 
         assertTrue(doesExist);
     }
@@ -140,14 +140,14 @@ public class UniqueIdServiceBeanTest {
 
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId(id);
         doReturn(Optional.absent()).when(queryDomainModel).findByExtId(id);
-        doReturn(true).when(erroneousMessageDomainModel).exists(id);
+        doReturn(true).when(unsavedMessageDomainModel).exists(id);
 
         boolean doesExist = service.doesReferencedReportInResponseExist(id);
 
         verify(reportDomainModel).findByExtId(id);
         verify(queryDomainModel).findByExtId(id);
-        verify(erroneousMessageDomainModel).exists(id);
-        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, erroneousMessageDomainModel);
+        verify(unsavedMessageDomainModel).exists(id);
+        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, unsavedMessageDomainModel);
 
         assertTrue(doesExist);
     }
@@ -163,7 +163,7 @@ public class UniqueIdServiceBeanTest {
 
         verify(reportDomainModel).findByExtId(id);
         verify(queryDomainModel).findByExtId(id);
-        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, erroneousMessageDomainModel);
+        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, unsavedMessageDomainModel);
 
         assertTrue(doesExist);
     }
@@ -174,14 +174,14 @@ public class UniqueIdServiceBeanTest {
 
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId(id);
         doReturn(Optional.absent()).when(queryDomainModel).findByExtId(id);
-        doReturn(false).when(erroneousMessageDomainModel).exists(id);
+        doReturn(false).when(unsavedMessageDomainModel).exists(id);
 
         boolean doesExist = service.doesReferencedReportInResponseExist(id);
 
         verify(reportDomainModel).findByExtId(id);
         verify(queryDomainModel).findByExtId(id);
-        verify(erroneousMessageDomainModel).exists(id);
-        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, erroneousMessageDomainModel);
+        verify(unsavedMessageDomainModel).exists(id);
+        verifyNoMoreInteractions(documentDomainModel, queryDomainModel, reportDomainModel, responseDomainModel, unsavedMessageDomainModel);
 
         assertFalse(doesExist);
     }

@@ -34,7 +34,7 @@ public class EventServiceBean implements EventService {
     private ReportService reportService;
 
     @EJB
-    private InvalidMessageService invalidMessageService;
+    private UnsavedMessageService unsavedMessageService;
 
     @EJB
     private SalesMessageProducer salesMessageProducer;
@@ -90,7 +90,7 @@ public class EventServiceBean implements EventService {
         String messageGuid = respondToInvalidMessageRequest.getMessageGuid();
         String schemeId = respondToInvalidMessageRequest.getSchemeId();
 
-        invalidMessageService.sendResponseToInvalidIncomingMessage(messageGuid, validationResults, sender, pluginToSendResponseThrough, schemeId);
+        unsavedMessageService.sendResponseToInvalidIncomingMessage(messageGuid, validationResults, sender, pluginToSendResponseThrough, schemeId);
     }
 
     public void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event) {
