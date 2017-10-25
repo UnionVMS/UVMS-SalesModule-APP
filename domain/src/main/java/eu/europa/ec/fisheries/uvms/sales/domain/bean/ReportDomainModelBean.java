@@ -6,6 +6,7 @@ import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.UnsavedMessageDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.comparator.CompareReportOnCreationDateDescending;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
@@ -44,6 +45,9 @@ public class ReportDomainModelBean implements ReportDomainModel {
     @EJB
     private ReportHelper reportHelper;
 
+    @EJB
+    private UnsavedMessageDomainModel unsavedMessageDomainModel;
+
     @Override
     public Optional<Report> findByExtId(String extId) {
         LOG.debug("Find report by extId {}", extId);
@@ -65,6 +69,8 @@ public class ReportDomainModelBean implements ReportDomainModel {
 
         if (reportHelper.isReportDeleted(report)) {
             fluxReport = updateDeletionDateOfReportReferencedBy(report);
+
+            saveExtId(report);
         } else {
             fluxReport = mapper.map(report, FluxReport.class);
 
@@ -83,6 +89,14 @@ public class ReportDomainModelBean implements ReportDomainModel {
 
         return mapper.map(fluxReport, Report.class);
 
+    }
+
+    private void saveExtId(Report report) {
+        String extId = reportHelper.getFLUXReportDocumentId(report);
+
+        if (!unsavedMessageDomainModel.exists(extId)) {
+            unsavedMessageDomainModel.save(extId);
+        }
     }
 
     private FluxReport updateDeletionDateOfReportReferencedBy(Report report) {

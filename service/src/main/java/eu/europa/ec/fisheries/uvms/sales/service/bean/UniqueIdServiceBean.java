@@ -24,7 +24,7 @@ public class UniqueIdServiceBean implements UniqueIdService {
     private ResponseDomainModel responseDomainModel;
 
     @EJB
-    private ErroneousMessageDomainModel erroneousMessageDomainModel;
+    private UnsavedMessageDomainModel unsavedMessageDomainModel;
 
     @Override
     public boolean doesAnySalesDocumentExistWithAnyOfTheseIds(List<String> extIds) {
@@ -42,7 +42,7 @@ public class UniqueIdServiceBean implements UniqueIdService {
         for (String extId : extIds) {
             if (reportDomainModel.findByExtId(extId).isPresent()) {
                 return true;
-            } else if (erroneousMessageDomainModel.exists(extId)) {
+            } else if (unsavedMessageDomainModel.exists(extId)) {
                 return true;
             }
         }
@@ -53,7 +53,7 @@ public class UniqueIdServiceBean implements UniqueIdService {
     @Override
     public boolean isQueryIdUnique(String extId) {
         return !(queryDomainModel.findByExtId(extId).isPresent()
-                || erroneousMessageDomainModel.exists(extId));
+                || unsavedMessageDomainModel.exists(extId));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class UniqueIdServiceBean implements UniqueIdService {
     public boolean doesReferencedReportInResponseExist(String referencedId) {
         return reportDomainModel.findByExtId(referencedId).isPresent()
                 || queryDomainModel.findByExtId(referencedId).isPresent()
-                || erroneousMessageDomainModel.exists(referencedId);
+                || unsavedMessageDomainModel.exists(referencedId);
     }
 
 

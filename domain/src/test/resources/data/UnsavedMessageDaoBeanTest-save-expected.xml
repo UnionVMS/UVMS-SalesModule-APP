@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-    <sales_erroneous_message
+    <sales_unsaved_message
             ext_id="test"
     />
 </dataset>
