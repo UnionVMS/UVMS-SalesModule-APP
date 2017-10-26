@@ -21,7 +21,7 @@
         <sales.model.version>1.0.6</sales.model.version>
         <asset.model.version>3.0.7</asset.model.version>
         <rules.model.version>3.0.6</rules.model.version>
-        <uvms.commons.version>2.0.29</uvms.commons.version>
+        <uvms.commons.version>2.0.32-SNAPSHOT</uvms.commons.version>
         <uvms.config.version>3.1.1</uvms.config.version>
         <sl4j.version>1.7.25</sl4j.version>
         <logback.version>1.2.3</logback.version>        
