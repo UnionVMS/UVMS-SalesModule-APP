@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.sales.message.producer.bean;
 import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
-import eu.europa.ec.fisheries.uvms.sales.message.constants.SalesMessageConstants;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
@@ -40,7 +39,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
 
         this.assetQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ASSET_EVENT);
         this.salesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
-        this.ecbProxyQueue = JMSUtils.lookupQueue(SalesMessageConstants.QUEUE_ECB_PROXY);
+        this.ecbProxyQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ECB_PROXY);
         this.configQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_CONFIG);
         this.rulesEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_MODULE_RULES);
         this.rulesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_RULES);

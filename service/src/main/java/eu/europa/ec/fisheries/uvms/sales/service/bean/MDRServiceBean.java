@@ -20,7 +20,6 @@ import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
-import lombok.SneakyThrows;
 import un.unece.uncefact.data.standard.mdr.communication.MdrGetCodeListResponse;
 import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 
@@ -42,7 +41,6 @@ public class MDRServiceBean implements MDRService {
     @EJB
     private SalesMessageProducer producer;
 
-    //    @SneakyThrows
     public List<ObjectRepresentation> findCodeList(MDRCodeListKey acronym) {
         try {
             String request = MdrModuleMapper.createFluxMdrGetCodeListRequest(acronym.getInternalName());
