@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
-import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMarshallException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
@@ -15,12 +15,14 @@ import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.Date;
 
 @Stateless
+@Slf4j
 public class RulesServiceBean implements RulesService {
 
     @EJB
@@ -45,6 +47,7 @@ public class RulesServiceBean implements RulesService {
 
             String request = RulesModuleRequestMapper.createSendSalesResponseRequest(responseAsString, responseGuid, recipient, pluginToSendResponseThrough, dataFlow, now);
             messageProducer.sendModuleMessage(request, Union.RULES);
+            log.error("#############TEMP##########: message sent to rules, for " + recipient + ": " + request);
         } catch (RulesModelMarshallException | SalesMarshallException | MessageException e) {
             throw new SalesServiceException("Could not send the sales response to Rules", e);
         }

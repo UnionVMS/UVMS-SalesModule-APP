@@ -1,8 +1,8 @@
 package eu.europa.ec.fisheries.uvms.sales.message.consumer.bean;
 
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
-import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

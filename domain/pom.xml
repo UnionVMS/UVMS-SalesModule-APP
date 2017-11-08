@@ -42,10 +42,6 @@
             <artifactId>uvms-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-commons</artifactId>
-        </dependency>
-        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
             <artifactId>sales-model</artifactId>
         </dependency>
@@ -75,6 +71,10 @@
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
 
     </dependencies>

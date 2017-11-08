@@ -21,7 +21,7 @@
         <sales.model.version>1.0.6</sales.model.version>
         <asset.model.version>3.0.7</asset.model.version>
         <rules.model.version>3.0.6</rules.model.version>
-        <uvms.commons.version>2.0.32-SNAPSHOT</uvms.commons.version>
+        <uvms.commons.parent.version>3.0.3</uvms.commons.parent.version>
         <uvms.config.version>3.1.1</uvms.config.version>
         <sl4j.version>1.7.25</sl4j.version>
         <logback.version>1.2.3</logback.version>        
@@ -67,9 +67,14 @@
                 <classifier>date</classifier>
             </dependency>
             <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>uvms-commons</artifactId>
-                <version>${uvms.commons.version}</version>
+                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                <artifactId>uvms-commons-rest</artifactId>
+                <version>${uvms.commons.parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                <artifactId>uvms-commons-message</artifactId>
+                <version>${uvms.commons.parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
@@ -155,6 +160,11 @@
   			    <artifactId>slf4j-api</artifactId>
     		    <version>${sl4j.version}</version>
     		</dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.16.18</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
