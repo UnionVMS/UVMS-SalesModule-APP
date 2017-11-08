@@ -86,5 +86,16 @@
                                   constraintName="sales_document_ext_id_unique" />
         </rollback>
     </changeSet>
+    <changeSet id="doc-03" author="matbul">
+        <dropUniqueConstraint tableName="sales_document"
+                              constraintName="sales_document_ext_id_unique" />
+
+
+        <rollback>
+            <addUniqueConstraint columnNames="ext_id"
+                                 constraintName="sales_document_ext_id_unique"
+                                 tableName="sales_document"/>
+        </rollback>
+    </changeSet>
         
 </databaseChangeLog>
