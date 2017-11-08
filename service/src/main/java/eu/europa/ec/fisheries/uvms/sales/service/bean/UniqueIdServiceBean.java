@@ -40,9 +40,7 @@ public class UniqueIdServiceBean implements UniqueIdService {
     @Override
     public boolean doesAnySalesReportExistWithAnyOfTheseIds(List<String> extIds) {
         for (String extId : extIds) {
-            if (reportDomainModel.findByExtId(extId).isPresent()) {
-                return true;
-            } else if (unsavedMessageDomainModel.exists(extId)) {
+            if (reportDomainModel.findByExtId(extId).isPresent() || unsavedMessageDomainModel.exists(extId)) {
                 return true;
             }
         }
