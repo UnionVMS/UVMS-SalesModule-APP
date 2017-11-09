@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.rest.service;
 
-import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.sales.service.CodeListService;
 
 import javax.ejb.EJB;

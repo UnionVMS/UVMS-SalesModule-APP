@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.proxy.ecb.types.v1.GetExchangeRateResponse;
-import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;

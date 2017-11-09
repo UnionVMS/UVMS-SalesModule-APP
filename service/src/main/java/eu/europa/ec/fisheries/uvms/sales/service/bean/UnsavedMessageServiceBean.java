@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.UnsavedMessageDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.UnsavedMessageService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -15,6 +16,7 @@ import java.util.Collection;
 import static org.apache.commons.lang.StringUtils.isBlank;
 
 @Stateless
+@Slf4j
 public class UnsavedMessageServiceBean implements UnsavedMessageService {
 
     @EJB
@@ -29,6 +31,8 @@ public class UnsavedMessageServiceBean implements UnsavedMessageService {
     @Override
     public void sendResponseToInvalidIncomingMessage(String messageGuid, Collection<ValidationQualityAnalysisType> validationResults,
                                                      String recipient, String plugin, String schemeId) {
+
+        log.error("######TEMP#########TEMP###### Recipient: " + recipient);
         unsavedMessageDomainModel.save(messageGuid);
 
         FLUXSalesResponseMessage fluxSalesResponseMessage;

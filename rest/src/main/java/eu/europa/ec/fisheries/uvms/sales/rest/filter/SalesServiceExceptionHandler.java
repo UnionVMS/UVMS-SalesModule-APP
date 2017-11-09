@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.rest.filter;
 
-import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

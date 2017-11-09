@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.message.producer;
 
-import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 

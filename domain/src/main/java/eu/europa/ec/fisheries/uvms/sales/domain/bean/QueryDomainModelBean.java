@@ -13,7 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Stateless
 public class QueryDomainModelBean implements QueryDomainModel {
