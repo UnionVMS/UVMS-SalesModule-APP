@@ -681,11 +681,13 @@ public class MapperProducerTest {
         //data set
         String reportExtId = "id1";
         String documentExtId = "id2";
+        DateTime creationDate = DateTime.parse("2017-11-09");
 
         Report report = new Report()
                 .withFLUXSalesReportMessage(new FLUXSalesReportMessage()
                     .withFLUXReportDocument(new FLUXReportDocumentType()
-                        .withIDS(new IDType().withValue(reportExtId)))
+                        .withIDS(new IDType().withValue(reportExtId))
+                        .withCreationDateTime(new DateTimeType().withDateTime(creationDate)))
                     .withSalesReports(new SalesReportType()
                         .withItemTypeCode(new CodeType().withValue("SN"))
                         .withIncludedSalesDocuments(new SalesDocumentType()
@@ -699,6 +701,7 @@ public class MapperProducerTest {
         assertEquals(reportExtId, salesDetailsRelation.getReportExtId());
         assertEquals(documentExtId, salesDetailsRelation.getDocumentExtId());
         assertEquals(FluxReportItemType.SALES_NOTE, salesDetailsRelation.getType());
+        assertEquals(creationDate, salesDetailsRelation.getCreationDate());
     }
 
     @Test

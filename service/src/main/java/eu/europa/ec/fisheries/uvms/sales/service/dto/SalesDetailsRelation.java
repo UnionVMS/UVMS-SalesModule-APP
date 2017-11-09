@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.dto;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.joda.time.DateTime;
 
 @EqualsAndHashCode
 @ToString
@@ -10,6 +11,7 @@ public class SalesDetailsRelation {
 
     private String reportExtId;
     private String documentExtId;
+    private DateTime creationDate;
     private FluxReportItemType type;
 
 
@@ -37,6 +39,14 @@ public class SalesDetailsRelation {
         this.documentExtId = documentExtId;
     }
 
+    public DateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(DateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public SalesDetailsRelation type(FluxReportItemType type) {
         this.type = type;
         return this;
@@ -49,6 +59,11 @@ public class SalesDetailsRelation {
 
     public SalesDetailsRelation documentExtId(String documentExtId) {
         this.documentExtId = documentExtId;
+        return this;
+    }
+
+    public SalesDetailsRelation creationDate(DateTime creationDate) {
+        this.creationDate = creationDate;
         return this;
     }
 }

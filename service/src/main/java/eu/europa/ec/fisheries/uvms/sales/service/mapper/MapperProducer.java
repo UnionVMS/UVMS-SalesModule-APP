@@ -263,6 +263,7 @@ public class MapperProducer {
                 .field("FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value", "reportExtId")
                 .field("FLUXSalesReportMessage.salesReports[0].itemTypeCode", "type")
                 .field("FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].IDS[0].value", "documentExtId")
+                .field("FLUXSalesReportMessage.FLUXReportDocument.creationDateTime.dateTime", "creationDate")
                 .register();
     }
 
