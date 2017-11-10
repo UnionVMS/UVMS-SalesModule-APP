@@ -31,8 +31,6 @@ public class UnsavedMessageServiceBean implements UnsavedMessageService {
     @Override
     public void sendResponseToInvalidIncomingMessage(String messageGuid, Collection<ValidationQualityAnalysisType> validationResults,
                                                      String recipient, String plugin, String schemeId) {
-
-        log.error("######TEMP#########TEMP###### Recipient: " + recipient);
         unsavedMessageDomainModel.save(messageGuid);
 
         FLUXSalesResponseMessage fluxSalesResponseMessage;
