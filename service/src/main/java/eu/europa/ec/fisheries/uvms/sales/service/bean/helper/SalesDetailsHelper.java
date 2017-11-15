@@ -1,5 +1,12 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.europa.ec.fisheries.schema.sales.AAPProductType;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.SalesCategoryType;
@@ -12,22 +19,21 @@ import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
-import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.FishingTripDto;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.LocationDto;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.ProductDto;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.SalesDetailsDto;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.SalesDetailsRelation;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.SalesReportDto;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.TotalsDto;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import ma.glasnost.orika.MapperFacade;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class who's only purpose is to hide low-level logic from the "get sales details" functionality of the ReportServiceBean.
