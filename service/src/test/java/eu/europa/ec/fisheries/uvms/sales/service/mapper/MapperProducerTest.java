@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ConversionFactor;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCode;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
@@ -685,13 +686,13 @@ public class MapperProducerTest {
 
         Report report = new Report()
                 .withFLUXSalesReportMessage(new FLUXSalesReportMessage()
-                    .withFLUXReportDocument(new FLUXReportDocumentType()
-                        .withIDS(new IDType().withValue(reportExtId))
-                        .withCreationDateTime(new DateTimeType().withDateTime(creationDate)))
-                    .withSalesReports(new SalesReportType()
-                        .withItemTypeCode(new CodeType().withValue("SN"))
-                        .withIncludedSalesDocuments(new SalesDocumentType()
-                            .withIDS(new IDType().withValue(documentExtId)))));
+                        .withFLUXReportDocument(new FLUXReportDocumentType()
+                                .withIDS(new IDType().withValue(reportExtId))
+                                .withCreationDateTime(new DateTimeType().withDateTime(creationDate)))
+                        .withSalesReports(new SalesReportType()
+                                .withItemTypeCode(new CodeType().withValue("SN"))
+                                .withIncludedSalesDocuments(new SalesDocumentType()
+                                        .withIDS(new IDType().withValue(documentExtId)))));
 
 
         //execute
@@ -708,8 +709,8 @@ public class MapperProducerTest {
     public void testMapObjectRepresentationToReferenceCode() {
         String code = "code-sdfsdf";
         String text = "text";
-        ColumnDataType codeColumn = new ColumnDataType("code", code,"java.lang.String");
-        ColumnDataType textColumn = new ColumnDataType("description", text,"java.lang.String");
+        ColumnDataType codeColumn = new ColumnDataType("code", code, "java.lang.String");
+        ColumnDataType textColumn = new ColumnDataType("description", text, "java.lang.String");
 
         ObjectRepresentation objectRepresentation = new ObjectRepresentation();
         objectRepresentation.setFields(Lists.newArrayList(codeColumn, textColumn));
@@ -725,9 +726,9 @@ public class MapperProducerTest {
         String code = "code-sdfsdf";
         String latitude = "12.54";
         String longitude = "2.8975412";
-        ColumnDataType codeColumn = new ColumnDataType("unloCode", code,"java.lang.String");
-        ColumnDataType latitudeColumn = new ColumnDataType("latitude", latitude,"java.lang.Double");
-        ColumnDataType longitudeColumn = new ColumnDataType("longitude", longitude,"java.lang.Double");
+        ColumnDataType codeColumn = new ColumnDataType("unloCode", code, "java.lang.String");
+        ColumnDataType latitudeColumn = new ColumnDataType("latitude", latitude, "java.lang.Double");
+        ColumnDataType longitudeColumn = new ColumnDataType("longitude", longitude, "java.lang.Double");
 
         ObjectRepresentation objectRepresentation = new ObjectRepresentation();
         objectRepresentation.setFields(Lists.newArrayList(codeColumn, latitudeColumn, longitudeColumn));
@@ -743,8 +744,8 @@ public class MapperProducerTest {
     public void testMapObjectRepresentationToReferenceTerritory() {
         String code = "code-sdfsdf";
         String englishName = "englishName";
-        ColumnDataType codeColumn = new ColumnDataType("code", code,"java.lang.String");
-        ColumnDataType textColumn = new ColumnDataType("enName", englishName,"java.lang.String");
+        ColumnDataType codeColumn = new ColumnDataType("code", code, "java.lang.String");
+        ColumnDataType textColumn = new ColumnDataType("enName", englishName, "java.lang.String");
 
         ObjectRepresentation objectRepresentation = new ObjectRepresentation();
         objectRepresentation.setFields(Lists.newArrayList(codeColumn, textColumn));
@@ -761,6 +762,22 @@ public class MapperProducerTest {
         RefCodeListItemDto refCodeListItemDto = mapper.map(referenceTerritory, RefCodeListItemDto.class);
         assertEquals("BEL", refCodeListItemDto.getCode());
         assertEquals("Belgium", refCodeListItemDto.getText());
+    }
+
+    @Test
+    public void testMapConversionFactor() {
+        ConversionFactor conversionFactor = new ConversionFactor("COD", "WHL", "FRE", new BigDecimal("1.17"));
+
+        ObjectRepresentation objectRepresentation = new ObjectRepresentation();
+        objectRepresentation.setFields(Arrays.asList(
+                new ColumnDataType("state", "FRE", ""),
+                new ColumnDataType("presentation", "WHL", ""),
+                new ColumnDataType("factor", "1.17", ""),
+                new ColumnDataType("code", "COD", "")));
+
+        ConversionFactor mappedConversionFactor = mapper.map(objectRepresentation, ConversionFactor.class);
+
+        assertEquals(conversionFactor, mappedConversionFactor);
     }
 
 }
