@@ -52,6 +52,7 @@ public class MapperProducer {
         configureObjectRepresentationToReferenceCode(factory);
         configureObjectRepresentationToReferenceCoordinates(factory);
         configureObjectRepresentationToReferenceTerritory(factory);
+        configureObjectRepresentationToConversionFactor(factory);
 
         return factory.getMapperFacade();
     }
@@ -277,5 +278,9 @@ public class MapperProducer {
 
     private void configureObjectRepresentationToReferenceTerritory(MapperFactory factory) {
         factory.registerMapper(new ObjectRepresentationToReferenceTerritoryCustomMapper());
+    }
+
+    private void configureObjectRepresentationToConversionFactor(MapperFactory factory) {
+        factory.registerMapper(new ObjectRepresentationToConversionFactorCustomMapper());
     }
 }

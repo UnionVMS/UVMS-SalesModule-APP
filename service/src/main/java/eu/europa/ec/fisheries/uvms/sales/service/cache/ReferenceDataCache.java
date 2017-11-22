@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingExcepti
 import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ProductDto;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ConversionFactor;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCode;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
@@ -23,6 +24,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -136,6 +138,18 @@ public class ReferenceDataCache {
     }
 
     public BigDecimal getConversionFactorForProduct(ProductDto product) {
-        return BigDecimal.valueOf(999); //TODO WHEN CODE LIST "CONVERSION_FACTOR" IS AVAILABLE IN MDR CACHE
+        List<ConversionFactor> factors = map(todays(MDRCodeListKey.CONVERSION_FACTOR), ConversionFactor.class);
+
+        for (ConversionFactor factor : factors) {
+            boolean speciesIsEqual = product.getSpecies().trim().equals(factor.getCode().trim());
+            boolean presentationIsEqual = product.getPresentation().trim().equals(factor.getPresentation().trim());
+            boolean preservationIsEqual = product.getPreservation().trim().equals(factor.getPreservation().trim());
+
+            if (speciesIsEqual && presentationIsEqual && preservationIsEqual) {
+                return factor.getFactor();
+            }
+        }
+
+        return BigDecimal.valueOf(999);
     }
 }

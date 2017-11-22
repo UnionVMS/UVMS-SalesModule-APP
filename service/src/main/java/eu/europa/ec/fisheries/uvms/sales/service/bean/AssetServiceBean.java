@@ -1,5 +1,8 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
+import com.google.common.base.Optional;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
+import eu.europa.ec.fisheries.uvms.sales.service.AssetCache;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.AssetServiceBeanHelper;
 import eu.europa.ec.fisheries.wsdl.asset.module.GetAssetModuleResponse;
@@ -20,10 +23,28 @@ public class AssetServiceBean implements AssetService {
     @EJB
     private AssetServiceBeanHelper helper;
 
+    @EJB
+    private AssetCache cache;
+
     @Override
     public Asset findByCFR(String cfr) {
-        String request = helper.createRequestToFindAssetByCFR(cfr);
-        GetAssetModuleResponse response = helper.callAssetModule(request, GetAssetModuleResponse.class);
+        GetAssetModuleResponse response;
+
+        try {
+            Optional<Asset> assetOptional = cache.retrieveAssetFromCache(cfr);
+            if (assetOptional.isPresent()) {
+                return assetOptional.get();
+            }
+
+            String request = helper.createRequestToFindAssetByCFR(cfr);
+            response = helper.callAssetModule(request, GetAssetModuleResponse.class);
+        } catch (SalesNonBlockingException e) {
+            cache.cacheMessage(cfr, null);
+            throw new SalesNonBlockingException("Exception during JMS call or the response " +
+                    "from Asset contained a 'not found' message");
+        }
+
+        cache.cacheMessage(cfr, response.getAsset());
         return response.getAsset();
     }
 
