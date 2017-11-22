@@ -172,9 +172,9 @@ public class MapperProducerTest {
         assertEquals(Arrays.asList(new FLUXLocationType(), new FLUXLocationType(), new FLUXLocationType()), aapProductType.getOriginFLUXLocations());
         AAPProcessType relevantProcessType = aapProductType.getAppliedAAPProcesses().get(0);
 
-        assertEquals("HOT OF THE PRESS", relevantProcessType.getTypeCodes().get(0).getValue());
+        assertEquals("SALTED", relevantProcessType.getTypeCodes().get(0).getValue());
         assertEquals("GUTTED", relevantProcessType.getTypeCodes().get(1).getValue());
-        assertEquals("SALTED", relevantProcessType.getTypeCodes().get(2).getValue());
+        assertEquals("HOT OF THE PRESS", relevantProcessType.getTypeCodes().get(2).getValue());
     }
 
     @Test

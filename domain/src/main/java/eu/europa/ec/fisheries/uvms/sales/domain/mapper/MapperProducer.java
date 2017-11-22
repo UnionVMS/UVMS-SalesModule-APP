@@ -147,9 +147,11 @@ public class MapperProducer {
                 .fieldMap("appliedAAPProcesses[0].typeCodes", "presentation").converter("presentation").direction(MappingDirection.A_TO_B).add()
                 .fieldMap("appliedAAPProcesses[0].typeCodes", "preservation").converter("preservation").direction(MappingDirection.A_TO_B).add()
                 .fieldMap("appliedAAPProcesses[0].typeCodes", "freshness").converter("freshness").direction(MappingDirection.A_TO_B).add()
-                .fieldMap("appliedAAPProcesses[0].typeCodes[0]", "freshness").converter("freshnessBToA").direction(MappingDirection.B_TO_A).add()
+                .fieldMap("appliedAAPProcesses[0].typeCodes[0]", "preservation").converter("preservationBToA").direction(MappingDirection.B_TO_A).add()
                 .fieldMap("appliedAAPProcesses[0].typeCodes[1]", "presentation").converter("presentationBToA").direction(MappingDirection.B_TO_A).add()
-                .fieldMap("appliedAAPProcesses[0].typeCodes[2]", "preservation").converter("preservationBToA").direction(MappingDirection.B_TO_A).add()
+                //Freshness is optional (for a TOD), so we can't put that as the first element in the list of typeCodes because Orika creates a new list when adding an element with index 0
+                //If preservation/presentation ever become optional, a completely new converter should be created that can deal with those optionals.
+                .fieldMap("appliedAAPProcesses[0].typeCodes[2]", "freshness").converter("freshnessBToA").direction(MappingDirection.B_TO_A).add()
                 .field("appliedAAPProcesses[0].conversionFactorNumeric.value", "factor")
                 .field("totalSalesPrice.chargeAmounts[0].value", "price")
                 .register();
