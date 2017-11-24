@@ -1,11 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import java.util.Collection;
-
 import eu.europa.ec.fisheries.schema.sales.FLUXGPResponse;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
@@ -14,6 +8,12 @@ import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.UnsavedMessageService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import java.util.Collection;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 @Stateless
 @Slf4j
