@@ -1,16 +1,7 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import javax.jms.TextMessage;
-import java.util.List;
-
 import com.google.common.collect.Lists;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
+import eu.europa.ec.fisheries.uvms.mdr.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.MdrModuleMapper;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
@@ -26,7 +17,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import un.unece.uncefact.data.standard.mdr.communication.MdrGetCodeListResponse;
 import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 
-@PrepareForTest({JAXBUtils.class, MdrModuleMapper.class})
+import javax.jms.TextMessage;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.*;
+
+@PrepareForTest({JAXBMarshaller.class, MdrModuleMapper.class})
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore( {"javax.management.*"})
 public class MDRServiceBeanTest {
@@ -49,20 +47,20 @@ public class MDRServiceBeanTest {
         MDRCodeListKey mdrCodeListKey = MDRCodeListKey.FLAG_STATES;
         String mdrRequest = "test";
         String correlationId = "bla";
-        String textMessageText = "<?xml version='1.0' encoding='utf-8'?> ezlmezemlklkmfezkfkzekezzkek";
+        String textMessageText = "testyedetest";
         MdrGetCodeListResponse mdrGetCodeListResponse = new MdrGetCodeListResponse();
         List<ObjectRepresentation> expectedDatasets = Lists.newArrayList(new ObjectRepresentation(), new ObjectRepresentation());
         mdrGetCodeListResponse.setDataSets(expectedDatasets);
 
         //mock
-        mockStatic(JAXBUtils.class);
+        mockStatic(JAXBMarshaller.class);
         mockStatic(MdrModuleMapper.class);
 
         when(MdrModuleMapper.createFluxMdrGetCodeListRequest("TERRITORY")).thenReturn(mdrRequest);
         when(producer.sendModuleMessage(mdrRequest, Union.MDR)).thenReturn(correlationId);
         when(consumer.getMessage(correlationId, TextMessage.class)).thenReturn(textMessage);
         when(textMessage.getText()).thenReturn(textMessageText);
-        when(JAXBUtils.unMarshallMessage(textMessageText, MdrGetCodeListResponse.class)).thenReturn(mdrGetCodeListResponse);
+        when(JAXBMarshaller.unmarshallTextMessage(textMessageText, MdrGetCodeListResponse.class)).thenReturn(mdrGetCodeListResponse);
 
         //execute
         List<ObjectRepresentation> result = mdrServiceBean.findCodeList(mdrCodeListKey);
@@ -74,7 +72,7 @@ public class MDRServiceBeanTest {
 
         verifyStatic();
         MdrModuleMapper.createFluxMdrGetCodeListRequest("TERRITORY");
-        JAXBUtils.unMarshallMessage(textMessageText, MdrGetCodeListResponse.class);
+        JAXBMarshaller.unmarshallTextMessage(textMessageText, MdrGetCodeListResponse.class);
 
         assertEquals(expectedDatasets, result);
     }

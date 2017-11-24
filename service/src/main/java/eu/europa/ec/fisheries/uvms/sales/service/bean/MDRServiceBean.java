@@ -10,18 +10,9 @@
 
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBException;
-import java.util.List;
-
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.mdr.model.exception.MdrModelMarshallException;
+import eu.europa.ec.fisheries.uvms.mdr.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.MdrModuleMapper;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
@@ -31,6 +22,14 @@ import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import un.unece.uncefact.data.standard.mdr.communication.MdrGetCodeListResponse;
 import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
+
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+import java.util.List;
 
 @Singleton
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -49,9 +48,9 @@ public class MDRServiceBean implements MDRService {
 
             TextMessage message = consumer.getMessage(correlationId, TextMessage.class);
 
-            MdrGetCodeListResponse response = JAXBUtils.unMarshallMessage(message.getText(), MdrGetCodeListResponse.class);
+            MdrGetCodeListResponse response = JAXBMarshaller.unmarshallTextMessage(message.getText(), MdrGetCodeListResponse.class);
             return response.getDataSets();
-        } catch (MdrModelMarshallException | JAXBException | MessageException | JMSException e) {
+        } catch (MdrModelMarshallException | MessageException | JMSException e) {
             throw new SalesNonBlockingException("Exception thrown when retrieving codelist '" + acronym.getInternalName() + "' from MDR" , e);
         }
     }
