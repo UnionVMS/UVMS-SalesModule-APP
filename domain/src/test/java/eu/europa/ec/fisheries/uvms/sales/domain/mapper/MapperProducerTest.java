@@ -703,5 +703,120 @@ public class MapperProducerTest {
 
 
 
+    @Test
+    public void testMapFluxReportToReportSummaryWhenAuctionSalesIsProvided() {
+        DateTime deletion = new DateTime();
+        DateTime creation = new DateTime(2017, 4, 2, 15, 0);
+        DateTime occurrence = new DateTime(2017, 3, 2, 15, 0);
+        DateTime landingDate = new DateTime(2017, 3, 3, 14, 0);
+
+        FluxReport fluxReport = new FluxReport()
+                .creation(creation)
+                .deletion(deletion)
+                .extId("fluxReportDocumentExtId")
+                .purpose(Purpose.ORIGINAL)
+                .auctionSale(new AuctionSale()
+                    .category(SalesCategory.NEGOTIATED_SALE))
+                .previousFluxReport(new FluxReport()
+                    .extId("Heya"))
+                .document(new Document()
+                    .occurrence(occurrence)
+                    .fishingActivity(new FishingActivity()
+                        .startDate(landingDate)
+                        .vessel(new Vessel()
+                            .extId("vesselExtId")
+                            .name("vesselName")
+                            .countryCode("FRA"))
+                        .location(new FluxLocation()
+                            .extId("NED")))
+                    .fluxLocation(new FluxLocation()
+                            .extId("BEL"))
+                    .partyDocuments(Arrays.asList(
+                            new PartyDocument()
+                                .role(PartyRole.BUYER)
+                                .party(new Party()
+                                    .name("Mathiblaa")),
+                            new PartyDocument()
+                                .role(PartyRole.PROVIDER)
+                                .party(new Party()
+                                    .name("Superstijn"))
+                                )
+                    )
+                );
+
+        ReportSummary reportSummary = mapper.map(fluxReport, ReportSummary.class);
+
+        assertEquals(SalesCategoryType.NEGOTIATED_SALE, reportSummary.getCategory());
+        assertEquals("fluxReportDocumentExtId", reportSummary.getExtId());
+        assertEquals(new DateTime(2017, 3, 2, 15, 0), reportSummary.getOccurrence());
+        assertEquals("vesselName", reportSummary.getVesselName());
+        assertEquals("vesselExtId", reportSummary.getVesselExtId());
+        assertEquals("FRA", reportSummary.getFlagState());
+        assertEquals(new DateTime(2017, 3, 3, 14, 0), reportSummary.getLandingDate());
+        assertEquals("NED", reportSummary.getLandingPort());
+        assertEquals("BEL", reportSummary.getLocation());
+        assertEquals("Mathiblaa", reportSummary.getBuyer());
+        assertEquals("Superstijn", reportSummary.getProvider());
+        assertEquals("Heya", reportSummary.getReferencedId());
+        assertEquals(deletion, reportSummary.getDeletion());
+        assertEquals(creation, reportSummary.getCreation());
+        assertEquals(Purpose.ORIGINAL.toString(), reportSummary.getPurpose());
+    }
+
+    @Test
+    public void testMapFluxReportToReportSummaryWhenAuctionSalesIsNotProvided() {
+        DateTime deletion = new DateTime();
+        DateTime occurrence = new DateTime(2017, 3, 2, 15, 0);
+        DateTime landingDate = new DateTime(2017, 3, 3, 14, 0);
+
+        FluxReport fluxReport = new FluxReport()
+                .deletion(deletion)
+                .extId("fluxReportDocumentExtId")
+                .purpose(Purpose.ORIGINAL)
+                .previousFluxReport(new FluxReport()
+                        .extId("Heya"))
+                .document(new Document()
+                        .occurrence(occurrence)
+                        .fishingActivity(new FishingActivity()
+                                .startDate(landingDate)
+                                .vessel(new Vessel()
+                                        .extId("vesselExtId")
+                                        .name("vesselName")
+                                        .countryCode("FRA"))
+                                .location(new FluxLocation()
+                                        .extId("NED")))
+                        .fluxLocation(new FluxLocation()
+                                .extId("BEL"))
+                        .partyDocuments(Arrays.asList(
+                                new PartyDocument()
+                                        .role(PartyRole.BUYER)
+                                        .party(new Party()
+                                                .name("Mathiblaa")),
+                                new PartyDocument()
+                                        .role(PartyRole.PROVIDER)
+                                        .party(new Party()
+                                                .name("Superstijn"))
+                                )
+                        )
+                );
+
+        ReportSummary reportSummary = mapper.map(fluxReport, ReportSummary.class);
+
+        assertEquals(SalesCategoryType.FIRST_SALE, reportSummary.getCategory());
+        assertEquals("fluxReportDocumentExtId", reportSummary.getExtId());
+        assertEquals(new DateTime(2017, 3, 2, 15, 0), reportSummary.getOccurrence());
+        assertEquals("vesselName", reportSummary.getVesselName());
+        assertEquals("vesselExtId", reportSummary.getVesselExtId());
+        assertEquals("FRA", reportSummary.getFlagState());
+        assertEquals(new DateTime(2017, 3, 3, 14, 0), reportSummary.getLandingDate());
+        assertEquals("NED", reportSummary.getLandingPort());
+        assertEquals("BEL", reportSummary.getLocation());
+        assertEquals("Mathiblaa", reportSummary.getBuyer());
+        assertEquals("Superstijn", reportSummary.getProvider());
+        assertEquals("Heya", reportSummary.getReferencedId());
+        assertEquals(deletion, reportSummary.getDeletion());
+        assertEquals(Purpose.ORIGINAL.toString(), reportSummary.getPurpose());
+    }
+
 
 }

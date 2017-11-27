@@ -95,28 +95,88 @@ public class ReportServiceBeanTest {
     }
 
     @Test
-    public void testExportSelectedDocuments() {
+    public void testExportSelectedDocumentsWhenLessThan10Documents() {
         //set up
         reportServiceBean.setReportServiceExportHelper(new ReportServiceExportHelper());
 
         //data set
         PageCriteriaDto<ReportQueryFilterDto> criteria = new PageCriteriaDto<>();
-        criteria.filters(new ReportQueryFilterDto().excludeFluxReportIds(Arrays.asList("abc")))
+        criteria.filters(new ReportQueryFilterDto()
+                    .excludeFluxReportIds(Arrays.asList("abc")))
                 .pageIndex(0)
                 .pageSize(Integer.MAX_VALUE);
 
-        ExportListsDto exportListsDto = new ExportListsDto().criteria(criteria);
+        ExportListsDto exportListsDto = new ExportListsDto()
+                .criteria(criteria)
+                .ids(Arrays.asList("1"));
 
         //data set for search
         ReportQuery query = new ReportQuery();
 
-        Report report = new Report();
-        List<Report> reports = Lists.newArrayList(report);
+        ReportSummary reportSummary = new ReportSummary();
+        List<ReportSummary> reports = Lists.newArrayList(reportSummary);
 
         List<ReportListDto> reportDtos = Arrays.asList(new ReportListDto());
 
         //mock for search
-        mockForSearch(criteria, query, reports, reportDtos);
+        when(mapper.map(criteria, ReportQuery.class)).thenReturn(query);
+        when(reportDomainModel.search(query, false)).thenReturn(reports);
+        when(reportDomainModel.count(query)).thenReturn(15L);
+        when(mapper.mapAsList(reports, ReportListDto.class)).thenReturn(reportDtos);
+
+        //mock for export
+        when(mapper.mapAsList(reportDtos, ReportListExportDto.class)).thenReturn(getReportListExportDtos());
+
+        //execute
+        List<List<String>> csv = reportServiceBean.exportSelectedDocuments(exportListsDto);
+
+        //assert
+        String landingDate = new DateTime(2017, 3, 2, 0, 0).toString();
+        String occurrence = new DateTime(2017, 3, 1, 0, 0).toString();
+        String deletion = new DateTime(2017, 3, 3, 0, 0).toString();
+
+        final List<List<String>> expected = new ArrayList<>();
+        expected.add(Arrays.asList("BEL", "marked for life", "ircs", "vesselName",
+                occurrence, "location", landingDate, "Garagepoort",
+                "FIRST_SALE", "Stijn", "Pope", ""));
+        expected.add(Arrays.asList("BEL", "marked for life", "ircs", "vesselName",
+                occurrence, "location", landingDate, "Garagepoort",
+                "FIRST_SALE", "Putin", "Trump", deletion));
+        assertEquals(expected, csv);
+    }
+
+
+    @Test
+    public void testExportSelectedDocumentsWhenMoreThan10Documents() {
+        //set up
+        reportServiceBean.setReportServiceExportHelper(new ReportServiceExportHelper());
+
+        //data set
+        PageCriteriaDto<ReportQueryFilterDto> criteria = new PageCriteriaDto<>();
+        criteria.filters(new ReportQueryFilterDto()
+                    .excludeFluxReportIds(Arrays.asList("abc")))
+                .pageIndex(0)
+                .pageSize(Integer.MAX_VALUE);
+
+        ExportListsDto exportListsDto = new ExportListsDto()
+                .criteria(criteria)
+                .ids(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"));
+
+        //data set for search
+        ReportQuery query = new ReportQuery();
+
+        ReportSummary reportSummary = new ReportSummary();
+        List<ReportSummary> reports = Lists.newArrayList(reportSummary);
+
+        List<ReportListDto> reportDtos = Arrays.asList(new ReportListDto(), new ReportListDto(), new ReportListDto(),
+                new ReportListDto(), new ReportListDto(), new ReportListDto(), new ReportListDto(), new ReportListDto(),
+                new ReportListDto(), new ReportListDto(), new ReportListDto(), new ReportListDto());
+
+        //mock for search
+        when(mapper.map(criteria, ReportQuery.class)).thenReturn(query);
+        when(reportDomainModel.search(query, true)).thenReturn(reports);
+        when(reportDomainModel.count(query)).thenReturn(15L);
+        when(mapper.mapAsList(reports, ReportListDto.class)).thenReturn(reportDtos);
 
         //mock for export
         when(mapper.mapAsList(reportDtos, ReportListExportDto.class)).thenReturn(getReportListExportDtos());
@@ -153,13 +213,16 @@ public class ReportServiceBeanTest {
         //data set for search
         ReportQuery query = new ReportQuery();
 
-        Report report = new Report();
-        List<Report> reports = Lists.newArrayList(report);
+        ReportSummary reportSummary = new ReportSummary();
+        List<ReportSummary> reports = Lists.newArrayList(reportSummary);
 
         List<ReportListDto> reportDtos = Arrays.asList(new ReportListDto());
 
         //mock for search
-        mockForSearch(criteria, query, reports, reportDtos);
+        when(mapper.map(criteria, ReportQuery.class)).thenReturn(query);
+        when(reportDomainModel.search(query, true)).thenReturn(reports);
+        when(reportDomainModel.count(query)).thenReturn(15L);
+        when(mapper.mapAsList(reports, ReportListDto.class)).thenReturn(reportDtos);
 
         //mock for export
         when(mapper.mapAsList(reportDtos, ReportListExportDto.class)).thenReturn(getReportListExportDtos());
@@ -182,12 +245,6 @@ public class ReportServiceBeanTest {
         assertEquals(expected, csv);
     }
 
-    private void mockForSearch(PageCriteriaDto<ReportQueryFilterDto> criteria, ReportQuery query, List<Report> reports, List<ReportListDto> reportDtos) {
-        when(mapper.map(criteria, ReportQuery.class)).thenReturn(query);
-        when(reportDomainModel.search(query)).thenReturn(reports);
-        when(reportDomainModel.count(query)).thenReturn(15L);
-        when(mapper.mapAsList(reports, ReportListDto.class)).thenReturn(reportDtos);
-    }
 
     private List<ReportListExportDto> getReportListExportDtos() {
         ReportListExportDto reportListDto1 = new ReportListExportDto()
@@ -229,27 +286,27 @@ public class ReportServiceBeanTest {
                 .withItemsPerPage(10)
                 .withPage(1));
 
-        Report report = new Report();
-        List<Report> reports = Lists.newArrayList(report);
+        ReportSummary reportSummary = new ReportSummary();
+        List<ReportSummary> reports = Lists.newArrayList(reportSummary);
 
         ReportListDto reportListDto = new ReportListDto();
         List<ReportListDto> reportDtos = Lists.newArrayList(reportListDto);
 
         //mock
         when(mapper.map(criteria, ReportQuery.class)).thenReturn(query);
-        when(reportDomainModel.search(query)).thenReturn(reports);
+        when(reportDomainModel.search(query, false)).thenReturn(reports);
         when(reportDomainModel.count(query)).thenReturn(15L);
         when(mapper.mapAsList(reports, ReportListDto.class)).thenReturn(reportDtos);
 
         //execute
-        PagedListDto<ReportListDto> result = reportServiceBean.search(criteria);
+        PagedListDto<ReportListDto> result = reportServiceBean.search(criteria, false);
 
         //verify and assert
         verify(mapper).map(criteria, ReportQuery.class);
         verify(searchReportsHelper).includeDeletedReportsInQuery(query);
         verify(searchReportsHelper).prepareVesselFreeTextSearch(query);
         verify(searchReportsHelper).prepareSorting(query);
-        verify(reportDomainModel).search(query);
+        verify(reportDomainModel).search(query, false);
         verify(reportDomainModel).count(query);
         verify(mapper).mapAsList(reports, ReportListDto.class);
         verify(searchReportsHelper).enrichWithVesselInformation(reportDtos);
@@ -264,7 +321,7 @@ public class ReportServiceBeanTest {
     }
 
     @Test
-    public void testSearchWithFluxSalesReportMessage() {
+    public void searchWithFluxSalesReportMessage() {
         //data set
         FLUXSalesQueryMessage fluxSalesQueryMessage = new FLUXSalesQueryMessage()
                 .withSalesQuery(new SalesQueryType()
@@ -284,7 +341,7 @@ public class ReportServiceBeanTest {
 
         //mock
         doReturn(reportQuery).when(mapper).map(fluxSalesQueryMessage, ReportQuery.class);
-        doReturn(reports).when(reportDomainModel).search(reportQuery);
+        doReturn(reports).when(reportDomainModel).searchIncludingDetails(reportQuery);
         doReturn(fluxSalesResponseMessage).when(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResults, messageValidationResult);
         doNothing().when(rulesService).sendResponseToRules(fluxSalesResponseMessage, "BEL", "FLUX");
 
@@ -294,7 +351,7 @@ public class ReportServiceBeanTest {
         //verify and assert
         verify(mapper).map(fluxSalesQueryMessage, ReportQuery.class);
         verify(searchReportsHelper).excludeDeletedReportsInQuery(reportQuery);
-        verify(reportDomainModel).search(reportQuery);
+        verify(reportDomainModel).searchIncludingDetails(reportQuery);
         verify(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResults, messageValidationResult);
         verify(rulesService).sendResponseToRules(fluxSalesResponseMessage, "BEL", "FLUX");
         verifyNoMoreInteractions(mapper, reportDomainModel, fluxSalesResponseMessageFactory, rulesService);

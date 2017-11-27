@@ -18,6 +18,8 @@ import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
  * Class who's only purpose is to hide low-level logic from the search functionality of the ReportServiceBean.
  * Should not be used by any other class or functionality!
@@ -55,12 +57,15 @@ public class SearchReportsHelper {
     public void enrichWithVesselInformation(List<ReportListDto> reportDtos) {
         for (ReportListDto reportDto : reportDtos) {
             String vesselExtId = reportDto.getVesselExtId();
-            try {
-                Asset vessel = assetService.findByCFR(vesselExtId);
-                reportDto.setIrcs(vessel.getIrcs());
-                reportDto.setExternalMarking(vessel.getExternalMarking());
-            } catch (SalesServiceException e) {
-                LOG.error("Cannot retrieve vessel details of vessel " + vesselExtId, e);
+
+            if (isNotBlank(vesselExtId)) {
+                try {
+                    Asset vessel = assetService.findByCFR(vesselExtId);
+                    reportDto.setIrcs(vessel.getIrcs());
+                    reportDto.setExternalMarking(vessel.getExternalMarking());
+                } catch (SalesServiceException e) {
+                    LOG.error("Cannot retrieve vessel details of vessel " + vesselExtId, e);
+                }
             }
         }
     }
@@ -78,7 +83,7 @@ public class SearchReportsHelper {
     public void enrichWithOlderVersions(Collection<ReportListDto> reportListDtos) {
         for (ReportListDto reportListDto: reportListDtos) {
             String referencedId = reportListDto.getReferencedId();
-            List<Report> allReferencedReports = reportDomainModel.findOlderVersionsOrderedByCreationDateDescending(referencedId);
+            List<ReportSummary> allReferencedReports = reportDomainModel.findOlderVersionsOrderedByCreationDateDescending(referencedId);
             List<ReportListDto> mappedRelatedReports = mapper.mapAsList(allReferencedReports, ReportListDto.class);
             reportListDto.setOlderVersions(mappedRelatedReports);
         }

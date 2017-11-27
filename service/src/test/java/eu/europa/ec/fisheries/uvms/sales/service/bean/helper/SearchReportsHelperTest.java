@@ -155,6 +155,29 @@ public class SearchReportsHelperTest {
     }
 
     @Test
+    public void testEnrichWithVesselInformationWhenIrcsIsNullOrEmpty() throws Exception {
+        //data set
+        ReportListDto reportListDto1 = new ReportListDto()
+                .vesselExtId(null);
+        ReportListDto reportListDto2 = new ReportListDto()
+                .vesselExtId("");
+
+        //execute
+        helper.enrichWithVesselInformation(Lists.newArrayList(reportListDto1, reportListDto2));
+
+        //verify and assert
+        verifyNoMoreInteractions(assetService);
+
+        assertNull(reportListDto1.getIrcs());
+        assertNull(reportListDto1.getExternalMarking());
+        assertNull(reportListDto1.getVesselName());
+
+        assertNull(reportListDto2.getIrcs());
+        assertNull(reportListDto2.getExternalMarking());
+        assertNull(reportListDto2.getVesselName());
+    }
+
+    @Test
     public void testEnrichWithVesselInformationWhenSuccess() throws Exception {
         //data set
         ReportListDto reportListDto1 = new ReportListDto()

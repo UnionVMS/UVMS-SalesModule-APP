@@ -5,16 +5,17 @@ import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
+import eu.europa.ec.fisheries.schema.sales.ReportSummary;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.UnsavedMessageDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.comparator.CompareReportOnCreationDateDescending;
+import eu.europa.ec.fisheries.uvms.sales.domain.comparator.CompareReportSummaryOnCreationDescending;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mapper.FLUX;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,8 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Stateless
 public class ReportDomainModelBean implements ReportDomainModel {
@@ -75,7 +78,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
             fluxReport = mapper.map(report, FluxReport.class);
 
             if (reportHelper.isReportCorrected(report)) {
-                enrichWithPreviousReport(fluxReport, report);
+                linkWithPreviousReportAndUpdatePreviousReport(fluxReport, report);
             }
 
             if (reportHelper.hasReferencesToTakeOverDocuments(report)) {
@@ -127,11 +130,14 @@ public class ReportDomainModelBean implements ReportDomainModel {
         fluxReportEntity.setRelatedTakeOverDocuments(takeOverDocuments);
     }
 
-    private void enrichWithPreviousReport(FluxReport fluxReportEntity, Report report) {
+    private void linkWithPreviousReportAndUpdatePreviousReport(FluxReport fluxReportEntity, Report report) {
         String referencedId = reportHelper.getFLUXReportDocumentReferencedId(report);
+        DateTime correctionDate = reportHelper.getCreationDate(report);
+
         Optional<FluxReport> previousReport = fluxReportDao.findByExtId(referencedId);
         if (previousReport.isPresent()) {
             fluxReportEntity.setPreviousFluxReport(previousReport.get());
+            previousReport.get().setCorrection(correctionDate);
         }
     }
 
@@ -146,7 +152,15 @@ public class ReportDomainModelBean implements ReportDomainModel {
     }
 
     @Override
-    public List<Report> search(ReportQuery fluxReportQuery) {
+    public List<ReportSummary> search(ReportQuery fluxReportQuery, boolean eagerLoadRelations) {
+        checkNotNull(fluxReportQuery);
+        LOG.debug("Searching reports on query {}", fluxReportQuery.toString());
+        List<FluxReport> fluxReports = fluxReportDao.search(fluxReportQuery, eagerLoadRelations);
+        return mapper.mapAsList(fluxReports, ReportSummary.class);
+    }
+
+    @Override
+    public List<Report> searchIncludingDetails(ReportQuery fluxReportQuery) {
         checkNotNull(fluxReportQuery);
         LOG.debug("Searching reports on query {}", fluxReportQuery.toString());
         List<FluxReport> fluxReports = fluxReportDao.search(fluxReportQuery);
@@ -173,27 +187,43 @@ public class ReportDomainModelBean implements ReportDomainModel {
     }
 
     @Override
-    public List<Report> findOlderVersionsOrderedByCreationDateDescending(@Nullable String firstReferencedId) {
-        List<Report> referencedReports = new ArrayList<>();
+    public List<ReportSummary> findOlderVersionsOrderedByCreationDateDescending(@Nullable String firstReferencedId) {
+        List<ReportSummary> referencedReports = new ArrayList<>();
 
-        if (StringUtils.isNotBlank(firstReferencedId)) {
-            Report referencedReport = findByExtId(firstReferencedId).get();
-            referencedReports.add(referencedReport);
-
-            String nextReferencedId = reportHelper.getFLUXReportDocumentReferencedIdOrNull(referencedReport);
-            referencedReports.addAll(findOlderVersionsOrderedByCreationDateDescending(nextReferencedId));
+        if (isNotBlank(firstReferencedId)) {
+            FluxReport referencedReport = fluxReportDao.findByExtId(firstReferencedId).get();
+            referencedReports.addAll(findOlderVersions(referencedReport, ReportSummary.class));
+            Collections.sort(referencedReports, new CompareReportSummaryOnCreationDescending());
         }
-
-        Collections.sort(referencedReports, new CompareReportOnCreationDateDescending(reportHelper));
 
         return referencedReports;
     }
 
     @Override
-    public List<Report> findOlderVersionsOrderedByCreationDateDescending(@Nullable Report report) {
+    public List<Report> findOlderVersionsOrderedByCreationDateDescendingIncludingDetails(@Nullable Report report) {
         String firstReferencedId = reportHelper.getFLUXReportDocumentReferencedIdOrNull(report);
-        return findOlderVersionsOrderedByCreationDateDescending(firstReferencedId);
+
+        if (isBlank(firstReferencedId)) {
+            return new ArrayList<Report>();
+        }
+
+        FluxReport firstReferencedReport = fluxReportDao.findByExtId(firstReferencedId).get();
+        List<Report> olderVersions = findOlderVersions(firstReferencedReport, Report.class);
+
+        Collections.sort(olderVersions, new CompareReportOnCreationDateDescending(reportHelper));
+
+        return olderVersions;
     }
+
+    private <T> List<T> findOlderVersions(FluxReport fluxReport, Class<T> expectedResult) {
+        List<T> referencedReports = new ArrayList<>();
+            referencedReports.add(mapper.map(fluxReport, expectedResult));
+            if (fluxReport.getPreviousFluxReport() != null) {
+                referencedReports.addAll(findOlderVersions(fluxReport.getPreviousFluxReport(), expectedResult));
+            }
+        return referencedReports;
+    }
+
 
     @Override
     public boolean isLatestVersion(Report report) {

@@ -19,11 +19,20 @@ public interface FluxReportDao extends DaoForSales<FluxReport, Integer> {
     Optional<FluxReport> findByExtId(@NotNull String extId);
 
     /**
-     * Filter FluxReports by {@link ReportQuery}. If no objects have been found, an empty list is returned
+     * Filter FluxReports by {@link ReportQuery}. If no objects have been found, an empty list is returned.
+     * Relations defined as lazy-loading will not be eagerly loaded.
      * @param fluxReportQuery The query parameters
      * @return a list of FluxReports matching the given query
      */
     List<FluxReport> search(@NotNull ReportQuery fluxReportQuery);
+
+    /**
+     * Filter FluxReports by {@link ReportQuery}. If no objects have been found, an empty list is returned
+     * @param fluxReportQuery The query parameters
+     * @param eagerLoadRelations When you expect a lot of reports to come back, it is probably not interesting to lazy load all relations. By activating this mode, the query will eager fetch several relations, avoiding the need to do more queries.
+     * @return a list of FluxReports matching the given query
+     */
+    List<FluxReport> search(@NotNull ReportQuery fluxReportQuery, boolean eagerLoadRelations);
 
     /**
      * Count result of FluxReports by {@link ReportQuery}

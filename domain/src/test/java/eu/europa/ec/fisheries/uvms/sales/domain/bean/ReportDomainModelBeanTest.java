@@ -232,45 +232,51 @@ public class ReportDomainModelBeanTest {
     @Test
     public void testCreateWhenReportIsACorrection() throws Exception {
         //data set
+        DateTime creationDateCorrection = DateTime.now();
+
         FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType()
                 .withReferencedID(new IDType().withValue("hello"))
-                .withPurposeCode(new CodeType().withValue(Purpose.CORRECTION.getNumericCode() + ""));
+                .withPurposeCode(new CodeType().withValue(Purpose.CORRECTION.getNumericCode() + ""))
+                .withCreationDateTime(new DateTimeType().withDateTime(creationDateCorrection));
 
         FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
                 .withFLUXReportDocument(fluxReportDocumentType);
 
-        Report report = new Report()
+        Report correctionReport = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
 
         FluxReport newFluxReportEntity = new FluxReport().extId("world").purpose(Purpose.CORRECTION);
         FluxReport oldFluxReportEntity = new FluxReport().extId("hello");
 
         //mock
-        when(reportHelper.isReportDeleted(report)).thenReturn(false);
-        when(mapper.map(report, FluxReport.class)).thenReturn(newFluxReportEntity);
-        when(reportHelper.isReportCorrected(report)).thenReturn(true);
-        when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
-        when(reportHelper.getFLUXReportDocumentReferencedId(report)).thenReturn("hello");
-        when(fluxReportDao.findByExtId("hello")).thenReturn(Optional.of(oldFluxReportEntity));
+        doReturn(false).when(reportHelper).isReportDeleted(correctionReport);
+        doReturn(newFluxReportEntity).when(mapper).map(correctionReport, FluxReport.class);
+        doReturn(true).when(reportHelper).isReportCorrected(correctionReport);
+        doReturn(false).when(reportHelper).hasReferencesToTakeOverDocuments(correctionReport);
+        doReturn("hello").when(reportHelper).getFLUXReportDocumentReferencedId(correctionReport);
+        doReturn(creationDateCorrection).when(reportHelper).getCreationDate(correctionReport);
+        doReturn(Optional.of(oldFluxReportEntity)).when(fluxReportDao).findByExtId("hello");
 
         when(fluxReportDao.create(newFluxReportEntity)).thenReturn(newFluxReportEntity);
-        when(mapper.map(newFluxReportEntity, Report.class)).thenReturn(report);
+        when(mapper.map(newFluxReportEntity, Report.class)).thenReturn(correctionReport);
 
         //execute
-        Report persistedReport = reportDomainModelBean.create(report);
+        Report persistedReport = reportDomainModelBean.create(correctionReport);
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(report);
-        verify(mapper).map(report, FluxReport.class);
-        verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).getFLUXReportDocumentReferencedId(report);
+        verify(reportHelper).isReportDeleted(correctionReport);
+        verify(mapper).map(correctionReport, FluxReport.class);
+        verify(reportHelper).isReportCorrected(correctionReport);
+        verify(reportHelper).getFLUXReportDocumentReferencedId(correctionReport);
+        verify(reportHelper).getCreationDate(correctionReport);
         verify(fluxReportDao).findByExtId("hello");
-        verify(reportHelper).hasReferencesToTakeOverDocuments(report);
+        verify(reportHelper).hasReferencesToTakeOverDocuments(correctionReport);
         verify(mapper).map(newFluxReportEntity, Report.class);
         verify(fluxReportDao).create(newFluxReportEntity);
         verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
 
         assertEquals("hello", persistedReport.getFLUXSalesReportMessage().getFLUXReportDocument().getReferencedID().getValue());
+        assertEquals(creationDateCorrection, oldFluxReportEntity.getCorrection());
     }
 
     @Test
@@ -305,11 +311,34 @@ public class ReportDomainModelBeanTest {
 
     @Test(expected = NullPointerException.class)
     public void testSearchWhenArgumentIsNull() {
-        reportDomainModelBean.search(null);
+        reportDomainModelBean.search(null, false);
     }
 
     @Test
     public void testSearchWhenSuccess() {
+        ReportQuery reportQuery = new ReportQuery();
+        List<FluxReport> fluxReports = new ArrayList<>();
+        List<ReportSummary> expected = new ArrayList<>();
+
+        when(fluxReportDao.search(reportQuery, false)).thenReturn(fluxReports);
+        when(mapper.mapAsList(fluxReports, ReportSummary.class)).thenReturn(expected);
+
+        List<ReportSummary> actual = reportDomainModelBean.search(reportQuery, false);
+
+        verify(fluxReportDao).search(reportQuery, false);
+        verify(mapper).mapAsList(fluxReports, ReportSummary.class);
+        verifyNoMoreInteractions(fluxReportDao, mapper);
+
+        assertSame(expected, actual);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void searchIncludingDetailsWhenArgumentIsNull() {
+        reportDomainModelBean.searchIncludingDetails(null);
+    }
+
+    @Test
+    public void searchIncludingDetailsWhenSuccess() {
         ReportQuery reportQuery = new ReportQuery();
         List<FluxReport> fluxReports = new ArrayList<>();
         List<Report> expected = new ArrayList<>();
@@ -317,7 +346,7 @@ public class ReportDomainModelBeanTest {
         when(fluxReportDao.search(reportQuery)).thenReturn(fluxReports);
         when(mapper.mapAsList(fluxReports, Report.class)).thenReturn(expected);
 
-        List<Report> actual = reportDomainModelBean.search(reportQuery);
+        List<Report> actual = reportDomainModelBean.searchIncludingDetails(reportQuery);
 
         verify(fluxReportDao).search(reportQuery);
         verify(mapper).mapAsList(fluxReports, Report.class);
@@ -392,37 +421,84 @@ public class ReportDomainModelBeanTest {
         String id1 = "1";
         String id2 = "2";
 
-        FluxReport fluxReport1 = new FluxReport().id(1);
-        FluxReport fluxReport2 = new FluxReport().id(2);
+        DateTime creationReport1 = new DateTime(2017, 6, 8, 13, 45);
+        DateTime creationReport2 = new DateTime(2017, 6, 9, 13, 45);
 
-        Report report1 = ReportMother.with(id1, id2);
-        Report report2 = ReportMother.with(id2, null);
+        FluxReport fluxReport2 = new FluxReport()
+                .id(2)
+                .previousFluxReport(null)
+                .creation(creationReport2);
+        FluxReport fluxReport1 = new FluxReport()
+                .id(1)
+                .previousFluxReport(fluxReport2)
+                .creation(creationReport1);
+
+        ReportSummary report1 = new ReportSummary()
+                .withExtId(id1)
+                .withReferencedId(id2)
+                .withCreation(creationReport1);
+        ReportSummary report2 = new ReportSummary()
+                .withExtId(id2)
+                .withReferencedId(null)
+                .withCreation(creationReport2);
 
         //mock
         doReturn(Optional.of(fluxReport1)).when(fluxReportDao).findByExtId(id1);
-        doReturn(report1).when(mapper).map(fluxReport1, Report.class);
-        doReturn(id2).when(reportHelper).getFLUXReportDocumentReferencedIdOrNull(report1);
-
-        doReturn(Optional.of(fluxReport2)).when(fluxReportDao).findByExtId(id2);
-        doReturn(report2).when(mapper).map(fluxReport2, Report.class);
-        doReturn(null).when(reportHelper).getFLUXReportDocumentReferencedIdOrNull(report2);
-
-        doReturn(new DateTime(2017, 6, 8, 13, 45)).when(reportHelper).getCreationDate(report1);
-        doReturn(new DateTime(2017, 6, 9, 13, 45)).when(reportHelper).getCreationDate(report2);
+        doReturn(report1).when(mapper).map(fluxReport1, ReportSummary.class);
+        doReturn(report2).when(mapper).map(fluxReport2, ReportSummary.class);
 
         //execute
-        List<Report> allReferencedReports = reportDomainModelBean.findOlderVersionsOrderedByCreationDateDescending(id1);
+        List<ReportSummary> allReferencedReports = reportDomainModelBean.findOlderVersionsOrderedByCreationDateDescending(id1);
 
         //verify and assert
         verify(fluxReportDao).findByExtId(id1);
-        verify(mapper).map(fluxReport1, Report.class);
+        verify(mapper).map(fluxReport1, ReportSummary.class);
+        verify(mapper).map(fluxReport2, ReportSummary.class);
+
+        verifyNoMoreInteractions(fluxReportDao, reportHelper, mapper);
+
+        assertEquals(2, allReferencedReports.size());
+        assertSame(report2, allReferencedReports.get(0));
+        assertSame(report1, allReferencedReports.get(1));
+    }
+
+    @Test
+    public void findOlderVersionsOrderedByCreationDateDescendingIncludingDetailsWhenArgumentIsNull() {
+        //data set
+        String id1 = "1";
+        String id2 = "2";
+
+        DateTime creationReport1 = new DateTime(2017, 6, 8, 13, 45);
+        DateTime creationReport2 = new DateTime(2017, 6, 9, 13, 45);
+
+        FluxReport fluxReport2 = new FluxReport()
+                .id(2)
+                .previousFluxReport(null)
+                .creation(creationReport2);
+        FluxReport fluxReport1 = new FluxReport()
+                .id(1)
+                .previousFluxReport(fluxReport2)
+                .creation(creationReport1);
+
+        Report report1 = ReportMother.with(id1, id2);
+        Report report2 = ReportMother.withId(id2);
+
+        //mock
+        doReturn(id1).when(reportHelper).getFLUXReportDocumentReferencedIdOrNull(report1);
+        doReturn(Optional.of(fluxReport1)).when(fluxReportDao).findByExtId(id1);
+        doReturn(report1).when(mapper).map(fluxReport1, Report.class);
+        doReturn(report2).when(mapper).map(fluxReport2, Report.class);
+        doReturn(creationReport1).when(reportHelper).getCreationDate(report1);
+        doReturn(creationReport2).when(reportHelper).getCreationDate(report2);
+
+        //execute
+        List<Report> allReferencedReports = reportDomainModelBean.findOlderVersionsOrderedByCreationDateDescendingIncludingDetails(report1);
+
+        //verify and assert
         verify(reportHelper).getFLUXReportDocumentReferencedIdOrNull(report1);
-
-
-        verify(fluxReportDao).findByExtId(id2);
+        verify(fluxReportDao).findByExtId(id1);
+        verify(mapper).map(fluxReport1, Report.class);
         verify(mapper).map(fluxReport2, Report.class);
-        verify(reportHelper).getFLUXReportDocumentReferencedIdOrNull(report2);
-
         verify(reportHelper).getCreationDate(report1);
         verify(reportHelper).getCreationDate(report2);
 

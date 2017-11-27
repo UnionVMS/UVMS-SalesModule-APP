@@ -31,7 +31,9 @@ public class Party {
     @Column(name = "flux_organization_name")
     private String fluxOrganizationName;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToOne(
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "sales_address_id")
     private Address address;
 

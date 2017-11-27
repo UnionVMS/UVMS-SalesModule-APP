@@ -3,10 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.mapper;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.converter.*;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
-import eu.europa.ec.fisheries.uvms.sales.service.converter.BuyerSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.converter.FLUXLocationsToListOfIdsConverter;
-import eu.europa.ec.fisheries.uvms.sales.service.converter.ProviderSalesPartyTypeListConverter;
-import eu.europa.ec.fisheries.uvms.sales.service.converter.RecipientSalesPartyTypeListConverter;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
 import ma.glasnost.orika.CustomMapper;
@@ -45,7 +42,6 @@ public class MapperProducer {
         configurePageCriteriaDto(factory);
         configureCodeListsDto(factory);
         configureReferenceTerritory(factory);
-        configureReportListDto(factory);
         configureReportListExportDto(factory);
         configureFLUXSalesQueryMessage(factory);
         configureSalesDetailsRelation(factory);
@@ -71,9 +67,9 @@ public class MapperProducer {
         converterFactory.registerConverter("freshnessBToA", new FreshnessBToAConverter());
         converterFactory.registerConverter("presentationBToA", new PresentationBToAConverter());
         converterFactory.registerConverter("preservationBToA", new PreservationBToAConverter());
-        converterFactory.registerConverter("buyerSalesPartyTypeListConverter", new BuyerSalesPartyTypeListConverter());
-        converterFactory.registerConverter("providerSalesPartyTypeListConverter", new ProviderSalesPartyTypeListConverter());
-        converterFactory.registerConverter("recipientSalesPartyTypeListConverter", new RecipientSalesPartyTypeListConverter());
+        converterFactory.registerConverter("buyerSalesPartyTypeListConverter", new BuyerPartyDocumentConverter());
+        converterFactory.registerConverter("providerSalesPartyTypeListConverter", new ProviderPartyDocumentConverter());
+        converterFactory.registerConverter("recipientSalesPartyTypeListConverter", new RecipientPartyDocumentConverter());
         converterFactory.registerConverter("fluxReportItemTypeConverter", new FluxReportItemTypeConverter());
         converterFactory.registerConverter("purposeConverter", new PurposeConverter());
         converterFactory.registerConverter("fluxLocationsToListOfIdsConverter", new FLUXLocationsToListOfIdsConverter());
@@ -217,37 +213,6 @@ public class MapperProducer {
                 .field("pageSize", "paging.itemsPerPage")
                 .field("sortField", "sorting.field")
                 .field("sortDirection", "sorting.direction")
-                .register();
-    }
-
-    private void configureReportListDto(MapperFactory factory) {
-        factory.classMap(ReportListDto.class, Report.class)
-                .field("deletion", "deletion")
-                .field("category", "auctionSale.salesCategory")
-                .field("extId", "FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value")
-                .field("occurrence", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesEvents[0].occurrenceDateTime.dateTime")
-                .field("vesselName", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedVesselTransportMeans[0].names[0].value")
-                .field("vesselExtId", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedVesselTransportMeans[0].IDS[0].value")
-                .field("flagState", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedVesselTransportMeans[0].registrationVesselCountry.ID.value")
-                .field("landingDate", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].specifiedDelimitedPeriods[0].startDateTime.dateTime")
-                .field("landingPort", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFishingActivities[0].relatedFLUXLocations[0].ID.value")
-                .field("location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0].ID.value")
-                .field("referencedId", "FLUXSalesReportMessage.FLUXReportDocument.referencedID.value")
-                .field("purpose", "FLUXSalesReportMessage.FLUXReportDocument.purposeCode.value")
-                .fieldMap("buyer", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("buyerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
-                .fieldMap("provider", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("providerSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
-                .fieldMap("recipient", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesParties").converter("recipientSalesPartyTypeListConverter").direction(MappingDirection.B_TO_A).add()
-                .customize(new CustomMapper<ReportListDto, Report>() {
-                    @Override
-                    public void mapBtoA(Report report, ReportListDto reportListDto, MappingContext context) {
-                        super.mapBtoA(report, reportListDto, context);
-
-                        //if no auction sale exists, the sales category is FIRST_SALE.
-                        if (reportListDto.getCategory() == null) {
-                            reportListDto.setCategory(SalesCategoryType.FIRST_SALE);
-                        }
-                    }
-                })
                 .register();
     }
 

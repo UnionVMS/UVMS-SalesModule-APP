@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.domain.entity;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.BatchSize;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
@@ -53,9 +54,11 @@ public class Document {
 
     @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_document_id", nullable = false)
+    @BatchSize(size = 1000)
     private List<PartyDocument> partyDocuments;
 
     @OneToMany(mappedBy = "document", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @BatchSize(size = 1000)
     private List<Product> products;
 
     public Integer getId() {

@@ -29,6 +29,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
  * Class who's only purpose is to hide low-level logic from the "get sales details" functionality of the ReportServiceBean.
  * Should not be used by any other class or functionality!
@@ -85,13 +87,14 @@ public class SalesDetailsHelper {
             try {
                 vesselExtId = reportHelper.getVesselExtId(report);
 
-                Asset vessel = assetService.findByCFR(vesselExtId);
+                if (isNotBlank(vesselExtId)) {
+                    Asset vessel = assetService.findByCFR(vesselExtId);
 
-                FishingTripDto fishingTrip = detailsDto.getFishingTrip();
-                fishingTrip.setVesselGuid(vessel.getAssetId().getGuid());
-                fishingTrip.setVesselName(vessel.getName());
-                fishingTrip.setVesselCFR(vessel.getCfr());
-
+                    FishingTripDto fishingTrip = detailsDto.getFishingTrip();
+                    fishingTrip.setVesselGuid(vessel.getAssetId().getGuid());
+                    fishingTrip.setVesselName(vessel.getName());
+                    fishingTrip.setVesselCFR(vessel.getCfr());
+                }
             } catch (NullPointerException | IndexOutOfBoundsException e) {
                 LOG.error("Cannot retrieve vessel details because not all required fields are provided in the report.", e);
             } catch (SalesServiceException e) {
@@ -188,7 +191,7 @@ public class SalesDetailsHelper {
 
         List<Report> otherRelevantVersions = new ArrayList<>();
         if (reportDomainModel.isLatestVersion(report)) {
-            otherRelevantVersions.addAll(reportDomainModel.findOlderVersionsOrderedByCreationDateDescending(report));
+            otherRelevantVersions.addAll(reportDomainModel.findOlderVersionsOrderedByCreationDateDescendingIncludingDetails(report));
             salesReportDto.setLatestVersion(true);
         } else {
             otherRelevantVersions.add(reportDomainModel.findLatestVersion(report));

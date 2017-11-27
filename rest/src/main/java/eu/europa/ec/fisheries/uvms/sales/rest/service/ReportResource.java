@@ -53,7 +53,7 @@ public class ReportResource extends UnionVMSResource {
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response search(PageCriteriaDto<ReportQueryFilterDto> filters) {
         LOG.info("Search reports invoked in rest layer");
-        return createSuccessResponse(reportService.search(filters));
+        return createSuccessResponse(reportService.search(filters, false));
     }
 
     @POST

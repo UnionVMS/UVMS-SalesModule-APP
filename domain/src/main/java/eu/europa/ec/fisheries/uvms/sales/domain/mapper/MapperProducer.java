@@ -45,6 +45,7 @@ public class MapperProducer {
         configureQuery(factory);
         configureQueryParameterType(factory);
         configureResponse(factory);
+        configureReportSummary(factory);
 
         return factory.getMapperFacade();
     }
@@ -65,6 +66,9 @@ public class MapperProducer {
         converterFactory.registerConverter("freshnessBToA", new FreshnessBToAConverter());
         converterFactory.registerConverter("presentationBToA", new PresentationBToAConverter());
         converterFactory.registerConverter("preservationBToA", new PreservationBToAConverter());
+        converterFactory.registerConverter("buyerPartyDocumentConverter", new BuyerPartyDocumentConverter());
+        converterFactory.registerConverter("providerPartyDocumentConverter", new ProviderPartyDocumentConverter());
+        converterFactory.registerConverter("recipientPartyDocumentConverter", new RecipientPartyDocumentConverter());
     }
 
     private void configureResponse(MapperFactory factory) {
@@ -270,6 +274,39 @@ public class MapperProducer {
                 .field("specifiedPhysicalFLUXGeographicalCoordinate.latitudeMeasure.value", "latitude")
                 .field("specifiedPhysicalFLUXGeographicalCoordinate.longitudeMeasure.value", "longitude")
                 .field("physicalStructuredAddress", "address")
+                .register();
+    }
+
+
+    private void configureReportSummary(MapperFactory factory) {
+        factory.classMap(ReportSummary.class, FluxReport.class)
+                .field("creation", "creation")
+                .field("deletion", "deletion")
+                .field("category", "auctionSale.category")
+                .field("extId", "extId")
+                .field("occurrence", "document.occurrence")
+                .field("vesselName", "document.fishingActivity.vessel.name")
+                .field("vesselExtId", "document.fishingActivity.vessel.extId")
+                .field("flagState", "document.fishingActivity.vessel.countryCode")
+                .field("landingDate", "document.fishingActivity.startDate")
+                .field("landingPort", "document.fishingActivity.location.extId")
+                .field("location", "document.fluxLocation.extId")
+                .field("referencedId", "previousFluxReport.extId")
+                .field("purpose", "purpose")
+                .fieldMap("buyer", "document.partyDocuments").converter("buyerPartyDocumentConverter").direction(MappingDirection.B_TO_A).add()
+                .fieldMap("provider", "document.partyDocuments").converter("providerPartyDocumentConverter").direction(MappingDirection.B_TO_A).add()
+                .fieldMap("recipient", "document.partyDocuments").converter("recipientPartyDocumentConverter").direction(MappingDirection.B_TO_A).add()
+                .customize(new CustomMapper<ReportSummary, FluxReport>() {
+                    @Override
+                    public void mapBtoA(FluxReport report, ReportSummary reportSummary, MappingContext context) {
+                        super.mapBtoA(report, reportSummary, context);
+
+                        //if no auction sale exists, the sales category is FIRST_SALE.
+                        if (reportSummary.getCategory() == null) {
+                            reportSummary.setCategory(SalesCategoryType.FIRST_SALE);
+                        }
+                    }
+                })
                 .register();
     }
 

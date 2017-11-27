@@ -467,137 +467,36 @@ public class MapperProducerTest {
     }
 
     @Test
-    public void testMapReportTypeToReportListDtoWhenAuctionSalesIsProvided() {
+    public void testMapReportSummaryToReportListDto() {
         DateTime deletion = new DateTime();
+        DateTime occurrence = new DateTime(2017, 3, 2, 15, 0);
+        DateTime landingDate = new DateTime(2017, 3, 3, 14, 0);
 
-        AuctionSaleType auctionSale = new AuctionSaleType()
-                .withSalesCategory(SalesCategoryType.NEGOTIATED_SALE);
-
-        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
-                .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
-                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")))
-                .withReferencedID(new IDType().withValue("Heya"));
-
-        FLUXLocationType fluxLocation1 = new FLUXLocationType()
-                .withID(new IDType().withValue("BEL"));
-        FLUXLocationType fluxLocation2 = new FLUXLocationType()
-                .withID(new IDType().withValue("NED"));
-
-        VesselTransportMeansType vessel = new VesselTransportMeansType()
-                .withNames(new TextType().withValue("vesselName"))
-                .withIDS(new IDType().withValue("vesselExtId"))
-                .withRegistrationVesselCountry(new VesselCountryType().withID(new IDType().withValue("FRA")));
-
-        FishingActivityType fishingActivity = new FishingActivityType()
-                .withRelatedVesselTransportMeans(vessel)
-                .withSpecifiedDelimitedPeriods(new DelimitedPeriodType().withStartDateTime(new DateTimeType().withDateTime(new DateTime(2017, 3, 3, 14, 0))))
-                .withRelatedFLUXLocations(fluxLocation2);
-
-        SalesEventType salesEvent = new SalesEventType()
-                .withOccurrenceDateTime(new DateTimeType().withDateTime(new DateTime(2017, 3, 2, 15, 0)));
-
-        SalesPartyType salesParty1 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("BUYER"))
-                .withName(new TextType().withValue("Mathiblaa"));
-
-        SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("PROVIDER"))
-                .withName(new TextType().withValue("Superstijn"));
-
-        List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
-
-        SalesDocumentType salesDocument = new SalesDocumentType()
-                .withSpecifiedFLUXLocations(fluxLocation1)
-                .withSpecifiedSalesEvents(salesEvent)
-                .withSpecifiedFishingActivities(fishingActivity)
-                .withSpecifiedSalesParties(salesParties);
-
-        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
-                .withFLUXReportDocument(fluxReportDocument)
-                .withSalesReports(new SalesReportType().withIncludedSalesDocuments(salesDocument));
-
-        Report report = new Report()
-                .withFLUXSalesReportMessage(fluxSalesReportMessage)
-                .withAuctionSale(auctionSale)
+        ReportSummary reportSummary = new ReportSummary()
+                .withCategory(SalesCategoryType.NEGOTIATED_SALE)
+                .withExtId("fluxReportDocumentExtId")
+                .withOccurrence(occurrence)
+                .withVesselName("vesselName")
+                .withVesselExtId("vesselExtId")
+                .withFlagState("FRA")
+                .withLandingDate(landingDate)
+                .withLandingPort("NED")
+                .withLocation("BEL")
+                .withBuyer("Mathiblaa")
+                .withProvider("Superstijn")
+                .withReferencedId("Heya")
                 .withDeletion(deletion);
 
-        ReportListDto dto = mapper.map(report, ReportListDto.class);
+
+        ReportListDto dto = mapper.map(reportSummary, ReportListDto.class);
 
         assertEquals(SalesCategoryType.NEGOTIATED_SALE, dto.getCategory());
         assertEquals("fluxReportDocumentExtId", dto.getExtId());
-        assertEquals(new DateTime(2017, 3, 2, 15, 0), dto.getOccurrence());
+        assertEquals(occurrence, dto.getOccurrence());
         assertEquals("vesselName", dto.getVesselName());
         assertEquals("vesselExtId", dto.getVesselExtId());
         assertEquals("FRA", dto.getFlagState());
-        assertEquals(new DateTime(2017, 3, 3, 14, 0), dto.getLandingDate());
-        assertEquals("NED", dto.getLandingPort());
-        assertEquals("BEL", dto.getLocation());
-        assertEquals("Mathiblaa", dto.getBuyer());
-        assertEquals("Superstijn", dto.getProvider());
-        assertEquals("Heya", dto.getReferencedId());
-        assertEquals(deletion, dto.getDeletion());
-    }
-
-    @Test
-    public void testMapReportTypeToReportListDtoWhenAuctionSalesIsNotProvided() {
-        DateTime deletion = new DateTime();
-
-        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
-                .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
-                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")))
-                .withReferencedID(new IDType().withValue("Heya"));
-
-        FLUXLocationType fluxLocation1 = new FLUXLocationType()
-                .withID(new IDType().withValue("BEL"));
-        FLUXLocationType fluxLocation2 = new FLUXLocationType()
-                .withID(new IDType().withValue("NED"));
-
-        VesselTransportMeansType vessel = new VesselTransportMeansType()
-                .withNames(new TextType().withValue("vesselName"))
-                .withIDS(new IDType().withValue("vesselExtId"))
-                .withRegistrationVesselCountry(new VesselCountryType().withID(new IDType().withValue("FRA")));
-
-        FishingActivityType fishingActivity = new FishingActivityType()
-                .withRelatedVesselTransportMeans(vessel)
-                .withSpecifiedDelimitedPeriods(new DelimitedPeriodType().withStartDateTime(new DateTimeType().withDateTime(new DateTime(2017, 3, 3, 14, 0))))
-                .withRelatedFLUXLocations(fluxLocation2);
-
-        SalesEventType salesEvent = new SalesEventType()
-                .withOccurrenceDateTime(new DateTimeType().withDateTime(new DateTime(2017, 3, 2, 15, 0)));
-
-        SalesPartyType salesParty1 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("BUYER"))
-                .withName(new TextType().withValue("Mathiblaa"));
-
-        SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("PROVIDER"))
-                .withName(new TextType().withValue("Superstijn"));
-
-        List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
-
-        SalesDocumentType salesDocument = new SalesDocumentType()
-                .withSpecifiedFLUXLocations(fluxLocation1)
-                .withSpecifiedSalesEvents(salesEvent)
-                .withSpecifiedFishingActivities(fishingActivity)
-                .withSpecifiedSalesParties(salesParties);
-
-        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
-                .withFLUXReportDocument(fluxReportDocument)
-                .withSalesReports(new SalesReportType().withIncludedSalesDocuments(salesDocument));
-
-        Report report = new Report()
-                .withFLUXSalesReportMessage(fluxSalesReportMessage)
-                .withDeletion(deletion);
-
-        ReportListDto dto = mapper.map(report, ReportListDto.class);
-
-        assertEquals(SalesCategoryType.FIRST_SALE, dto.getCategory());
-        assertEquals("fluxReportDocumentExtId", dto.getExtId());
-        assertEquals(new DateTime(2017, 3, 2, 15, 0), dto.getOccurrence());
-        assertEquals("vesselName", dto.getVesselName());
-        assertEquals("vesselExtId", dto.getVesselExtId());
-        assertEquals("FRA", dto.getFlagState());
-        assertEquals(new DateTime(2017, 3, 3, 14, 0), dto.getLandingDate());
+        assertEquals(landingDate, dto.getLandingDate());
         assertEquals("NED", dto.getLandingPort());
         assertEquals("BEL", dto.getLocation());
         assertEquals("Mathiblaa", dto.getBuyer());
@@ -779,5 +678,4 @@ public class MapperProducerTest {
 
         assertEquals(conversionFactor, mappedConversionFactor);
     }
-
 }

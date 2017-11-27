@@ -36,7 +36,9 @@ public class FluxLocation {
     @Column(name = "latitude")
     private Double latitude;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToOne(
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "sales_address_id")
     private Address address;
 

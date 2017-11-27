@@ -33,6 +33,9 @@ public class FluxReportQueryToTypedQueryHelper {
     public static final String EXT_ID = "extId";
     public static final String DOCUMENT = "document";
     public static final String VESSEL = "vessel";
+    public static final String AUCTION_SALE = "auctionSale";
+    public static final String FLUX_LOCATION = "fluxLocation";
+    public static final String LOCATION = "location";
     private final EntityManager em;
     private Map<Parameter, Object> parameters = new HashMap<>();
     private CriteriaBuilder builder;
@@ -41,6 +44,7 @@ public class FluxReportQueryToTypedQueryHelper {
     private Predicate whereConditions;
     private FluxReportSearchMode searchMode;
     private Paging paging;
+    private boolean eagerLoadRelations;
 
     public static FluxReportQueryToTypedQueryHelper search(EntityManager em) {
         return new FluxReportQueryToTypedQueryHelper(FETCH, em);
@@ -121,9 +125,22 @@ public class FluxReportQueryToTypedQueryHelper {
         return this;
     }
 
+    /**
+     * When you expect a lot of reports to come back, it is probably not interesting to lazy load all relations.
+     * By activating this mode, the query will eager fetch several relations, avoiding the need to do more queries.
+     * This mode cannot used when executing a count query.
+     */
+    public FluxReportQueryToTypedQueryHelper eagerLoadRelations(boolean eagerLoadRelations) {
+        this.eagerLoadRelations = eagerLoadRelations;
+        return this;
+    }
+
     public TypedQuery build() {
         //select
         if (searchMode == FluxReportSearchMode.FETCH) {
+            if (eagerLoadRelations) {
+                eagerFetchRelations();
+            }
             query = query.select(fluxReport);
         } else if (searchMode == COUNT) {
             query = query.select(builder.count(fluxReport));
@@ -133,6 +150,7 @@ public class FluxReportQueryToTypedQueryHelper {
 
         //where
         query = query.where(whereConditions);
+
 
         //set parameters
         TypedQuery typedQuery = em.createQuery(query);
@@ -149,18 +167,22 @@ public class FluxReportQueryToTypedQueryHelper {
         return typedQuery;
     }
 
+    private void eagerFetchRelations() {
+        //eager fetch relations used in ReportSummary
+        fluxReport.fetch(AUCTION_SALE, JoinType.LEFT);
+        Fetch<Object, Object> documentFetch = fluxReport.fetch(DOCUMENT, JoinType.LEFT);
+
+        documentFetch   .fetch(FLUX_LOCATION, JoinType.LEFT);
+
+        Fetch<Object, Object> fishingActivityFetch = documentFetch.fetch(FISHING_ACTIVITY, JoinType.LEFT);
+
+        fishingActivityFetch.fetch(VESSEL, JoinType.LEFT);
+        fishingActivityFetch.fetch(LOCATION, JoinType.LEFT);
+    }
+
     private void notCorrected() {
-        Subquery<FluxReport> referencingReportSubQuery = query.subquery(FluxReport.class);
-        Root<FluxReport> correlatedFluxReport = referencingReportSubQuery.from(FluxReport.class);
-
-        Predicate referencedIdEqualsExtId = builder.equal(fluxReport, correlatedFluxReport.get("previousFluxReport"));
-
-        Subquery<FluxReport> finishedReferencingReportSubQuery =
-                referencingReportSubQuery
-                        .select(correlatedFluxReport)
-                        .where(referencedIdEqualsExtId);
-
-        addWhereCondition(builder.not(builder.exists(finishedReferencingReportSubQuery)));
+        Predicate notCorrected = builder.isNull(fluxReport.get("correction"));
+        addWhereCondition(notCorrected);
     }
 
     private void withDeleted(Boolean includeDeleted) {
@@ -380,11 +402,11 @@ public class FluxReportQueryToTypedQueryHelper {
     }
 
     private Path<String> pathToSalesLocation() {
-        return fluxReport.get(DOCUMENT).get("fluxLocation").get(EXT_ID);
+        return fluxReport.get(DOCUMENT).get(FLUX_LOCATION).get(EXT_ID);
     }
 
     private Expression<String> pathToSalesCategory() {
-        Join<FluxReport, AuctionSale> leftJoinWithAuctionSale = fluxReport.join("auctionSale", JoinType.LEFT);
+        Join<FluxReport, AuctionSale> leftJoinWithAuctionSale = fluxReport.join(AUCTION_SALE, JoinType.LEFT);
         return builder.<String>coalesce(leftJoinWithAuctionSale.<String>get("category"), builder.<String>literal("FIRST_SALE"));
     }
 

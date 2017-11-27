@@ -200,6 +200,30 @@ public class SalesDetailsHelperTest {
     }
 
     @Test
+    public void testEnrichWithVesselInformationWhenExtIdIsNull() {
+        //data set
+
+        AuctionSaleType auctionSale = new AuctionSaleType()
+                .withSalesCategory(SalesCategoryType.FIRST_SALE);
+
+        Report report = new Report()
+                .withAuctionSale(auctionSale);
+
+        SalesDetailsDto salesDetailsDto = new SalesDetailsDto()
+                .fishingTrip(new FishingTripDto());
+
+        //mock
+        doReturn(null).when(reportHelper).getVesselExtId(report);
+
+        //execute
+        salesDetailsHelper.enrichWithVesselInformation(salesDetailsDto, report);
+
+        //verify and assert
+        verify(reportHelper).getVesselExtId(report);
+        verifyNoMoreInteractions(assetService, reportHelper);
+    }
+
+    @Test
     public void testEnrichWithVesselInformationWhenAuctionSaleWithFirstSaleAndReportIsIncomplete() {
         //data set
         String extId = "extId";
@@ -482,13 +506,13 @@ public class SalesDetailsHelperTest {
                                                             new SalesDetailsRelation().reportExtId("2"));
 
         doReturn(true).when(reportDomainModel).isLatestVersion(report);
-        doReturn(olderVersions).when(reportDomainModel).findOlderVersionsOrderedByCreationDateDescending(report);
+        doReturn(olderVersions).when(reportDomainModel).findOlderVersionsOrderedByCreationDateDescendingIncludingDetails(report);
         doReturn(mappedOlderVersions).when(mapper).mapAsList(olderVersions, SalesDetailsRelation.class);
 
         salesDetailsHelper.enrichWithOtherRelevantVersions(detailsDto, report);
 
         verify(reportDomainModel).isLatestVersion(report);
-        verify(reportDomainModel).findOlderVersionsOrderedByCreationDateDescending(report);
+        verify(reportDomainModel).findOlderVersionsOrderedByCreationDateDescendingIncludingDetails(report);
         verify(mapper).mapAsList(olderVersions, SalesDetailsRelation.class);
         verifyNoMoreInteractions(reportDomainModel, mapper);
 

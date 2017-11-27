@@ -160,4 +160,33 @@
         </rollback>
     </changeSet>
 
+    <changeSet author="stihft" id="flr-07-addColumnCorrection">
+        <addColumn tableName="sales_flux_report">
+            <column name="correction" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="sales_flux_report" columnName="correction" />
+        </rollback>
+    </changeSet>
+
+
+    <changeSet author="stihft" id="flr-08-addIndexForCorrectionWhereNull">
+        <createIndex
+                indexName="sales_flux_report_correction_not_null"
+                tableName="sales_flux_report">
+            <column name="id" type="integer"/>
+            <column name="correction" type="integer"/>
+        </createIndex>
+        <rollback>
+            <dropIndex indexName="sales_flux_report_correction_not_null"
+                       tableName="sales_flux_report"/>
+        </rollback>
+        <modifySql>
+            <append value=" WHERE correction IS NULL"/>
+        </modifySql>
+    </changeSet>
+
+
 </databaseChangeLog>

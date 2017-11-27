@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.domain;
 import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
+import eu.europa.ec.fisheries.schema.sales.ReportSummary;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -35,9 +36,17 @@ public interface ReportDomainModel {
     /**
      * Search reports which apply to the provided query.
      * @param fluxReportQuery query
+     * @param eagerLoadRelations When you expect a lot of reports to come back, it is probably not interesting to lazy load all relations. By activating this mode, the query will eager fetch several relations, avoiding the need to do more queries.
+     * @return the basic details of the found reports. When nothing found, an empty list is returned.
+     */
+    List<ReportSummary> search(ReportQuery fluxReportQuery, boolean eagerLoadRelations);
+
+    /**
+     * Search reports which apply to the provided query.
+     * @param fluxReportQuery query
      * @return the found reports. When nothing found, an empty list is returned.
      */
-    List<Report> search(ReportQuery fluxReportQuery);
+    List<Report> searchIncludingDetails(ReportQuery fluxReportQuery);
 
     /**
      * Count how many reports apply to the provided query.
@@ -60,7 +69,7 @@ public interface ReportDomainModel {
      *                          Providing null is supported. Then, an empty list will be returned.
      * @return all referenced reports. When nothing found, an empty list.
      */
-    List<Report> findOlderVersionsOrderedByCreationDateDescending(String firstReferencedId);
+    List<ReportSummary> findOlderVersionsOrderedByCreationDateDescending(String firstReferencedId);
 
     /**
      * Returns all reports that are reference by this report.
@@ -68,7 +77,8 @@ public interface ReportDomainModel {
                      Providing null is supported. Then, an empty list will be returned.
      * @return all referenced reports. When nothing found, an empty list.
      */
-    List<Report> findOlderVersionsOrderedByCreationDateDescending(Report report);
+    List<Report> findOlderVersionsOrderedByCreationDateDescendingIncludingDetails(Report report);
+
 
     /** Returns whether the given report is the latest version. A report being an older version means that another report
      * corrects or deletes the given report. **/

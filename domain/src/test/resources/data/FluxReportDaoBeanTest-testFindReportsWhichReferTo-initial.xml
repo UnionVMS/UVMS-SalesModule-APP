@@ -33,6 +33,7 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_flux_report_prev_id="[NULL]"
+            correction="2017-11-24 00:00:00"
     />
     <sales_flux_report
             id="124"
@@ -43,6 +44,7 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_flux_report_prev_id="123"
+            correction="[NULL]"
     />
     <sales_flux_report
             id="125"
@@ -53,6 +55,7 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_flux_report_prev_id="123"
+            correction="2017-11-24 00:00:00"
     />
     <sales_flux_report
             id="126"
@@ -63,5 +66,6 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_flux_report_prev_id="125"
+            correction="[NULL]"
     />
 </dataset>
