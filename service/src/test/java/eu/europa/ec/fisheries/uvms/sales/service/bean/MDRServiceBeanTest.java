@@ -1,10 +1,10 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import com.google.common.collect.Lists;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.MdrModuleMapper;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
-import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import org.junit.Test;
@@ -29,11 +29,13 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PowerMockIgnore( {"javax.management.*"})
 public class MDRServiceBeanTest {
 
+    private static final long TIMEOUT = 30000;
+
     @InjectMocks
     private MDRServiceBean mdrServiceBean;
 
     @Mock
-    private SalesMessageConsumer consumer;
+    private MessageConsumer consumer;
 
     @Mock
     private SalesMessageProducer producer;
@@ -58,7 +60,7 @@ public class MDRServiceBeanTest {
 
         when(MdrModuleMapper.createFluxMdrGetCodeListRequest("TERRITORY")).thenReturn(mdrRequest);
         when(producer.sendModuleMessage(mdrRequest, Union.MDR)).thenReturn(correlationId);
-        when(consumer.getMessage(correlationId, TextMessage.class)).thenReturn(textMessage);
+        when(consumer.getMessage(correlationId, TextMessage.class, TIMEOUT)).thenReturn(textMessage);
         when(textMessage.getText()).thenReturn(textMessageText);
         when(JAXBMarshaller.unmarshallTextMessage(textMessageText, MdrGetCodeListResponse.class)).thenReturn(mdrGetCodeListResponse);
 
@@ -67,7 +69,7 @@ public class MDRServiceBeanTest {
 
         //verify
         verify(producer).sendModuleMessage(mdrRequest, Union.MDR);
-        verify(consumer).getMessage(correlationId, TextMessage.class);
+        verify(consumer).getMessage(correlationId, TextMessage.class, TIMEOUT);
         verify(textMessage).getText();
 
         verifyStatic();

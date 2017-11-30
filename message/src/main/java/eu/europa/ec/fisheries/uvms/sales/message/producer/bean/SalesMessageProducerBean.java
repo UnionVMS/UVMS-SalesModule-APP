@@ -10,59 +10,50 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.*;
+import javax.jms.DeliveryMode;
+import javax.jms.JMSException;
+import javax.jms.Queue;
+import javax.jms.TextMessage;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class SalesMessageProducerBean implements SalesMessageProducer {
 
-    final private static Logger LOG = LoggerFactory.getLogger(SalesMessageProducerBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SalesMessageProducerBean.class);
     private static final long TIME_TO_LIVE = 60000L;
 
-    private Queue salesQueue;
-    private Queue assetQueue;
-    private Queue ecbProxyQueue;
-    private Queue configQueue;
-    private Queue rulesEventQueue;
-    private Queue mdrQueue;
-    private Queue rulesQueue;
+    private Queue replyToSalesQueue;
 
-    private ConnectionFactory connectionFactory;
+    @EJB
+    RulesMessageProducerBean rulesMessageProducerBean;
 
+    @EJB
+    AssetMessageProducerBean assetMessageProducerBean;
+
+    @EJB
+    MDRMessageProducerBean mdrMessageProducerBean;
+
+    @EJB
+    ECBProxyMessageProducerBean ecbProxyMessageProducerBean;
 
     @PostConstruct
     public void init() {
-        connectionFactory = JMSUtils.lookupConnectionFactory();
-
-        this.assetQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ASSET_EVENT);
-        this.salesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
-        this.ecbProxyQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ECB_PROXY);
-        this.configQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_CONFIG);
-        this.rulesEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_MODULE_RULES);
-        this.rulesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_RULES);
-        this.mdrQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_MDR_EVENT);
+        this.replyToSalesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
     }
 
     @Override
     public void sendModuleResponseMessage(TextMessage originalJMSMessage, String messageToBeSent) throws MessageException {
-        Connection connection = null;
         try {
             LOG.info("Sending message back to recipient from Sales with correlationId {} on queue: {}", originalJMSMessage.getJMSMessageID(),
                     originalJMSMessage.getJMSReplyTo());
+            rulesMessageProducerBean.sendModuleResponseMessage(originalJMSMessage, messageToBeSent, TIME_TO_LIVE, DeliveryMode.NON_PERSISTENT);
 
-            connection = connectionFactory.createConnection();
-            final Session session = JMSUtils.connectToQueue(connection);
-            TextMessage response = session.createTextMessage(messageToBeSent);
-            response.setJMSCorrelationID(originalJMSMessage.getJMSMessageID());
-            MessageProducer producer = getProducer(session, originalJMSMessage.getJMSReplyTo(), TIME_TO_LIVE);
-            producer.send(response);
-        } catch (JMSException e) {
+        } catch (Exception e) {
             LOG.error("[ Error when returning module request. ] {}", e.getMessage()); //TODO: check error handling
-        } finally {
-            JMSUtils.disconnectQueue(connection);
         }
     }
 
@@ -73,78 +64,39 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
 
     @Override
     public String sendModuleMessage(String text, Union module, long timeout) throws MessageException {
-        Connection connection = null;
         try {
-            connection = connectionFactory.createConnection();
-            final Session session = JMSUtils.connectToQueue(connection);
-            TextMessage jmsMessage = createJMSMessage(text, session);
-
             switch (module) {
                 case ASSET:
-                    getProducer(session, assetQueue, timeout).send(jmsMessage);
-                    break;
+                    return assetMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
                 case ECB_PROXY:
-                    getProducer(session, ecbProxyQueue, timeout).send(jmsMessage);
-                    break;
-                case CONFIG:
-                    getProducer(session, configQueue, timeout).send(jmsMessage);
-                    break;
+                    return ecbProxyMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
                 case RULES:
-                    getProducer(session, rulesEventQueue,timeout).send(jmsMessage);
-                    break;
+                    return rulesMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
                 case RULES_RESPONSE:
-                    getProducer(session, rulesQueue, timeout).send(jmsMessage);
-                    break;
+// Verify not supported
+//                    getProducer(session, rulesQueue, timeout).send(jmsMessage);
+                    throw new UnsupportedOperationException("Sales has no functionality implemented to talk with " + module);
                 case MDR:
-                    getProducer(session, mdrQueue, timeout).send(jmsMessage);
-                    break;
+                    return mdrMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
                 default:
                     throw new UnsupportedOperationException("Sales has no functionality implemented to talk with " + module);
             }
 
-            return jmsMessage.getJMSMessageID();
         } catch (Exception e) {
             LOG.error("[ Error when sending a message to " + module+ ". ] {}", e.getMessage());
             throw new MessageException(e.getMessage());
-        } finally {
-            JMSUtils.disconnectQueue(connection);
         }
     }
 
     @Override
     public void sendModuleErrorMessage(EventMessage message) {
-        Connection connection = null;
         try {
             LOG.debug("Sending error message back from Sales module to recipient on JMS Queue with correlationID: {} ", message.getJmsMessage().getJMSMessageID());
-
-            connection = connectionFactory.createConnection();
-            final Session session = JMSUtils.connectToQueue(connection);
-
-            String data = message.getErrorMessage();
-
-            TextMessage response = session.createTextMessage(data);
-            response.setJMSCorrelationID(message.getJmsMessage().getJMSMessageID());
-            getProducer(session, message.getJmsMessage().getJMSReplyTo(), TIME_TO_LIVE).send(response);
+            rulesMessageProducerBean.sendModuleResponseMessage(message.getJmsMessage(), message.getErrorMessage(), TIME_TO_LIVE, DeliveryMode.NON_PERSISTENT);
 
         } catch (JMSException e) {
             LOG.error("Error when returning Error message to recipient", e);
-        } finally {
-            JMSUtils.disconnectQueue(connection);
         }
-    }
-
-    private TextMessage createJMSMessage(String text, Session session) throws JMSException {
-        TextMessage jmsMessage = session.createTextMessage();
-        jmsMessage.setJMSReplyTo(salesQueue);
-        jmsMessage.setText(text);
-        return jmsMessage;
-    }
-
-    private javax.jms.MessageProducer getProducer(Session session, Destination destination, long timeout) throws JMSException {
-        javax.jms.MessageProducer producer = session.createProducer(destination);
-        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        producer.setTimeToLive(timeout);
-        return producer;
     }
 
 }
