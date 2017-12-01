@@ -63,7 +63,7 @@ public class AssetServiceBeanTest {
 
         when(helper.createRequestToFindAssetByCFR(CFR)).thenReturn("request");
         when(helper.callAssetModule("request", GetAssetModuleResponse.class)).thenReturn(response);
-        when(cache.retrieveAssetFromCache(CFR)).thenReturn(Optional.absent());
+        when(cache.retrieveAssetFromCache(CFR)).thenReturn(Optional.<Asset>absent());
         doNothing().when(cache).cacheMessage(CFR, asset);
 
         assertSame(asset, assetServiceBean.findByCFR(CFR));
