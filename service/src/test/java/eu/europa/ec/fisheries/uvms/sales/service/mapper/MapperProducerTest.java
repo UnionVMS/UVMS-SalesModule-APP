@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
+import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ConversionFactor;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCode;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceCoordinates;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
@@ -466,137 +467,36 @@ public class MapperProducerTest {
     }
 
     @Test
-    public void testMapReportTypeToReportListDtoWhenAuctionSalesIsProvided() {
+    public void testMapReportSummaryToReportListDto() {
         DateTime deletion = new DateTime();
+        DateTime occurrence = new DateTime(2017, 3, 2, 15, 0);
+        DateTime landingDate = new DateTime(2017, 3, 3, 14, 0);
 
-        AuctionSaleType auctionSale = new AuctionSaleType()
-                .withSalesCategory(SalesCategoryType.NEGOTIATED_SALE);
-
-        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
-                .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
-                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")))
-                .withReferencedID(new IDType().withValue("Heya"));
-
-        FLUXLocationType fluxLocation1 = new FLUXLocationType()
-                .withID(new IDType().withValue("BEL"));
-        FLUXLocationType fluxLocation2 = new FLUXLocationType()
-                .withID(new IDType().withValue("NED"));
-
-        VesselTransportMeansType vessel = new VesselTransportMeansType()
-                .withNames(new TextType().withValue("vesselName"))
-                .withIDS(new IDType().withValue("vesselExtId"))
-                .withRegistrationVesselCountry(new VesselCountryType().withID(new IDType().withValue("FRA")));
-
-        FishingActivityType fishingActivity = new FishingActivityType()
-                .withRelatedVesselTransportMeans(vessel)
-                .withSpecifiedDelimitedPeriods(new DelimitedPeriodType().withStartDateTime(new DateTimeType().withDateTime(new DateTime(2017, 3, 3, 14, 0))))
-                .withRelatedFLUXLocations(fluxLocation2);
-
-        SalesEventType salesEvent = new SalesEventType()
-                .withOccurrenceDateTime(new DateTimeType().withDateTime(new DateTime(2017, 3, 2, 15, 0)));
-
-        SalesPartyType salesParty1 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("BUYER"))
-                .withName(new TextType().withValue("Mathiblaa"));
-
-        SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("PROVIDER"))
-                .withName(new TextType().withValue("Superstijn"));
-
-        List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
-
-        SalesDocumentType salesDocument = new SalesDocumentType()
-                .withSpecifiedFLUXLocations(fluxLocation1)
-                .withSpecifiedSalesEvents(salesEvent)
-                .withSpecifiedFishingActivities(fishingActivity)
-                .withSpecifiedSalesParties(salesParties);
-
-        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
-                .withFLUXReportDocument(fluxReportDocument)
-                .withSalesReports(new SalesReportType().withIncludedSalesDocuments(salesDocument));
-
-        Report report = new Report()
-                .withFLUXSalesReportMessage(fluxSalesReportMessage)
-                .withAuctionSale(auctionSale)
+        ReportSummary reportSummary = new ReportSummary()
+                .withCategory(SalesCategoryType.NEGOTIATED_SALE)
+                .withExtId("fluxReportDocumentExtId")
+                .withOccurrence(occurrence)
+                .withVesselName("vesselName")
+                .withVesselExtId("vesselExtId")
+                .withFlagState("FRA")
+                .withLandingDate(landingDate)
+                .withLandingPort("NED")
+                .withLocation("BEL")
+                .withBuyer("Mathiblaa")
+                .withProvider("Superstijn")
+                .withReferencedId("Heya")
                 .withDeletion(deletion);
 
-        ReportListDto dto = mapper.map(report, ReportListDto.class);
+
+        ReportListDto dto = mapper.map(reportSummary, ReportListDto.class);
 
         assertEquals(SalesCategoryType.NEGOTIATED_SALE, dto.getCategory());
         assertEquals("fluxReportDocumentExtId", dto.getExtId());
-        assertEquals(new DateTime(2017, 3, 2, 15, 0), dto.getOccurrence());
+        assertEquals(occurrence, dto.getOccurrence());
         assertEquals("vesselName", dto.getVesselName());
         assertEquals("vesselExtId", dto.getVesselExtId());
         assertEquals("FRA", dto.getFlagState());
-        assertEquals(new DateTime(2017, 3, 3, 14, 0), dto.getLandingDate());
-        assertEquals("NED", dto.getLandingPort());
-        assertEquals("BEL", dto.getLocation());
-        assertEquals("Mathiblaa", dto.getBuyer());
-        assertEquals("Superstijn", dto.getProvider());
-        assertEquals("Heya", dto.getReferencedId());
-        assertEquals(deletion, dto.getDeletion());
-    }
-
-    @Test
-    public void testMapReportTypeToReportListDtoWhenAuctionSalesIsNotProvided() {
-        DateTime deletion = new DateTime();
-
-        FLUXReportDocumentType fluxReportDocument = new FLUXReportDocumentType()
-                .withIDS(new IDType().withValue("fluxReportDocumentExtId"))
-                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("This party is mine")))
-                .withReferencedID(new IDType().withValue("Heya"));
-
-        FLUXLocationType fluxLocation1 = new FLUXLocationType()
-                .withID(new IDType().withValue("BEL"));
-        FLUXLocationType fluxLocation2 = new FLUXLocationType()
-                .withID(new IDType().withValue("NED"));
-
-        VesselTransportMeansType vessel = new VesselTransportMeansType()
-                .withNames(new TextType().withValue("vesselName"))
-                .withIDS(new IDType().withValue("vesselExtId"))
-                .withRegistrationVesselCountry(new VesselCountryType().withID(new IDType().withValue("FRA")));
-
-        FishingActivityType fishingActivity = new FishingActivityType()
-                .withRelatedVesselTransportMeans(vessel)
-                .withSpecifiedDelimitedPeriods(new DelimitedPeriodType().withStartDateTime(new DateTimeType().withDateTime(new DateTime(2017, 3, 3, 14, 0))))
-                .withRelatedFLUXLocations(fluxLocation2);
-
-        SalesEventType salesEvent = new SalesEventType()
-                .withOccurrenceDateTime(new DateTimeType().withDateTime(new DateTime(2017, 3, 2, 15, 0)));
-
-        SalesPartyType salesParty1 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("BUYER"))
-                .withName(new TextType().withValue("Mathiblaa"));
-
-        SalesPartyType salesParty2 = new SalesPartyType()
-                .withRoleCodes(new CodeType().withValue("PROVIDER"))
-                .withName(new TextType().withValue("Superstijn"));
-
-        List<SalesPartyType> salesParties = Lists.newArrayList(salesParty1, salesParty2);
-
-        SalesDocumentType salesDocument = new SalesDocumentType()
-                .withSpecifiedFLUXLocations(fluxLocation1)
-                .withSpecifiedSalesEvents(salesEvent)
-                .withSpecifiedFishingActivities(fishingActivity)
-                .withSpecifiedSalesParties(salesParties);
-
-        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
-                .withFLUXReportDocument(fluxReportDocument)
-                .withSalesReports(new SalesReportType().withIncludedSalesDocuments(salesDocument));
-
-        Report report = new Report()
-                .withFLUXSalesReportMessage(fluxSalesReportMessage)
-                .withDeletion(deletion);
-
-        ReportListDto dto = mapper.map(report, ReportListDto.class);
-
-        assertEquals(SalesCategoryType.FIRST_SALE, dto.getCategory());
-        assertEquals("fluxReportDocumentExtId", dto.getExtId());
-        assertEquals(new DateTime(2017, 3, 2, 15, 0), dto.getOccurrence());
-        assertEquals("vesselName", dto.getVesselName());
-        assertEquals("vesselExtId", dto.getVesselExtId());
-        assertEquals("FRA", dto.getFlagState());
-        assertEquals(new DateTime(2017, 3, 3, 14, 0), dto.getLandingDate());
+        assertEquals(landingDate, dto.getLandingDate());
         assertEquals("NED", dto.getLandingPort());
         assertEquals("BEL", dto.getLocation());
         assertEquals("Mathiblaa", dto.getBuyer());
@@ -685,13 +585,13 @@ public class MapperProducerTest {
 
         Report report = new Report()
                 .withFLUXSalesReportMessage(new FLUXSalesReportMessage()
-                    .withFLUXReportDocument(new FLUXReportDocumentType()
-                        .withIDS(new IDType().withValue(reportExtId))
-                        .withCreationDateTime(new DateTimeType().withDateTime(creationDate)))
-                    .withSalesReports(new SalesReportType()
-                        .withItemTypeCode(new CodeType().withValue("SN"))
-                        .withIncludedSalesDocuments(new SalesDocumentType()
-                            .withIDS(new IDType().withValue(documentExtId)))));
+                        .withFLUXReportDocument(new FLUXReportDocumentType()
+                                .withIDS(new IDType().withValue(reportExtId))
+                                .withCreationDateTime(new DateTimeType().withDateTime(creationDate)))
+                        .withSalesReports(new SalesReportType()
+                                .withItemTypeCode(new CodeType().withValue("SN"))
+                                .withIncludedSalesDocuments(new SalesDocumentType()
+                                        .withIDS(new IDType().withValue(documentExtId)))));
 
 
         //execute
@@ -708,8 +608,8 @@ public class MapperProducerTest {
     public void testMapObjectRepresentationToReferenceCode() {
         String code = "code-sdfsdf";
         String text = "text";
-        ColumnDataType codeColumn = new ColumnDataType("code", code,"java.lang.String");
-        ColumnDataType textColumn = new ColumnDataType("description", text,"java.lang.String");
+        ColumnDataType codeColumn = new ColumnDataType("code", code, "java.lang.String");
+        ColumnDataType textColumn = new ColumnDataType("description", text, "java.lang.String");
 
         ObjectRepresentation objectRepresentation = new ObjectRepresentation();
         objectRepresentation.setFields(Lists.newArrayList(codeColumn, textColumn));
@@ -725,9 +625,9 @@ public class MapperProducerTest {
         String code = "code-sdfsdf";
         String latitude = "12.54";
         String longitude = "2.8975412";
-        ColumnDataType codeColumn = new ColumnDataType("unloCode", code,"java.lang.String");
-        ColumnDataType latitudeColumn = new ColumnDataType("latitude", latitude,"java.lang.Double");
-        ColumnDataType longitudeColumn = new ColumnDataType("longitude", longitude,"java.lang.Double");
+        ColumnDataType codeColumn = new ColumnDataType("unloCode", code, "java.lang.String");
+        ColumnDataType latitudeColumn = new ColumnDataType("latitude", latitude, "java.lang.Double");
+        ColumnDataType longitudeColumn = new ColumnDataType("longitude", longitude, "java.lang.Double");
 
         ObjectRepresentation objectRepresentation = new ObjectRepresentation();
         objectRepresentation.setFields(Lists.newArrayList(codeColumn, latitudeColumn, longitudeColumn));
@@ -743,8 +643,8 @@ public class MapperProducerTest {
     public void testMapObjectRepresentationToReferenceTerritory() {
         String code = "code-sdfsdf";
         String englishName = "englishName";
-        ColumnDataType codeColumn = new ColumnDataType("code", code,"java.lang.String");
-        ColumnDataType textColumn = new ColumnDataType("enName", englishName,"java.lang.String");
+        ColumnDataType codeColumn = new ColumnDataType("code", code, "java.lang.String");
+        ColumnDataType textColumn = new ColumnDataType("enName", englishName, "java.lang.String");
 
         ObjectRepresentation objectRepresentation = new ObjectRepresentation();
         objectRepresentation.setFields(Lists.newArrayList(codeColumn, textColumn));
@@ -763,4 +663,19 @@ public class MapperProducerTest {
         assertEquals("Belgium", refCodeListItemDto.getText());
     }
 
+    @Test
+    public void testMapConversionFactor() {
+        ConversionFactor conversionFactor = new ConversionFactor("COD", "WHL", "FRE", new BigDecimal("1.17"));
+
+        ObjectRepresentation objectRepresentation = new ObjectRepresentation();
+        objectRepresentation.setFields(Arrays.asList(
+                new ColumnDataType("state", "FRE", ""),
+                new ColumnDataType("presentation", "WHL", ""),
+                new ColumnDataType("factor", "1.17", ""),
+                new ColumnDataType("code", "COD", "")));
+
+        ConversionFactor mappedConversionFactor = mapper.map(objectRepresentation, ConversionFactor.class);
+
+        assertEquals(conversionFactor, mappedConversionFactor);
+    }
 }

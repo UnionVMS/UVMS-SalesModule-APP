@@ -61,8 +61,13 @@ public class FluxReport {
     @JoinColumn(name = "sales_document_id")
     private Document document;
 
+    /** Date on which this report is deleted **/
     @Column(name = "deletion")
     private DateTime deletion;
+
+    /** Date on which this report is corrected by another report **/
+    @Column(name = "correction")
+    private DateTime correction;
 
     /**
      * When this report is a correction or deletion of another report, the attribute previousFluxReport will point
@@ -195,6 +200,14 @@ public class FluxReport {
         this.deletion = deletion;
     }
 
+    public DateTime getCorrection() {
+        return correction;
+    }
+
+    public void setCorrection(DateTime correction) {
+        this.correction = correction;
+    }
+
     public FluxReport extId(final String extId) {
         setExtId(extId);
         return this;
@@ -257,6 +270,11 @@ public class FluxReport {
 
     public FluxReport deletion(DateTime deletion) {
         this.deletion = deletion;
+        return this;
+    }
+
+    public FluxReport correction(DateTime correction) {
+        this.correction = correction;
         return this;
     }
 }

@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.domain.entity;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -68,6 +69,7 @@ public class Product {
     @JoinTable(name = "sales_origin",
                 joinColumns = @JoinColumn(name = "sales_product_id"),
                 inverseJoinColumns = @JoinColumn(name = "sales_flux_location_id"))
+    @BatchSize(size = 1000)
     private List<FluxLocation> origins;
 
     public Integer getId() {

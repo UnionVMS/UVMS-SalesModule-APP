@@ -108,7 +108,7 @@ public class ReportServiceBean implements ReportService {
     }
 
     @Override
-    public PagedListDto<ReportListDto> search(@NotNull PageCriteriaDto<ReportQueryFilterDto> criteria) {
+    public PagedListDto<ReportListDto> search(@NotNull PageCriteriaDto<ReportQueryFilterDto> criteria, boolean eagerLoadRelations) {
         try {
             //prepare query
             ReportQuery query = mapper.map(criteria, ReportQuery.class);
@@ -117,7 +117,7 @@ public class ReportServiceBean implements ReportService {
             searchReportsHelper.prepareSorting(query);
 
             //search
-            List<Report> reports = reportDomainModel.search(query);
+            List<ReportSummary> reports = reportDomainModel.search(query, eagerLoadRelations);
             long amountOfReportsWithoutFilters = reportDomainModel.count(query);
 
             //enrich results
@@ -141,7 +141,7 @@ public class ReportServiceBean implements ReportService {
             ReportQuery query = mapper.map(fluxSalesQueryMessage, ReportQuery.class);
             searchReportsHelper.excludeDeletedReportsInQuery(query);
 
-            List<Report> reports = reportDomainModel.search(query);
+            List<Report> reports = reportDomainModel.searchIncludingDetails(query);
 
             FLUXSalesResponseMessage fluxSalesResponse = fluxSalesResponseMessageFactory.create(fluxSalesQueryMessage, reports, validationResults, messageValidationStatus);
 
@@ -154,7 +154,7 @@ public class ReportServiceBean implements ReportService {
 
     @Override
     public List<List<String>> exportDocuments(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters) {
-        PagedListDto<ReportListDto> search = search(filters.pageSize(Integer.MAX_VALUE).pageIndex(1));
+        PagedListDto<ReportListDto> search = search(filters.pageSize(Integer.MAX_VALUE).pageIndex(1), true);
 
         List<ReportListExportDto> reports = mapper.mapAsList(search.getItems(), ReportListExportDto.class);
 
@@ -179,8 +179,11 @@ public class ReportServiceBean implements ReportService {
     private PagedListDto<ReportListDto> getSelectedReports(ExportListsDto exportListsDto) {
         PageCriteriaDto<ReportQueryFilterDto> criteria = exportListsDto.getCriteria();
         criteria.getFilters().includeFluxReportIds(exportListsDto.getIds());
+
+        boolean eagerLoadRelations = exportListsDto.getIds().size() > 10;
+
         try {
-            return search(criteria);
+            return search(criteria, eagerLoadRelations);
         } catch (SalesServiceException e) {
             throw new SalesServiceException("Something went wrong during CSV export of selected reports", e);
         }
@@ -190,7 +193,7 @@ public class ReportServiceBean implements ReportService {
         PageCriteriaDto<ReportQueryFilterDto> criteria = exportListsDto.getCriteria();
         criteria.getFilters().excludeFluxReportIds(exportListsDto.getIds());
         try {
-            return search(criteria);
+            return search(criteria, true);
         } catch (SalesServiceException e) {
             throw new SalesServiceException("Something went wrong during CSV export of all reports", e);
         }

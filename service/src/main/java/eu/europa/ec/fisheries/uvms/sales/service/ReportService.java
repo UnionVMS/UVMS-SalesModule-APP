@@ -24,10 +24,11 @@ public interface ReportService {
     /**
      * Search for sales reports synchronously. Used over REST service.
      * @param filters filter criteria
+     * @param eagerLoadRelations When you expect a lot of reports to come back, it is probably not interesting to lazy load all relations. By activating this mode, the query will eager fetch several relations, avoiding the need to do more queries.
      * @return page of search results
      * @throws SalesServiceException when something goes wrong
      */
-    PagedListDto<ReportListDto> search(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters);
+    PagedListDto<ReportListDto> search(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters, boolean eagerLoadRelations);
 
     /**
      * Search for sales reports asynchronously. Used over JMS.

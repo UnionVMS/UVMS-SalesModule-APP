@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
+import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.AssetServiceBeanHelper;
 import eu.europa.ec.fisheries.wsdl.asset.module.GetAssetModuleResponse;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -22,29 +23,55 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class AssetServiceBeanTest {
 
+
     @InjectMocks
     private AssetServiceBean assetServiceBean;
 
     @Mock
     private AssetServiceBeanHelper helper;
 
+    @Mock
+    private AssetCacheBean cache;
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
-    public void testFindByCFRWhenSuccess() throws Exception {
+    public void testFindByCFRWhenSuccessAndCacheWasHit() throws Exception {
+        final String CFR = "cfr";
+
         Asset asset = new Asset();
+        asset.setCfr(CFR);
         GetAssetModuleResponse response = new GetAssetModuleResponse();
         response.setAsset(asset);
 
-        when(helper.createRequestToFindAssetByCFR("cfr")).thenReturn("request");
+        when(cache.retrieveAssetFromCache(CFR)).thenReturn(Optional.of(asset));
+
+        assertSame(asset, assetServiceBean.findByCFR(CFR));
+        verify(cache).retrieveAssetFromCache(CFR);
+        verifyNoMoreInteractions(helper, cache);
+    }
+
+    @Test
+    public void testFindByCFRWhenSuccessAndCacheWasntHit() throws Exception {
+        final String CFR = "cfr";
+
+        Asset asset = new Asset();
+        asset.setCfr(CFR);
+        GetAssetModuleResponse response = new GetAssetModuleResponse();
+        response.setAsset(asset);
+
+        when(helper.createRequestToFindAssetByCFR(CFR)).thenReturn("request");
         when(helper.callAssetModule("request", GetAssetModuleResponse.class)).thenReturn(response);
+        when(cache.retrieveAssetFromCache(CFR)).thenReturn(Optional.<Asset>absent());
+        doNothing().when(cache).cacheMessage(CFR, asset);
 
-        assertSame(asset, assetServiceBean.findByCFR("cfr"));
-
-        verify(helper).createRequestToFindAssetByCFR("cfr");
+        assertSame(asset, assetServiceBean.findByCFR(CFR));
+        verify(helper).createRequestToFindAssetByCFR(CFR);
         verify(helper).callAssetModule("request", GetAssetModuleResponse.class);
-        verifyNoMoreInteractions(helper);
+        verify(cache).cacheMessage(CFR, asset);
+        verify(cache).retrieveAssetFromCache(CFR);
+        verifyNoMoreInteractions(helper, cache);
     }
 
     @Test

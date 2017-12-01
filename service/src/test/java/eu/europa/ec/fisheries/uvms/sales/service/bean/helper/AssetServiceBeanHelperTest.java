@@ -1,8 +1,8 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
-import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.module.GetAssetModuleResponse;
@@ -33,7 +33,7 @@ public class AssetServiceBeanHelperTest {
     private SalesMessageProducer messageProducer;
 
     @Mock
-    private SalesMessageConsumer receiver;
+    private MessageConsumer receiver;
 
     @Mock
     private TextMessage textMessage;

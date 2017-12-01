@@ -1,9 +1,9 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.proxy.ecb.types.v1.GetExchangeRateResponse;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
-import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
@@ -24,11 +24,13 @@ import java.math.BigDecimal;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EcbProxyServiceBean implements EcbProxyService {
 
+    private static final long TIMEOUT = 30000;
+
     @EJB
     private SalesMessageProducer messageProducer;
 
     @EJB
-    private SalesMessageConsumer receiver;
+    private MessageConsumer receiver;
 
     @Override
     public BigDecimal findExchangeRate(String sourceCurrency, String targetCurrency, DateTime date) {
@@ -53,7 +55,7 @@ public class EcbProxyServiceBean implements EcbProxyService {
     private <T> T callEcbProxy(String request, Class<T> returnType) {
         try {
             String messageId = messageProducer.sendModuleMessage(request, Union.ECB_PROXY);
-            TextMessage responseText = receiver.getMessage(messageId, TextMessage.class);
+            TextMessage responseText = receiver.getMessage(messageId, TextMessage.class, TIMEOUT);
             return unmarshallTextMessage(responseText, returnType);
         } catch (MessageException e) {
             throw new SalesNonBlockingException("Could not contact the ECB proxy Module", e);

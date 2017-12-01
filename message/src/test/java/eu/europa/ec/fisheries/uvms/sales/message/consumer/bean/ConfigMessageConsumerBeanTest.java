@@ -1,8 +1,8 @@
 package eu.europa.ec.fisheries.uvms.sales.message.consumer.bean;
 
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
-import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -21,7 +21,7 @@ public class ConfigMessageConsumerBeanTest {
     private ConfigMessageConsumerBean configMessageConsumerBean;
 
     @Mock
-    private SalesMessageConsumer salesMessageConsumer;
+    private MessageConsumer salesMessageConsumer;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();

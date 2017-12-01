@@ -53,11 +53,17 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
 
     @Override
     public List<FluxReport> search(ReportQuery reportQuery) {
+        return search(reportQuery, false);
+    }
+
+    @Override
+    public List<FluxReport> search(ReportQuery reportQuery, boolean eagerLoadRelations) {
         return FluxReportQueryToTypedQueryHelper
                                     .search(em)
                                     .filter(reportQuery.getFilters())
                                     .sort(reportQuery.getSorting())
                                     .page(reportQuery.getPaging())
+                                    .eagerLoadRelations(eagerLoadRelations)
                                     .build()
                                     .getResultList();
     }

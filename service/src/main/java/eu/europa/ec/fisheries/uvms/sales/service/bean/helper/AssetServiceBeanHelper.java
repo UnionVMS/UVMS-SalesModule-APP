@@ -3,9 +3,9 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
-import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
@@ -26,7 +26,7 @@ public class AssetServiceBeanHelper {
     private SalesMessageProducer messageProducer;
 
     @EJB
-    private SalesMessageConsumer receiver;
+    private MessageConsumer receiver;
 
     public <T> T callAssetModule(String assetListModuleRequest, Class<T> returnType) {
         try {
