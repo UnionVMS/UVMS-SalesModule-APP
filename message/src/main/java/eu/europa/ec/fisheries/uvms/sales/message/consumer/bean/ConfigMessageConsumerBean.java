@@ -1,9 +1,9 @@
 package eu.europa.ec.fisheries.uvms.sales.message.consumer.bean;
 
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
-import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +18,7 @@ public class ConfigMessageConsumerBean implements ConfigMessageConsumer {
     static final Logger LOG = LoggerFactory.getLogger(ConfigMessageConsumerBean.class);
 
     @EJB
-    private SalesMessageConsumer salesMessageConsumer;
+    private MessageConsumer salesMessageConsumer;
 
     @Override
     public <T> T getConfigMessage(String correlationId, Class type) throws ConfigMessageException {

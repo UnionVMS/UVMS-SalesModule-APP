@@ -10,12 +10,12 @@
 
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.mdr.model.exception.MdrModelMarshallException;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.MdrModuleMapper;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
-import eu.europa.ec.fisheries.uvms.sales.message.consumer.SalesMessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
@@ -35,8 +35,10 @@ import java.util.List;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MDRServiceBean implements MDRService {
 
+    private static final long TIMEOUT = 30000;
+
     @EJB
-    private SalesMessageConsumer consumer;
+    private MessageConsumer consumer;
 
     @EJB
     private SalesMessageProducer producer;
@@ -46,7 +48,7 @@ public class MDRServiceBean implements MDRService {
             String request = MdrModuleMapper.createFluxMdrGetCodeListRequest(acronym.getInternalName());
             String correlationId = producer.sendModuleMessage(request, Union.MDR);
 
-            TextMessage message = consumer.getMessage(correlationId, TextMessage.class);
+            TextMessage message = consumer.getMessage(correlationId, TextMessage.class, TIMEOUT);
 
             MdrGetCodeListResponse response = JAXBMarshaller.unmarshallTextMessage(message.getText(), MdrGetCodeListResponse.class);
             return response.getDataSets();
