@@ -58,7 +58,6 @@ public class MapperProducer {
 
         //general converters
         converterFactory.registerConverter(new PassThroughConverter(org.joda.time.DateTime.class));
-        converterFactory.registerConverter(new FluxReportItemTypeConverter());
 
         //field converters
         converterFactory.registerConverter("presentation", new PresentationConverter());
@@ -137,7 +136,7 @@ public class MapperProducer {
                 .field("salesReport.location", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedFLUXLocations[0]")
                 .field("salesReport.products", "FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].specifiedSalesBatches[0].specifiedAAPProducts")
                 .field("salesReport.category", "auctionSale.salesCategory")
-                .field("salesReport.itemType", "FLUXSalesReportMessage.salesReports[0].itemTypeCode")
+                .fieldMap("salesReport.itemType", "FLUXSalesReportMessage.salesReports[0].itemTypeCode").converter("fluxReportItemTypeConverter").add()
                 .customize(new CustomMapper<SalesDetailsDto, Report>() {
                     @Override
                     public void mapBtoA(Report report, SalesDetailsDto salesDetailsDto, MappingContext context) {
@@ -227,7 +226,7 @@ public class MapperProducer {
     private void configureSalesDetailsRelation(MapperFactory factory) {
         factory.classMap(Report.class, SalesDetailsRelation.class)
                 .field("FLUXSalesReportMessage.FLUXReportDocument.IDS[0].value", "reportExtId")
-                .field("FLUXSalesReportMessage.salesReports[0].itemTypeCode", "type")
+                .fieldMap("FLUXSalesReportMessage.salesReports[0].itemTypeCode", "type").converter("fluxReportItemTypeConverter").add()
                 .field("FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0].IDS[0].value", "documentExtId")
                 .field("FLUXSalesReportMessage.FLUXReportDocument.creationDateTime.dateTime", "creationDate")
                 .register();

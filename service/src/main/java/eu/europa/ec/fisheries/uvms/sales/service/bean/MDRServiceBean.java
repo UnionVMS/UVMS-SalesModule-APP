@@ -12,8 +12,8 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.mdr.model.exception.MdrModelMarshallException;
-import eu.europa.ec.fisheries.uvms.mdr.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.MdrModuleMapper;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
@@ -29,6 +29,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import javax.xml.bind.JAXBException;
 import java.util.List;
 
 @Singleton
@@ -50,9 +51,9 @@ public class MDRServiceBean implements MDRService {
 
             TextMessage message = consumer.getMessage(correlationId, TextMessage.class, TIMEOUT);
 
-            MdrGetCodeListResponse response = JAXBMarshaller.unmarshallTextMessage(message.getText(), MdrGetCodeListResponse.class);
+            MdrGetCodeListResponse response = JAXBUtils.unMarshallMessage(message.getText(), MdrGetCodeListResponse.class);
             return response.getDataSets();
-        } catch (MdrModelMarshallException | MessageException | JMSException e) {
+        } catch (MdrModelMarshallException | JAXBException | MessageException | JMSException e) {
             throw new SalesNonBlockingException("Exception thrown when retrieving codelist '" + acronym.getInternalName() + "' from MDR" , e);
         }
     }
