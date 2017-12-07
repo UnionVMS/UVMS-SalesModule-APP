@@ -19,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -368,19 +367,56 @@ public class ReportDomainModelBeanTest {
 
         verify(fluxReportDao).findByExtId(extId);
         verify(mapper).map(fluxReport, Report.class);
-        verifyNoMoreInteractions(fluxReportDao);
+        verifyNoMoreInteractions(fluxReportDao, mapper);
 
         assertTrue(result.isPresent());
         assertSame(report, result.get());
     }
 
-    @Test(expected = NoResultException.class)
+    @Test
     public void testFindByExtIdWhenNothingFound() {
         String extId = "extId";
 
-        doThrow(new NoResultException()).when(fluxReportDao).findByExtId(extId);
+        doReturn(Optional.absent()).when(fluxReportDao).findByExtId(extId);
 
-        reportDomainModelBean.findByExtId(extId);
+        Optional<Report> result = reportDomainModelBean.findByExtId(extId);
+
+        verify(fluxReportDao).findByExtId(extId);
+        verifyNoMoreInteractions(fluxReportDao, mapper);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    public void testFindByExtIdWhenFoundCorrectedReport() {
+        String extId = "extId";
+        FluxReport fluxReport = new FluxReport()
+                .correction(new DateTime());
+
+        doReturn(Optional.of(fluxReport)).when(fluxReportDao).findByExtId(extId);
+
+        Optional<Report> result = reportDomainModelBean.findByExtId(extId);
+
+        verify(fluxReportDao).findByExtId(extId);
+        verifyNoMoreInteractions(fluxReportDao, mapper);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    public void testFindByExtIdWhenFoundDeletedReport() {
+        String extId = "extId";
+        FluxReport fluxReport = new FluxReport()
+                .deletion(new DateTime());
+
+        doReturn(Optional.of(fluxReport)).when(fluxReportDao).findByExtId(extId);
+
+        Optional<Report> result = reportDomainModelBean.findByExtId(extId);
+
+        verify(fluxReportDao).findByExtId(extId);
+        verifyNoMoreInteractions(fluxReportDao, mapper);
+
+        assertFalse(result.isPresent());
     }
 
     @Test

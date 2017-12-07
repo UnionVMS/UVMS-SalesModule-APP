@@ -12,6 +12,7 @@ public interface ReportDomainModel {
 
     /**
      * Finds a report by its GUID, internally known as extId.
+     * Does not return a report that has been corrected or deleted.
      *
      * @param extId internal name for GUID
      * @return the found report
