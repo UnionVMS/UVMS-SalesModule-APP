@@ -47,6 +47,7 @@ public abstract class BuildSalesServiceTestDeployment {
         testWar.addAsResource("persistence-integration.xml", "META-INF/persistence.xml");
         testWar.addAsResource("logback-test.xml", "logback.xml");
         testWar.addAsResource("logging.properties", "logging.properties");
+        testWar.addAsManifestResource("jboss-deployment-structure.xml","jboss-deployment-structure.xml");
 
         testWar.addAsLibraries(files);
 
