@@ -24,7 +24,6 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -149,7 +148,7 @@ public class ReferenceDataCache {
                 return factor.getFactor();
             }
         }
-
+        log.warn("No valid code list conversion factor. Use default value 999. Conversion factor list size: " + factors.size());
         return BigDecimal.valueOf(999);
     }
 }

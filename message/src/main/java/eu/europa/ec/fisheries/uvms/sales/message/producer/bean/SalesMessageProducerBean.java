@@ -72,10 +72,6 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
                     return ecbProxyMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
                 case RULES:
                     return rulesMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
-                case RULES_RESPONSE:
-// Verify not supported
-//                    getProducer(session, rulesQueue, timeout).send(jmsMessage);
-                    throw new UnsupportedOperationException("Sales has no functionality implemented to talk with " + module);
                 case MDR:
                     return mdrMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
                 default:

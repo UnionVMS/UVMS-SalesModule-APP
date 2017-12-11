@@ -2,11 +2,8 @@ package eu.europa.ec.fisheries.uvms.sales.domain.bean;
 
 import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.SalesDocumentType;
-import eu.europa.ec.fisheries.uvms.sales.domain.DocumentDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.DocumentDao;
-import eu.europa.ec.fisheries.uvms.sales.domain.dao.bean.DocumentDaoBean;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
-import eu.europa.ec.fisheries.uvms.sales.domain.mapper.MapperProducer;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Test;
 import org.junit.runner.RunWith;

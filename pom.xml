@@ -139,12 +139,6 @@
 				<version>1.13</version>
 				<type>pom</type>
 			</dependency>
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-arquillian-deps</artifactId>
-				<version>1.13</version>
-				<type>pom</type>
-			</dependency>
     		<dependency>
     			<groupId>ch.qos.logback</groupId>
     			<artifactId>logback-core</artifactId>
