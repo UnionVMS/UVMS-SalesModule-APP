@@ -42,8 +42,8 @@ public class EventServiceBean implements EventService {
     @EJB
     private UniqueIdService uniqueIdService;
 
-//    @EJB
-//    private QueryService queryServiceBean;
+    @EJB
+    private QueryService queryServiceBean;
 
     @Override
     public void createReport(@Observes @ReportReceivedEvent EventMessage event) {
@@ -64,21 +64,21 @@ public class EventServiceBean implements EventService {
     }
 
     public void executeQuery(@Observes @QueryReceivedEvent EventMessage event) {
-//        SalesQueryRequest salesQueryRequest = (SalesQueryRequest) event.getSalesBaseRequest();
-//
-//        try {
-//            FLUXSalesQueryMessage salesQueryType = JAXBMarshaller.unmarshallString(salesQueryRequest.getQuery(), FLUXSalesQueryMessage.class);
-//            String pluginToSendResponseThrough = salesQueryRequest.getPluginToSendResponseThrough();
-//            List<ValidationQualityAnalysisType> validationResults = salesQueryRequest.getValidationQualityAnalysises();
-//            String messageValidationResult = salesQueryRequest.getMessageValidationStatus();
-//
-//            queryServiceBean.saveQuery(salesQueryType.getSalesQuery());
-//            reportService.search(salesQueryType, pluginToSendResponseThrough, validationResults, messageValidationResult);
-//        } catch (SalesMarshallException e) {
-//            throw new SalesServiceException("Something went wrong during unmarshalling of a sales query", e);
-//        } catch (SalesNonBlockingException e) {
-//            LOG.error("Something went wrong while executing the incoming query", e);
-//        }
+        SalesQueryRequest salesQueryRequest = (SalesQueryRequest) event.getSalesBaseRequest();
+
+        try {
+            FLUXSalesQueryMessage salesQueryType = JAXBMarshaller.unmarshallString(salesQueryRequest.getQuery(), FLUXSalesQueryMessage.class);
+            String pluginToSendResponseThrough = salesQueryRequest.getPluginToSendResponseThrough();
+            List<ValidationQualityAnalysisType> validationResults = salesQueryRequest.getValidationQualityAnalysises();
+            String messageValidationResult = salesQueryRequest.getMessageValidationStatus();
+
+            queryServiceBean.saveQuery(salesQueryType.getSalesQuery());
+            reportService.search(salesQueryType, pluginToSendResponseThrough, validationResults, messageValidationResult);
+        } catch (SalesMarshallException e) {
+            throw new SalesServiceException("Something went wrong during unmarshalling of a sales query", e);
+        } catch (SalesNonBlockingException e) {
+            LOG.error("Something went wrong while executing the incoming query", e);
+        }
     }
 
     public void respondToInvalidMessage(@Observes @InvalidMessageReceivedEvent EventMessage event) {
@@ -95,7 +95,6 @@ public class EventServiceBean implements EventService {
 
     public void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event) {
         FindReportByIdRequest request = ((FindReportByIdRequest) event.getSalesBaseRequest());
-
         Report report = reportService.findByExtId(request.getId()).orNull();
 
         try {
@@ -106,9 +105,6 @@ public class EventServiceBean implements EventService {
             }
 
             String marshalledFindReportByIdResponse = SalesModuleRequestMapper.createFindReportByIdResponse(marshalledReport);
-
-            LOG.info("===marshalledFindReportByIdResponse: " + marshalledFindReportByIdResponse);
-
             salesMessageProducer.sendModuleResponseMessage(event.getJmsMessage(), marshalledFindReportByIdResponse);
         } catch (SalesMarshallException e) {
             throw new SalesServiceException("Something went wrong during marshalling of a FindReportById", e);
