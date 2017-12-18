@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.message.JMSUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,10 +13,11 @@ import javax.jms.*;
 
 import static org.junit.Assert.assertNotNull;
 
+@Slf4j
 @MessageDriven(mappedName = "java:/jms/queue/UVMSSalesEcbProxy", activationConfig = {
         @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSMdrEvent ")
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSMdrEvent")
 })
 public class MDRMessageReceiverMock implements MessageListener {
 
@@ -31,7 +33,7 @@ public class MDRMessageReceiverMock implements MessageListener {
     @Override
     public void onMessage(Message message) {
         TextMessage requestMessage = (TextMessage) message;
-//        sendResponse(requestMessage);
+        sendResponse(requestMessage);
     }
 
     private void sendResponse(TextMessage requestMessage) {
@@ -42,19 +44,19 @@ public class MDRMessageReceiverMock implements MessageListener {
             assertNotNull(connection);
             session = JMSUtils.connectToQueue(connection);
             assertNotNull(session);
-            TextMessage getExchangeRateResponseMessage = session.createTextMessage(getMockedSettingsResponse());
-            getExchangeRateResponseMessage.setJMSCorrelationID(requestMessage.getJMSMessageID());
-            getProducer(session, requestMessage.getJMSReplyTo()).send(getExchangeRateResponseMessage);
+            TextMessage mdrGetCodeListResponse = session.createTextMessage(getMockedSettingsResponse());
+            mdrGetCodeListResponse.setJMSCorrelationID(requestMessage.getJMSMessageID());
+            getProducer(session, requestMessage.getJMSReplyTo()).send(mdrGetCodeListResponse);
 
         } catch (Exception e) {
-            throw new RuntimeException("MyRuntimeException ProxyMessageReceiverMock.sendResponse() Exception: " + e.getMessage());
+            LOG.error("Unable to send MDR response message. Reason: " + e.getMessage());
         } finally {
             JMSUtils.disconnectQueue(connection);
         }
     }
 
-    private javax.jms.MessageProducer getProducer(Session session, Destination destination) throws JMSException {
-        javax.jms.MessageProducer producer = session.createProducer(destination);
+    private MessageProducer getProducer(Session session, Destination destination) throws JMSException {
+        MessageProducer producer = session.createProducer(destination);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         producer.setTimeToLive(30000L);
         return producer;

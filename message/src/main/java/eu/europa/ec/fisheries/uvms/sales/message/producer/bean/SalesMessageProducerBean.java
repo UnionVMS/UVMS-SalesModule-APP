@@ -12,15 +12,12 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class SalesMessageProducerBean implements SalesMessageProducer {
 
     private static final Logger LOG = LoggerFactory.getLogger(SalesMessageProducerBean.class);

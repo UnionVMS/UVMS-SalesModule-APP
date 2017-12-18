@@ -66,7 +66,7 @@ public abstract class ExtendedAbstractProducer extends AbstractProducer {
             MessageProducer producer = session.createProducer(message.getJMSReplyTo());
             producer.setDeliveryMode(jmsDeliveryMode);
             producer.setTimeToLive(timeToLiveInMillis);
-            producer.send(message);
+            producer.send(response);
 
         } catch (final JMSException e) {
             LOGGER.error("[ Error when returning request. ] {} {}", e.getMessage(), e.getStackTrace());

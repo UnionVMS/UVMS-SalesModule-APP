@@ -54,6 +54,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
 
     @Override
     public Optional<Report> findByExtId(String extId) {
+        checkNotNull(extId);
         LOG.debug("Find report by extId {}", extId);
 
         Optional<FluxReport> fluxReport = fluxReportDao.findByExtId(extId);

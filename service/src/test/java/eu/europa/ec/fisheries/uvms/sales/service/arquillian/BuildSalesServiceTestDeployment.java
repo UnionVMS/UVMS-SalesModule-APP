@@ -73,7 +73,9 @@ public abstract class BuildSalesServiceTestDeployment {
 		archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.mapper");
 		archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.converter");
 
-        archive.addClass(eu.europa.ec.fisheries.uvms.sales.service.ReportService.class).addClass(eu.europa.ec.fisheries.uvms.sales.service.bean.ReportServiceBean.class);
+        archive.addClass(UniqueIdService.class).addClass(UniqueIdServiceBean.class);
+
+        archive.addClass(ReportService.class).addClass(ReportServiceBean.class);
 
         archive.addClass(eu.europa.ec.fisheries.uvms.sales.service.AssetCache.class).addClass(eu.europa.ec.fisheries.uvms.sales.service.bean.AssetCacheBean.class);
 
@@ -110,8 +112,7 @@ public abstract class BuildSalesServiceTestDeployment {
 
 		archive.addClass(EventService.class).addClass(EventServiceBean.class);
 
-
-		archive.addClass(MessageConsumerBean.class);
+//		archive.addClass(MessageConsumerBean.class);
 
         return archive;
     }

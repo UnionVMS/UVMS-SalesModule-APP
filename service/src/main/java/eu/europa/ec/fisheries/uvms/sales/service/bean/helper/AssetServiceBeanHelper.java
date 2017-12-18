@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -19,6 +20,7 @@ import javax.jms.TextMessage;
  * Class who's only purpose is to hide low-level logic from the AssetServiceBean.
  * Should not be used by any other class!
  */
+@Slf4j
 @Stateless
 public class AssetServiceBeanHelper {
 
@@ -43,9 +45,13 @@ public class AssetServiceBeanHelper {
             return JAXBMarshaller.unmarshallTextMessage(responseText, returnType);
         } catch (AssetModelMapperException e) {
             try {
-                throw new SalesNonBlockingException("Could not parse the response from the the Asset Module. The response was " + responseText.getText(), e);
+                String errorMessage = "Could not parse the response from the the Asset Module. The response was " + responseText.getText();
+                log.error(errorMessage);
+                throw new SalesNonBlockingException(errorMessage);
             } catch (JMSException anotherException) {
-                throw new SalesNonBlockingException("Could not parse the response from the the Asset Module.", e);
+                String errorMessage = "Could not parse the response from the the Asset Module.";
+                log.error(errorMessage, e);
+                throw new SalesNonBlockingException(errorMessage, e);
             }
         }
     }

@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.assertNotNull;
 
+@Slf4j
 @MessageDriven(mappedName = "java:/jms/queue/UVMSSalesEcbProxy", activationConfig = {
         @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
@@ -39,28 +41,23 @@ public class ProxyMessageReceiverMock implements MessageListener {
 
         TextMessage requestMessage = (TextMessage) message;
 
+        EcbProxyBaseRequest request = null;
         try {
-            EcbProxyBaseRequest request = JAXBMarshaller.unmarshallTextMessage(requestMessage, EcbProxyBaseRequest.class);
+            request = JAXBMarshaller.unmarshallTextMessage(requestMessage, EcbProxyBaseRequest.class);
 
-            switch (request.getMethod()) {
-                case GET_EXCHANGE_RATE:
-                    try {
-                        sendResponse(requestMessage);
-
-                    } catch (Exception e) {
-                        throw new RuntimeException("MyRuntimeException ProxyMessageReceiverMock.onMessage() GET_EXCHANGE_RATE Exception: " + e);
-                    }
-                    break;
-                default:
-                    if (true) {
-                        throw new RuntimeException("MyRuntimeException ProxyMessageReceiverMock.onMessage() default");
-                    }
-            }
         } catch (SalesMarshallException e) {
-            if (true) {
-                throw new RuntimeException("MyRuntimeException ProxyMessageReceiverMock.onMessage() SalesMarshallException: " + e.getMessage());
-            }
+            log.error("Unable to convert request message to EcbProxyBaseRequest. Reason: " + e.getMessage());
+            return;
         }
+
+        switch (request.getMethod()) {
+            case GET_EXCHANGE_RATE:
+                sendResponse(requestMessage);
+                break;
+            default:
+                log.info("Request method is not supported");
+                break;
+            }
     }
 
     private void sendResponse(TextMessage requestMessage) {
@@ -69,7 +66,7 @@ public class ProxyMessageReceiverMock implements MessageListener {
         try {
             String documentCurrency = "DKK";
             String localCurrency = "EUR";
-            BigDecimal exchangeRate = BigDecimal.valueOf(1.02546);
+            BigDecimal exchangeRate = BigDecimal.valueOf(1.4321);
             LocalDate date = new LocalDate(2017, 3, 5);
 
 		    GetExchangeRateResponse getExchangeRateResponse = new GetExchangeRateResponse()
@@ -89,9 +86,7 @@ public class ProxyMessageReceiverMock implements MessageListener {
             getProducer(session, requestMessage.getJMSReplyTo()).send(getExchangeRateResponseMessage);
 
         } catch (Exception e) {
-            if (true) {
-                throw new RuntimeException("MyRuntimeException ProxyMessageReceiverMock.sendResponse() Exception: " + e.getMessage());
-            }
+            log.error("Unable to send GetExchangeRateResponse. Reason: " + e.getMessage());
         } finally {
             JMSUtils.disconnectQueue(connection);
         }
