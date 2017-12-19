@@ -24,7 +24,6 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -324,62 +323,66 @@ public class SalesServiceTestIT extends TransactionalTests {
 	}
 
 	@InSequence(10)
-	@Ignore
 	@Test
-	@Transactional(TransactionMode.COMMIT)
+	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
-    public void testSalesMessageConsumerBean() throws Exception {
+	public void testSalesMessageConsumerBean() throws Exception {
 		// Data
+		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0311";
 		String request = composeFLUXSalesReportMessageAsString();
 		String messageValidationStatus = "OK";
 		String pluginToSendResponseThrough = "BELGIAN_SALES";
-        List<ValidationQualityAnalysisType> validationQualityAnalysisList = new ArrayList<>();
-
+		List<ValidationQualityAnalysisType> validationQualityAnalysisList = new ArrayList<>();
 		String salesReportRequest = SalesModuleRequestMapper.createSalesReportRequest(request, messageValidationStatus, validationQualityAnalysisList, pluginToSendResponseThrough);
 
 		//Execute, trigger MessageConsumerBean
 		Connection connection = null;
 		Session session = null;
-        try {
-            connection = connectionFactory.createConnection();
+		try {
+			connection = connectionFactory.createConnection();
 			session = JMSUtils.connectToQueue(connection);
 			TextMessage salesReportRequestMessage = session.createTextMessage(salesReportRequest);
 			getProducer(session, salesEventQueue).send(salesReportRequestMessage);
-
-        } catch (Exception e) {
+		} catch (Exception e) {
 			fail("Test should not fail for consume JMS message exception: " + e.getMessage());
-        } finally {
-            JMSUtils.disconnectQueue(connection);
-        }
+		} finally {
+			JMSUtils.disconnectQueue(connection);
+		}
 
-		// Assert		
-		Connection connection2 = null;
-		Session session2 = null;
-		String messageGuid2 = "d5da24ff-42b4-5e76-967f-ad97762a0311";
-        try {
-            connection2 = connectionFactory.createConnection();
-			session2 = JMSUtils.connectToQueue(connection2);
-			Message jmsMessage2 = session2.createConsumer(rulesEventQueue).receive(TIMEOUT);
-			TextMessage textMessage2 = (TextMessage) jmsMessage2;
-			String strMessage2 = textMessage2.getText();
-			assertTrue(strMessage2.contains("SendSalesResponseRequest"));
-			assertTrue(strMessage2.contains(messageGuid2));
+		// Assert
+		String correlationId = null;
+		Destination salesReportRequestReplyTo = rulesEventQueue;
+		TextMessage sendSalesResponseRequestMessage = receiveTextMessage(salesReportRequestReplyTo, correlationId);
+		assertNotNull(sendSalesResponseRequestMessage);
+		String sendSalesResponseRequestMessageBody = sendSalesResponseRequestMessage.getText();
+		assertTrue(sendSalesResponseRequestMessageBody.contains("SendSalesResponseRequest"));
+		assertTrue(sendSalesResponseRequestMessageBody.contains(messageGuid));
 
-        } catch (Exception e) {
-			fail("Test should not fail for consume JMS message exception: " + e.getMessage());
-        } finally {
-            JMSUtils.disconnectQueue(connection2);
-        }
 
-		Report foundReport = reportDomainModel.findByExtId(messageGuid2).orNull();
-		FLUXSalesReportMessage fluxSalesReportMessage = foundReport.getFLUXSalesReportMessage();
-		FLUXReportDocumentType fluxReportDocument = fluxSalesReportMessage.getFLUXReportDocument();
-		assertEquals(messageGuid2, fluxReportDocument.getIDS().get(0).getValue());
-		assertEquals(1, fluxSalesReportMessage.getSalesReports().size());
-		SalesReportType salesReport = fluxSalesReportMessage.getSalesReports().get(0);
-		assertEquals(1, salesReport.getIncludedSalesDocuments().size());
-		AuctionSaleType auctionSale = foundReport.getAuctionSale();
-		assertEquals("BEL", auctionSale.getCountryCode());
+		// Use case: FindReportReceivedEvent event for existing report
+
+		// Test data
+		FindReportByIdRequest findReportByIdRequest = new FindReportByIdRequest();
+		findReportByIdRequest.withMethod(SalesModuleMethod.FIND_REPORT_BY_ID).withId(messageGuid);
+		Destination findReportByIdRequestReplyTo = rulesQueue;
+		TextMessage findReportByIdRequestMessage = getTextMessageWithReplyTo(findReportByIdRequestReplyTo);
+		assertNotNull(findReportByIdRequestMessage);
+		EventMessage eventMessage = new EventMessage(findReportByIdRequest);
+		eventMessage.setJmsMessage(findReportByIdRequestMessage);
+
+		// Execute
+		eventService.respondToFindReportMessage(eventMessage);
+		TextMessage responseMessage = receiveTextMessage(findReportByIdRequestReplyTo, findReportByIdRequestMessage.getJMSMessageID());
+
+		// Assert
+		assertNotNull(responseMessage);
+		String responseMessageBody = responseMessage.getText();
+		FindReportByIdResponse findReportByIdResponse = JAXBMarshaller.unmarshallString(responseMessageBody, FindReportByIdResponse.class);
+		assertTrue(StringUtils.isNotBlank(findReportByIdResponse.getReport()));
+		FLUXSalesReportMessage fluxSalesReportMessage = JAXBMarshaller.unmarshallString(findReportByIdResponse.getReport(), FLUXSalesReportMessage.class);
+		assertNotNull(fluxSalesReportMessage);
+		assertEquals("BEL-SN-2007-7777777", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
+		assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
 	}
 
 	private javax.jms.MessageProducer getProducer(Session session, Destination destination) throws JMSException {
@@ -409,7 +412,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 			textMessage.setJMSReplyTo(replyToDestination);
 			MessageProducer producer = session.createProducer(rulesEventQueue); // for testing sake
 			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-			producer.setTimeToLive(500L);
+			producer.setTimeToLive(10L);
 			producer.send(textMessage);
 			return textMessage;
 

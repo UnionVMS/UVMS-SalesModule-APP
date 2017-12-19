@@ -114,7 +114,7 @@ public abstract class BuildSalesServiceTestDeployment {
 
 		archive.addClass(EventService.class).addClass(EventServiceBean.class);
 
-//		archive.addClass(MessageConsumerBean.class);
+		archive.addClass(MessageConsumerBean.class);
 
         return archive;
     }
