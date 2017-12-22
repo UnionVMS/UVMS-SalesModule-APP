@@ -71,6 +71,7 @@ public interface ReportService {
 
     /**
      * Finds a sales report by extId
+     * Does not return reports that have been corrected or deleted
      * @param extId the extId of the report
      */
     Optional<Report> findByExtId(String extId);

@@ -56,10 +56,12 @@ public class ReportDomainModelBean implements ReportDomainModel {
         LOG.debug("Find report by extId {}", extId);
 
         Optional<FluxReport> fluxReport = fluxReportDao.findByExtId(extId);
-        if (fluxReport.isPresent()) {
-            return Optional.of(mapper.map(fluxReport.get(), Report.class));
-        } else {
+        if (!fluxReport.isPresent()
+                || fluxReport.get().isCorrected()
+                || fluxReport.get().isDeleted()) {
             return Optional.absent();
+        } else {
+            return Optional.of(mapper.map(fluxReport.get(), Report.class));
         }
     }
 

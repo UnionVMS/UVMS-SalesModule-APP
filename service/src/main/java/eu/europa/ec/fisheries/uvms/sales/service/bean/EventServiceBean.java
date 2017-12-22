@@ -88,15 +88,26 @@ public class EventServiceBean implements EventService {
         List<ValidationQualityAnalysisType> validationResults = respondToInvalidMessageRequest.getValidationQualityAnalysises();
         String sender = respondToInvalidMessageRequest.getSender();
         String messageGuid = respondToInvalidMessageRequest.getMessageGuid();
-        String schemeId = respondToInvalidMessageRequest.getSchemeId();
+        String schemeId = determineSchemeId(respondToInvalidMessageRequest);
 
         unsavedMessageService.sendResponseToInvalidIncomingMessage(messageGuid, validationResults, sender, pluginToSendResponseThrough, schemeId);
+    }
+
+    private String determineSchemeId(RespondToInvalidMessageRequest respondToInvalidMessageRequest) {
+        switch (respondToInvalidMessageRequest.getTypeOfId()) {
+            case GUID:
+                return "UUID";
+            case FLUXTL_ON:
+                return "FLUXTL_ON";
+            default:
+                throw new RuntimeException("No case implemented for " + respondToInvalidMessageRequest.getTypeOfId());
+        }
     }
 
     public void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event) {
         FindReportByIdRequest request = ((FindReportByIdRequest) event.getSalesBaseRequest());
         Report report = reportService.findByExtId(request.getId())
-                                                .orNull();
+                .orNull();
 
         try {
             String marshalledReport = "";
