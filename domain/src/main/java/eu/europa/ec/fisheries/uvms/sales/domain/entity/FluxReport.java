@@ -277,4 +277,12 @@ public class FluxReport {
         this.correction = correction;
         return this;
     }
+
+    public boolean isCorrected() {
+        return correction != null;
+    }
+
+    public boolean isDeleted() {
+        return deletion != null;
+    }
 }

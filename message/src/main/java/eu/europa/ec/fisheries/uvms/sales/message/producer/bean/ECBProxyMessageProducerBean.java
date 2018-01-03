@@ -20,7 +20,7 @@ public class ECBProxyMessageProducerBean extends ExtendedAbstractProducer {
 
     @Override
     public String getDestinationName() {
-        return MessageConstants.QUEUE_ASSET_EVENT;
+        return MessageConstants.QUEUE_ECB_PROXY;
     }
 
 }
