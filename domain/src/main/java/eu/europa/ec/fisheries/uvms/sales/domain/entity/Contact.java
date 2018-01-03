@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by MATBUL on 31/01/2017.
@@ -32,6 +33,7 @@ public class Contact {
     @Column(name = "middle_name")
     private String middleName;
 
+    @NotNull
     @Column(name = "family_name", nullable = false)
     private String familyName;
 

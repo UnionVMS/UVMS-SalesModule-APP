@@ -5,6 +5,8 @@ import lombok.ToString;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 
 @Entity
@@ -22,6 +24,7 @@ public class QueryParameterType {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "type_code", nullable = false)
     private String typeCode;
 
@@ -34,6 +37,8 @@ public class QueryParameterType {
     @Column(name = "value_id")
     private String valueID;
 
+    @Valid
+    @NotNull
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "sales_query_id", nullable = false)
     private Query query;

@@ -12,6 +12,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.comparator.CompareReportOnCreati
 import eu.europa.ec.fisheries.uvms.sales.domain.comparator.CompareReportSummaryOnCreationDescending;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.BeanValidatorHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mapper.FLUX;
 import ma.glasnost.orika.MapperFacade;
@@ -31,9 +32,9 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static java.util.Collections.emptyList;
 
 @Stateless
 public class ReportDomainModelBean implements ReportDomainModel {
@@ -70,7 +71,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
         checkNotNull(report);
         LOG.debug("Persisting report {}", report.toString());
 
-        FluxReport fluxReport;
+        FluxReport fluxReport = null;
 
         if (reportHelper.isReportDeleted(report)) {
             fluxReport = updateDeletionDateOfReportReferencedBy(report);
@@ -86,6 +87,8 @@ public class ReportDomainModelBean implements ReportDomainModel {
             if (reportHelper.hasReferencesToTakeOverDocuments(report)) {
                 enrichWithRelatedTakeOverDocuments(fluxReport, report);
             }
+
+            BeanValidatorHelper.validateBean(fluxReport);
 
             fluxReport = fluxReportDao.create(fluxReport);
         }

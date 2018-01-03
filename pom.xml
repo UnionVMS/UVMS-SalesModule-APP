@@ -30,6 +30,7 @@
         <mockito.version>2.7.1</mockito.version>
         <powermock.version>1.7.0RC2</powermock.version>
         <jacoco.version>0.7.9</jacoco.version>
+        <hibernate.validator.version>5.1.3.Final</hibernate.validator.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-SalesModule-APP.git</scm.connection>
         <annotations.version>2.0.3</annotations.version>
@@ -158,6 +159,12 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.16.18</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.validator.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

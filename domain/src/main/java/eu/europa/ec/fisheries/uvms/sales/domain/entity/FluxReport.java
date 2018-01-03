@@ -7,6 +7,8 @@ import lombok.ToString;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -33,9 +35,11 @@ public class FluxReport {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "ext_id", nullable = false)
     private String extId;
 
+    @NotNull
     @Column(name = "purpose_code", nullable = false)
     @Enumerated(EnumType.STRING)
     private Purpose purpose;
@@ -47,9 +51,11 @@ public class FluxReport {
     @Enumerated(EnumType.STRING)
     private FluxReportItemType itemType;
 
+    @NotNull
     @Column(name = "creation", nullable = false)
     private DateTime creation;
 
+    @Valid
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_auction_sale_id")
     private AuctionSale auctionSale;
@@ -57,6 +63,7 @@ public class FluxReport {
     @Column(name = "flux_report_party")
     private String fluxReportParty;
 
+    @Valid
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_document_id")
     private Document document;
@@ -73,6 +80,7 @@ public class FluxReport {
      * When this report is a correction or deletion of another report, the attribute previousFluxReport will point
      * to the report that is being corrected or deleted.
      */
+    @Valid
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sales_flux_report_prev_id")
     private FluxReport previousFluxReport;
@@ -81,6 +89,7 @@ public class FluxReport {
      * When this is a sales note, this attribute will contain all related take over documents.
      * When this is a take over document, this attribute will be an empty list.
      */
+    @Valid
     @ManyToMany
     @JoinTable( name = "sales_note_take_over_document_relation",
                 joinColumns = @JoinColumn(name = "sales_note_id"),
@@ -91,6 +100,7 @@ public class FluxReport {
      * When this is a sales note, this attribute will be an empty list.
      * When this is a take over document, this attribute will contain all related sales notes.
      */
+    @Valid
     @ManyToMany
     @JoinTable( name = "sales_note_take_over_document_relation",
             joinColumns = @JoinColumn(name = "take_over_document_id"),

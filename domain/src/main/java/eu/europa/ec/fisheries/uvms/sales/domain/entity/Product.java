@@ -5,6 +5,8 @@ import lombok.ToString;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class Product {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "species", nullable = false)
     private String species;
 
@@ -37,6 +40,7 @@ public class Product {
     @Column(name = "weight")
     private Double weight;
 
+    @NotNull
     @Column(name = "usage", nullable = false)
     private String usage;
 
@@ -52,19 +56,25 @@ public class Product {
     @Column(name = "factor")
     private Double factor;
 
+    @NotNull
     @Column(name = "distribution_class", nullable = false)
     private String distributionClass;
 
+    @NotNull
     @Column(name = "distribution_category", nullable = false)
     private String distributionCategory;
 
+    @NotNull
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Valid
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_document_id", nullable = false)
     private Document document;
 
+    @Valid
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "sales_origin",
                 joinColumns = @JoinColumn(name = "sales_product_id"),
