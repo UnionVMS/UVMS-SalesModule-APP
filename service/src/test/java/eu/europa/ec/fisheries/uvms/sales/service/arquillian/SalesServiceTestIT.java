@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.*;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import org.apache.commons.lang.StringUtils;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.persistence.DataSource;
@@ -86,6 +87,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(1)
 	@Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumerBean() throws Exception {
@@ -150,6 +152,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(2)
 	@Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
     public void testSalesEventRespondToInvalidMessage() throws Exception {
@@ -197,6 +200,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(3)
 	@Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMDRServiceToMDRMock() throws Exception {
@@ -207,6 +211,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(4)
 	@Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesEcbProxyServiceToProxyMock() throws Exception {
@@ -225,6 +230,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(5)
 	@Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesAssetServiceToAssetMock() throws Exception {
@@ -241,6 +247,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(6)
 	@Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesConfigProducerToLiveConfig() throws Exception {
@@ -258,6 +265,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(7)
 	@Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testEventServiceReturnError() throws Exception {
@@ -281,6 +289,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(8)
 	@Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testUniqueIdReceivedEvent() throws Exception {
@@ -309,6 +318,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(9)
     @Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
     public void testSalesEventCreateReport() throws Exception {
@@ -360,6 +370,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(10)
 	@Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesEvent_RespondToFindReportMessage_For_NonExistingReport() throws Exception {
@@ -386,6 +397,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(11)
 	@Test
+    @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void trySalesMessageConsumerBean_Hibernate_Validator_ConstraintViolationException() throws Exception {

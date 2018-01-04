@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.*;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -25,13 +26,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class BuildSalesServiceTestDeployment {
+@Slf4j
+public abstract class BuildSalesServiceMockTestDeployment {
 
-    final static Logger LOG = LoggerFactory.getLogger(BuildSalesServiceTestDeployment.class);
+    final static Logger LOG = LoggerFactory.getLogger(BuildSalesServiceMockTestDeployment.class);
 
-	private static WebArchive createArchive(final String name) {
+    private static WebArchive createArchive(final String name) {
         File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.importRuntimeDependencies().resolve().withTransitivity().asFile();
+                .importRuntimeDependencies().resolve().withTransitivity().asFile();
 
         printFiles(files);
 
@@ -44,7 +46,7 @@ public abstract class BuildSalesServiceTestDeployment {
 
         // Empty beans for EE6 CDI
         testWar.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        testWar.addAsWebInfResource("ejb-jar-test.xml", "ejb-jar.xml");
+        testWar.addAsWebInfResource("ejb-jar-test-mock.xml", "ejb-jar.xml");
         testWar.addAsResource("persistence-integration.xml", "META-INF/persistence.xml");
         testWar.addAsResource("logback-test.xml", "logback.xml");
         testWar.addAsResource("logging.properties", "logging.properties");
@@ -52,27 +54,28 @@ public abstract class BuildSalesServiceTestDeployment {
 
         testWar.addAsLibraries(files);
 
-		testWar.addPackages(true, "eu.europa.ec.fisheries.uvms.sales.service.arquillian");
+        testWar.addPackages(true, "eu.europa.ec.fisheries.uvms.sales.service.arquillian");
 
-		return testWar;
-	}
+        return testWar;
+    }
 
-    @Deployment(name = "salesservice", order = 1)
-    public static Archive<?> createSalesServiceDeployment() {
-        WebArchive archive = createArchive("test");
+    @Deployment(name = "salesservice_redelivery", order = 1)
+    public static Archive<?> createSalesServiceMockDeployment() {
+        WebArchive archive = createArchive("test_mock");
+
         boolean isAddRecursivelyTrue = true;
 
-		archive.addClass(eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils.class);
-		archive.addClass(eu.europa.ec.fisheries.uvms.commons.message.api.MessageException.class);
+        archive.addClass(eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils.class);
+        archive.addClass(eu.europa.ec.fisheries.uvms.commons.message.api.MessageException.class);
 
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.commons.message");
 
-		archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.domain");
-		archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.message");
+        archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.domain");
+        archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.message");
 
-		archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.dto");
-		archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.mapper");
-		archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.converter");
+        archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.dto");
+        archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.mapper");
+        archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.converter");
 
         archive.addClass(QueryService.class).addClass(QueryServiceBean.class);
 
@@ -82,40 +85,40 @@ public abstract class BuildSalesServiceTestDeployment {
 
         archive.addClass(eu.europa.ec.fisheries.uvms.sales.service.AssetCache.class).addClass(eu.europa.ec.fisheries.uvms.sales.service.bean.AssetCacheBean.class);
 
-		archive.addClass(ReportServiceHelper.class);
-		
-		archive.addClass(EcbProxyService.class).addClass(EcbProxyServiceBean.class);
+        archive.addClass(ReportServiceHelper.class);
 
-		archive.addClass(MDRCodeListKey.class);
-		archive.addClass(MDRService.class).addClass(MDRServiceBean.class);
-		
-		archive.addClass(ReferenceDataCache.class);
+        archive.addClass(EcbProxyService.class).addClass(EcbProxyServiceBean.class);
 
-		archive.addClass(SalesDetailsHelper.class);
+        archive.addClass(MDRCodeListKey.class);
+        archive.addClass(MDRService.class).addClass(MDRServiceBean.class);
 
-		archive.addClass(AssetServiceBeanHelper.class);
-		archive.addClass(AssetService.class).addClass(AssetServiceBean.class);
+        archive.addClass(ReferenceDataCache.class);
 
-		archive.addClass(SearchReportsHelper.class);
+        archive.addClass(SalesDetailsHelper.class);
 
-		archive.addClass(ReportServiceExportHelper.class);
+        archive.addClass(AssetServiceBeanHelper.class);
+        archive.addClass(AssetService.class).addClass(AssetServiceBean.class);
 
-		archive.addClass(ReportService.class).addClass(ReportServiceBean.class);
+        archive.addClass(SearchReportsHelper.class);
 
-		archive.addClass(Union.class);
+        archive.addClass(ReportServiceExportHelper.class);
+
+        archive.addClass(ReportService.class).addClass(ReportServiceBean.class);
+
+        archive.addClass(Union.class);
         archive.addClass(SalesMessageProducer.class).addClass(SalesMessageProducerBean.class);
 
-		archive.addClass(RulesService.class).addClass(RulesServiceBean.class);
+        archive.addClass(RulesService.class).addClass(RulesServiceBean.class);
 
         archive.addClass(ConfigService.class).addClass(ConfigServiceBean.class);
 
-		archive.addClass(FLUXSalesResponseMessageFactory.class);
-		
-		archive.addClass(UnsavedMessageService.class).addClass(UnsavedMessageServiceBean.class);
+        archive.addClass(FLUXSalesResponseMessageFactory.class);
 
-		archive.addClass(EventService.class).addClass(EventServiceBean.class);
+        archive.addClass(UnsavedMessageService.class).addClass(UnsavedMessageServiceBean.class);
 
-		archive.addClass(MessageConsumerBean.class);
+        archive.addClass(EventService.class).addClass(EventServiceBean.class);
+
+        archive.addClass(MessageConsumerBean.class);
 
         return archive;
     }

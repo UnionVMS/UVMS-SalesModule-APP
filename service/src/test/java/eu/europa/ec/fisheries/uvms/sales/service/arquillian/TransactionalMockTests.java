@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 
-public class TransactionalTests extends BuildSalesServiceTestDeployment {
+public class TransactionalMockTests extends BuildSalesServiceMockTestDeployment {
 
     @PersistenceContext
     protected EntityManager em;
