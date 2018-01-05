@@ -22,16 +22,19 @@ public class AssetMessageReceiverMock implements MessageListener {
     private static final Logger LOG = LoggerFactory.getLogger(AssetMessageReceiverMock.class);
 
     private ConnectionFactory connectionFactory;
+    private Queue replyToSalesQueue;
 
     @PostConstruct
     public void initialize() {
         connectionFactory = JMSUtils.lookupConnectionFactory();
+        replyToSalesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
     }
 
     @Override
     public void onMessage(Message message) {
         LOG.info("onMessage");
         TextMessage requestMessage = (TextMessage) message;
+        validateMandatoryJMSHeaderProperties(requestMessage);
         sendResponse(requestMessage);
     }
 
@@ -69,6 +72,19 @@ public class AssetMessageReceiverMock implements MessageListener {
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         producer.setTimeToLive(30000L);
         return producer;
+    }
+
+    private void validateMandatoryJMSHeaderProperties(TextMessage requestMessage) {
+        try {
+            if (!(requestMessage.getJMSExpiration() > 0)) {
+                throw new IllegalArgumentException("Message expiration time is mandatory");
+            }
+            if (!replyToSalesQueue.equals(requestMessage.getJMSReplyTo())) {
+                throw new IllegalArgumentException("Invalid message reply to destination");
+            }
+        } catch (JMSException e) {
+            throw new IllegalArgumentException("Unable to obtain message header property");
+        }
     }
 
     public String getMockedAssetResponse_NOK() {

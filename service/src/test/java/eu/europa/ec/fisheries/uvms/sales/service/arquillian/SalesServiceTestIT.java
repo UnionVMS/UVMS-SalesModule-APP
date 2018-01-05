@@ -12,6 +12,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.SalesModuleRequestMapper;
+import eu.europa.ec.fisheries.uvms.sales.model.mapper.ValidationQualityAnalysisMapper;
 import eu.europa.ec.fisheries.uvms.sales.service.*;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -49,7 +50,8 @@ public class SalesServiceTestIT extends TransactionalTests {
 
     private Queue rulesEventQueue;
 	private Queue salesEventQueue;
-	private Queue rulesQueue;
+    private Queue replyToRulesQueue;
+	private Queue replyToSalesQueue;
 
     private ConnectionFactory connectionFactory;
 
@@ -58,7 +60,8 @@ public class SalesServiceTestIT extends TransactionalTests {
           connectionFactory = JMSUtils.lookupConnectionFactory();
           rulesEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_MODULE_RULES);
 		  salesEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES_EVENT);
-		  rulesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_RULES);
+          replyToRulesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_RULES);
+		  replyToSalesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
     }
 
     @EJB
@@ -128,7 +131,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 		// Test data
 		FindReportByIdRequest findReportByIdRequest = new FindReportByIdRequest();
 		findReportByIdRequest.withMethod(SalesModuleMethod.FIND_REPORT_BY_ID).withId(messageGuid);
-		Destination findReportByIdRequestReplyTo = rulesQueue;
+		Destination findReportByIdRequestReplyTo = replyToRulesQueue;
 		TextMessage findReportByIdRequestMessage = getTextMessageWithReplyTo(findReportByIdRequestReplyTo);
 		assertNotNull(findReportByIdRequestMessage);
 		EventMessage eventMessage = new EventMessage(findReportByIdRequest);
@@ -177,7 +180,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 
         // Use case: CheckForUniqueIdRequest, unsavedMessage should exist in database
 		// Test data
-		Destination findReportByIdRequestReplyTo = rulesQueue;
+		Destination findReportByIdRequestReplyTo = replyToRulesQueue;
 		TextMessage requestMessage = getTextMessageWithReplyTo(findReportByIdRequestReplyTo);
 		assertNotNull(requestMessage);
 		CheckForUniqueIdRequest checkForUniqueIdRequest = new CheckForUniqueIdRequest();
@@ -270,7 +273,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testEventServiceReturnError() throws Exception {
 		// Test data
-		Destination findReportByIdRequestReplyTo = rulesQueue;
+		Destination findReportByIdRequestReplyTo = replyToRulesQueue;
 		TextMessage requestMessage = getTextMessageWithReplyTo(findReportByIdRequestReplyTo);
 		assertNotNull(requestMessage);
 		EventMessage eventMessage = new EventMessage(requestMessage, "Invalid content in message: " + requestMessage);
@@ -294,7 +297,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testUniqueIdReceivedEvent() throws Exception {
 		// Test data
-		Destination findReportByIdRequestReplyTo = rulesQueue;
+		Destination findReportByIdRequestReplyTo = replyToRulesQueue;
 		TextMessage requestMessage = getTextMessageWithReplyTo(findReportByIdRequestReplyTo);
 		assertNotNull(requestMessage);
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0313";
@@ -347,7 +350,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 		// Test data
 		FindReportByIdRequest findReportByIdRequest = new FindReportByIdRequest();
 		findReportByIdRequest.withMethod(SalesModuleMethod.FIND_REPORT_BY_ID).withId(messageGuid);
-		Destination findReportByIdRequestReplyTo = rulesQueue;
+		Destination findReportByIdRequestReplyTo = replyToRulesQueue;
 		TextMessage findReportByIdRequestMessage = getTextMessageWithReplyTo(findReportByIdRequestReplyTo);
 		assertNotNull(findReportByIdRequestMessage);
 		EventMessage eventMessage = new EventMessage(findReportByIdRequest);
@@ -377,7 +380,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 		String noneExistingMessageGuid = "MyNoneExistingMessageId";
 		FindReportByIdRequest findReportByIdRequest = new FindReportByIdRequest();
 		findReportByIdRequest.withMethod(SalesModuleMethod.FIND_REPORT_BY_ID).withId(noneExistingMessageGuid);
-		Destination findReportByIdRequestReplyTo = rulesQueue;
+		Destination findReportByIdRequestReplyTo = replyToRulesQueue;
 		TextMessage findReportByIdRequestMessage = getTextMessageWithReplyTo(findReportByIdRequestReplyTo);
 		assertNotNull(findReportByIdRequestMessage);
 		EventMessage eventMessage = new EventMessage(findReportByIdRequest);
@@ -437,13 +440,13 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertNull(sendSalesResponseRequestMessage);
 
 
-        // Use case: FindReportReceivedEvent event for none-existing report
+        // Assert case: report should not exist for FindReportReceivedEvent
 
         // Test data
         FindReportByIdRequest findReportByIdRequest = new FindReportByIdRequest();
         findReportByIdRequest.withMethod(SalesModuleMethod.FIND_REPORT_BY_ID).withId(messageGuid);
 
-        Destination findReportByIdRequestReplyTo = rulesQueue;
+        Destination findReportByIdRequestReplyTo = replyToRulesQueue;
         TextMessage findReportByIdRequestMessage = getTextMessageWithReplyTo(findReportByIdRequestReplyTo);
         assertNotNull(findReportByIdRequestMessage);
         EventMessage eventMessage = new EventMessage(findReportByIdRequest);
@@ -459,6 +462,75 @@ public class SalesServiceTestIT extends TransactionalTests {
         LOG.debug("responseMessageBody: " + responseMessageBody);
         FindReportByIdResponse findReportByIdResponse = JAXBMarshaller.unmarshallString(responseMessageBody, FindReportByIdResponse.class);
         assertFalse(StringUtils.isNotBlank(findReportByIdResponse.getReport()));
+	}
+
+	@InSequence(12)
+	@Test
+	@OperateOnDeployment("salesservice")
+	@Transactional(TransactionMode.DISABLED)
+	@DataSource("java:/jdbc/uvms_sales")
+	public void testSalesMessageConsumerBean_RespondToInvalidMessage() throws Exception {
+		// Test data
+		String messageGuid = "d0c749bf-50d6-479a-b12e-61c2f2d66439";
+		String pluginToSendResponseThrough = "BELGIAN_SALES";
+		String sender = "BEL";
+		String messageGuidSchemeId = "FLUXTL_ON";
+		String businessRuleId = "SALE-L00-00-0000";
+		ValidationQualityAnalysisType validationQualityAnalysis = ValidationQualityAnalysisMapper.map(businessRuleId, "L00", "ERR", "Internal error.", new ArrayList<String>());
+		String respondToInvalidMessageRequest = SalesModuleRequestMapper.createRespondToInvalidMessageRequest(messageGuid, Lists.newArrayList(validationQualityAnalysis), pluginToSendResponseThrough, sender, messageGuidSchemeId);
+
+		//Execute, trigger MessageConsumerBean
+		Connection connection = null;
+		Session session = null;
+		try {
+			connection = connectionFactory.createConnection();
+			session = JMSUtils.connectToQueue(connection);
+			TextMessage salesReportRequestMessage = session.createTextMessage(respondToInvalidMessageRequest);
+			getProducer(session, salesEventQueue).send(salesReportRequestMessage);
+
+		} catch (Exception e) {
+			fail("Test should not fail for consume JMS message exception: " + e.getMessage());
+		} finally {
+			JMSUtils.disconnectQueue(connection);
+		}
+
+		// Assert
+		// JMS out expected
+		String correlationId = null;
+		Destination salesReportRequestReplyTo = rulesEventQueue;
+		TextMessage sendSalesResponseRequestMessage = receiveTextMessage(salesReportRequestReplyTo, correlationId);
+		assertNotNull(sendSalesResponseRequestMessage);
+
+		String sendSalesResponseRequestMessageBody = sendSalesResponseRequestMessage.getText();
+		assertTrue(sendSalesResponseRequestMessageBody.contains("FLUXSalesResponseMessage"));
+		assertTrue(sendSalesResponseRequestMessageBody.contains(messageGuid));
+		assertTrue(sendSalesResponseRequestMessageBody.contains("NOK"));
+		assertTrue(sendSalesResponseRequestMessageBody.contains(businessRuleId));
+
+		// Assert use case: unique ID should be false for previous respondToInvalidMessageRequest processed OK
+		String checkForUniqueIdRequest = SalesModuleRequestMapper.createCheckForUniqueIdRequest(Lists.newArrayList(messageGuid), SalesMessageIdType.SALES_REPORT);
+
+		//Execute, trigger MessageConsumerBean for CheckForUniqueIdRequestMessage
+        String CheckForUniqueIdCorrelationId = null;
+		Connection connection2 = null;
+		Session session2 = null;
+		try {
+			connection2 = connectionFactory.createConnection();
+			session2 = JMSUtils.connectToQueue(connection2);
+			TextMessage checkForUniqueIdRequestMessage = session2.createTextMessage(checkForUniqueIdRequest);
+            checkForUniqueIdRequestMessage.setJMSReplyTo(replyToRulesQueue);
+			getProducer(session2, salesEventQueue).send(checkForUniqueIdRequestMessage);
+
+		} catch (Exception e) {
+			fail("Test should not fail for consume JMS message exception: " + e.getMessage());
+		} finally {
+			JMSUtils.disconnectQueue(connection2);
+		}
+
+		TextMessage checkForUniqueIdResponseMessage = receiveTextMessage(replyToRulesQueue, CheckForUniqueIdCorrelationId);
+		assertNotNull(checkForUniqueIdResponseMessage);
+        CheckForUniqueIdResponse checkForUniqueIdResponse = JAXBMarshaller.unmarshallString(checkForUniqueIdResponseMessage.getText(), CheckForUniqueIdResponse.class);
+        assertFalse(checkForUniqueIdResponse.isUnique());
 	}
 
 	private javax.jms.MessageProducer getProducer(Session session, Destination destination) throws JMSException {
@@ -517,6 +589,9 @@ public class SalesServiceTestIT extends TransactionalTests {
 				LOG.error("Message consumer timeout is reached");
 		        return null;
 			}
+
+			assertTrue((receivedMessage.getJMSExpiration() > 0));
+
 			return (TextMessage) receivedMessage;
 
 		} catch (Exception e) {
