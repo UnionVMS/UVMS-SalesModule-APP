@@ -29,7 +29,7 @@ public class UniqueIdServiceBean implements UniqueIdService {
     @Override
     public boolean doesAnySalesDocumentExistWithAnyOfTheseIds(List<String> extIds) {
         for (String extId : extIds) {
-            if (documentDomainModel.findByExtId(extId).isPresent()) {
+            if (!documentDomainModel.findByExtId(extId).isEmpty()) {
                 return true;
             }
         }

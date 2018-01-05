@@ -1,9 +1,7 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.DocumentDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
-import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -18,21 +16,9 @@ public class DocumentDaoBean extends BaseDaoForSales<Document, Integer> implemen
 
 
     @Override
-    public Optional<Document> findByExtId(String extId) throws NoResultException {
+    public List<Document> findByExtId(String extId) throws NoResultException {
         TypedQuery<Document> query = em.createNamedQuery(Document.FIND_BY_EXT_ID, Document.class);
         query.setParameter("extId", extId);
-
-        List<Document> resultList = query.getResultList();
-
-        if (resultList.size() == 1) {
-            return Optional.of(resultList.get(0));
-        }
-
-        if (resultList.size() > 1) {
-            throw new SalesNonBlockingException("More than one result found for 'findByExtId' on entity Document in table 'sales_document', " +
-                    "id: " + extId);
-        }
-
-        return Optional.absent();
+        return query.getResultList();
     }
 }

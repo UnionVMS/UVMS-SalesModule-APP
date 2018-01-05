@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
@@ -41,8 +42,8 @@ public class UniqueIdServiceBeanTest {
 
     @Test
     public void doesAnySalesDocumentExistWithAnyOfTheseIdsWhenADocumentExistsWithGivenIds() throws Exception {
-        doReturn(Optional.absent()).when(documentDomainModel).findByExtId("aaa");
-        doReturn(Optional.of(new SalesDocumentType())).when(documentDomainModel).findByExtId("bbb");
+        doReturn(new ArrayList<>()).when(documentDomainModel).findByExtId("aaa");
+        doReturn(Arrays.asList(new SalesDocumentType())).when(documentDomainModel).findByExtId("bbb");
 
         Boolean notUnique = service.doesAnySalesDocumentExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
 
@@ -54,9 +55,9 @@ public class UniqueIdServiceBeanTest {
 
     @Test
     public void doesAnySalesDocumentExistWithAnyOfTheseIdsWhenNoDocumentExistsWithGivenIds() throws Exception {
-        doReturn(Optional.absent()).when(documentDomainModel).findByExtId("aaa");
-        doReturn(Optional.absent()).when(documentDomainModel).findByExtId("bbb");
-        doReturn(Optional.absent()).when(documentDomainModel).findByExtId("ccc");
+        doReturn(new ArrayList<>()).when(documentDomainModel).findByExtId("aaa");
+        doReturn(new ArrayList<>()).when(documentDomainModel).findByExtId("bbb");
+        doReturn(new ArrayList<>()).when(documentDomainModel).findByExtId("ccc");
 
         Boolean notUnique = service.doesAnySalesDocumentExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
 
