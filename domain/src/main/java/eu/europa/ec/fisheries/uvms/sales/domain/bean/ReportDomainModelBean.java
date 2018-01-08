@@ -53,6 +53,9 @@ public class ReportDomainModelBean implements ReportDomainModel {
     @EJB
     private UnsavedMessageDomainModel unsavedMessageDomainModel;
 
+    @EJB
+    BeanValidatorHelper beanValidatorHelper;
+
     @Override
     public Optional<Report> findByExtId(String extId) {
         checkNotNull(extId);
@@ -88,7 +91,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
                 enrichWithRelatedTakeOverDocuments(fluxReport, report);
             }
 
-            BeanValidatorHelper.validateBean(fluxReport);
+            beanValidatorHelper.validateBean(fluxReport);
 
             fluxReport = fluxReportDao.create(fluxReport);
         }

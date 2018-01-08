@@ -7,8 +7,10 @@ import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.BeanValidatorHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.domain.mother.ReportMother;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
 import org.junit.Rule;
@@ -41,6 +43,9 @@ public class ReportDomainModelBeanTest {
     @Mock
     private UnsavedMessageDomainModel unsavedMessageDomainModel;
 
+    @Mock
+    private BeanValidatorHelper beanValidatorHelper;
+
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
@@ -67,6 +72,7 @@ public class ReportDomainModelBeanTest {
         when(mapper.map(report, FluxReport.class)).thenReturn(fluxReportEntity);
         when(reportHelper.isReportCorrected(report)).thenReturn(false);
         when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
+        doNothing().when(beanValidatorHelper).validateBean(fluxReportEntity);
         when(fluxReportDao.create(fluxReportEntity)).thenReturn(fluxReportEntity);
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
 
@@ -78,9 +84,10 @@ public class ReportDomainModelBeanTest {
         verify(mapper).map(report, FluxReport.class);
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
+        verify(beanValidatorHelper).validateBean(fluxReportEntity);
         verify(fluxReportDao).create(fluxReportEntity);
         verify(mapper).map(fluxReportEntity, Report.class);
-        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
+        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper, beanValidatorHelper);
     }
 
     @Test
@@ -106,6 +113,7 @@ public class ReportDomainModelBeanTest {
         when(fluxReportDao.findByExtId("a")).thenReturn(Optional.of(takeOverDocumentA));
         when(fluxReportDao.findByExtId("b")).thenReturn(Optional.of(takeOverDocumentB));
         when(fluxReportDao.findByExtId("c")).thenReturn(Optional.of(takeOverDocumentC));
+        doNothing().when(beanValidatorHelper).validateBean(fluxReportEntity);
         when(fluxReportDao.create(fluxReportEntity)).thenReturn(fluxReportEntity);
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
 
@@ -121,9 +129,10 @@ public class ReportDomainModelBeanTest {
         verify(fluxReportDao).findByExtId("a");
         verify(fluxReportDao).findByExtId("b");
         verify(fluxReportDao).findByExtId("c");
+        verify(beanValidatorHelper).validateBean(fluxReportEntity);
         verify(fluxReportDao).create(fluxReportEntity);
         verify(mapper).map(fluxReportEntity, Report.class);
-        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
+        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper, beanValidatorHelper);
 
         assertEquals(Arrays.asList(takeOverDocumentA, takeOverDocumentB, takeOverDocumentC), fluxReportEntity.getRelatedTakeOverDocuments());
     }
@@ -170,7 +179,7 @@ public class ReportDomainModelBeanTest {
         verify(fluxReportDao).findByExtId("hello");
         verify(mapper).map(oldFluxReportEntity, Report.class);
         verify(unsavedMessageDomainModel).save("id");
-        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
+        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper, beanValidatorHelper);
 
         assertSame(mappedAndPersistedReportFromDao, persistedReport);
         assertEquals(deletionDate, oldFluxReportEntity.getDeletion());
@@ -222,7 +231,7 @@ public class ReportDomainModelBeanTest {
         verify(unsavedMessageDomainModel).save("id");
         verify(reportHelper).getFLUXReportDocumentId(report);
         verify(unsavedMessageDomainModel).save("id");
-        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
+        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper, beanValidatorHelper);
 
         assertSame(mappedAndPersistedReportFromDao, persistedReport);
         //check if date of deletion matches the first date of deletion, not the date of the 2nd received deletion
@@ -257,6 +266,7 @@ public class ReportDomainModelBeanTest {
         doReturn(creationDateCorrection).when(reportHelper).getCreationDate(correctionReport);
         doReturn(Optional.of(oldFluxReportEntity)).when(fluxReportDao).findByExtId("hello");
 
+        doNothing().when(beanValidatorHelper).validateBean(newFluxReportEntity);
         when(fluxReportDao.create(newFluxReportEntity)).thenReturn(newFluxReportEntity);
         when(mapper.map(newFluxReportEntity, Report.class)).thenReturn(correctionReport);
 
@@ -272,8 +282,9 @@ public class ReportDomainModelBeanTest {
         verify(fluxReportDao).findByExtId("hello");
         verify(reportHelper).hasReferencesToTakeOverDocuments(correctionReport);
         verify(mapper).map(newFluxReportEntity, Report.class);
+        verify(beanValidatorHelper).validateBean(newFluxReportEntity);
         verify(fluxReportDao).create(newFluxReportEntity);
-        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper);
+        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper, beanValidatorHelper);
 
         assertEquals("hello", persistedReport.getFLUXSalesReportMessage().getFLUXReportDocument().getReferencedID().getValue());
         assertEquals(creationDateCorrection, oldFluxReportEntity.getCorrection());
@@ -296,7 +307,7 @@ public class ReportDomainModelBeanTest {
 
         verify(fluxReportDao).findDetailsByExtId(extId);
         verify(mapper).map(fluxReportWithDetails, Report.class);
-        verifyNoMoreInteractions(fluxReportDao, mapper);
+        verifyNoMoreInteractions(fluxReportDao, mapper, beanValidatorHelper);
 
         assertSame(expected, actual);
     }
@@ -327,7 +338,7 @@ public class ReportDomainModelBeanTest {
 
         verify(fluxReportDao).search(reportQuery, false);
         verify(mapper).mapAsList(fluxReports, ReportSummary.class);
-        verifyNoMoreInteractions(fluxReportDao, mapper);
+        verifyNoMoreInteractions(fluxReportDao, mapper, beanValidatorHelper);
 
         assertSame(expected, actual);
     }
@@ -350,7 +361,7 @@ public class ReportDomainModelBeanTest {
 
         verify(fluxReportDao).search(reportQuery);
         verify(mapper).mapAsList(fluxReports, Report.class);
-        verifyNoMoreInteractions(fluxReportDao, mapper);
+        verifyNoMoreInteractions(fluxReportDao, mapper, beanValidatorHelper);
 
         assertSame(expected, actual);
     }
@@ -368,7 +379,7 @@ public class ReportDomainModelBeanTest {
 
         verify(fluxReportDao).findByExtId(extId);
         verify(mapper).map(fluxReport, Report.class);
-        verifyNoMoreInteractions(fluxReportDao);
+        verifyNoMoreInteractions(fluxReportDao, beanValidatorHelper);
 
         assertTrue(result.isPresent());
         assertSame(report, result.get());
@@ -396,7 +407,7 @@ public class ReportDomainModelBeanTest {
 
         verify(fluxReportDao).findCorrectionOrDeletionOf(extId);
         verify(mapper).map(fluxReport, Report.class);
-        verifyNoMoreInteractions(fluxReportDao, mapper);
+        verifyNoMoreInteractions(fluxReportDao, mapper, beanValidatorHelper);
 
         assertEquals(Optional.of(report), result);
     }
@@ -410,7 +421,7 @@ public class ReportDomainModelBeanTest {
         Optional<Report> result = reportDomainModelBean.findCorrectionOrDeletionOf(extId);
 
         verify(fluxReportDao).findCorrectionOrDeletionOf(extId);
-        verifyNoMoreInteractions(fluxReportDao, mapper);
+        verifyNoMoreInteractions(fluxReportDao, mapper, beanValidatorHelper);
 
         assertEquals(Optional.<Report>absent(), result);
     }
@@ -455,7 +466,7 @@ public class ReportDomainModelBeanTest {
         verify(mapper).map(fluxReport1, ReportSummary.class);
         verify(mapper).map(fluxReport2, ReportSummary.class);
 
-        verifyNoMoreInteractions(fluxReportDao, reportHelper, mapper);
+        verifyNoMoreInteractions(fluxReportDao, reportHelper, mapper, beanValidatorHelper);
 
         assertEquals(2, allReferencedReports.size());
         assertSame(report2, allReferencedReports.get(0));
@@ -502,7 +513,7 @@ public class ReportDomainModelBeanTest {
         verify(reportHelper).getCreationDate(report1);
         verify(reportHelper).getCreationDate(report2);
 
-        verifyNoMoreInteractions(fluxReportDao, reportHelper, mapper);
+        verifyNoMoreInteractions(fluxReportDao, reportHelper, mapper, beanValidatorHelper);
 
         assertEquals(2, allReferencedReports.size());
         assertSame(report2, allReferencedReports.get(0));
@@ -521,7 +532,7 @@ public class ReportDomainModelBeanTest {
 
         verify(reportHelper).getFLUXReportDocumentId(report);
         verify(fluxReportDao).findCorrectionOrDeletionOf(extId);
-        verifyNoMoreInteractions(reportHelper, fluxReportDao);
+        verifyNoMoreInteractions(reportHelper, fluxReportDao, beanValidatorHelper);
     }
 
     @Test
@@ -536,7 +547,7 @@ public class ReportDomainModelBeanTest {
 
         verify(reportHelper).getFLUXReportDocumentId(report);
         verify(fluxReportDao).findCorrectionOrDeletionOf(extId);
-        verifyNoMoreInteractions(reportHelper, fluxReportDao);
+        verifyNoMoreInteractions(reportHelper, fluxReportDao, beanValidatorHelper);
     }
 
     @Test
@@ -551,7 +562,7 @@ public class ReportDomainModelBeanTest {
 
         verify(reportHelper).getFLUXReportDocumentId(report);
         verify(fluxReportDao).findCorrectionOrDeletionOf(extId);
-        verifyNoMoreInteractions(reportHelper, fluxReportDao, mapper);
+        verifyNoMoreInteractions(reportHelper, fluxReportDao, mapper, beanValidatorHelper);
     }
 
     @Test
@@ -573,7 +584,7 @@ public class ReportDomainModelBeanTest {
         verify(fluxReportDao).findCorrectionOrDeletionOf(extId);
         verify(fluxReportDao).findLatestVersion(fluxReport1);
         verify(mapper).map(fluxReport2, Report.class);
-        verifyNoMoreInteractions(reportHelper, fluxReportDao, mapper);
+        verifyNoMoreInteractions(reportHelper, fluxReportDao, mapper, beanValidatorHelper);
     }
 
     @Test
@@ -606,9 +617,44 @@ public class ReportDomainModelBeanTest {
         verify(reportHelper).getFLUXReportDocumentId(report);
         verify(fluxReportDao).findByExtId(extId);
         verify(mapper).mapAsList(relatedFluxReports, Report.class);
-        verifyNoMoreInteractions(reportHelper, fluxReportDao, mapper);
+        verifyNoMoreInteractions(reportHelper, fluxReportDao, mapper, beanValidatorHelper);
 
         assertSame(relatedReports, result);
+    }
+
+    @Test
+    public void tryCreateWhenReportIsACreationAndNoReferencesToTakeOverDocumentsExistForBeanValidationSalesNonBlockingException() throws Exception {
+        //data set
+        FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType();
+        FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(fluxReportDocumentType);
+        Report report = new Report()
+                .withFLUXSalesReportMessage(fluxSalesReportMessage);
+        FluxReport fluxReportEntity = new FluxReport();
+
+        //mock
+        when(reportHelper.isReportDeleted(report)).thenReturn(false);
+        when(mapper.map(report, FluxReport.class)).thenReturn(fluxReportEntity);
+        when(reportHelper.isReportCorrected(report)).thenReturn(false);
+        when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
+        doThrow(new SalesNonBlockingException("MySalesNonBlockingException")).when(beanValidatorHelper).validateBean(fluxReportEntity);
+
+        //execute
+        try {
+            reportDomainModelBean.create(report);
+            fail("should fail for bean validation error");
+
+        } catch (SalesNonBlockingException e) {
+            assertEquals("MySalesNonBlockingException", e.getMessage());
+        }
+
+        //assert and verify
+        verify(reportHelper).isReportDeleted(report);
+        verify(mapper).map(report, FluxReport.class);
+        verify(reportHelper).isReportCorrected(report);
+        verify(reportHelper).hasReferencesToTakeOverDocuments(report);
+        verify(beanValidatorHelper).validateBean(fluxReportEntity);
+        verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper, beanValidatorHelper);
     }
 
 }
