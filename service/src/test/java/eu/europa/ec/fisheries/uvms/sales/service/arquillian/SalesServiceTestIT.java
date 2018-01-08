@@ -2,6 +2,8 @@ package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.config.module.v1.PullSettingsResponse;
+import eu.europa.ec.fisheries.schema.rules.module.v1.SendSalesReportRequest;
+import eu.europa.ec.fisheries.schema.rules.module.v1.SendSalesResponseRequest;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
@@ -65,6 +67,9 @@ public class SalesServiceTestIT extends TransactionalTests {
     }
 
     @EJB
+    SalesServiceTestHelper salesServiceTestHelper;
+
+    @EJB
     EventService eventService;
 
 	@EJB
@@ -90,67 +95,69 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	@InSequence(1)
 	@Test
-    @OperateOnDeployment("salesservice")
+	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
-	public void testSalesMessageConsumerBean() throws Exception {
+	public void testSalesMessageConsumerBean_Save_Report() throws Exception {
 		// Data
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0311";
-		String request = composeFLUXSalesReportMessageAsString();
-		String messageValidationStatus = "OK";
-		String pluginToSendResponseThrough = "BELGIAN_SALES";
-		List<ValidationQualityAnalysisType> validationQualityAnalysisList = new ArrayList<>();
-		String salesReportRequest = SalesModuleRequestMapper.createSalesReportRequest(request, messageValidationStatus, validationQualityAnalysisList, pluginToSendResponseThrough);
+		String vesselFlagState = "BE3";
+		String landingCountry = "BE2";
+		String salesReportRequest = SalesTestMessageFactory.composeSalesReportRequestAsString(messageGuid, vesselFlagState, landingCountry);
 
-		//Execute, trigger MessageConsumerBean
-		Connection connection = null;
-		Session session = null;
-		try {
-			connection = connectionFactory.createConnection();
-			session = JMSUtils.connectToQueue(connection);
-			TextMessage salesReportRequestMessage = session.createTextMessage(salesReportRequest);
-			getProducer(session, salesEventQueue).send(salesReportRequestMessage);
-		} catch (Exception e) {
-			fail("Test should not fail for consume JMS message exception: " + e.getMessage());
-		} finally {
-			JMSUtils.disconnectQueue(connection);
-		}
+		//Execute, save report for MessageConsumerBean
+		salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(salesReportRequest, replyToRulesQueue);
 
-		// Assert
-		String correlationId = null;
-		Destination salesReportRequestReplyTo = rulesEventQueue;
-		TextMessage sendSalesResponseRequestMessage = receiveTextMessage(salesReportRequestReplyTo, correlationId);
-		assertNotNull(sendSalesResponseRequestMessage);
-		String sendSalesResponseRequestMessageBody = sendSalesResponseRequestMessage.getText();
-		assertTrue(sendSalesResponseRequestMessageBody.contains("SendSalesResponseRequest"));
-		assertTrue(sendSalesResponseRequestMessageBody.contains(messageGuid));
+		// Assert, receive FLUXSalesResponseMessage
+		TextMessage textMessageSendSalesResponseRequest = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
+		assertNotNull(textMessageSendSalesResponseRequest);
+		SendSalesResponseRequest sendSalesResponseRequest = salesServiceTestHelper.getSalesModelBean(textMessageSendSalesResponseRequest.getText(), SendSalesResponseRequest.class);
+		FLUXSalesResponseMessage fluxSalesResponseMessage = salesServiceTestHelper.getSalesModelBean(sendSalesResponseRequest.getRequest(), FLUXSalesResponseMessage.class);
+		assertEquals(messageGuid, fluxSalesResponseMessage.getFLUXResponseDocument().getReferencedID().getValue());
 
-
-		// Use case: FindReportReceivedEvent event for existing report
 
 		// Test data
-		FindReportByIdRequest findReportByIdRequest = new FindReportByIdRequest();
-		findReportByIdRequest.withMethod(SalesModuleMethod.FIND_REPORT_BY_ID).withId(messageGuid);
-		Destination findReportByIdRequestReplyTo = replyToRulesQueue;
-		TextMessage findReportByIdRequestMessage = getTextMessageWithReplyTo(findReportByIdRequestReplyTo);
-		assertNotNull(findReportByIdRequestMessage);
-		EventMessage eventMessage = new EventMessage(findReportByIdRequest);
-		eventMessage.setJmsMessage(findReportByIdRequestMessage);
+
+		// Assert use case, find report by id, sales report should exist for previously saved sales report
+
+		// Assert use case, forward SendSalesReportRequest to vessel flag state non-local member state
+		TextMessage vesselFlagStateTextMessage = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
+		assertNotNull(vesselFlagStateTextMessage);
+		SendSalesReportRequest vesselFlagStateSendSalesReportRequest = salesServiceTestHelper.getSalesModelBean(vesselFlagStateTextMessage.getText(), SendSalesReportRequest.class);
+		assertEquals(vesselFlagState, vesselFlagStateSendSalesReportRequest.getRecipient());
+
+		FLUXSalesReportMessage vesselFlagStateFLUXSalesReportMessage = salesServiceTestHelper.getSalesModelBean(vesselFlagStateSendSalesReportRequest.getRequest(), FLUXSalesReportMessage.class);
+		assertNotNull("vesselFlagStateFLUXSalesReportMessage: " + vesselFlagStateFLUXSalesReportMessage);
+		assertEquals(messageGuid, vesselFlagStateFLUXSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
+
+
+		// Assert use case, forward SendSalesReportRequest to landing country non-local member state
+		TextMessage landingCountryTextMessage = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
+		assertNotNull(landingCountryTextMessage);
+		SendSalesReportRequest landingCountrySendSalesReportRequest = salesServiceTestHelper.getSalesModelBean(landingCountryTextMessage.getText(), SendSalesReportRequest.class);
+		assertEquals(landingCountry, landingCountrySendSalesReportRequest.getRecipient());
+
+		FLUXSalesReportMessage landingCountryStateFLUXSalesReportMessage = salesServiceTestHelper.getSalesModelBean(vesselFlagStateSendSalesReportRequest.getRequest(), FLUXSalesReportMessage.class);
+		assertNotNull("landingCountryStateFLUXSalesReportMessage: " + landingCountryStateFLUXSalesReportMessage);
+		assertEquals(messageGuid, landingCountryStateFLUXSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
+
+
+		// Assert use case, find report by id, should be saved in database
+
+		String findReportByIdRequestMessage = SalesModuleRequestMapper.createFindReportByIdRequest(messageGuid);
 
 		// Execute
-		eventService.respondToFindReportMessage(eventMessage);
-		TextMessage responseMessage = receiveTextMessage(findReportByIdRequestReplyTo, findReportByIdRequestMessage.getJMSMessageID());
+		String correlationId = salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(findReportByIdRequestMessage, replyToRulesQueue);
 
-		// Assert
-		assertNotNull(responseMessage);
-		String responseMessageBody = responseMessage.getText();
-		LOG.debug("responseMessageBody: " + responseMessageBody);
-		FindReportByIdResponse findReportByIdResponse = JAXBMarshaller.unmarshallString(responseMessageBody, FindReportByIdResponse.class);
+		// Assert, find report by Id for MessageConsumerBean should find existing FLUX sales report
+		TextMessage textMessageFindReportByIdResponse = salesServiceTestHelper.receiveMessageFromReplyToRulesQueue(correlationId);
+		assertNotNull(textMessageFindReportByIdResponse);
+		FindReportByIdResponse findReportByIdResponse = salesServiceTestHelper.getSalesModelBean(textMessageFindReportByIdResponse.getText(), FindReportByIdResponse.class);
 		assertTrue(StringUtils.isNotBlank(findReportByIdResponse.getReport()));
-		FLUXSalesReportMessage fluxSalesReportMessage = JAXBMarshaller.unmarshallString(findReportByIdResponse.getReport(), FLUXSalesReportMessage.class);
-		assertNotNull(fluxSalesReportMessage);
-		assertEquals("BEL-SN-2007-7777777", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
+		FLUXSalesReportMessage fluxSalesReportMessage = salesServiceTestHelper.getSalesModelBean(findReportByIdResponse.getReport(), FLUXSalesReportMessage.class);
 		assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
+		assertEquals("BEL-SN-2007-7777777", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
+
 	}
 
 	@InSequence(2)
@@ -255,7 +262,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesConfigProducerToLiveConfig() throws Exception {
 		// Execute
-		String jmsMessageID = configMessageProducer.sendConfigMessage(composePullSettingsRequest());
+		String jmsMessageID = configMessageProducer.sendConfigMessage(SalesTestMessageFactory.composePullSettingsRequest());
 
 		// Assert
 		TextMessage textMessage = configMessageConsumer.getConfigMessage(jmsMessageID, TextMessage.class);
@@ -326,10 +333,12 @@ public class SalesServiceTestIT extends TransactionalTests {
 	@DataSource("java:/jdbc/uvms_sales")
     public void testSalesEventCreateReport() throws Exception {
 		// Test data
-		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0311";
+		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0314";
 		SalesReportRequest salesReportRequest = new SalesReportRequest();
         salesReportRequest.setPluginToSendResponseThrough("BELGIAN_SALES");
-		salesReportRequest.setReport(composeFLUXSalesReportMessageAsString());
+        String vesselFlagState = "BEL";
+        String landingCountry = "BEL";
+		salesReportRequest.setReport(SalesTestMessageFactory.composeFLUXSalesReportMessageAsString(messageGuid, vesselFlagState, landingCountry));
 		EventMessage eventMessage2 = new EventMessage(salesReportRequest);
 
 		// Execute
@@ -601,232 +610,6 @@ public class SalesServiceTestIT extends TransactionalTests {
 			JMSUtils.disconnectQueue(connection);
 		}
 	}
-
-	private String composePullSettingsRequest() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-				"<ns2:PullSettingsRequest xmlns:ns2=\"urn:module.config.schema.fisheries.ec.europa.eu:v1\">\n" +
-				"    <method>PULL</method>\n" +
-				"    <moduleName>sales</moduleName>\n" +
-				"</ns2:PullSettingsRequest>\n";
-	}
-
-	private String composeFLUXSalesReportMessageAsString() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-				"<ns4:Report xmlns=\"urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20\" xmlns:ns2=\"urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20\" xmlns:ns4=\"eu.europa.ec.fisheries.schema.sales\" xmlns:ns3=\"eu.europa.ec.fisheries.schema.sales.flux\">\n" +
-				"<ns4:FLUXSalesReportMessage>\n" +
-				"<ns3:FLUXReportDocument>\n" +
-				"<ID schemeID=\"UUID\">d5da24ff-42b4-5e76-967f-ad97762a0311</ID>\n" +
-				"<ReferencedID schemeID=\"UUID\">d5da24ff-c3b3-4e76-9785-ac97762a0311</ReferencedID>\n" +
-				"<CreationDateTime>\n" +
-				"<ns2:DateTime>2017-05-11T12:10:38Z</ns2:DateTime>\n" +
-				"</CreationDateTime>\n" +
-				"<PurposeCode listID=\"FLUX_GP_PURPOSE\">5</PurposeCode>\n" +
-				"<Purpose>Test correction post</Purpose>\n" +
-				"<OwnerFLUXParty>\n" +
-				"<ID schemeID=\"FLUX_GP_PARTY\">BEL</ID>\n" +
-				"</OwnerFLUXParty>\n" +
-				"</ns3:FLUXReportDocument>\n" +
-				"<ns3:SalesReport>\n" +
-				"<ItemTypeCode listID=\"FLUX_SALES_TYPE\">SN</ItemTypeCode>\n" +
-				"<IncludedSalesDocument>\n" +
-				"<ID schemeID=\"EU_SALES_ID\">BEL-SN-2007-7777777</ID>\n" +
-				"<CurrencyCode listID=\"TERRITORY_CURR\">DKK</CurrencyCode>\n" +
-				"<SpecifiedSalesBatch>\n" +
-				"<SpecifiedAAPProduct>\n" +
-				"<SpeciesCode listID=\"FAO_SPECIES\">PLE</SpeciesCode>\n" +
-				"<WeightMeasure unitCode=\"KGM\">6</WeightMeasure>\n" +
-				"<UsageCode listID=\"PROD_USAGE\">HCN</UsageCode>\n" +
-				"<AppliedAAPProcess>\n" +
-				"<TypeCode listID=\"FISH_FRESHNESS\">123456789</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESERVATION\">FRE</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESENTATION\">WHL</TypeCode>\n" +
-				"</AppliedAAPProcess>\n" +
-				"<TotalSalesPrice>\n" +
-				"<ChargeAmount>1.31</ChargeAmount>\n" +
-				"</TotalSalesPrice>\n" +
-				"<SpecifiedSizeDistribution>\n" +
-				"<CategoryCode listID=\"FISH_SIZE_CATEGORY\">1</CategoryCode>\n" +
-				"<ClassCode listID=\"FISH_SIZE_CLASS\">LSC</ClassCode>\n" +
-				"</SpecifiedSizeDistribution>\n" +
-				"<OriginFLUXLocation>\n" +
-				"<TypeCode listID=\"FLUX_LOCATION_TYPE\">AREA</TypeCode>\n" +
-				"<ID schemeID=\"FAO_AREA\">27.3.D.24</ID>\n" +
-				"</OriginFLUXLocation>\n" +
-				"</SpecifiedAAPProduct>\n" +
-				"<SpecifiedAAPProduct>\n" +
-				"<SpeciesCode listID=\"FAO_SPECIES\">PLE</SpeciesCode>\n" +
-				"<WeightMeasure unitCode=\"KGM\">36</WeightMeasure>\n" +
-				"<UsageCode listID=\"PROD_USAGE\">HCN</UsageCode>\n" +
-				"<AppliedAAPProcess>\n" +
-				"<TypeCode listID=\"FISH_FRESHNESS\">A</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESERVATION\">FRE</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESENTATION\">WHL</TypeCode>\n" +
-				"</AppliedAAPProcess>\n" +
-				"<TotalSalesPrice>\n" +
-				"<ChargeAmount>1.29</ChargeAmount>\n" +
-				"</TotalSalesPrice>\n" +
-				"<SpecifiedSizeDistribution>\n" +
-				"<CategoryCode listID=\"FISH_SIZE_CATEGORY\">2</CategoryCode>\n" +
-				"<ClassCode listID=\"FISH_SIZE_CLASS\">LSC</ClassCode>\n" +
-				"</SpecifiedSizeDistribution>\n" +
-				"<OriginFLUXLocation>\n" +
-				"<TypeCode listID=\"FLUX_LOCATION_TYPE\">AREA</TypeCode>\n" +
-				"<ID schemeID=\"FAO_AREA\">27.3.D.24</ID>\n" +
-				"</OriginFLUXLocation>\n" +
-				"</SpecifiedAAPProduct>\n" +
-				"<SpecifiedAAPProduct>\n" +
-				"<SpeciesCode listID=\"FAO_SPECIES\">DAB</SpeciesCode>\n" +
-				"<WeightMeasure unitCode=\"KGM\">517</WeightMeasure>\n" +
-				"<UsageCode listID=\"PROD_USAGE\">HCN</UsageCode>\n" +
-				"<AppliedAAPProcess>\n" +
-				"<TypeCode listID=\"FISH_FRESHNESS\">A</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESERVATION\">FRE</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESENTATION\">WHL</TypeCode>\n" +
-				"</AppliedAAPProcess>\n" +
-				"<TotalSalesPrice>\n" +
-				"<ChargeAmount>1.12</ChargeAmount>\n" +
-				"</TotalSalesPrice>\n" +
-				"<SpecifiedSizeDistribution>\n" +
-				"<CategoryCode listID=\"FISH_SIZE_CATEGORY\">2</CategoryCode>\n" +
-				"<ClassCode listID=\"FISH_SIZE_CLASS\">LSC</ClassCode>\n" +
-				"</SpecifiedSizeDistribution>\n" +
-				"<OriginFLUXLocation>\n" +
-				"<TypeCode listID=\"FLUX_LOCATION_TYPE\">AREA</TypeCode>\n" +
-				"<ID schemeID=\"FAO_AREA\">27.3.D.24</ID>\n" +
-				"</OriginFLUXLocation>\n" +
-				"</SpecifiedAAPProduct>\n" +
-				"<SpecifiedAAPProduct>\n" +
-				"<SpeciesCode listID=\"FAO_SPECIES\">COD</SpeciesCode>\n" +
-				"<WeightMeasure unitCode=\"KGM\">13</WeightMeasure>\n" +
-				"<UsageCode listID=\"PROD_USAGE\">HCN</UsageCode>\n" +
-				"<AppliedAAPProcess>\n" +
-				"<TypeCode listID=\"FISH_FRESHNESS\">A</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESERVATION\">FRE</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESENTATION\">GUT</TypeCode>\n" +
-				"<ConversionFactorNumeric>20</ConversionFactorNumeric>\n" +
-				"</AppliedAAPProcess>\n" +
-				"<TotalSalesPrice>\n" +
-				"<ChargeAmount>2</ChargeAmount>\n" +
-				"</TotalSalesPrice>\n" +
-				"<SpecifiedSizeDistribution>\n" +
-				"<CategoryCode listID=\"FISH_SIZE_CATEGORY\">3</CategoryCode>\n" +
-				"<ClassCode listID=\"FISH_SIZE_CLASS\">LSC</ClassCode>\n" +
-				"</SpecifiedSizeDistribution>\n" +
-				"<OriginFLUXLocation>\n" +
-				"<TypeCode listID=\"FLUX_LOCATION_TYPE\">AREA</TypeCode>\n" +
-				"<ID schemeID=\"FAO_AREA\">27.3.D.24</ID>\n" +
-				"</OriginFLUXLocation>\n" +
-				"</SpecifiedAAPProduct>\n" +
-				"<SpecifiedAAPProduct>\n" +
-				"<SpeciesCode listID=\"FAO_SPECIES\">FLE</SpeciesCode>\n" +
-				"<WeightMeasure unitCode=\"KGM\">102</WeightMeasure>\n" +
-				"<UsageCode listID=\"PROD_USAGE\">HCN</UsageCode>\n" +
-				"<AppliedAAPProcess>\n" +
-				"<TypeCode listID=\"FISH_FRESHNESS\">A</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESERVATION\">FRE</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESENTATION\">WHL</TypeCode>\n" +
-				"</AppliedAAPProcess>\n" +
-				"<TotalSalesPrice>\n" +
-				"<ChargeAmount>0.82</ChargeAmount>\n" +
-				"</TotalSalesPrice>\n" +
-				"<SpecifiedSizeDistribution>\n" +
-				"<CategoryCode listID=\"FISH_SIZE_CATEGORY\">2</CategoryCode>\n" +
-				"<ClassCode listID=\"FISH_SIZE_CLASS\">LSC</ClassCode>\n" +
-				"</SpecifiedSizeDistribution>\n" +
-				"<OriginFLUXLocation>\n" +
-				"<TypeCode listID=\"FLUX_LOCATION_TYPE\">AREA</TypeCode>\n" +
-				"<ID schemeID=\"FAO_AREA\">27.3.D.24</ID>\n" +
-				"</OriginFLUXLocation>\n" +
-				"</SpecifiedAAPProduct>\n" +
-				"<SpecifiedAAPProduct>\n" +
-				"<SpeciesCode listID=\"FAO_SPECIES\">LIN</SpeciesCode>\n" +
-				"<WeightMeasure unitCode=\"KGM\">9</WeightMeasure>\n" +
-				"<UsageCode listID=\"PROD_USAGE\">HCN</UsageCode>\n" +
-				"<AppliedAAPProcess>\n" +
-				"<TypeCode listID=\"FISH_FRESHNESS\">E</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESERVATION\">FRE</TypeCode>\n" +
-				"<TypeCode listID=\"FISH_PRESENTATION\">GUT</TypeCode>\n" +
-				"</AppliedAAPProcess>\n" +
-				"<TotalSalesPrice>\n" +
-				"<ChargeAmount>3.55</ChargeAmount>\n" +
-				"</TotalSalesPrice>\n" +
-				"<SpecifiedSizeDistribution>\n" +
-				"<CategoryCode listID=\"FISH_SIZE_CATEGORY\">3</CategoryCode>\n" +
-				"<ClassCode listID=\"FISH_SIZE_CLASS\">LSC</ClassCode>\n" +
-				"</SpecifiedSizeDistribution>\n" +
-				"<OriginFLUXLocation>\n" +
-				"<TypeCode listID=\"FLUX_LOCATION_TYPE\">AREA</TypeCode>\n" +
-				"<ID schemeID=\"FAO_AREA\">27.7.A</ID>\n" +
-				"</OriginFLUXLocation>\n" +
-				"</SpecifiedAAPProduct>\n" +
-				"</SpecifiedSalesBatch>\n" +
-				"<SpecifiedSalesEvent>\n" +
-				"<OccurrenceDateTime>\n" +
-				"<ns2:DateTime>2017-10-16T07:05:22Z</ns2:DateTime>\n" +
-				"</OccurrenceDateTime>\n" +
-				"</SpecifiedSalesEvent>\n" +
-				"<SpecifiedFishingActivity>\n" +
-				"<TypeCode>LAN</TypeCode>\n" +
-				"<RelatedFLUXLocation>\n" +
-				"<TypeCode listID=\"FLUX_LOCATION_TYPE\">LOCATION</TypeCode>\n" +
-				"<CountryID schemeID=\"TERRITORY\">BEL</CountryID>\n" +
-				"<ID schemeID=\"LOCATION\">BEOST</ID>\n" +
-				"</RelatedFLUXLocation>\n" +
-				"<SpecifiedDelimitedPeriod>\n" +
-				"<StartDateTime>\n" +
-				"<ns2:DateTime>2017-05-10T05:32:30Z</ns2:DateTime>\n" +
-				"</StartDateTime>\n" +
-				"</SpecifiedDelimitedPeriod>\n" +
-				"<SpecifiedFishingTrip>\n" +
-				"<ID schemeID=\"EU_TRIP_ID\">BEL-TRP-20171610</ID>\n" +
-				"</SpecifiedFishingTrip>\n" +
-				"<RelatedVesselTransportMeans>\n" +
-				"<ID schemeID=\"CFR\">BEL123456799</ID>\n" +
-				"<Name>FAKE VESSEL2</Name>\n" +
-				"<RegistrationVesselCountry>\n" +
-				"<ID schemeID=\"TERRITORY\">BEL</ID>\n" +
-				"</RegistrationVesselCountry>\n" +
-				"<SpecifiedContactParty>\n" +
-				"<RoleCode listID=\"FLUX_CONTACT_ROLE\">MASTER</RoleCode>\n" +
-				"<SpecifiedContactPerson>\n" +
-				"<GivenName>Henrick</GivenName>\n" +
-				"<MiddleName>Jan</MiddleName>\n" +
-				"<FamilyName>JANSEN</FamilyName>\n" +
-				"</SpecifiedContactPerson>\n" +
-				"</SpecifiedContactParty>\n" +
-				"</RelatedVesselTransportMeans>\n" +
-				"</SpecifiedFishingActivity>\n" +
-				"<SpecifiedFLUXLocation>\n" +
-				"<TypeCode listID=\"FLUX_LOCATION_TYPE\">LOCATION</TypeCode>\n" +
-				"<CountryID schemeID=\"TERRITORY\">BEL</CountryID>\n" +
-				"<ID schemeID=\"LOCATION\">BEOST</ID>\n" +
-				"</SpecifiedFLUXLocation>\n" +
-				"<SpecifiedSalesParty>\n" +
-				"<ID schemeID=\"MS\">123456</ID>\n" +
-				"<Name>Mr SENDER</Name>\n" +
-				"<RoleCode listID=\"FLUX_SALES_PARTY_ROLE\">SENDER</RoleCode>\n" +
-				"</SpecifiedSalesParty>\n" +
-				"<SpecifiedSalesParty>\n" +
-				"<ID schemeID=\"VAT\">0679223791</ID>\n" +
-				"<Name>Mr BUYER</Name>\n" +
-				"<RoleCode listID=\"FLUX_SALES_PARTY_ROLE\">BUYER</RoleCode>\n" +
-				"</SpecifiedSalesParty>\n" +
-				"<SpecifiedSalesParty>\n" +
-				"<Name>Mr PROVIDER</Name>\n" +
-				"<RoleCode listID=\"FLUX_SALES_PARTY_ROLE\">PROVIDER</RoleCode>\n" +
-				"</SpecifiedSalesParty>\n" +
-				"</IncludedSalesDocument>\n" +
-				"</ns3:SalesReport>\n" +
-				"</ns4:FLUXSalesReportMessage>\n" +
-				"<ns4:AuctionSale>\n" +
-				"<ns4:CountryCode>BEL</ns4:CountryCode>\n" +
-				"<ns4:SalesCategory>FIRST_SALE</ns4:SalesCategory>\n" +
-				"</ns4:AuctionSale>\n" +
-				"</ns4:Report>\n";
-	}
-
-
-
 
 	private String composeFLUXSalesReportMessageAsString_BAD() {
 		return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
