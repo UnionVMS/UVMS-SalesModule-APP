@@ -185,7 +185,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertTrue(sendSalesResponseRequestBody.contains("SendSalesResponseRequest"));
 		assertTrue(sendSalesResponseRequestBody.contains(messageGuid));
 
-        // Use case: CheckForUniqueIdRequest, unsavedMessage should exist in database
+        // Assert case: CheckForUniqueIdRequest, unsavedMessage should exist in database
 		// Test data
 		Destination findReportByIdRequestReplyTo = replyToRulesQueue;
 		TextMessage requestMessage = getTextMessageWithReplyTo(findReportByIdRequestReplyTo);
@@ -202,7 +202,6 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 		// Assert
 		TextMessage responseMessage = receiveTextMessage(findReportByIdRequestReplyTo, requestMessage.getJMSMessageID());
-		assertNotNull(responseMessage);
 		String responseMessageBody = responseMessage.getText();
 		assertTrue(responseMessageBody.contains("CheckForUniqueIdResponse"));
 		assertTrue(responseMessageBody.contains("unique=\"false\""));
@@ -216,6 +215,8 @@ public class SalesServiceTestIT extends TransactionalTests {
 	public void testSalesMDRServiceToMDRMock() throws Exception {
 		// Execute
 		List<ObjectRepresentation> codeList = mdrService.findCodeList(MDRCodeListKey.CONVERSION_FACTOR);
+
+		// Assert
 		assertEquals(4, codeList.size());
 	}
 
@@ -354,7 +355,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertTrue(sendSalesResponseRequestBody.contains(messageGuid));
 
 
-		// Use case: FindReportReceivedEvent event for existing report
+		// Assert case: Find report by id should exist for previously saved report
 
 		// Test data
 		FindReportByIdRequest findReportByIdRequest = new FindReportByIdRequest();
@@ -516,6 +517,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertTrue(sendSalesResponseRequestMessageBody.contains("NOK"));
 		assertTrue(sendSalesResponseRequestMessageBody.contains(businessRuleId));
 
+
 		// Assert use case: unique ID should be false for previous respondToInvalidMessageRequest processed OK
 		String checkForUniqueIdRequest = SalesModuleRequestMapper.createCheckForUniqueIdRequest(Lists.newArrayList(messageGuid), SalesMessageIdType.SALES_REPORT);
 
@@ -536,6 +538,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 			JMSUtils.disconnectQueue(connection2);
 		}
 
+		//Assert
 		TextMessage checkForUniqueIdResponseMessage = receiveTextMessage(replyToRulesQueue, CheckForUniqueIdCorrelationId);
 		assertNotNull(checkForUniqueIdResponseMessage);
         CheckForUniqueIdResponse checkForUniqueIdResponse = JAXBMarshaller.unmarshallString(checkForUniqueIdResponseMessage.getText(), CheckForUniqueIdResponse.class);
