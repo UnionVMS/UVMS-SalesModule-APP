@@ -49,14 +49,20 @@ public interface FluxReportDao extends DaoForSales<FluxReport, Integer> {
     FluxReport findDetailsByExtId(@NotNull String extId);
 
     /**
-     *  Retrieves the sales report (note or take over document) which is a correction or deletion of the given sales
+     *  Retrieves the sales report (note or take over document) which is a correction of the given sales
      *  report.
      **/
-    Optional<FluxReport> findCorrectionOrDeletionOf(@NotNull String extId);
+    Optional<FluxReport> findCorrectionOf(@NotNull String extId);
+
+    /**
+     *  Retrieves the sales report which is a deletion message of the given sales
+     *  report.
+     **/
+    Optional<FluxReport> findDeletionOf(@NotNull String extId);
 
     /**
      * Returns the latest version of the given report. A report being an older version means that another report
-     * corrects or deletes the given report.
+     * corrects the given report.
      */
     FluxReport findLatestVersion(FluxReport fluxReport);
 }

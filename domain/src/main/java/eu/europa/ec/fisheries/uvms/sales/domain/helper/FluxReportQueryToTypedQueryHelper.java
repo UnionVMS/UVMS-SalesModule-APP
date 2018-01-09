@@ -1,12 +1,14 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.helper;
 
 import eu.europa.ec.fisheries.schema.sales.*;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.SalesCategory;
 import eu.europa.ec.fisheries.uvms.sales.domain.dto.FluxReportSearchMode;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.AuctionSale;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
+import lombok.NonNull;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,15 +48,15 @@ public class FluxReportQueryToTypedQueryHelper {
     private Paging paging;
     private boolean eagerLoadRelations;
 
-    public static FluxReportQueryToTypedQueryHelper search(EntityManager em) {
-        return new FluxReportQueryToTypedQueryHelper(FETCH, em);
+    public static FluxReportQueryToTypedQueryHelper search(@NonNull EntityManager em, @NonNull ReportQueryFilter filters) {
+        return new FluxReportQueryToTypedQueryHelper(FETCH, em, filters);
     }
 
-    public static FluxReportQueryToTypedQueryHelper count(EntityManager em) {
-        return new FluxReportQueryToTypedQueryHelper(COUNT, em);
+    public static FluxReportQueryToTypedQueryHelper count(@NonNull EntityManager em, @NonNull ReportQueryFilter filters) {
+        return new FluxReportQueryToTypedQueryHelper(COUNT, em, filters);
     }
 
-    private FluxReportQueryToTypedQueryHelper(FluxReportSearchMode searchMode, EntityManager em) {
+    private FluxReportQueryToTypedQueryHelper(FluxReportSearchMode searchMode, EntityManager em, ReportQueryFilter filters) {
         this.em = em;
         this.builder = em.getCriteriaBuilder();
         this.query = builder.createQuery();
@@ -62,28 +64,27 @@ public class FluxReportQueryToTypedQueryHelper {
         this.whereConditions = builder.conjunction();
         this.parameters = new HashMap<>();
         this.searchMode = searchMode;
+        filter(filters);
     }
 
-    public FluxReportQueryToTypedQueryHelper filter(ReportQueryFilter filters) {
-        if (filters != null) {
-            withVesselName(filters.getVesselName());
-            withFlagState(filters.getFlagState());
-            withVesselExternalIds(filters.getVesselExtIds());
-            inSalesLocation(filters.getSalesLocation());
-            soldAfter(filters.getSalesStartDate());
-            soldBefore(filters.getSalesEndDate());
-            inLandingPort(filters.getLandingPort());
-            withSalesCategory(filters.getSalesCategory());
-            withAnySpecies(filters.getAnySpecies());
-            withAllSpecies(filters.getAllSpecies());
-            includeOnlyIds(filters.getIncludeFluxReportIds());
-            excludeIds(filters.getExcludeFluxReportIds());
-            withTripId(filters.getTripId());
-            withLandingCountry(filters.getLandingCountry());
-            withDeleted(filters.isIncludeDeleted());
-        }
+    private void filter(@NonNull ReportQueryFilter filters) {
+        withVesselName(filters.getVesselName());
+        withFlagState(filters.getFlagState());
+        withVesselExternalIds(filters.getVesselExtIds());
+        inSalesLocation(filters.getSalesLocation());
+        soldAfter(filters.getSalesStartDate());
+        soldBefore(filters.getSalesEndDate());
+        inLandingPort(filters.getLandingPort());
+        withSalesCategory(filters.getSalesCategory());
+        withAnySpecies(filters.getAnySpecies());
+        withAllSpecies(filters.getAllSpecies());
+        includeOnlyIds(filters.getIncludeFluxReportIds());
+        excludeIds(filters.getExcludeFluxReportIds());
+        withTripId(filters.getTripId());
+        withLandingCountry(filters.getLandingCountry());
+        withDeleted(filters.isIncludeDeleted());
         notCorrected();
-        return this;
+        noDeletionMessages();
     }
 
     public FluxReportQueryToTypedQueryHelper page(Paging paging) {
@@ -151,7 +152,6 @@ public class FluxReportQueryToTypedQueryHelper {
         //where
         query = query.where(whereConditions);
 
-
         //set parameters
         TypedQuery typedQuery = em.createQuery(query);
         for (Map.Entry<Parameter, Object> parameter : parameters.entrySet()) {
@@ -182,6 +182,13 @@ public class FluxReportQueryToTypedQueryHelper {
 
     private void notCorrected() {
         Predicate notCorrected = builder.isNull(fluxReport.get("correction"));
+        addWhereCondition(notCorrected);
+    }
+
+    /** Filters aways the deletion messages. Note that a deletion message is the message that deletes another message.
+     * This does not have an effect on these deleted messages, like withDeleted(boolean) does, but on the deletion message! **/
+    private void noDeletionMessages() {
+        Predicate notCorrected = builder.notEqual(fluxReport.get("purpose"), Purpose.DELETE);
         addWhereCondition(notCorrected);
     }
 

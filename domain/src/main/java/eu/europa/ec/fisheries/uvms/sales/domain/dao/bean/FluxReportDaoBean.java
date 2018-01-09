@@ -7,27 +7,26 @@ package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
 import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.ProductDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.FluxReportQueryToTypedQueryHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Stateless
+@Slf4j
 public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> implements FluxReportDao {
-
-    final static Logger LOG = LoggerFactory.getLogger(FluxReportDaoBean.class);
-    public static final String EXT_ID = "extId";
+    private static final String EXT_ID = "extId";
+    private static final String PURPOSE = "purpose";
 
     @EJB
     protected ProductDao productDao;
@@ -59,8 +58,7 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
     @Override
     public List<FluxReport> search(ReportQuery reportQuery, boolean eagerLoadRelations) {
         return FluxReportQueryToTypedQueryHelper
-                                    .search(em)
-                                    .filter(reportQuery.getFilters())
+                                    .search(em, reportQuery.getFilters())
                                     .sort(reportQuery.getSorting())
                                     .page(reportQuery.getPaging())
                                     .eagerLoadRelations(eagerLoadRelations)
@@ -71,8 +69,7 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
     @Override
     public long count(ReportQuery reportQuery) {
         return (long) FluxReportQueryToTypedQueryHelper
-                                        .count(em)
-                                        .filter(reportQuery.getFilters())
+                                        .count(em, reportQuery.getFilters())
                                         .build()
                                         .getSingleResult();
     }
@@ -88,9 +85,19 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
     }
 
     @Override
-    public Optional<FluxReport> findCorrectionOrDeletionOf(@NotNull String extId) {
-        TypedQuery<FluxReport> query = em.createNamedQuery(FluxReport.FIND_BY_REFERRED_ID, FluxReport.class);
+    public Optional<FluxReport> findCorrectionOf(@NotNull String extId) {
+        return findCorrectionOrDeletionOf(extId, Purpose.CORRECTION);
+    }
+
+    @Override
+    public Optional<FluxReport> findDeletionOf(@NotNull String extId) {
+        return findCorrectionOrDeletionOf(extId, Purpose.DELETE);
+    }
+
+    private Optional<FluxReport> findCorrectionOrDeletionOf(@NotNull String extId, Purpose purpose) {
+        TypedQuery<FluxReport> query = em.createNamedQuery(FluxReport.FIND_BY_REFERENCED_ID_AND_PURPOSE, FluxReport.class);
         query.setParameter(EXT_ID, extId);
+        query.setParameter(PURPOSE, purpose);
 
         List<FluxReport> results = query.getResultList();
         if (results.size() == 1) {
@@ -98,13 +105,14 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
         } else if (results.isEmpty()) {
             return Optional.absent();
         } else {
-            throw new NonUniqueResultException("Found more than 1 correction or deletion of report with extId " + extId);
+            log.error("Found more than 1 correction or deletion of report with extId " + extId + "! Going to return the last one.");
+            return Optional.of(results.get(results.size()-1));
         }
     }
 
     @Override
     public FluxReport findLatestVersion(FluxReport fluxReport) {
-        Optional<FluxReport> newerVersion = findCorrectionOrDeletionOf(fluxReport.getExtId());
+        Optional<FluxReport> newerVersion = findCorrectionOf(fluxReport.getExtId());
         if (newerVersion.isPresent()) {
             return findLatestVersion(newerVersion.get());
         } else {

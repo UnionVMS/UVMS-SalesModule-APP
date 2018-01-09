@@ -20,6 +20,15 @@ public interface ReportDomainModel {
     Optional<Report> findByExtId(String extId);
 
     /**
+     * Finds a report by its GUID, internally known as extId.
+     *
+     * @param extId internal name for GUID
+     * @param includeDeletedOrCorrectedReports true if you want to find a report that could have been corrected or deleted
+     * @return the found report
+     */
+    Optional<Report> findByExtId(String extId, boolean includeDeletedOrCorrectedReports);
+
+    /**
      * Creates a report.
      *
      * @param report the report to be created
@@ -61,7 +70,7 @@ public interface ReportDomainModel {
      *  Retrieves the sales report (note or take over document) which is a correction or deletion of the given sales
      *  report.
      **/
-    Optional<Report> findCorrectionOrDeletionOf(@NotNull String extId);
+    Optional<Report> findCorrectionOf(@NotNull String extId);
 
     /**
      * Returns all referenced reports, including the report that has

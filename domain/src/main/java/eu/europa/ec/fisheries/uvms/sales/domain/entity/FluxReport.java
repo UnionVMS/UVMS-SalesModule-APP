@@ -14,17 +14,20 @@ import java.util.List;
 @SequenceGenerator( name = "sales_flux_report_id_seq",
         sequenceName = "sales_flux_report_id_seq",
         allocationSize = 50)
-@EqualsAndHashCode(exclude = {"previousFluxReport", "relatedTakeOverDocuments", "relatedSalesNotes"})
-@ToString(exclude = {"previousFluxReport", "relatedTakeOverDocuments", "relatedSalesNotes"})
+@EqualsAndHashCode(exclude = {"relatedTakeOverDocuments", "relatedSalesNotes"})
+@ToString(exclude = {"relatedTakeOverDocuments", "relatedSalesNotes"})
 @NamedQueries({
         @NamedQuery(name = FluxReport.FIND_BY_EXT_ID, query = "SELECT report from FluxReport report WHERE report.extId = :extId"),
-        @NamedQuery(name = FluxReport.FIND_BY_REFERRED_ID, query = "SELECT report from FluxReport report WHERE report.previousFluxReport.extId = :extId"),
+        @NamedQuery(name = FluxReport.FIND_BY_REFERENCED_ID_AND_PURPOSE,
+                query = "SELECT report from FluxReport report " +
+                        "WHERE report.previousFluxReportExtId = :extId " +
+                        "and report.purpose = :purpose"),
         @NamedQuery(name = FluxReport.FIND_TOD_BY_EXT_ID, query = "SELECT report from FluxReport report WHERE report.extId = :extId AND report.itemType = eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType.TAKE_OVER_DOCUMENT")
 })
 public class FluxReport {
 
     public static final String FIND_BY_EXT_ID = "FluxReport.FIND_BY_EXT_ID";
-    public static final String FIND_BY_REFERRED_ID = "FluxReport.FIND_BY_REFERRED_ID";
+    public static final String FIND_BY_REFERENCED_ID_AND_PURPOSE = "FluxReport.FIND_BY_REFERENCED_ID_AND_PURPOSE";
     public static final String FIND_TOD_BY_EXT_ID = "FluxReport.FIND_TOD_BY_REFERRED_ID";
 
     @Id
@@ -71,11 +74,10 @@ public class FluxReport {
 
     /**
      * When this report is a correction or deletion of another report, the attribute previousFluxReport will point
-     * to the report that is being corrected or deleted.
+     * to the extId of the report that is being corrected or deleted.
      */
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sales_flux_report_prev_id")
-    private FluxReport previousFluxReport;
+    @Column(name = "sales_flux_report_prev_ext_id")
+    private String previousFluxReportExtId;
 
     /**
      * When this is a sales note, this attribute will contain all related take over documents.
@@ -168,12 +170,12 @@ public class FluxReport {
         this.document = document;
     }
 
-    public FluxReport getPreviousFluxReport() {
-        return previousFluxReport;
+    public String getPreviousFluxReportExtId() {
+        return previousFluxReportExtId;
     }
 
-    public void setPreviousFluxReport(FluxReport previousFluxReport) {
-        this.previousFluxReport = previousFluxReport;
+    public void setPreviousFluxReportExtId(String previousFluxReport) {
+        this.previousFluxReportExtId = previousFluxReport;
     }
 
     public List<FluxReport> getRelatedTakeOverDocuments() {
@@ -248,8 +250,8 @@ public class FluxReport {
         return this;
     }
 
-    public FluxReport previousFluxReport(final FluxReport previousFluxReport) {
-        setPreviousFluxReport(previousFluxReport);
+    public FluxReport previousFluxReportExtId(final String previousFluxReportExtId) {
+        setPreviousFluxReportExtId(previousFluxReportExtId);
         return this;
     }
 

@@ -146,8 +146,8 @@ public class EventServiceBean implements EventService {
             case SALES_RESPONSE:
                 response = uniqueIdService.isResponseIdUnique(request.getIds().get(0));
                 break;
-            case SALES_RESPONSE_REFERENCED_ID:
-                response = !uniqueIdService.doesReferencedReportInResponseExist(request.getIds().get(0));
+            case SALES_REFERENCED_ID:
+                response = !uniqueIdService.doesReferencedReportExist(request.getIds().get(0));
                 break;
             default:
                 throw new RuntimeException("No case implemented for " + request.getType());

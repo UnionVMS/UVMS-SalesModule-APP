@@ -17,7 +17,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import javax.persistence.NonUniqueResultException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -149,10 +148,8 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
                 .fluxReportParty("BEL")
                 .document(document)
                 .purpose(Purpose.CORRECTION)
-                .auctionSale(auctionSale);
-
-        FluxReport reportToBeCorrected = dao.findByExtId("OLD_REPORT").get();
-        currentReport.setPreviousFluxReport(reportToBeCorrected);
+                .auctionSale(auctionSale)
+                .previousFluxReportExtId("OLD_REPORT");
 
         dao.create(currentReport);
     }
@@ -173,16 +170,16 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
 
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testSearchAndCount-initial-minimal.xml")
-    public void testSearchWithoutFilters() throws Exception {
+    public void testSearchWithoutNotableFilters() throws Exception {
         ReportQuery reportQuery = new ReportQuery();
+        reportQuery.setFilters(new ReportQueryFilter());
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
+        assertEquals(2, fluxReports.size());
 
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -555,15 +552,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.ASCENDING);
         sorting.setField(ReportQuerySortField.FLAG_STATE);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
+        assertEquals(2, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -573,15 +570,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.ASCENDING);
         sorting.setField(ReportQuerySortField.CATEGORY);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
+        assertEquals(2, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(126), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(125), fluxReports.get(2).getId());
+        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
     }
 
     @Test
@@ -591,15 +588,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.DESCENDING);
         sorting.setField(ReportQuerySortField.CATEGORY);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
+        assertEquals(2, fluxReports.size());
         assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -609,15 +606,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.DESCENDING);
         sorting.setField(ReportQuerySortField.FLAG_STATE);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
-        assertEquals(Integer.valueOf(126), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
+        assertEquals(2, fluxReports.size());
+        assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
     }
 
     @Test
@@ -627,15 +624,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.ASCENDING);
         sorting.setField(ReportQuerySortField.LANDING_DATE);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
+        assertEquals(2, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -645,15 +642,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.DESCENDING);
         sorting.setField(ReportQuerySortField.LANDING_DATE);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
-        assertEquals(Integer.valueOf(126), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
+        assertEquals(2, fluxReports.size());
+        assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
     }
 
     @Test
@@ -663,15 +660,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.ASCENDING);
         sorting.setField(ReportQuerySortField.LANDING_PORT);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
+        assertEquals(2, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -681,15 +678,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.DESCENDING);
         sorting.setField(ReportQuerySortField.LANDING_PORT);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
-        assertEquals(Integer.valueOf(126), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
+        assertEquals(2, fluxReports.size());
+        assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
     }
 
     @Test
@@ -699,15 +696,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.ASCENDING);
         sorting.setField(ReportQuerySortField.VESSEL_NAME);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
-        assertEquals(Integer.valueOf(126), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
+        assertEquals(2, fluxReports.size());
+        assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
     }
 
 
@@ -718,15 +715,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.DESCENDING);
         sorting.setField(ReportQuerySortField.VESSEL_NAME);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
+        assertEquals(2, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -736,15 +733,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.ASCENDING);
         sorting.setField(ReportQuerySortField.SALES_DATE);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
+        assertEquals(2, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(126), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(125), fluxReports.get(2).getId());
+        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
     }
 
     @Test
@@ -754,15 +751,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.DESCENDING);
         sorting.setField(ReportQuerySortField.SALES_DATE);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
+        assertEquals(2, fluxReports.size());
         assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(126), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
     }
 
     @Test
@@ -772,15 +769,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.ASCENDING);
         sorting.setField(ReportQuerySortField.SALES_LOCATION);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
+        assertEquals(2, fluxReports.size());
         assertEquals(Integer.valueOf(123), fluxReports.get(0).getId());
         assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(126), fluxReports.get(2).getId());
     }
 
     @Test
@@ -790,15 +787,15 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         sorting.setDirection(SortDirection.DESCENDING);
         sorting.setField(ReportQuerySortField.SALES_LOCATION);
 
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setSorting(sorting);
+        ReportQuery reportQuery = new ReportQuery()
+                .withFilters(new ReportQueryFilter())
+                .withSorting(sorting);
 
         List<FluxReport> fluxReports = dao.search(reportQuery);
 
-        assertEquals(3, fluxReports.size());
-        assertEquals(Integer.valueOf(126), fluxReports.get(0).getId());
-        assertEquals(Integer.valueOf(125), fluxReports.get(1).getId());
-        assertEquals(Integer.valueOf(123), fluxReports.get(2).getId());
+        assertEquals(2, fluxReports.size());
+        assertEquals(Integer.valueOf(125), fluxReports.get(0).getId());
+        assertEquals(Integer.valueOf(123), fluxReports.get(1).getId());
     }
 
     @Test
@@ -817,13 +814,11 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         assertEquals(20, dao.count(reportQuery));
     }
 
-
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testSearchAndCount-initial-big.xml")
     public void testCountWhenNothingFound() throws Exception {
         ReportQueryFilter filters = new ReportQueryFilter().withIncludeFluxReportIds("898945");
-        ReportQuery reportQuery = new ReportQuery();
-        reportQuery.setFilters(filters);
+        ReportQuery reportQuery = new ReportQuery().withFilters(filters);
 
         assertEquals(0, dao.count(reportQuery));
     }
@@ -843,25 +838,71 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         }
     }
 
-    @Test(expected = NonUniqueResultException.class)
-    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindReportsWhichReferTo-initial.xml")
-    public void testFindReportsWhichReferToWhenDatabaseContainsIncorrectData() {
-        dao.findCorrectionOrDeletionOf("abc");
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindCorrectionOf-initial.xml")
+    public void testFindCorrectionOfWhenMultipleCorrectionsPointToTheSameDocument() {
+        Optional<FluxReport> result = dao.findCorrectionOf("abc");
+        assertEquals("ghi", result.get().getExtId());
     }
 
     @Test
-    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindReportsWhichReferTo-initial.xml")
-    public void testFindReportsWhichReferToWhenSomethingFound() {
-        Optional<FluxReport> fluxReport = dao.findCorrectionOrDeletionOf("ghi");
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindCorrectionOf-initial.xml")
+    public void testFindCorrectionOfWhenSomethingFound() {
+        Optional<FluxReport> fluxReport = dao.findCorrectionOf("ghi");
         assertEquals("yoyoyo", fluxReport.get().getExtId());
     }
 
     @Test
-    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindReportsWhichReferTo-initial.xml")
-    public void testFindReportsWhichReferToWhenNothingFound() {
-        assertFalse(dao.findCorrectionOrDeletionOf("bla").isPresent());
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindCorrectionOf-initial.xml")
+    public void testFindCorrectionOfShouldIgnoreDeletions() {
+        Optional<FluxReport> fluxReport = dao.findCorrectionOf("deletedReport");
+        assertFalse(fluxReport.isPresent());
     }
 
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindCorrectionOf-initial.xml")
+    public void testFindCorrectionOfWhenNothingFound() {
+        assertFalse(dao.findCorrectionOf("bla").isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindCorrectionOf-initial.xml")
+    public void testFindCorrectionOfWhenAReportRefersToANonExistingReport() {
+        assertFalse(dao.findCorrectionOf("IReferToANonExistingReport").isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindDeletionOf-initial.xml")
+    public void testFindDeletionOfWhenMultipleCorrectionsPointToTheSameDocument() {
+        Optional<FluxReport> result = dao.findDeletionOf("abc");
+        assertEquals("ghi", result.get().getExtId());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindDeletionOf-initial.xml")
+    public void testFindDeletionOfWhenSomethingFound() {
+        Optional<FluxReport> fluxReport = dao.findDeletionOf("ghi");
+        assertEquals("yoyoyo", fluxReport.get().getExtId());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindDeletionOf-initial.xml")
+    public void testFindDeletionOfShouldIgnoreCorrections() {
+        Optional<FluxReport> fluxReport = dao.findDeletionOf("correctedReport");
+        assertFalse(fluxReport.isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindDeletionOf-initial.xml")
+    public void testFindDeletionOfWhenNothingFound() {
+        assertFalse(dao.findDeletionOf("bla").isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindDeletionOf-initial.xml")
+    public void testFindDeletionOfWhenAReportRefersToANonExistingReport() {
+        assertFalse(dao.findDeletionOf("IReferToANonExistingReport").isPresent());
+    }
 
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindLatestVersion-initial.xml")
@@ -881,6 +922,16 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
                 .extId("yoyoyo");
         FluxReport latestVersion = dao.findLatestVersion(fluxReport);
         assertEquals(Integer.valueOf(126), latestVersion.getId());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindLatestVersion-initial.xml")
+    public void testFindLatestVersionShouldIgnoreDeletions() {
+        FluxReport fluxReport = new FluxReport()
+                .id(128)
+                .extId("deletedReport");
+        FluxReport latestVersion = dao.findLatestVersion(fluxReport);
+        assertEquals(Integer.valueOf(128), latestVersion.getId());
     }
 
     @Test

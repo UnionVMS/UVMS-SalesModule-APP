@@ -11,5 +11,5 @@ public interface UniqueIdService {
 
     boolean isResponseIdUnique(String extId);
 
-    boolean doesReferencedReportInResponseExist(String referencedId);
+    boolean doesReferencedReportExist(String referencedId);
 }

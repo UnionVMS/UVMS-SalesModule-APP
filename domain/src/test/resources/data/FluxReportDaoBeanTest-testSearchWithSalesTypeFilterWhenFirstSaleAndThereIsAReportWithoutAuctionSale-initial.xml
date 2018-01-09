@@ -215,7 +215,7 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="2017-11-24 00:00:00"
     />
 
@@ -229,7 +229,7 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
-            sales_flux_report_prev_id="1230000"
+            sales_flux_report_prev_ext_id="abc-outdated"
             correction="[NULL]"
     />
 
@@ -243,7 +243,7 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
     />
 
@@ -257,7 +257,7 @@
             flux_report_party="BEL"
             sales_document_id="22"
             sales_auction_sale_id="[NULL]"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
     />
 
@@ -271,7 +271,7 @@
             flux_report_party="BEL"
             sales_document_id="23"
             sales_auction_sale_id="[NULL]"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
     />
 </dataset>

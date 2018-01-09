@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
+import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
@@ -78,11 +79,12 @@ public class ReportServiceHelper {
 
     private Report findOriginalReport(Report report) {
         if (reportHelper.isReportCorrected(report) || reportHelper.isReportDeleted(report)) {
-            Report referencedReport = reportDomainModel.findByExtId(reportHelper.getFLUXReportDocumentReferencedId(report)).orNull();
-            if (referencedReport == null) {
+            Optional<Report> referencedReport = reportDomainModel.findByExtId(reportHelper.getFLUXReportDocumentReferencedId(report), true);
+            if (referencedReport.isPresent()) {
+                return findOriginalReport(referencedReport.get());
+            } else {
                 return report;
             }
-            return findOriginalReport(referencedReport);
         } else {
             return report;
         }
