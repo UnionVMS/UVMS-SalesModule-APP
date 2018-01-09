@@ -545,6 +545,28 @@ public class SalesServiceTestIT extends TransactionalTests {
         assertFalse(checkForUniqueIdResponse.isUnique());
 	}
 
+	@InSequence(13)
+	@Test
+	@OperateOnDeployment("salesservice")
+	@Transactional(TransactionMode.DISABLED)
+	@DataSource("java:/jdbc/uvms_sales")
+	public void trySalesMessageConsumerBean_Save_Report_SalesMarshallException() throws Exception {
+		// Data
+		String salesReportRequest = "BAD_MESSAGE_CONTENT";
+
+		//Execute, save report for MessageConsumerBean
+		String jmsCorrelationId = salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(salesReportRequest, replyToRulesQueue);
+
+		// Assert, receive error notification message for save report SalesMarshallException
+		TextMessage textErrorNotificationResponse = salesServiceTestHelper.receiveMessageFromReplyToRulesQueue(jmsCorrelationId);
+		assertNotNull(textErrorNotificationResponse);
+		assertTrue(textErrorNotificationResponse.getText().contains("Invalid content in message"));
+
+		// Assert, should not receive FLUXSalesResponseMessage for previously save report SalesMarshallException
+		TextMessage textMessageSendSalesResponseRequest = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
+		assertNull(textMessageSendSalesResponseRequest);
+	}
+
 	private javax.jms.MessageProducer getProducer(Session session, Destination destination) throws JMSException {
         javax.jms.MessageProducer producer = session.createProducer(destination);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
