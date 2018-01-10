@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -23,6 +25,7 @@ public class FluxLocation {
     @Column(name = "ext_id")
     private String extId;
 
+    @NotNull
     @Column(name = "type", nullable = false)
     private String type;
 
@@ -36,6 +39,7 @@ public class FluxLocation {
     @Column(name = "latitude")
     private Double latitude;
 
+    @Valid
     @ManyToOne(
             cascade = { CascadeType.PERSIST, CascadeType.MERGE },
             fetch = FetchType.LAZY)

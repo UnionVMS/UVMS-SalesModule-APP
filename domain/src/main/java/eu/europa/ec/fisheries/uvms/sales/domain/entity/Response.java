@@ -5,6 +5,7 @@ import lombok.ToString;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "sales_response")
@@ -29,15 +30,19 @@ public class Response {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "ext_id", nullable = false)
     private String extId;
 
+    @NotNull
     @Column(name = "referenced_id", nullable = false)
     private String referencedId;
 
+    @NotNull
     @Column(name = "creation", nullable = false)
     private DateTime creationDateTime;
 
+    @NotNull
     @Column(name = "response_code", nullable = false)
     private String responseCode;
 

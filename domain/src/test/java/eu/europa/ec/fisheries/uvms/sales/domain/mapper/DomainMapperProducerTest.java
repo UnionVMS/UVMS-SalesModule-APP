@@ -21,13 +21,13 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class MapperProducerTest {
+public class DomainMapperProducerTest {
 
     private static MapperFacade mapper;
 
     @BeforeClass
     public static void setUp() {
-        mapper = new MapperProducer().getMapper();
+        mapper = new DomainMapperProducer().getMapper();
     }
 
     @Test

@@ -23,7 +23,7 @@ public abstract class ExtendedAbstractProducer extends AbstractProducer {
             connection = getConnectionFactory().createConnection();
             final Session session = JMSUtils.connectToQueue(connection);
 
-            LOGGER.info("Sending message with replyTo: [{}]", replyTo);
+            LOGGER.info("Sending message from: [{}] with replyTo: [{}]", this.getClass().getCanonicalName(), replyTo);
             LOGGER.debug("Message content : [{}]", text);
 
             if (connection == null || session == null) {
@@ -39,7 +39,7 @@ public abstract class ExtendedAbstractProducer extends AbstractProducer {
             producer.setTimeToLive(timeToLiveInMillis);
             producer.send(message);
 
-            LOGGER.info("Message with {} has been successfully sent.", message.getJMSMessageID());
+            LOGGER.info("Message with {} has been successfully sent to: {}.", message.getJMSMessageID(), this.getDestinationName());
             return message.getJMSMessageID();
 
         } catch (final JMSException e) {

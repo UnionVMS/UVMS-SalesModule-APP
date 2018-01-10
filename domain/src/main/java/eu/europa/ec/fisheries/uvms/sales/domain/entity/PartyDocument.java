@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -25,10 +27,13 @@ public class PartyDocument {
     @Size(max = 3)
     private String country;
 
+    @NotNull
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private PartyRole role;
 
+    @Valid
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_party_id", nullable = false)
     private Party party;

@@ -34,8 +34,7 @@ public class EcbProxyServiceBean implements EcbProxyService {
 
     @Override
     public BigDecimal findExchangeRate(String sourceCurrency, String targetCurrency, DateTime date) {
-
-        String request;
+        String request = null;
 
         try {
             request = EcbProxyRequestMapper.createGetExchangeRateRequest(sourceCurrency, targetCurrency, date);

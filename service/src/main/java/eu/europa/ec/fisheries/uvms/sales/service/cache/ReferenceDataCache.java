@@ -24,12 +24,11 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Singleton
 @Slf4j
+@Singleton
 public class ReferenceDataCache {
 
     private LoadingCache<MDRCodeListKey, List<ObjectRepresentation>> cache;
@@ -139,8 +138,23 @@ public class ReferenceDataCache {
 
     public BigDecimal getConversionFactorForProduct(ProductDto product) {
         List<ConversionFactor> factors = map(todays(MDRCodeListKey.CONVERSION_FACTOR), ConversionFactor.class);
+        if ((product == null)
+                || (product.getSpecies() == null)
+                || (product.getPresentation() == null)
+                || (product.getPreservation() == null)) {
+            log.warn("No valid code list conversion factor. Use default value 999.");
+            return BigDecimal.valueOf(999);
+        }
 
         for (ConversionFactor factor : factors) {
+            if ((factor == null)
+                    || (factor.getCode() == null)
+                    || (factor.getPresentation() == null)
+                    || (factor.getPreservation() == null))
+            {
+                continue;
+            }
+
             boolean speciesIsEqual = product.getSpecies().trim().equals(factor.getCode().trim());
             boolean presentationIsEqual = product.getPresentation().trim().equals(factor.getPresentation().trim());
             boolean preservationIsEqual = product.getPreservation().trim().equals(factor.getPreservation().trim());
@@ -149,7 +163,7 @@ public class ReferenceDataCache {
                 return factor.getFactor();
             }
         }
-
+        log.warn("No valid code list conversion factor. Use default value 999. Conversion factor list size: " + factors.size());
         return BigDecimal.valueOf(999);
     }
 }

@@ -7,6 +7,8 @@ import lombok.ToString;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -14,20 +16,17 @@ import java.util.List;
 @SequenceGenerator( name = "sales_flux_report_id_seq",
         sequenceName = "sales_flux_report_id_seq",
         allocationSize = 50)
-@EqualsAndHashCode(exclude = {"relatedTakeOverDocuments", "relatedSalesNotes"})
-@ToString(exclude = {"relatedTakeOverDocuments", "relatedSalesNotes"})
+@EqualsAndHashCode(exclude = {"previousFluxReport", "relatedTakeOverDocuments", "relatedSalesNotes"})
+@ToString(exclude = {"previousFluxReport", "relatedTakeOverDocuments", "relatedSalesNotes"})
 @NamedQueries({
         @NamedQuery(name = FluxReport.FIND_BY_EXT_ID, query = "SELECT report from FluxReport report WHERE report.extId = :extId"),
-        @NamedQuery(name = FluxReport.FIND_BY_REFERENCED_ID_AND_PURPOSE,
-                query = "SELECT report from FluxReport report " +
-                        "WHERE report.previousFluxReportExtId = :extId " +
-                        "and report.purpose = :purpose"),
+        @NamedQuery(name = FluxReport.FIND_BY_REFERRED_ID, query = "SELECT report from FluxReport report WHERE report.previousFluxReport.extId = :extId"),
         @NamedQuery(name = FluxReport.FIND_TOD_BY_EXT_ID, query = "SELECT report from FluxReport report WHERE report.extId = :extId AND report.itemType = eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType.TAKE_OVER_DOCUMENT")
 })
 public class FluxReport {
 
     public static final String FIND_BY_EXT_ID = "FluxReport.FIND_BY_EXT_ID";
-    public static final String FIND_BY_REFERENCED_ID_AND_PURPOSE = "FluxReport.FIND_BY_REFERENCED_ID_AND_PURPOSE";
+    public static final String FIND_BY_REFERRED_ID = "FluxReport.FIND_BY_REFERRED_ID";
     public static final String FIND_TOD_BY_EXT_ID = "FluxReport.FIND_TOD_BY_REFERRED_ID";
 
     @Id
@@ -36,9 +35,11 @@ public class FluxReport {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "ext_id", nullable = false)
     private String extId;
 
+    @NotNull
     @Column(name = "purpose_code", nullable = false)
     @Enumerated(EnumType.STRING)
     private Purpose purpose;
@@ -50,9 +51,11 @@ public class FluxReport {
     @Enumerated(EnumType.STRING)
     private FluxReportItemType itemType;
 
+    @NotNull
     @Column(name = "creation", nullable = false)
     private DateTime creation;
 
+    @Valid
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_auction_sale_id")
     private AuctionSale auctionSale;
@@ -60,6 +63,7 @@ public class FluxReport {
     @Column(name = "flux_report_party")
     private String fluxReportParty;
 
+    @Valid
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_document_id")
     private Document document;
@@ -74,15 +78,18 @@ public class FluxReport {
 
     /**
      * When this report is a correction or deletion of another report, the attribute previousFluxReport will point
-     * to the extId of the report that is being corrected or deleted.
+     * to the report that is being corrected or deleted.
      */
-    @Column(name = "sales_flux_report_prev_ext_id")
-    private String previousFluxReportExtId;
+    @Valid
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sales_flux_report_prev_id")
+    private FluxReport previousFluxReport;
 
     /**
      * When this is a sales note, this attribute will contain all related take over documents.
      * When this is a take over document, this attribute will be an empty list.
      */
+    @Valid
     @ManyToMany
     @JoinTable( name = "sales_note_take_over_document_relation",
                 joinColumns = @JoinColumn(name = "sales_note_id"),
@@ -93,6 +100,7 @@ public class FluxReport {
      * When this is a sales note, this attribute will be an empty list.
      * When this is a take over document, this attribute will contain all related sales notes.
      */
+    @Valid
     @ManyToMany
     @JoinTable( name = "sales_note_take_over_document_relation",
             joinColumns = @JoinColumn(name = "take_over_document_id"),
@@ -170,12 +178,12 @@ public class FluxReport {
         this.document = document;
     }
 
-    public String getPreviousFluxReportExtId() {
-        return previousFluxReportExtId;
+    public FluxReport getPreviousFluxReport() {
+        return previousFluxReport;
     }
 
-    public void setPreviousFluxReportExtId(String previousFluxReport) {
-        this.previousFluxReportExtId = previousFluxReport;
+    public void setPreviousFluxReport(FluxReport previousFluxReport) {
+        this.previousFluxReport = previousFluxReport;
     }
 
     public List<FluxReport> getRelatedTakeOverDocuments() {
@@ -250,8 +258,8 @@ public class FluxReport {
         return this;
     }
 
-    public FluxReport previousFluxReportExtId(final String previousFluxReportExtId) {
-        setPreviousFluxReportExtId(previousFluxReportExtId);
+    public FluxReport previousFluxReport(final FluxReport previousFluxReport) {
+        setPreviousFluxReport(previousFluxReport);
         return this;
     }
 
@@ -278,13 +286,5 @@ public class FluxReport {
     public FluxReport correction(DateTime correction) {
         this.correction = correction;
         return this;
-    }
-
-    public boolean isCorrected() {
-        return correction != null;
-    }
-
-    public boolean isDeleted() {
-        return deletion != null;
     }
 }

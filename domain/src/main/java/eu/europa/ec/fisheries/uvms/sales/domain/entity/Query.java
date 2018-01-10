@@ -6,6 +6,8 @@ import lombok.ToString;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -28,12 +30,15 @@ public class Query {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "ext_id", nullable = false)
     private String extId;
 
+    @NotNull
     @Column(name = "submitted_date", nullable = false)
     private DateTime submittedDate;
 
+    @NotNull
     @Column(name = "query_type", nullable = false)
     private String queryType;
 
@@ -46,6 +51,7 @@ public class Query {
     @Column(name = "submitted_by")
     private String submitterFLUXParty;
 
+    @Valid
     @OneToMany(mappedBy = "query", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<QueryParameterType> parameters;
 

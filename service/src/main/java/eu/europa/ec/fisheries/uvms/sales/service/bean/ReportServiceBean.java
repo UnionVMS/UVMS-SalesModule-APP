@@ -67,7 +67,13 @@ public class ReportServiceBean implements ReportService {
 
         //If a report exists with the incoming ID, we don't save the report.
         if (alreadyExistingReport == null) {
-            reportDomainModel.create(report);
+            try {
+                reportDomainModel.create(report);
+
+            } catch (SalesNonBlockingException e) {
+                LOG.error("Unable to create sales report. Reason: " + e.getMessage());
+                return;
+            }
         }
 
         try {
@@ -202,4 +208,5 @@ public class ReportServiceBean implements ReportService {
     protected void setReportServiceExportHelper(ReportServiceExportHelper reportServiceExportHelper) {
         this.reportServiceExportHelper = reportServiceExportHelper;
     }
+
 }

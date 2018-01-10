@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
-public class MapperProducer {
+public class DomainMapperProducer {
 
     @Produces
     @FLUX

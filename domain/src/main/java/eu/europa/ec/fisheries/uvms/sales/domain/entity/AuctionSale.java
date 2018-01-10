@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "sales_auction_sale")
@@ -21,6 +22,7 @@ public class AuctionSale {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     private SalesCategory category;

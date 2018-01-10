@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -32,14 +33,16 @@ public class Address {
     @Column(name = "building_name")
     private String building;
 
+    @NotNull
     @Column(name = "city_name", nullable = false)
     private String city;
 
     @Column(name = "city_sub_division_name")
     private String citySubDivision;
 
-    @Column(name = "country", nullable = false)
+    @NotNull
     @Size(max = 3)
+    @Column(name = "country", nullable = false)
     private String countryCode;
 
     @Column(name = "country_name")
@@ -57,6 +60,7 @@ public class Address {
     @Column(name = "postcode")
     private String postcode;
 
+    @NotNull
     @Column(name = "street_name", nullable = false)
     private String street;
 

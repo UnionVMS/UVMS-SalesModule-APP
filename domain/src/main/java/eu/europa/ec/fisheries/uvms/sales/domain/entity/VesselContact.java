@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "sales_vessel_contact")
@@ -19,9 +21,12 @@ public class VesselContact {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "role", nullable = false)
     private String role;
 
+    @Valid
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_contact_id", nullable = false)
     private Contact contact;

@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 
 /**
  * Created by MATBUL on 31/01/2017.
@@ -31,6 +32,7 @@ public class Party {
     @Column(name = "flux_organization_name")
     private String fluxOrganizationName;
 
+    @Valid
     @ManyToOne(
             cascade = { CascadeType.PERSIST, CascadeType.MERGE },
             fetch = FetchType.LAZY)
