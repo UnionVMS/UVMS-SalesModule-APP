@@ -50,6 +50,10 @@ public abstract class BuildSalesServiceTestDeployment {
         testWar.addAsResource("logging.properties", "logging.properties");
         testWar.addAsManifestResource("jboss-deployment-structure.xml","jboss-deployment-structure.xml");
 
+        testWar.addAsResource("report_original.txt", "report_original.txt");
+        testWar.addAsResource("before_corrections.txt", "before_corrections.txt");
+        testWar.addAsResource("corrections.txt", "corrections.txt");
+
         testWar.addAsLibraries(files);
 
 		testWar.addPackages(true, "eu.europa.ec.fisheries.uvms.sales.service.arquillian");

@@ -2,13 +2,18 @@ package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
 
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.SalesModuleRequestMapper;
+import org.apache.commons.io.IOUtils;
 
+import javax.ejb.Stateless;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+@Stateless
 public class SalesTestMessageFactory {
 
-    public static String composeSalesReportRequestAsString(String messageGuid, String vesselFlagState, String landingCountry) throws Exception {
+    public String composeSalesReportRequestAsString(String messageGuid, String vesselFlagState, String landingCountry) throws Exception {
         String request = composeFLUXSalesReportMessageAsString(messageGuid, vesselFlagState, landingCountry);
         String messageValidationStatus = "OK";
         String pluginToSendResponseThrough = "BELGIAN_SALES";
@@ -16,7 +21,7 @@ public class SalesTestMessageFactory {
         return SalesModuleRequestMapper.createSalesReportRequest(request, messageValidationStatus, validationQualityAnalysisList, pluginToSendResponseThrough);
     }
 
-    public static String composeFLUXSalesReportMessageAsString(String messageGuid, String vesselFlagState, String landingCountry) {
+    public String composeFLUXSalesReportMessageAsString(String messageGuid, String vesselFlagState, String landingCountry) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ns4:Report xmlns=\"urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20\" xmlns:ns2=\"urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20\" xmlns:ns4=\"eu.europa.ec.fisheries.schema.sales\" xmlns:ns3=\"eu.europa.ec.fisheries.schema.sales.flux\">\n" +
                 "<ns4:FLUXSalesReportMessage>\n" +
@@ -231,12 +236,34 @@ public class SalesTestMessageFactory {
                 "</ns4:Report>\n";
     }
 
-    public static String composePullSettingsRequest() {
+    public String composePullSettingsRequest() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<ns2:PullSettingsRequest xmlns:ns2=\"urn:module.config.schema.fisheries.ec.europa.eu:v1\">\n" +
                 "    <method>PULL</method>\n" +
                 "    <moduleName>sales</moduleName>\n" +
                 "</ns2:PullSettingsRequest>\n";
+    }
+
+    public String composeFLUXSalesReportMessageOriginalAsString() {
+        return getTestDataFromFile("report_original.txt");
+    }
+
+    public String composeFLUXSalesReportMessageBeforeCorrectionsAsString() {
+        return getTestDataFromFile("before_corrections.txt");
+    }
+
+    public String composeFLUXSalesReportMessageCorrectionsAsString() {
+        return getTestDataFromFile("corrections.txt");
+    }
+
+    private String getTestDataFromFile(String fileName) {
+        try {
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
+            return IOUtils.toString(is);
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to retrieve test data: " + fileName + ". Reason: " + e.getMessage());
+        }
     }
 
 }

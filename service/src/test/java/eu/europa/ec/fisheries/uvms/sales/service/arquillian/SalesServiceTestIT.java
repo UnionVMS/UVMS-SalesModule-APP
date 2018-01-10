@@ -93,6 +93,9 @@ public class SalesServiceTestIT extends TransactionalTests {
 	@EJB
 	MDRService mdrService;
 
+	@EJB
+	SalesTestMessageFactory salesTestMessageFactory;
+
 	@InSequence(1)
 	@Test
 	@OperateOnDeployment("salesservice")
@@ -103,7 +106,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0311";
 		String vesselFlagState = "BE3";
 		String landingCountry = "BE2";
-		String salesReportRequest = SalesTestMessageFactory.composeSalesReportRequestAsString(messageGuid, vesselFlagState, landingCountry);
+		String salesReportRequest = salesTestMessageFactory.composeSalesReportRequestAsString(messageGuid, vesselFlagState, landingCountry);
 
 		//Execute, save report for MessageConsumerBean
 		salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(salesReportRequest, replyToRulesQueue);
@@ -263,7 +266,7 @@ public class SalesServiceTestIT extends TransactionalTests {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesConfigProducerToLiveConfig() throws Exception {
 		// Execute
-		String jmsMessageID = configMessageProducer.sendConfigMessage(SalesTestMessageFactory.composePullSettingsRequest());
+		String jmsMessageID = configMessageProducer.sendConfigMessage(salesTestMessageFactory.composePullSettingsRequest());
 
 		// Assert
 		TextMessage textMessage = configMessageConsumer.getConfigMessage(jmsMessageID, TextMessage.class);
@@ -339,7 +342,7 @@ public class SalesServiceTestIT extends TransactionalTests {
         salesReportRequest.setPluginToSendResponseThrough("BELGIAN_SALES");
         String vesselFlagState = "BEL";
         String landingCountry = "BEL";
-		salesReportRequest.setReport(SalesTestMessageFactory.composeFLUXSalesReportMessageAsString(messageGuid, vesselFlagState, landingCountry));
+		salesReportRequest.setReport(salesTestMessageFactory.composeFLUXSalesReportMessageAsString(messageGuid, vesselFlagState, landingCountry));
 		EventMessage eventMessage2 = new EventMessage(salesReportRequest);
 
 		// Execute
@@ -572,6 +575,138 @@ public class SalesServiceTestIT extends TransactionalTests {
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         producer.setTimeToLive(60000L);
         return producer;
+    }
+
+	@InSequence(14)
+	@Test
+	@OperateOnDeployment("salesservice")
+	@Transactional(TransactionMode.DISABLED)
+	@DataSource("java:/jdbc/uvms_sales")
+	public void testSalesMessageConsumerBean_Save_Report_Original_TakeOverDocument() throws Exception {
+		// Data
+		String messageGuid = "37eb22e6-077d-45ee-a596-2228c3e096e8";
+
+		String request = salesTestMessageFactory.composeFLUXSalesReportMessageOriginalAsString();
+		String messageValidationStatus = "OK";
+		String pluginToSendResponseThrough = "BELGIAN_SALES";
+		List<ValidationQualityAnalysisType> validationQualityAnalysisList = new ArrayList<>();
+		String salesReportRequest = SalesModuleRequestMapper.createSalesReportRequest(request, messageValidationStatus, validationQualityAnalysisList, pluginToSendResponseThrough);
+
+		//Execute, save report for MessageConsumerBean
+		salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(salesReportRequest, replyToRulesQueue);
+
+		// Assert, receive FLUXSalesResponseMessage
+		TextMessage textMessageSendSalesResponseRequest = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
+		assertNotNull(textMessageSendSalesResponseRequest);
+		SendSalesResponseRequest sendSalesResponseRequest = salesServiceTestHelper.getSalesModelBean(textMessageSendSalesResponseRequest.getText(), SendSalesResponseRequest.class);
+		FLUXSalesResponseMessage fluxSalesResponseMessage = salesServiceTestHelper.getSalesModelBean(sendSalesResponseRequest.getRequest(), FLUXSalesResponseMessage.class);
+		assertEquals(messageGuid, fluxSalesResponseMessage.getFLUXResponseDocument().getReferencedID().getValue());
+
+
+		// Assert use case, find report by id, should be saved in database
+
+		String findReportByIdRequestMessage = SalesModuleRequestMapper.createFindReportByIdRequest(messageGuid);
+
+		// Execute
+		String correlationId = salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(findReportByIdRequestMessage, replyToRulesQueue);
+
+		// Assert, find report by Id for MessageConsumerBean should find existing FLUX sales report
+		TextMessage textMessageFindReportByIdResponse = salesServiceTestHelper.receiveMessageFromReplyToRulesQueue(correlationId);
+		assertNotNull(textMessageFindReportByIdResponse);
+		FindReportByIdResponse findReportByIdResponse = salesServiceTestHelper.getSalesModelBean(textMessageFindReportByIdResponse.getText(), FindReportByIdResponse.class);
+		assertTrue(StringUtils.isNotBlank(findReportByIdResponse.getReport()));
+		FLUXSalesReportMessage fluxSalesReportMessage = salesServiceTestHelper.getSalesModelBean(findReportByIdResponse.getReport(), FLUXSalesReportMessage.class);
+		assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
+		assertEquals("BEL-TOD-37eb22e6-077d-45ee-a596-2228c3e096e8", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
+
+	}
+
+	@InSequence(15)
+	@Test
+	@OperateOnDeployment("salesservice")
+	@Transactional(TransactionMode.DISABLED)
+	@DataSource("java:/jdbc/uvms_sales")
+	public void testSalesMessageConsumerBean_Save_Report_Original_And_Correction() throws Exception {
+
+		testSalesMessageConsumerBean_Save_Report_Original();
+
+        testSalesMessageConsumerBean_Save_Report_Corrected();
+	}
+
+	private void testSalesMessageConsumerBean_Save_Report_Original() throws Exception {
+		// Data
+		String messageGuid = "63ce0d5d-c313-45a3-986b-3e6fed6fecf2";
+
+		String request = salesTestMessageFactory.composeFLUXSalesReportMessageBeforeCorrectionsAsString();
+		String messageValidationStatus = "OK";
+		String pluginToSendResponseThrough = "BELGIAN_SALES";
+		List<ValidationQualityAnalysisType> validationQualityAnalysisList = new ArrayList<>();
+		String salesReportRequest = SalesModuleRequestMapper.createSalesReportRequest(request, messageValidationStatus, validationQualityAnalysisList, pluginToSendResponseThrough);
+
+		//Execute, save report for MessageConsumerBean
+		salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(salesReportRequest, replyToRulesQueue);
+
+		// Assert, receive FLUXSalesResponseMessage
+		TextMessage textMessageSendSalesResponseRequest = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
+		assertNotNull(textMessageSendSalesResponseRequest);
+		SendSalesResponseRequest sendSalesResponseRequest = salesServiceTestHelper.getSalesModelBean(textMessageSendSalesResponseRequest.getText(), SendSalesResponseRequest.class);
+		FLUXSalesResponseMessage fluxSalesResponseMessage = salesServiceTestHelper.getSalesModelBean(sendSalesResponseRequest.getRequest(), FLUXSalesResponseMessage.class);
+        assertEquals(messageGuid, fluxSalesResponseMessage.getFLUXResponseDocument().getReferencedID().getValue());
+
+
+		// Assert use case, find report by id, should be saved in database
+
+		String findReportByIdRequestMessage = SalesModuleRequestMapper.createFindReportByIdRequest(messageGuid);
+
+		// Execute
+		String correlationId = salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(findReportByIdRequestMessage, replyToRulesQueue);
+
+		// Assert, find report by Id for MessageConsumerBean should find existing FLUX sales report
+		TextMessage textMessageFindReportByIdResponse = salesServiceTestHelper.receiveMessageFromReplyToRulesQueue(correlationId);
+		assertNotNull(textMessageFindReportByIdResponse);
+		FindReportByIdResponse findReportByIdResponse = salesServiceTestHelper.getSalesModelBean(textMessageFindReportByIdResponse.getText(), FindReportByIdResponse.class);
+		assertTrue(StringUtils.isNotBlank(findReportByIdResponse.getReport()));
+		FLUXSalesReportMessage fluxSalesReportMessage = salesServiceTestHelper.getSalesModelBean(findReportByIdResponse.getReport(), FLUXSalesReportMessage.class);
+		assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
+		assertEquals("BEL-SN-63ce0d5d-c313-45a3-986b-3e6fed6fecf2", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
+	}
+
+    private void testSalesMessageConsumerBean_Save_Report_Corrected() throws Exception {
+        // Data
+        String messageGuid = "b5bebb69-7290-4b97-bf8a-d4908681226e";
+
+        String request = salesTestMessageFactory.composeFLUXSalesReportMessageCorrectionsAsString();
+        String messageValidationStatus = "OK";
+        String pluginToSendResponseThrough = "BELGIAN_SALES";
+        List<ValidationQualityAnalysisType> validationQualityAnalysisList = new ArrayList<>();
+        String salesReportRequest = SalesModuleRequestMapper.createSalesReportRequest(request, messageValidationStatus, validationQualityAnalysisList, pluginToSendResponseThrough);
+
+        //Execute, save report for MessageConsumerBean
+        salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(salesReportRequest, replyToRulesQueue);
+
+        // Assert, receive FLUXSalesResponseMessage
+        TextMessage textMessageSendSalesResponseRequest = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
+        assertNotNull(textMessageSendSalesResponseRequest);
+        SendSalesResponseRequest sendSalesResponseRequest = salesServiceTestHelper.getSalesModelBean(textMessageSendSalesResponseRequest.getText(), SendSalesResponseRequest.class);
+        FLUXSalesResponseMessage fluxSalesResponseMessage = salesServiceTestHelper.getSalesModelBean(sendSalesResponseRequest.getRequest(), FLUXSalesResponseMessage.class);
+        assertEquals(messageGuid, fluxSalesResponseMessage.getFLUXResponseDocument().getReferencedID().getValue());
+
+
+        // Assert use case, find report by id, should be saved in database
+
+        String findReportByIdRequestMessage = SalesModuleRequestMapper.createFindReportByIdRequest(messageGuid);
+
+        // Execute
+        String correlationId = salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(findReportByIdRequestMessage, replyToRulesQueue);
+
+        // Assert, find report by Id for MessageConsumerBean should find existing FLUX sales report
+        TextMessage textMessageFindReportByIdResponse = salesServiceTestHelper.receiveMessageFromReplyToRulesQueue(correlationId);
+        assertNotNull(textMessageFindReportByIdResponse);
+        FindReportByIdResponse findReportByIdResponse = salesServiceTestHelper.getSalesModelBean(textMessageFindReportByIdResponse.getText(), FindReportByIdResponse.class);
+        assertTrue(StringUtils.isNotBlank(findReportByIdResponse.getReport()));
+        FLUXSalesReportMessage fluxSalesReportMessage = salesServiceTestHelper.getSalesModelBean(findReportByIdResponse.getReport(), FLUXSalesReportMessage.class);
+        assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
+        assertEquals("BEL-SN-63ce0d5d-c313-45a3-986b-3e6fed6fecf22", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
     }
 
 	private <T> T unmarshallTextMessage(TextMessage responseText, Class<T> returnType) {
