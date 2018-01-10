@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.CheckForUniqueIdResponse;
+import eu.europa.ec.fisheries.schema.sales.SalesIdType;
 import eu.europa.ec.fisheries.schema.sales.SalesMessageIdType;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
@@ -134,9 +135,8 @@ public class SalesServiceMockTestIT extends TransactionalMockTests {
         String messageGuid = "d0c749bf-50d6-479a-b12e-61c2f2d66419";
         String pluginToSendResponseThrough = "BELGIAN_SALES";
         String sender = "BEL";
-        String messageGuidSchemeId = "FLUXTL_ON";
         ValidationQualityAnalysisType validationQualityAnalysis = ValidationQualityAnalysisMapper.map("SALE-L00-00-0000", "L00", "ERR", "Internal error.", new ArrayList<String>());
-        String respondToInvalidMessageRequest = SalesModuleRequestMapper.createRespondToInvalidMessageRequest(messageGuid, Lists.newArrayList(validationQualityAnalysis), pluginToSendResponseThrough, sender, messageGuidSchemeId);
+        String respondToInvalidMessageRequest = SalesModuleRequestMapper.createRespondToInvalidMessageRequest(messageGuid, Lists.newArrayList(validationQualityAnalysis), pluginToSendResponseThrough, sender, SalesIdType.FLUXTL_ON);
 
         //Execute, trigger MessageConsumerBean
         redeliveryCounterHelper.resetRedeliveryCounter();

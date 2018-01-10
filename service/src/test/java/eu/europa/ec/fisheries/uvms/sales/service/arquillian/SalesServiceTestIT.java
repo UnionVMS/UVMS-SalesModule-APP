@@ -160,7 +160,6 @@ public class SalesServiceTestIT extends TransactionalTests {
 		FLUXSalesReportMessage fluxSalesReportMessage = salesServiceTestHelper.getSalesModelBean(findReportByIdResponse.getReport(), FLUXSalesReportMessage.class);
 		assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
 		assertEquals("BEL-SN-2007-7777777", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
-
 	}
 
 	@InSequence(2)
@@ -175,7 +174,7 @@ public class SalesServiceTestIT extends TransactionalTests {
         respondToInvalidMessageRequest.setPluginToSendResponseThrough("BELGIAN_SALES");
         respondToInvalidMessageRequest.setSender("BEL");
         respondToInvalidMessageRequest.setMessageGuid("d0c749bf-50d6-479a-b12e-61c2f2d66469");
-        respondToInvalidMessageRequest.setSchemeId("UUID");
+		respondToInvalidMessageRequest.setTypeOfId(SalesIdType.GUID);
 
 		// Execute
         EventMessage eventMessage = new EventMessage(respondToInvalidMessageRequest);
@@ -487,10 +486,9 @@ public class SalesServiceTestIT extends TransactionalTests {
 		String messageGuid = "d0c749bf-50d6-479a-b12e-61c2f2d66439";
 		String pluginToSendResponseThrough = "BELGIAN_SALES";
 		String sender = "BEL";
-		String messageGuidSchemeId = "FLUXTL_ON";
 		String businessRuleId = "SALE-L00-00-0000";
 		ValidationQualityAnalysisType validationQualityAnalysis = ValidationQualityAnalysisMapper.map(businessRuleId, "L00", "ERR", "Internal error.", new ArrayList<String>());
-		String respondToInvalidMessageRequest = SalesModuleRequestMapper.createRespondToInvalidMessageRequest(messageGuid, Lists.newArrayList(validationQualityAnalysis), pluginToSendResponseThrough, sender, messageGuidSchemeId);
+		String respondToInvalidMessageRequest = SalesModuleRequestMapper.createRespondToInvalidMessageRequest(messageGuid, Lists.newArrayList(validationQualityAnalysis), pluginToSendResponseThrough, sender, SalesIdType.GUID);
 
 		//Execute, trigger MessageConsumerBean
 		Connection connection = null;

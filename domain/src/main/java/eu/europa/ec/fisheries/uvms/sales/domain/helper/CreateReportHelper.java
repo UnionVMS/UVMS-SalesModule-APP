@@ -39,6 +39,9 @@ public class CreateReportHelper {
     @EJB
     private FluxReportDao fluxReportDao;
 
+    @EJB
+    BeanValidatorHelper beanValidatorHelper;
+
     @Lock(LockType.WRITE)
     public Report create(@NonNull Report report) {
         log.debug("Persisting report {}", report.toString());
@@ -62,6 +65,8 @@ public class CreateReportHelper {
         // the order of delivery is not guaranteed
         markReportAsCorrectedIfNewerVersionExists(fluxReport);
         markReportAsDeletedIfDeletionReportExists(fluxReport);
+
+        beanValidatorHelper.validateBean(fluxReport);
 
         // save
         fluxReport = fluxReportDao.create(fluxReport);

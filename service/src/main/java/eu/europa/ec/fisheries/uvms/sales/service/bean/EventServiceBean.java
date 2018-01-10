@@ -88,14 +88,26 @@ public class EventServiceBean implements EventService {
         List<ValidationQualityAnalysisType> validationResults = respondToInvalidMessageRequest.getValidationQualityAnalysises();
         String sender = respondToInvalidMessageRequest.getSender();
         String messageGuid = respondToInvalidMessageRequest.getMessageGuid();
-        String schemeId = respondToInvalidMessageRequest.getSchemeId();
+        String schemeId = determineSchemeId(respondToInvalidMessageRequest);
 
         unsavedMessageService.sendResponseToInvalidIncomingMessage(messageGuid, validationResults, sender, pluginToSendResponseThrough, schemeId);
     }
 
+    private String determineSchemeId(RespondToInvalidMessageRequest respondToInvalidMessageRequest) {
+        switch (respondToInvalidMessageRequest.getTypeOfId()) {
+            case GUID:
+                return "UUID";
+            case FLUXTL_ON:
+                return "FLUXTL_ON";
+            default:
+                throw new RuntimeException("No case implemented for " + respondToInvalidMessageRequest.getTypeOfId());
+        }
+    }
+
     public void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event) {
         FindReportByIdRequest request = ((FindReportByIdRequest) event.getSalesBaseRequest());
-        Report report = reportService.findByExtId(request.getId()).orNull();
+        Report report = reportService.findByExtId(request.getId())
+                .orNull();
 
         try {
             String marshalledReport = "";
@@ -134,11 +146,11 @@ public class EventServiceBean implements EventService {
             case SALES_RESPONSE:
                 response = uniqueIdService.isResponseIdUnique(request.getIds().get(0));
                 break;
-            case SALES_RESPONSE_REFERENCED_ID:
-                response = !uniqueIdService.doesReferencedReportInResponseExist(request.getIds().get(0));
+            case SALES_REFERENCED_ID:
+                response = !uniqueIdService.doesReferencedReportExist(request.getIds().get(0));
                 break;
             default:
-                throw new SalesServiceException("No case implemented for " + request.getType());
+                throw new RuntimeException("No case implemented for " + request.getType());
         }
 
         try {
