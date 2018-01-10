@@ -624,11 +624,23 @@ public class SalesServiceTestIT extends TransactionalTests {
 	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
-	public void testSalesMessageConsumerBean_Save_Report_Original_And_Correction() throws Exception {
+	public void testSalesMessageConsumerBean_save_report_original_and_correction() throws Exception {
 
 		testSalesMessageConsumerBean_Save_Report_Original();
 
         testSalesMessageConsumerBean_Save_Report_Corrected();
+	}
+
+	@InSequence(16)
+	@Test
+	@OperateOnDeployment("salesservice")
+	@Transactional(TransactionMode.DISABLED)
+	@DataSource("java:/jdbc/uvms_sales")
+	public void testSalesMessageConsumerBean_save_report_correction_and_original_not_processed_yet() throws Exception {
+
+		// Report corrected should be saved, even if the original referenced report is not processed yet
+		testSalesMessageConsumerBean_Save_Report_Corrected();
+
 	}
 
 	private void testSalesMessageConsumerBean_Save_Report_Original() throws Exception {

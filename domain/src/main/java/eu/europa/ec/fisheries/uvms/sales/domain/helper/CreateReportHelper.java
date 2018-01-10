@@ -10,13 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
 
-import javax.ejb.EJB;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
+import javax.ejb.*;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Creating a report is highly dependent on which reports are already in the database.
@@ -42,6 +41,7 @@ public class CreateReportHelper {
     @EJB
     BeanValidatorHelper beanValidatorHelper;
 
+    @AccessTimeout(value=60, unit=SECONDS)
     @Lock(LockType.WRITE)
     public Report create(@NonNull Report report) {
         log.debug("Persisting report {}", report.toString());
