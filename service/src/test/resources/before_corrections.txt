@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns4:Report xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20" xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20" xmlns:ns4="eu.europa.ec.fisheries.schema.sales" xmlns:ns3="eu.europa.ec.fisheries.schema.sales.flux">
+    <ns4:FLUXSalesReportMessage>
+        <ns3:FLUXReportDocument>
+            <ID schemeID="UUID">63ce0d5d-c313-45a3-986b-3e6fed6fecf2</ID>
+            <CreationDateTime>
+                <ns2:DateTime>2017-05-11T12:10:38Z</ns2:DateTime>
+            </CreationDateTime>
+            <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+            <Purpose>Sales note example</Purpose>
+            <OwnerFLUXParty>
+                <ID schemeID="FLUX_GP_PARTY">BEL</ID>
+            </OwnerFLUXParty>
+        </ns3:FLUXReportDocument>
+        <ns3:SalesReport>
+            <ItemTypeCode listID="FLUX_SALES_TYPE">SN</ItemTypeCode>
+            <IncludedSalesDocument>
+                <ID schemeID="EU_SALES_ID">BEL-SN-63ce0d5d-c313-45a3-986b-3e6fed6fecf2</ID>
+                <CurrencyCode listID="TERRITORY_CURR">EUR</CurrencyCode>
+                <SpecifiedSalesBatch>
+                    <SpecifiedAAPProduct>
+                        <SpeciesCode listID="FAO_SPECIES">PLE</SpeciesCode>
+                        <WeightMeasure unitCode="KGM">6</WeightMeasure>
+                        <UsageCode listID="PROD_USAGE">HCN</UsageCode>
+                        <AppliedAAPProcess>
+                            <TypeCode listID="FISH_FRESHNESS">E</TypeCode>
+                            <TypeCode listID="FISH_PRESERVATION">FRE</TypeCode>
+                            <TypeCode listID="FISH_PRESENTATION">WHL</TypeCode>
+                        </AppliedAAPProcess>
+                        <TotalSalesPrice>
+                            <ChargeAmount>1.31</ChargeAmount>
+                        </TotalSalesPrice>
+                        <SpecifiedSizeDistribution>
+                            <CategoryCode listID="FISH_SIZE_CATEGORY">1</CategoryCode>
+                            <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                        </SpecifiedSizeDistribution>
+                        <OriginFLUXLocation>
+                            <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                            <ID schemeID="FAO_AREA">27.3.D.24</ID>
+                        </OriginFLUXLocation>
+                    </SpecifiedAAPProduct>
+                    <SpecifiedAAPProduct>
+                        <SpeciesCode listID="FAO_SPECIES">PLE</SpeciesCode>
+                        <WeightMeasure unitCode="KGM">36</WeightMeasure>
+                        <UsageCode listID="PROD_USAGE">HCN</UsageCode>
+                        <AppliedAAPProcess>
+                            <TypeCode listID="FISH_FRESHNESS">B</TypeCode>
+                            <TypeCode listID="FISH_PRESERVATION">FRE</TypeCode>
+                            <TypeCode listID="FISH_PRESENTATION">WHL</TypeCode>
+                        </AppliedAAPProcess>
+                        <TotalSalesPrice>
+                            <ChargeAmount>1.29</ChargeAmount>
+                        </TotalSalesPrice>
+                        <SpecifiedSizeDistribution>
+                            <CategoryCode listID="FISH_SIZE_CATEGORY">2</CategoryCode>
+                            <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                        </SpecifiedSizeDistribution>
+                        <OriginFLUXLocation>
+                            <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                            <ID schemeID="FAO_AREA">27.3.D.24</ID>
+                        </OriginFLUXLocation>
+                    </SpecifiedAAPProduct>
+                    <SpecifiedAAPProduct>
+                        <SpeciesCode listID="FAO_SPECIES">DAB</SpeciesCode>
+                        <WeightMeasure unitCode="KGM">517</WeightMeasure>
+                        <UsageCode listID="PROD_USAGE">HCN</UsageCode>
+                        <AppliedAAPProcess>
+                            <TypeCode listID="FISH_FRESHNESS">B</TypeCode>
+                            <TypeCode listID="FISH_PRESERVATION">FRE</TypeCode>
+                            <TypeCode listID="FISH_PRESENTATION">WHL</TypeCode>
+                        </AppliedAAPProcess>
+                        <TotalSalesPrice>
+                            <ChargeAmount>1.12</ChargeAmount>
+                        </TotalSalesPrice>
+                        <SpecifiedSizeDistribution>
+                            <CategoryCode listID="FISH_SIZE_CATEGORY">2</CategoryCode>
+                            <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                        </SpecifiedSizeDistribution>
+                        <OriginFLUXLocation>
+                            <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                            <ID schemeID="FAO_AREA">27.3.D.24</ID>
+                        </OriginFLUXLocation>
+                    </SpecifiedAAPProduct>
+                    <SpecifiedAAPProduct>
+                        <SpeciesCode listID="FAO_SPECIES">COD</SpeciesCode>
+                        <WeightMeasure unitCode="KGM">13</WeightMeasure>
+                        <UsageCode listID="PROD_USAGE">HCN</UsageCode>
+                        <AppliedAAPProcess>
+                            <TypeCode listID="FISH_FRESHNESS">B</TypeCode>
+                            <TypeCode listID="FISH_PRESERVATION">FRE</TypeCode>
+                            <TypeCode listID="FISH_PRESENTATION">GUT</TypeCode>
+                        </AppliedAAPProcess>
+                        <TotalSalesPrice>
+                            <ChargeAmount>2</ChargeAmount>
+                        </TotalSalesPrice>
+                        <SpecifiedSizeDistribution>
+                            <CategoryCode listID="FISH_SIZE_CATEGORY">3</CategoryCode>
+                            <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                        </SpecifiedSizeDistribution>
+                        <OriginFLUXLocation>
+                            <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                            <ID schemeID="FAO_AREA">27.3.D.24</ID>
+                        </OriginFLUXLocation>
+                    </SpecifiedAAPProduct>
+                    <SpecifiedAAPProduct>
+                        <SpeciesCode listID="FAO_SPECIES">FLE</SpeciesCode>
+                        <WeightMeasure unitCode="KGM">102</WeightMeasure>
+                        <UsageCode listID="PROD_USAGE">HCN</UsageCode>
+                        <AppliedAAPProcess>
+                            <TypeCode listID="FISH_FRESHNESS">B</TypeCode>
+                            <TypeCode listID="FISH_PRESERVATION">FRE</TypeCode>
+                            <TypeCode listID="FISH_PRESENTATION">WHL</TypeCode>
+                        </AppliedAAPProcess>
+                        <TotalSalesPrice>
+                            <ChargeAmount>0.82</ChargeAmount>
+                        </TotalSalesPrice>
+                        <SpecifiedSizeDistribution>
+                            <CategoryCode listID="FISH_SIZE_CATEGORY">2</CategoryCode>
+                            <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                        </SpecifiedSizeDistribution>
+                        <OriginFLUXLocation>
+                            <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                            <ID schemeID="FAO_AREA">27.3.D.24</ID>
+                        </OriginFLUXLocation>
+                    </SpecifiedAAPProduct>
+                    <SpecifiedAAPProduct>
+                        <SpeciesCode listID="FAO_SPECIES">LIN</SpeciesCode>
+                        <WeightMeasure unitCode="KGM">9</WeightMeasure>
+                        <UsageCode listID="PROD_USAGE">HCN</UsageCode>
+                        <AppliedAAPProcess>
+                            <TypeCode listID="FISH_FRESHNESS">B</TypeCode>
+                            <TypeCode listID="FISH_PRESERVATION">FRE</TypeCode>
+                            <TypeCode listID="FISH_PRESENTATION">GUT</TypeCode>
+                        </AppliedAAPProcess>
+                        <TotalSalesPrice>
+                            <ChargeAmount>3.55</ChargeAmount>
+                        </TotalSalesPrice>
+                        <SpecifiedSizeDistribution>
+                            <CategoryCode listID="FISH_SIZE_CATEGORY">3</CategoryCode>
+                            <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                        </SpecifiedSizeDistribution>
+                        <OriginFLUXLocation>
+                            <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                            <ID schemeID="FAO_AREA">27.7.A</ID>
+                        </OriginFLUXLocation>
+                    </SpecifiedAAPProduct>
+                </SpecifiedSalesBatch>
+                <SpecifiedSalesEvent>
+                    <OccurrenceDateTime>
+                        <ns2:DateTime>2017-05-10T07:05:22Z</ns2:DateTime>
+                    </OccurrenceDateTime>
+                </SpecifiedSalesEvent>
+                <SpecifiedFishingActivity>
+                    <TypeCode>LAN</TypeCode>
+                    <RelatedFLUXLocation>
+                        <TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</TypeCode>
+                        <CountryID schemeID="TERRITORY">BEL</CountryID>
+                        <ID schemeID="LOCATION">BEOST</ID>
+                    </RelatedFLUXLocation>
+                    <SpecifiedDelimitedPeriod>
+                        <StartDateTime>
+                            <ns2:DateTime>2017-05-10T05:32:30Z</ns2:DateTime>
+                        </StartDateTime>
+                    </SpecifiedDelimitedPeriod>
+                    <SpecifiedFishingTrip>
+                        <ID schemeID="EU_TRIP_ID">BEL-TRP-2015-1435-0456</ID>
+                    </SpecifiedFishingTrip>
+                    <RelatedVesselTransportMeans>
+                        <ID schemeID="CFR">BEL123456789</ID>
+                        <Name>FAKE VESSEL</Name>
+                        <RegistrationVesselCountry>
+                            <ID schemeID="TERRITORY">BEL</ID>
+                        </RegistrationVesselCountry>
+                        <SpecifiedContactParty>
+                            <RoleCode listID="FLUX_CONTACT_ROLE">MASTER</RoleCode>
+                            <SpecifiedContactPerson>
+                                <GivenName>Henrick</GivenName>
+                                <MiddleName>Jan</MiddleName>
+                                <FamilyName>JANSEN</FamilyName>
+                            </SpecifiedContactPerson>
+                        </SpecifiedContactParty>
+                    </RelatedVesselTransportMeans>
+                </SpecifiedFishingActivity>
+                <SpecifiedFLUXLocation>
+                    <TypeCode listID="FLUX_LOCATION_TYPE">LOCATION</TypeCode>
+                    <CountryID schemeID="TERRITORY">BEL</CountryID>
+                    <ID schemeID="LOCATION">BEOST</ID>
+                </SpecifiedFLUXLocation>
+                <SpecifiedSalesParty>
+                    <ID schemeID="MS">123456</ID>
+                    <Name>Mr SENDER</Name>
+                    <RoleCode listID="FLUX_SALES_PARTY_ROLE">SENDER</RoleCode>
+                </SpecifiedSalesParty>
+                <SpecifiedSalesParty>
+                    <ID schemeID="VAT">0679223791</ID>
+                    <Name>Mr BUYER</Name>
+                    <RoleCode listID="FLUX_SALES_PARTY_ROLE">BUYER</RoleCode>
+                </SpecifiedSalesParty>
+                <SpecifiedSalesParty>
+                    <Name>Mr PROVIDER</Name>
+                    <RoleCode listID="FLUX_SALES_PARTY_ROLE">PROVIDER</RoleCode>
+                </SpecifiedSalesParty>
+            </IncludedSalesDocument>
+        </ns3:SalesReport>
+    </ns4:FLUXSalesReportMessage>
+</ns4:Report>
