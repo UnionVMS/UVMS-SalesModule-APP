@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.sales.message.producer.bean;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
@@ -22,7 +23,7 @@ public class ConfigMessageProducerBean extends ExtendedAbstractProducer implemen
     public String sendConfigMessage(String configMessage) throws ConfigMessageException {
         try {
             Queue replyToQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
-            return sendModuleMessage(configMessage, replyToQueue, TIME_TO_LIVE, DeliveryMode.NON_PERSISTENT);
+            return sendModuleMessageNonePersistent(configMessage, replyToQueue, TIME_TO_LIVE);
 
         } catch (Exception e) {
             throw new ConfigMessageException("Something went wrong sending a config messages from the sales module");
