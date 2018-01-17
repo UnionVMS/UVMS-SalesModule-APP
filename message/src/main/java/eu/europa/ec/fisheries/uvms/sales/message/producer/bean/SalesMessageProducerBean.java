@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.jms.DeliveryMode;
-import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 
@@ -47,10 +45,12 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
         try {
             LOG.info("Sending message back to recipient from Sales with correlationId {} on queue: {}", originalJMSMessage.getJMSMessageID(),
                     originalJMSMessage.getJMSReplyTo());
-            rulesMessageProducerBean.sendModuleResponseMessage(originalJMSMessage, messageToBeSent, TIME_TO_LIVE, DeliveryMode.NON_PERSISTENT);
+            rulesMessageProducerBean.sendModuleResponseMessageLatest(originalJMSMessage, messageToBeSent);
 
         } catch (Exception e) {
-            LOG.error("[ Error when returning module request. ] {}", e.getMessage()); //TODO: check error handling
+            String errorMessage = "[ Error when returning module request. ] " + e.getMessage();
+            LOG.error(errorMessage);
+            throw new MessageException(errorMessage);
         }
     }
 
@@ -60,17 +60,17 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
     }
 
     @Override
-    public String sendModuleMessage(String text, Union module, long timeout) throws MessageException {
+    public String sendModuleMessage(String text, Union module, long messageTimeToLiveMillis) throws MessageException {
         try {
             switch (module) {
                 case ASSET:
-                    return assetMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
+                    return assetMessageProducerBean.sendModuleMessageNonePersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
                 case ECB_PROXY:
-                    return ecbProxyMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
+                    return ecbProxyMessageProducerBean.sendModuleMessageNonePersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
                 case RULES:
-                    return rulesMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
+                    return rulesMessageProducerBean.sendModuleMessage(text, replyToSalesQueue);
                 case MDR:
-                    return mdrMessageProducerBean.sendModuleMessage(text, replyToSalesQueue, timeout, DeliveryMode.NON_PERSISTENT);
+                    return mdrMessageProducerBean.sendModuleMessageNonePersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
                 default:
                     throw new UnsupportedOperationException("Sales has no functionality implemented to talk with " + module);
             }
@@ -82,13 +82,15 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
     }
 
     @Override
-    public void sendModuleErrorMessage(EventMessage message) {
+    public void sendModuleErrorMessage(EventMessage message) throws MessageException {
         try {
             LOG.debug("Sending error message back from Sales module to recipient on JMS Queue with correlationID: {} ", message.getJmsMessage().getJMSMessageID());
-            rulesMessageProducerBean.sendModuleResponseMessage(message.getJmsMessage(), message.getErrorMessage(), TIME_TO_LIVE, DeliveryMode.NON_PERSISTENT);
+            rulesMessageProducerBean.sendModuleResponseMessageLatest(message.getJmsMessage(), message.getErrorMessage());
 
-        } catch (JMSException e) {
-            LOG.error("Error when returning Error message to recipient", e);
+        } catch (Exception e) {
+            String errorMessage = "[ Error when returning Error message to recipient. ] " + e.getMessage();
+            LOG.error(errorMessage);
+            throw new MessageException(errorMessage);
         }
     }
 

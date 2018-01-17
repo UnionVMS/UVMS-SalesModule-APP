@@ -166,7 +166,12 @@ public class EventServiceBean implements EventService {
 
     @Override
     public void returnError(@Observes @ErrorEvent EventMessage event) {
-        salesMessageProducer.sendModuleErrorMessage(event);
         LOG.error(event.getErrorMessage());
+        try {
+            salesMessageProducer.sendModuleErrorMessage(event);
+
+        } catch (MessageException e) {
+            throw new SalesServiceException("Unable to send module error message.", e);
+        }
     }
 }

@@ -9,8 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.jms.*;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @Slf4j
 @Singleton
@@ -35,51 +34,104 @@ public class SalesServiceTestHelper {
     }
 
     public String sendMessageToSalesMessageConsumerBean(String messageToSend, Destination replyToQueue) {
-        Connection connection = null;
-        Session session = null;
-        try {
-            connection = connectionFactory.createConnection();
-            session = JMSUtils.connectToQueue(connection);
+
+        try (Connection connection = connectionFactory.createConnection();
+             Session session = JMSUtils.connectToQueue(connection);
+             javax.jms.MessageProducer producer = session.createProducer(salesEventQueue)) {
+
             TextMessage textMessage = session.createTextMessage(messageToSend);
             textMessage.setJMSReplyTo(replyToQueue);
-            getProducer(session, salesEventQueue).send(textMessage);
+            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            producer.setTimeToLive(60000L);
+            producer.send(textMessage);
             return textMessage.getJMSMessageID();
 
         } catch (Exception e) {
             fail("Test should not fail for consume JMS message exception: " + e.getMessage());
-            return null;
-        } finally {
-            JMSUtils.disconnectQueue(connection);
+            throw new RuntimeException("Unable to send message to sales message consumber bean. Reason: " + e.getMessage());
         }
     }
 
+    public TextMessage getTextMessageWithReplyTo(Destination replyToDestination) {
+
+        try (Connection connection = connectionFactory.createConnection();
+             Session session = JMSUtils.connectToQueue(connection);
+             javax.jms.MessageProducer producer = session.createProducer(rulesEventQueue)) { // for testing sake
+
+            TextMessage textMessage = session.createTextMessage("Dummy Sales service Arquillian test message");
+            textMessage.setJMSReplyTo(replyToDestination);
+
+            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            producer.setTimeToLive(10L);
+            producer.send(textMessage);
+            return textMessage;
+
+        } catch (Exception e) {
+            log.error("Test should not fail for JMS message exception: " + e.getMessage());
+            throw new RuntimeException("Unable to get message with replyTo. Reason: " + e.getMessage());
+        }
+    }
+
+    public TextMessage receiveTextMessage(Destination receiveFromDestination) {
+        boolean hasMessageExpirySet = true;
+        return receiveTextMessage(receiveFromDestination, hasMessageExpirySet);
+    }
+
     public TextMessage receiveTextMessage(Destination receiveFromDestination, String correlationId) {
-        Connection connection = null;
-        Session session = null;
-        TextMessage textMessage = null;
-        try {
-            connection = connectionFactory.createConnection();
-            session = JMSUtils.connectToQueue(connection);
-            Message receivedMessage = null;
-            if (correlationId != null) {
-                receivedMessage = session.createConsumer(receiveFromDestination, "JMSCorrelationID='" + correlationId + "'").receive(TIMEOUT);
-            } else {
-                receivedMessage = session.createConsumer(receiveFromDestination).receive(TIMEOUT);
-            }
+        boolean hasMessageExpirySet = true;
+        return receiveTextMessage(receiveFromDestination, correlationId, hasMessageExpirySet);
+    }
+
+    public TextMessage receiveTextMessageNoMessageExpiry(Destination receiveFromDestination) {
+        boolean hasMessageExpirySet = false;
+        return receiveTextMessage(receiveFromDestination, hasMessageExpirySet);
+    }
+
+    public TextMessage receiveTextMessageNoMessageExpiry(Destination receiveFromDestination, String correlationId) {
+        boolean hasMessageExpirySet = false;
+        return receiveTextMessage(receiveFromDestination, correlationId, hasMessageExpirySet);
+    }
+
+    private TextMessage receiveTextMessage(Destination receiveFromDestination, String correlationId, boolean hasMessageExpirySet) {
+        assertNotNull(correlationId);
+        try (Connection connection = connectionFactory.createConnection();
+             Session session = JMSUtils.connectToQueue(connection);
+             javax.jms.MessageConsumer consumer = session.createConsumer(receiveFromDestination, "JMSCorrelationID='" + correlationId + "'")) {
+
+            Message receivedMessage = consumer.receive(TIMEOUT);
             if (receivedMessage == null) {
                 log.error("Message consumer timeout is reached");
                 return null;
             }
 
-            assertTrue((receivedMessage.getJMSExpiration() > 0));
+            assertEquals(hasMessageExpirySet, (receivedMessage.getJMSExpiration() > 0));
 
             return (TextMessage) receivedMessage;
 
         } catch (Exception e) {
             fail("Test should not fail for UniqueIdReceived consumer JMS message exception: " + e.getMessage());
             return null;
-        } finally {
-            JMSUtils.disconnectQueue(connection);
+        }
+    }
+
+    private TextMessage receiveTextMessage(Destination receiveFromDestination, boolean hasMessageExpirySet) {
+        try (Connection connection = connectionFactory.createConnection();
+             Session session = JMSUtils.connectToQueue(connection);
+             javax.jms.MessageConsumer consumer = session.createConsumer(receiveFromDestination)) {
+
+            Message receivedMessage = consumer.receive(TIMEOUT);
+            if (receivedMessage == null) {
+                log.error("Message consumer timeout is reached");
+                return null;
+            }
+
+            assertEquals(hasMessageExpirySet, (receivedMessage.getJMSExpiration() > 0));
+
+            return (TextMessage) receivedMessage;
+
+        } catch (Exception e) {
+            fail("Test should not fail for UniqueIdReceived consumer JMS message exception: " + e.getMessage());
+            return null;
         }
     }
 
@@ -87,19 +139,22 @@ public class SalesServiceTestHelper {
      * Asynchronous message consumption
      * */
     public TextMessage receiveMessageFromRulesEventQueue() {
-        String correlationId = null;
-        return receiveTextMessage(rulesEventQueue, correlationId);
+        return receiveTextMessageNoMessageExpiry(rulesEventQueue);
     }
 
     /**
      * Synchronous blocking timeout message consumption
      * */
     public TextMessage receiveMessageFromReplyToRulesQueue(String correlationId) {
-        return receiveTextMessage(replyToRulesQueue, correlationId);
+        return receiveTextMessageNoMessageExpiry(replyToRulesQueue, correlationId);
     }
 
     public <T> T getSalesModelBean(String textMessage, Class clazz) throws Exception {
         return JAXBMarshaller.unmarshallString(textMessage, clazz);
+    }
+
+    public Destination getReplyToRulesQueue() {
+        return replyToRulesQueue;
     }
 
     private javax.jms.MessageProducer getProducer(Session session, Destination destination) throws JMSException {
