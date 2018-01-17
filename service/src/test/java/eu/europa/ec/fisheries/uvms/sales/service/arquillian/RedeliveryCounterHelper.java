@@ -16,7 +16,7 @@ public class RedeliveryCounterHelper {
     }
 
     public long getCounterValueForKey(String key) {
-        return map.getOrDefault(key, new AtomicLong(0L)).get();
+        return map.containsKey(key) ? map.get(key).get() : 0L;
     }
 
     public void resetRedeliveryCounter() {
