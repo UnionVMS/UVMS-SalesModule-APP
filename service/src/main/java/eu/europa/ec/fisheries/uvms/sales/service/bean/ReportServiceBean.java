@@ -33,6 +33,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class ReportServiceBean implements ReportService {
 
     static final Logger LOG = LoggerFactory.getLogger(ReportServiceBean.class);
+    public static final int MAX_EXPORT_RESULTS = 1000;
 
     @EJB
     private ReportDomainModel reportDomainModel;
@@ -160,7 +161,7 @@ public class ReportServiceBean implements ReportService {
 
     @Override
     public List<List<String>> exportDocuments(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters) {
-        PagedListDto<ReportListDto> search = search(filters.pageSize(Integer.MAX_VALUE).pageIndex(1), true);
+        PagedListDto<ReportListDto> search = search(filters.pageSize(MAX_EXPORT_RESULTS).pageIndex(1), true);
 
         List<ReportListExportDto> reports = mapper.mapAsList(search.getItems(), ReportListExportDto.class);
 
