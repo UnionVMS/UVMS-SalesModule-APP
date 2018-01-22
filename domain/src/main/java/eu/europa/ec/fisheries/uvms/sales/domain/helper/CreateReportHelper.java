@@ -3,7 +3,9 @@ package eu.europa.ec.fisheries.uvms.sales.domain.helper;
 import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
+import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
+import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
 import eu.europa.ec.fisheries.uvms.sales.domain.mapper.FLUX;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.joda.time.DateTime;
 
 import javax.ejb.*;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +32,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Slf4j
 public class CreateReportHelper {
 
-    @Inject @FLUX
+    @Inject
+    @FLUX
     private MapperFacade mapper;
 
     @EJB
@@ -41,12 +45,15 @@ public class CreateReportHelper {
     @EJB
     BeanValidatorHelper beanValidatorHelper;
 
-    @AccessTimeout(value=60, unit=SECONDS)
+    @AccessTimeout(value = 60, unit = SECONDS)
     @Lock(LockType.WRITE)
-    public Report create(@NonNull Report report) {
+    public Report create(@NonNull Report report, @NonNull String localCurrency, @NonNull BigDecimal exchangeRate) {
         log.debug("Persisting report {}", report.toString());
 
         FluxReport fluxReport = mapper.map(report, FluxReport.class);
+
+        // convert the prices from the currency in the report to the local currency
+        enrichWithLocalCurrency(fluxReport, localCurrency, exchangeRate);
 
         // to simplify search, each report entity has calculated fields that keeps whether is has been deleted or
         // corrected. Keep these fields up to date.
@@ -73,6 +80,26 @@ public class CreateReportHelper {
         return mapper.map(fluxReport, Report.class);
 
     }
+
+    protected void enrichWithLocalCurrency(FluxReport fluxReport, String localCurrency, BigDecimal exchangeRate) {
+        Document document = fluxReport.getDocument();
+
+        document.currencyLocal(localCurrency);
+
+        // Total price in Sales Document is not mandatory, if it's missing we set the local total price to 0
+        if (document.getTotalPrice() != null) {
+            document.totalPriceLocal(document.getTotalPrice().multiply(exchangeRate));
+        } else {
+            document.totalPriceLocal(BigDecimal.ZERO);
+        }
+
+
+        for (Product product : document.getProducts()) {
+            BigDecimal priceFromReport = product.getPrice();
+            product.priceLocal(priceFromReport.multiply(exchangeRate));
+        }
+    }
+
 
     private void markReportAsCorrectedIfNewerVersionExists(FluxReport fluxReport) {
         Optional<FluxReport> possibleCorrection = fluxReportDao.findCorrectionOf(fluxReport.getExtId());
