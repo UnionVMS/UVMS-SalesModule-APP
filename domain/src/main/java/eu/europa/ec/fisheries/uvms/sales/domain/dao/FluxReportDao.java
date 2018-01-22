@@ -65,4 +65,12 @@ public interface FluxReportDao extends DaoForSales<FluxReport, Integer> {
      * corrects the given report.
      */
     FluxReport findLatestVersion(FluxReport fluxReport);
+
+    /**
+     * Returns all referenced reports, including the report that has
+     * the given referencedId.
+     * @param fluxReport the flux report for which older versions should be fetched
+     * @return all older reports. When nothing found, an empty list.
+     */
+    List<FluxReport> findOlderVersions(FluxReport fluxReport);
 }

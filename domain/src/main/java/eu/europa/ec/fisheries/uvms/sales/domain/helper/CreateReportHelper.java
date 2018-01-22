@@ -51,7 +51,7 @@ public class CreateReportHelper {
         // to simplify search, each report entity has calculated fields that keeps whether is has been deleted or
         // corrected. Keep these fields up to date.
         if (reportHelper.isReportDeleted(report)) {
-            markPreviousReportAsDeleted(report);
+            markPreviousReportsAsDeleted(report);
         } else if (reportHelper.isReportCorrected(report)) {
             markPreviousReportAsCorrected(report);
         }
@@ -85,20 +85,30 @@ public class CreateReportHelper {
         Optional<FluxReport> possibleDeletion = fluxReportDao.findDeletionOf(fluxReport.getExtId());
         if (possibleDeletion.isPresent()) {
             fluxReport.setDeletion(possibleDeletion.get().getCreation());
+        } else {
+            Optional<FluxReport> possibleCorrection = fluxReportDao.findCorrectionOf(fluxReport.getExtId());
+            if (possibleCorrection.isPresent() && possibleCorrection.get().isDeleted()) {
+                fluxReport.setDeletion(possibleCorrection.get().getDeletion());
+            }
         }
     }
 
-    private void markPreviousReportAsDeleted(Report report) {
+    private void markPreviousReportsAsDeleted(Report report) {
+        List<FluxReport> toBeMarkedAsDeleted = new ArrayList<>();
+
         DateTime deletionDate = reportHelper.getCreationDate(report);
         String originalReportExtId = reportHelper.getFLUXReportDocumentReferencedId(report);
-
         Optional<FluxReport> originalReport = fluxReportDao.findByExtId(originalReportExtId);
 
-        //TODO: don't only delete the referenced report, but also all reports it references in its turn
         if (originalReport.isPresent()) {
+            toBeMarkedAsDeleted.add(originalReport.get());
+            toBeMarkedAsDeleted.addAll(fluxReportDao.findOlderVersions(originalReport.get()));
+        }
+
+        for (FluxReport fluxReport : toBeMarkedAsDeleted) {
             // If a report was already deleted, we want to keep the original deletion date and not the date of the 'new' deletion.
-            if (originalReport.get().getDeletion() == null) {
-                originalReport.get().setDeletion(deletionDate);
+            if (fluxReport.getDeletion() == null) {
+                fluxReport.setDeletion(deletionDate);
             }
         }
     }
