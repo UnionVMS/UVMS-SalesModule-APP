@@ -245,8 +245,8 @@ public class ReportDomainModelBeanTest {
         doReturn(Optional.of(fluxReport1)).when(fluxReportDao).findByExtId("fluxReport1");
         doReturn(report1).when(mapper).map(fluxReport1, ReportSummary.class);
 
-        doReturn(Optional.of(fluxReport2)).when(fluxReportDao).findByExtId("fluxReport2");
-        doReturn(report2).when(mapper).map(fluxReport2, ReportSummary.class);
+        doReturn(Arrays.asList(fluxReport2)).when(fluxReportDao).findOlderVersions(fluxReport1);
+        doReturn(Arrays.asList(report2)).when(mapper).mapAsList(Arrays.asList(fluxReport2), ReportSummary.class);
 
         //execute
         List<ReportSummary> allReferencedReports = reportDomainModelBean.findOlderVersionsOrderedByCreationDateDescending("fluxReport1");
@@ -255,8 +255,8 @@ public class ReportDomainModelBeanTest {
         verify(fluxReportDao).findByExtId("fluxReport1");
         verify(mapper).map(fluxReport1, ReportSummary.class);
 
-        verify(fluxReportDao).findByExtId("fluxReport2");
-        verify(mapper).map(fluxReport2, ReportSummary.class);
+        verify(fluxReportDao).findOlderVersions(fluxReport1);
+        verify(mapper).mapAsList(Arrays.asList(fluxReport2), ReportSummary.class);
 
         verifyNoMoreInteractions(fluxReportDao, reportHelper, mapper);
 
@@ -291,8 +291,8 @@ public class ReportDomainModelBeanTest {
         doReturn(Optional.of(fluxReport1)).when(fluxReportDao).findByExtId("fluxReport1");
         doReturn(report1).when(mapper).map(fluxReport1, Report.class);
 
-        doReturn(Optional.of(fluxReport2)).when(fluxReportDao).findByExtId("fluxReport2");
-        doReturn(report2).when(mapper).map(fluxReport2, Report.class);
+        doReturn(Arrays.asList(fluxReport2)).when(fluxReportDao).findOlderVersions(fluxReport1);
+        doReturn(Arrays.asList(report2)).when(mapper).mapAsList(Arrays.asList(fluxReport2), Report.class);
 
         doReturn(creationReport1).when(reportHelper).getCreationDate(report1);
         doReturn(creationReport2).when(reportHelper).getCreationDate(report2);
@@ -306,8 +306,9 @@ public class ReportDomainModelBeanTest {
         verify(fluxReportDao).findByExtId("fluxReport1");
         verify(mapper).map(fluxReport1, Report.class);
 
-        verify(fluxReportDao).findByExtId("fluxReport2");
-        verify(mapper).map(fluxReport2, Report.class);
+        verify(fluxReportDao).findOlderVersions(fluxReport1);
+        verify(mapper).mapAsList(Arrays.asList(fluxReport2), Report.class);
+
         verify(reportHelper).getCreationDate(report1);
         verify(reportHelper).getCreationDate(report2);
 

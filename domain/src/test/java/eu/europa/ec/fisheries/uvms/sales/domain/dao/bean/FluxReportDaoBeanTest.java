@@ -970,4 +970,39 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
         exception.expect(SalesNonBlockingException.class);
         dao.findByExtId(extId);
     }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-findOlderVersions-initial.xml")
+    public void findOlderVersionsWhenOlderVersionsExist() throws Exception {
+        FluxReport report = dao.findByExtId("ghi").get();
+        List<FluxReport> olderVersions = dao.findOlderVersions(report);
+        assertEquals(2, olderVersions.size());
+        assertEquals("def", olderVersions.get(0).getExtId());
+        assertEquals("abc", olderVersions.get(1).getExtId());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-findOlderVersions-initial.xml")
+    public void findOlderVersionsWhenNoOlderVersionsExist() throws Exception {
+        FluxReport report = dao.findByExtId("yoyoyo").get();
+        List<FluxReport> olderVersions = dao.findOlderVersions(report);
+        assertEquals(0, olderVersions.size());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-findOlderVersions-initial.xml")
+    public void findOlderVersionsWhenThereIsAnIndirectReferenceToANonExistingReport() throws Exception {
+        FluxReport report = dao.findByExtId("correctionOfAReportThatRefersToANonExistingReport").get();
+        List<FluxReport> olderVersions = dao.findOlderVersions(report);
+        assertEquals(1, olderVersions.size());
+        assertEquals("IReferToANonExistingReport", olderVersions.get(0).getExtId());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-findOlderVersions-initial.xml")
+    public void findOlderVersionsWhenThereIsADirectReferenceToANonExistingReport() throws Exception {
+        FluxReport report = dao.findByExtId("IReferToANonExistingReport").get();
+        List<FluxReport> olderVersions = dao.findOlderVersions(report);
+        assertEquals(0, olderVersions.size());
+    }
 }

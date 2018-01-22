@@ -145,17 +145,15 @@ public class ReportDomainModelBean implements ReportDomainModel {
         return olderVersions;
     }
 
-    private <T> List<T> findOlderVersions(String referencedId, Class<T> expectedResult) {
+    private <T> List<T> findOlderVersions(String firstReferencedId, Class<T> expectedResult) {
         List<T> referencedReports = new ArrayList<>();
-        Optional<FluxReport> referencedReport = fluxReportDao.findByExtId(referencedId);
+        Optional<FluxReport> referencedReport = fluxReportDao.findByExtId(firstReferencedId);
 
         if (referencedReport.isPresent()) {
             referencedReports.add(mapper.map(referencedReport.get(), expectedResult));
 
-            String previousReferencedIdInChain = referencedReport.get().getPreviousFluxReportExtId();
-            if (previousReferencedIdInChain != null) {
-                referencedReports.addAll(findOlderVersions(previousReferencedIdInChain, expectedResult));
-            }
+            List<FluxReport> olderVersions = fluxReportDao.findOlderVersions(referencedReport.get());
+            referencedReports.addAll(mapper.mapAsList(olderVersions, expectedResult));
         }
 
         return referencedReports;
