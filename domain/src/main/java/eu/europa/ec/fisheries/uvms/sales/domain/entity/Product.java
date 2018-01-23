@@ -68,6 +68,9 @@ public class Product {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Column(name = "price_local")
+    private BigDecimal priceLocal;
+
     @Valid
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -190,6 +193,14 @@ public class Product {
         this.origins = origins;
     }
 
+    public BigDecimal getPriceLocal() {
+        return priceLocal;
+    }
+
+    public void setPriceLocal(BigDecimal priceLocal) {
+        this.priceLocal = priceLocal;
+    }
+
     public Product species(final String species) {
         setSpecies(species);
         return this;
@@ -255,5 +266,9 @@ public class Product {
         return this;
     }
 
+    public Product priceLocal(BigDecimal priceLocal) {
+        this.priceLocal = priceLocal;
+        return this;
+    }
 
 }

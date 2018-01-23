@@ -5,9 +5,12 @@ import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
+import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
+import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import ma.glasnost.orika.MapperFacade;
+import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,16 +18,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CreateReportHelperTest {
+
+    private final String LOCAL_CURRENCY = "EUR";
 
     @Mock
     private MapperFacade mapper;
@@ -44,7 +51,7 @@ public class CreateReportHelperTest {
 
     @Test(expected = NullPointerException.class)
     public void testCreateWhenArgumentIsNull() throws Exception {
-        createReportHelper.create(null);
+        createReportHelper.create(null, LOCAL_CURRENCY, BigDecimal.ONE);
     }
 
     @Test
@@ -53,10 +60,12 @@ public class CreateReportHelperTest {
         FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType();
         FLUXSalesReportMessage fluxSalesReportMessage = new FLUXSalesReportMessage()
                 .withFLUXReportDocument(fluxReportDocumentType);
+
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
         FluxReport fluxReportEntity = new FluxReport()
-                .extId("extId");
+                .extId("extId")
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
 
         //mock
         when(reportHelper.isReportDeleted(report)).thenReturn(false);
@@ -70,7 +79,7 @@ public class CreateReportHelperTest {
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
 
         //execute
-        createReportHelper.create(report);
+        createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(reportHelper).isReportDeleted(report);
@@ -94,7 +103,9 @@ public class CreateReportHelperTest {
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
         FluxReport fluxReportEntity = new FluxReport()
-                .extId("extId");
+                .extId("extId")
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
+
         List<String> takeOverDocumentsIds = Arrays.asList("a", "b", "c");
         FluxReport takeOverDocumentA = new FluxReport().extId("a");
         FluxReport takeOverDocumentB = new FluxReport().extId("b");
@@ -116,7 +127,7 @@ public class CreateReportHelperTest {
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
 
         //execute
-        createReportHelper.create(report);
+        createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(reportHelper).isReportDeleted(report);
@@ -146,7 +157,9 @@ public class CreateReportHelperTest {
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
         FluxReport fluxReportEntity = new FluxReport()
-                .extId("extId");
+                .extId("extId")
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
+
         DateTime correctionDate = new DateTime();
         FluxReport correction = new FluxReport()
                 .extId("correction")
@@ -164,7 +177,7 @@ public class CreateReportHelperTest {
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
 
         //execute
-        createReportHelper.create(report);
+        createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(reportHelper).isReportDeleted(report);
@@ -190,7 +203,9 @@ public class CreateReportHelperTest {
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
         FluxReport fluxReportEntity = new FluxReport()
-                .extId("extId");
+                .extId("extId")
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
+
         DateTime deletionDate = new DateTime();
         FluxReport deletion = new FluxReport()
                 .extId("deletion")
@@ -208,7 +223,7 @@ public class CreateReportHelperTest {
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
 
         //execute
-        createReportHelper.create(report);
+        createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(reportHelper).isReportDeleted(report);
@@ -243,7 +258,8 @@ public class CreateReportHelperTest {
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
 
         FluxReport newFluxReportEntity = new FluxReport().extId("deletion")
-                .itemType(FluxReportItemType.SALES_NOTE);
+                .itemType(FluxReportItemType.SALES_NOTE)
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
 
         FluxReport oldFluxReportEntity = new FluxReport().extId("hello")
                 .itemType(FluxReportItemType.SALES_NOTE);
@@ -269,7 +285,7 @@ public class CreateReportHelperTest {
         doReturn(mappedAndPersistedReportFromDao).when(mapper).map(newFluxReportEntity, Report.class);
 
         //execute
-        Report persistedReport = createReportHelper.create(report);
+        Report persistedReport = createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(mapper).map(report, FluxReport.class);
@@ -309,7 +325,8 @@ public class CreateReportHelperTest {
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
 
         FluxReport newFluxReportEntity = new FluxReport().extId("deletion")
-                .itemType(FluxReportItemType.SALES_NOTE);
+                .itemType(FluxReportItemType.SALES_NOTE)
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
 
         Report mappedAndPersistedReportFromDao = new Report()
                 .withFLUXSalesReportMessage(new FLUXSalesReportMessage().withSalesReports(new SalesReportType().withItemTypeCode(new CodeType().withValue("SN"))));
@@ -328,7 +345,7 @@ public class CreateReportHelperTest {
         doReturn(mappedAndPersistedReportFromDao).when(mapper).map(newFluxReportEntity, Report.class);
 
         //execute
-        Report persistedReport = createReportHelper.create(report);
+        Report persistedReport = createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(mapper).map(report, FluxReport.class);
@@ -374,7 +391,8 @@ public class CreateReportHelperTest {
                 .withDeletion(deletionDate);
 
         FluxReport newFluxReportEntity = new FluxReport().extId("deletion")
-                .itemType(FluxReportItemType.SALES_NOTE);
+                .itemType(FluxReportItemType.SALES_NOTE)
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
 
         //mock
         doReturn(newFluxReportEntity).when(mapper).map(report, FluxReport.class);
@@ -391,7 +409,7 @@ public class CreateReportHelperTest {
         doReturn(mappedAndPersistedReportFromDao).when(mapper).map(newFluxReportEntity, Report.class);
 
         //execute
-        Report persistedReport = createReportHelper.create(report);
+        Report persistedReport = createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(mapper).map(report, FluxReport.class);
@@ -429,7 +447,10 @@ public class CreateReportHelperTest {
         Report correctionReport = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
 
-        FluxReport newFluxReportEntity = new FluxReport().extId("world").purpose(Purpose.CORRECTION);
+        FluxReport newFluxReportEntity = new FluxReport()
+                .extId("world")
+                .purpose(Purpose.CORRECTION)
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
         FluxReport oldFluxReportEntity = new FluxReport().extId("hello");
 
         //mock
@@ -447,7 +468,7 @@ public class CreateReportHelperTest {
         doReturn(correctionReport).when(mapper).map(newFluxReportEntity, Report.class);
 
         //execute
-        Report persistedReport = createReportHelper.create(correctionReport);
+        Report persistedReport = createReportHelper.create(correctionReport, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(reportHelper).isReportDeleted(correctionReport);
@@ -489,7 +510,10 @@ public class CreateReportHelperTest {
                 .extId("everyone")
                 .purpose(Purpose.CORRECTION)
                 .creation(creationDateCorrectionOfCorrection);
-        FluxReport newFluxReportEntity = new FluxReport().extId("world").purpose(Purpose.CORRECTION);
+        FluxReport newFluxReportEntity = new FluxReport()
+                .extId("world")
+                .purpose(Purpose.CORRECTION)
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
         FluxReport oldFluxReportEntity = new FluxReport().extId("hello");
 
         //mock
@@ -507,7 +531,7 @@ public class CreateReportHelperTest {
         doReturn(correctionReport).when(mapper).map(newFluxReportEntity, Report.class);
 
         //execute
-        Report persistedReport = createReportHelper.create(correctionReport);
+        Report persistedReport = createReportHelper.create(correctionReport, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(reportHelper).isReportDeleted(correctionReport);
@@ -550,7 +574,10 @@ public class CreateReportHelperTest {
                 .extId("everyone")
                 .purpose(Purpose.CORRECTION)
                 .creation(creationDateDeletionOfCorrection);
-        FluxReport newFluxReportEntity = new FluxReport().extId("world").purpose(Purpose.CORRECTION);
+        FluxReport newFluxReportEntity = new FluxReport()
+                .extId("world")
+                .purpose(Purpose.CORRECTION)
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
         FluxReport oldFluxReportEntity = new FluxReport().extId("hello");
 
         //mock
@@ -568,7 +595,7 @@ public class CreateReportHelperTest {
         doReturn(correctionReport).when(mapper).map(newFluxReportEntity, Report.class);
 
         //execute
-        Report persistedReport = createReportHelper.create(correctionReport);
+        Report persistedReport = createReportHelper.create(correctionReport, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(reportHelper).isReportDeleted(correctionReport);
@@ -668,7 +695,10 @@ public class CreateReportHelperTest {
         Report correctionReport = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
 
-        FluxReport newFluxReportEntity = new FluxReport().extId("world").purpose(Purpose.CORRECTION);
+        FluxReport newFluxReportEntity = new FluxReport()
+                .extId("world")
+                .purpose(Purpose.CORRECTION)
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
 
         //mock
         doReturn(false).when(reportHelper).isReportDeleted(correctionReport);
@@ -686,7 +716,7 @@ public class CreateReportHelperTest {
         doReturn(correctionReport).when(mapper).map(newFluxReportEntity, Report.class);
 
         //execute
-        Report persistedReport = createReportHelper.create(correctionReport);
+        Report persistedReport = createReportHelper.create(correctionReport, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(reportHelper).isReportDeleted(correctionReport);
@@ -716,7 +746,8 @@ public class CreateReportHelperTest {
         Report report = new Report()
                 .withFLUXSalesReportMessage(fluxSalesReportMessage);
         FluxReport fluxReportEntity = new FluxReport()
-                .extId("extId");
+                .extId("extId")
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
 
         //mock
         when(reportHelper.isReportDeleted(report)).thenReturn(false);
@@ -729,7 +760,7 @@ public class CreateReportHelperTest {
 
         //execute
         try {
-            createReportHelper.create(report);
+            createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         } catch (SalesNonBlockingException e) {
             assertEquals("MySalesNonBlockingException", e.getMessage());
@@ -744,6 +775,25 @@ public class CreateReportHelperTest {
         verify(fluxReportDao).findDeletionOf(fluxReportEntity.getExtId());
         verify(beanValidatorHelper).validateBean(fluxReportEntity);
         verifyNoMoreInteractions(mapper, fluxReportDao, reportHelper, beanValidatorHelper);
+    }
+
+    @Test
+    public void enrichWithLocalCurrency() {
+        FluxReport fluxReport = new FluxReport()
+                .document(new Document()
+                        .currency("USD")
+                        .products(Arrays.asList(
+                                new Product().price(BigDecimal.TEN),
+                                new Product().price(BigDecimal.TEN)))
+                        .totalPrice(BigDecimal.valueOf(20)));
+
+        createReportHelper.enrichWithLocalCurrency(fluxReport, LOCAL_CURRENCY, BigDecimal.valueOf(1.5));
+
+        assertEquals("EUR", fluxReport.getDocument().getCurrencyLocal());
+        assertEquals(new BigDecimal("30.0"), fluxReport.getDocument().getTotalPriceLocal());
+        for (Product product : fluxReport.getDocument().getProducts()) {
+            assertEquals(new BigDecimal("15.0"), product.getPriceLocal());
+        }
     }
 
 }

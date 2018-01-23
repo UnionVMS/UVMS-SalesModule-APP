@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.schema.sales.ReportSummary;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ReportDomainModel {
@@ -29,12 +30,12 @@ public interface ReportDomainModel {
     Optional<Report> findByExtId(String extId, boolean includeDeletedOrCorrectedReports);
 
     /**
-     * Creates a report.
+     * Creates a report and converts the document/product prices to the local currency based on the exchangeRate.
      *
      * @param report the report to be created
      * @return the created report
      */
-    Report create(Report report);
+    Report create(Report report, String localCurrency, BigDecimal exchangeRate);
 
     /**
      * Get a {@link Report} with all products eagerly loaded. If no object has been found, {@link javax.persistence.NoResultException} is thrown.

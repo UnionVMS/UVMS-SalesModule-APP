@@ -60,5 +60,10 @@
         </rollback>
         
     </changeSet>
-        
+
+    <changeSet author="matbul" id="pro-02">
+        <addColumn tableName="sales_product">
+            <column name="price_local" type="numeric" />
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

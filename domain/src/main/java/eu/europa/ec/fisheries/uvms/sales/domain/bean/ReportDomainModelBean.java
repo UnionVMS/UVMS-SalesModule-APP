@@ -24,6 +24,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -68,8 +69,8 @@ public class ReportDomainModelBean implements ReportDomainModel {
     }
 
     @Override
-    public Report create(@NonNull Report report) {
-        return createReportHelper.create(report);
+    public Report create(@NonNull Report report, @NonNull String localCurrency, @NonNull BigDecimal exchangeRate) {
+        return createReportHelper.create(report, localCurrency, exchangeRate);
     }
 
     @Override
