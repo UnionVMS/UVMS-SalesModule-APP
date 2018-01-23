@@ -637,7 +637,8 @@ public class CreateReportHelperTest {
 
         FluxReport newFluxReportEntity = new FluxReport()
                 .extId("world")
-                .purpose(Purpose.CORRECTION);
+                .purpose(Purpose.CORRECTION)
+                .document(new Document().currency("USD").totalPrice(BigDecimal.TEN).products(Arrays.asList(new Product().price(BigDecimal.ONE))));
         FluxReport oldFluxReportEntity = new FluxReport()
                 .extId("hello")
                 .deletion(creationDateDeletionOfCorrection);
@@ -657,7 +658,7 @@ public class CreateReportHelperTest {
         doReturn(correctionReport).when(mapper).map(newFluxReportEntity, Report.class);
 
         //execute
-        Report persistedReport = createReportHelper.create(correctionReport);
+        Report persistedReport = createReportHelper.create(correctionReport, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
         verify(reportHelper).isReportDeleted(correctionReport);
