@@ -4,7 +4,9 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
+import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceExportHelper;
@@ -60,6 +62,10 @@ public class ReportServiceBeanTest {
 
     @Mock
     private ReportServiceHelper reportServiceHelper;
+
+    @Mock
+    private ParameterService parameterService;
+
 
     @Test(expected = IllegalArgumentException.class)
     public void testFindSalesDetailsWhenExtIdIsNull() throws Exception {
@@ -381,6 +387,7 @@ public class ReportServiceBeanTest {
         //mock
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bla");
         doReturn(BigDecimal.valueOf(1.5)).when(ecbProxyService).findExchangeRate("USD", "EUR", DateTime.parse("2010-01-01"));
+        doReturn("EUR").when(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
 
         //execute
         reportServiceBean.saveReport(report, plugin, validationResults, messageValidationResult);
