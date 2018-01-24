@@ -52,6 +52,9 @@ public class CreateReportHelper {
 
         FluxReport fluxReport = mapper.map(report, FluxReport.class);
 
+        // set the receivedOn property to now
+        fluxReport.receivedOn(DateTime.now());
+
         // convert the prices from the currency in the report to the local currency
         enrichWithLocalCurrency(fluxReport, localCurrency, exchangeRate);
 

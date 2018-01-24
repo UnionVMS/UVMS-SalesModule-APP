@@ -221,5 +221,16 @@
         </rollback>
     </changeSet>
 
+    <changeSet author="matbul" id="flr-09-addReceivedOnColumn">
+        <addColumn tableName="sales_flux_report">
+            <column name="received_on" type="timestamp"/>
+        </addColumn>
+
+        <rollback>
+            <dropColumn columnName="received_on"
+                        tableName="sales_flux_report"/>
+        </rollback>
+    </changeSet>
+
 
 </databaseChangeLog>

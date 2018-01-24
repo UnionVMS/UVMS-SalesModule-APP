@@ -108,7 +108,19 @@ public class FluxReport {
             inverseJoinColumns = @JoinColumn(name = "sales_note_id"))
     private List<FluxReport> relatedSalesNotes;
 
+
+    /**
+     * This property is filled with DateTime.now() when receiving the FluxReport.
+     * This differs from the 'creation' property which is filled by the sending party
+     */
+    @NotNull
+    @Column(name = "received_on")
+    private DateTime receivedOn;
+
+
     public FluxReport() {
+        // Set the date on which this report was created
+        this.receivedOn(DateTime.now());
     }
 
     public Integer getId() {
@@ -219,6 +231,16 @@ public class FluxReport {
         this.correction = correction;
     }
 
+
+    public DateTime getReceivedOn() {
+        return receivedOn;
+    }
+
+    public void setReceivedOn(DateTime receivedOn) {
+        this.receivedOn = receivedOn;
+    }
+
+
     public FluxReport extId(final String extId) {
         setExtId(extId);
         return this;
@@ -295,5 +317,10 @@ public class FluxReport {
 
     public boolean isDeleted() {
         return deletion != null;
+    }
+
+    public FluxReport receivedOn(DateTime receivedOn) {
+        this.receivedOn = receivedOn;
+        return this;
     }
 }
