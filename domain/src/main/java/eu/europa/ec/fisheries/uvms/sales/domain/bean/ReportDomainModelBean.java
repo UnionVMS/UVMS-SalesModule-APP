@@ -31,6 +31,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -183,7 +184,13 @@ public class ReportDomainModelBean implements ReportDomainModel {
     public List<Report> findRelatedReportsOf(Report report) {
         String extId = reportHelper.getFLUXReportDocumentId(report);
         FluxReport fluxReport = fluxReportDao.findByExtId(extId).get();
-        List<FluxReport> relatedReports = ListUtils.union(fluxReport.getRelatedSalesNotes(), fluxReport.getRelatedTakeOverDocuments());
+        List<FluxReport> relatedReports = emptyList();
+        if (fluxReport.getRelatedSalesNotes() != null) {
+            relatedReports = ListUtils.union(relatedReports, fluxReport.getRelatedSalesNotes());
+        }
+        if (fluxReport.getRelatedTakeOverDocuments() != null) {
+            relatedReports = ListUtils.union(relatedReports, fluxReport.getRelatedTakeOverDocuments());
+        }
         return mapper.mapAsList(relatedReports, Report.class);
     }
 
