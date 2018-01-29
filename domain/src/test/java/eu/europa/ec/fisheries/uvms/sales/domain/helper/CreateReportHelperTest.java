@@ -797,4 +797,48 @@ public class CreateReportHelperTest {
         }
     }
 
+    @Test
+    public void roundPricesToTwoDecimals() {
+        FluxReport fluxReport = new FluxReport()
+                .document(new Document()
+                        .currency("USD")
+                        .products(Arrays.asList(
+                                new Product().price(new BigDecimal("12.345")).priceLocal(new BigDecimal("12.567"))))
+                        .totalPrice(new BigDecimal("12.356")).totalPriceLocal(new BigDecimal("12.678")));
+        createReportHelper.roundPricesToTwoDecimals(fluxReport);
+
+        assertEquals(new BigDecimal("12.34"), fluxReport.getDocument().getProducts().get(0).getPrice());
+        assertEquals(new BigDecimal("12.57"), fluxReport.getDocument().getProducts().get(0).getPriceLocal());
+        assertEquals(new BigDecimal("12.36"), fluxReport.getDocument().getTotalPrice());
+        assertEquals(new BigDecimal("12.68"), fluxReport.getDocument().getTotalPriceLocal());
+
+    }
+
+    @Test
+    public void roundPricesToTwoDecimalsWhenPricesAreAlreadyLimitedToTwoDecimals() {
+        BigDecimal totalPrice = new BigDecimal("12.35");
+        BigDecimal totalPriceLocal = new BigDecimal("12.67");
+
+        Document documentMock = mock(Document.class);
+        Product productMock = mock(Product.class);
+
+        FluxReport fluxReport = new FluxReport()
+                .document(documentMock);
+
+        doReturn(totalPrice).when(productMock).getPrice();
+        doReturn(totalPriceLocal).when(productMock).getPriceLocal();
+        doReturn(totalPrice).when(documentMock).getTotalPrice();
+        doReturn(totalPriceLocal).when(documentMock).getTotalPriceLocal();
+        doReturn(Arrays.asList(productMock)).when(documentMock).getProducts();
+
+        createReportHelper.roundPricesToTwoDecimals(fluxReport);
+
+        verify(documentMock, never()).setTotalPrice(any());
+        verify(documentMock, never()).setTotalPriceLocal(any());
+        verify(productMock, never()).setPrice(any());
+        verify(productMock, never()).setPriceLocal(any());
+
+    }
+
+
 }
