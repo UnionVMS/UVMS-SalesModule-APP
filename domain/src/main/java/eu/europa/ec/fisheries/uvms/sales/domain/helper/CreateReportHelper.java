@@ -86,17 +86,20 @@ public class CreateReportHelper {
     }
 
     protected void roundPricesToTwoDecimals(FluxReport fluxReport) {
-        if (fluxReport.getDocument().getTotalPrice().scale() > 2 ||
-                fluxReport.getDocument().getTotalPriceLocal().scale() > 2) {
-            fluxReport.getDocument().setTotalPrice(fluxReport.getDocument().getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_DOWN));
-            fluxReport.getDocument().setTotalPriceLocal(fluxReport.getDocument().getTotalPriceLocal().setScale(2, BigDecimal.ROUND_HALF_DOWN));
+        if (fluxReport.getDocument().getTotalPrice() != null &&
+                (fluxReport.getDocument().getTotalPrice().scale() > 2 ||
+                fluxReport.getDocument().getTotalPriceLocal().scale() > 2)) {
+            fluxReport.getDocument().setTotalPrice(fluxReport.getDocument().getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP));
+            fluxReport.getDocument().setTotalPriceLocal(fluxReport.getDocument().getTotalPriceLocal().setScale(2, BigDecimal.ROUND_HALF_UP));
         }
 
 
         for (Product product : fluxReport.getDocument().getProducts()) {
-            if (product.getPrice().scale() > 2 || product.getPriceLocal().scale() > 2) {
-                product.setPrice(product.getPrice().setScale(2, BigDecimal.ROUND_HALF_DOWN));
-                product.setPriceLocal(product.getPriceLocal().setScale(2, BigDecimal.ROUND_HALF_DOWN));
+            if (product.getPrice() != null &&
+                    (product.getPrice().scale() > 2 ||
+                     product.getPriceLocal().scale() > 2)) {
+                product.setPrice(product.getPrice().setScale(2, BigDecimal.ROUND_HALF_UP));
+                product.setPriceLocal(product.getPriceLocal().setScale(2, BigDecimal.ROUND_HALF_UP));
             }
         }
     }
@@ -109,10 +112,7 @@ public class CreateReportHelper {
         // Total price in Sales Document is not mandatory, if it's missing we set the local total price to 0
         if (document.getTotalPrice() != null) {
             document.totalPriceLocal(document.getTotalPrice().multiply(exchangeRate));
-        } else {
-            document.totalPriceLocal(BigDecimal.ZERO);
         }
-
 
         for (Product product : document.getProducts()) {
             BigDecimal priceFromReport = product.getPrice();

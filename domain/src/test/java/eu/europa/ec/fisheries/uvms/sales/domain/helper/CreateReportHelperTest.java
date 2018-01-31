@@ -10,7 +10,6 @@ import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import ma.glasnost.orika.MapperFacade;
-import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -807,11 +804,42 @@ public class CreateReportHelperTest {
                         .totalPrice(new BigDecimal("12.356")).totalPriceLocal(new BigDecimal("12.678")));
         createReportHelper.roundPricesToTwoDecimals(fluxReport);
 
-        assertEquals(new BigDecimal("12.34"), fluxReport.getDocument().getProducts().get(0).getPrice());
+        assertEquals(new BigDecimal("12.35"), fluxReport.getDocument().getProducts().get(0).getPrice());
         assertEquals(new BigDecimal("12.57"), fluxReport.getDocument().getProducts().get(0).getPriceLocal());
         assertEquals(new BigDecimal("12.36"), fluxReport.getDocument().getTotalPrice());
         assertEquals(new BigDecimal("12.68"), fluxReport.getDocument().getTotalPriceLocal());
 
+    }
+
+    @Test
+    public void roundPriceWhenDocumentHasNoTotalPrice() {
+        FluxReport fluxReport = new FluxReport()
+                .document(new Document()
+                        .currency("USD")
+                        .products(Arrays.asList(
+                                new Product().price(new BigDecimal("12.345")).priceLocal(new BigDecimal("12.567")))));
+        createReportHelper.roundPricesToTwoDecimals(fluxReport);
+
+        assertEquals(new BigDecimal("12.35"), fluxReport.getDocument().getProducts().get(0).getPrice());
+        assertEquals(new BigDecimal("12.57"), fluxReport.getDocument().getProducts().get(0).getPriceLocal());
+        assertNull(fluxReport.getDocument().getTotalPrice());
+        assertNull(fluxReport.getDocument().getTotalPriceLocal());
+    }
+
+    @Test
+    public void roundPricesToTwoDecimalsWhenProductHasNoPrice() {
+        FluxReport fluxReport = new FluxReport()
+                .document(new Document()
+                        .currency("USD")
+                        .products(Arrays.asList(
+                                new Product()))
+                        .totalPrice(new BigDecimal("12.356")).totalPriceLocal(new BigDecimal("12.678")));
+        createReportHelper.roundPricesToTwoDecimals(fluxReport);
+
+        assertNull(fluxReport.getDocument().getProducts().get(0).getPrice());
+        assertNull(fluxReport.getDocument().getProducts().get(0).getPriceLocal());
+        assertEquals(new BigDecimal("12.36"), fluxReport.getDocument().getTotalPrice());
+        assertEquals(new BigDecimal("12.68"), fluxReport.getDocument().getTotalPriceLocal());
     }
 
     @Test
@@ -833,10 +861,10 @@ public class CreateReportHelperTest {
 
         createReportHelper.roundPricesToTwoDecimals(fluxReport);
 
-        verify(documentMock, never()).setTotalPrice(any());
-        verify(documentMock, never()).setTotalPriceLocal(any());
-        verify(productMock, never()).setPrice(any());
-        verify(productMock, never()).setPriceLocal(any());
+        verify(documentMock, never()).setTotalPrice(any(BigDecimal.class));
+        verify(documentMock, never()).setTotalPriceLocal(any(BigDecimal.class));
+        verify(productMock, never()).setPrice(any(BigDecimal.class));
+        verify(productMock, never()).setPriceLocal(any(BigDecimal.class));
 
     }
 
