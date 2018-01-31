@@ -78,7 +78,6 @@ public class ReportServiceBean implements ReportService {
                            String messageValidationStatus) throws ConfigServiceException {
         Report alreadyExistingReport = reportDomainModel.findByExtId(report.getFLUXSalesReportMessage().getFLUXReportDocument().getIDS().get(0).getValue())
                                                         .orNull();
-
         //If a report exists with the incoming ID, we don't save the report.
         if (alreadyExistingReport == null) {
 

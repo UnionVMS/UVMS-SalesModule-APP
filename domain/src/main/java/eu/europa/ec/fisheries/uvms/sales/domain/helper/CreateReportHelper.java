@@ -52,8 +52,12 @@ public class CreateReportHelper {
 
         FluxReport fluxReport = mapper.map(report, FluxReport.class);
 
+        // set the receivedOn property to now
+        fluxReport.receivedOn(DateTime.now());
+
         // convert the prices from the currency in the report to the local currency
         enrichWithLocalCurrency(fluxReport, localCurrency, exchangeRate);
+        roundPricesToTwoDecimals(fluxReport);
 
         // to simplify search, each report entity has calculated fields that keeps whether is has been deleted or
         // corrected. Keep these fields up to date.
@@ -79,6 +83,22 @@ public class CreateReportHelper {
         fluxReport = fluxReportDao.create(fluxReport);
         return mapper.map(fluxReport, Report.class);
 
+    }
+
+    protected void roundPricesToTwoDecimals(FluxReport fluxReport) {
+        if (fluxReport.getDocument().getTotalPrice().scale() > 2 ||
+                fluxReport.getDocument().getTotalPriceLocal().scale() > 2) {
+            fluxReport.getDocument().setTotalPrice(fluxReport.getDocument().getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_DOWN));
+            fluxReport.getDocument().setTotalPriceLocal(fluxReport.getDocument().getTotalPriceLocal().setScale(2, BigDecimal.ROUND_HALF_DOWN));
+        }
+
+
+        for (Product product : fluxReport.getDocument().getProducts()) {
+            if (product.getPrice().scale() > 2 || product.getPriceLocal().scale() > 2) {
+                product.setPrice(product.getPrice().setScale(2, BigDecimal.ROUND_HALF_DOWN));
+                product.setPriceLocal(product.getPriceLocal().setScale(2, BigDecimal.ROUND_HALF_DOWN));
+            }
+        }
     }
 
     protected void enrichWithLocalCurrency(FluxReport fluxReport, String localCurrency, BigDecimal exchangeRate) {
