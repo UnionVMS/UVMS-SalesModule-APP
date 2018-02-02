@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
+package eu.europa.ec.fisheries.uvms.sales.service.arquillian.test;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.config.module.v1.PullSettingsResponse;
@@ -7,18 +7,22 @@ import eu.europa.ec.fisheries.schema.rules.module.v1.SendSalesResponseRequest;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
-import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.SalesModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.ValidationQualityAnalysisMapper;
-import eu.europa.ec.fisheries.uvms.sales.service.*;
+import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
+import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
+import eu.europa.ec.fisheries.uvms.sales.service.EventService;
+import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.SalesServiceTestHelper;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.SalesTestMessageFactory;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.TransactionalTests;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.persistence.DataSource;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
@@ -52,12 +56,6 @@ public class SalesServiceTestIT extends TransactionalTests {
     EventService eventService;
 
 	@EJB
-    private ReportDomainModel reportDomainModel;
-
-	@EJB
-	ReportService reportService;
-
-	@EJB
 	ConfigMessageProducer configMessageProducer;
 
 	@EJB
@@ -72,12 +70,14 @@ public class SalesServiceTestIT extends TransactionalTests {
 	@EJB
 	MDRService mdrService;
 
-	@InSequence(1)
 	@Test
 	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumerBean_Save_Report() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
+
 		// Data
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0311";
 		String vesselFlagState = "BE3";
@@ -138,12 +138,14 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertEquals("BEL-SN-2007-7777777", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
 	}
 
-	@InSequence(2)
 	@Test
     @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
     public void testSalesEventRespondToInvalidMessage() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
+
 		// Test data
 		String messageGuid = "d0c749bf-50d6-479a-b12e-61c2f2d66469";
         RespondToInvalidMessageRequest respondToInvalidMessageRequest = new RespondToInvalidMessageRequest();
@@ -183,7 +185,6 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertTrue(responseMessageBody.contains("unique=\"false\""));
 	}
 
-	@InSequence(3)
 	@Test
     @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
@@ -196,7 +197,6 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertEquals(4, codeList.size());
 	}
 
-	@InSequence(4)
 	@Test
     @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
@@ -215,7 +215,6 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertEquals(BigDecimal.valueOf(1.4321), exchangeRate);
 	}
 
-	@InSequence(5)
 	@Test
     @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
@@ -232,7 +231,6 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertEquals(cfr, asset.getCfr());
 	}
 
-	@InSequence(6)
 	@Test
     @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
@@ -250,7 +248,6 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertNotNull(pullSettingsResponse.getStatus());
 	}
 
-	@InSequence(7)
 	@Test
     @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
@@ -273,7 +270,6 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertTrue(responseMessageBody.contains(requestMessage.getJMSMessageID()));
 	}
 
-	@InSequence(8)
 	@Test
     @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
@@ -301,12 +297,14 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertTrue(responseMessageBody.contains("unique=\"true\""));
 	}
 
-	@InSequence(9)
     @Test
     @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
     public void testSalesEventCreateReport() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
+
 		// Test data
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0314";
 		SalesReportRequest salesReportRequest = new SalesReportRequest();
@@ -353,7 +351,6 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
 	}
 
-	@InSequence(10)
 	@Test
     @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.COMMIT)
@@ -379,12 +376,14 @@ public class SalesServiceTestIT extends TransactionalTests {
 		assertTrue(StringUtils.isBlank(findReportByIdResponse.getReport()));
 	}
 
-	@InSequence(11)
 	@Test
     @OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void trySalesMessageConsumerBean_Hibernate_Validator_ConstraintViolationException() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
+
 		// Data
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0312";
 
@@ -430,12 +429,14 @@ public class SalesServiceTestIT extends TransactionalTests {
         assertFalse(StringUtils.isNotBlank(findReportByIdResponse.getReport()));
 	}
 
-	@InSequence(12)
 	@Test
 	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumerBean_RespondToInvalidMessage() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
+
 		// Test data
 		String messageGuid = "d0c749bf-50d6-479a-b12e-61c2f2d66439";
 		String pluginToSendResponseThrough = "BELGIAN_SALES";
@@ -470,12 +471,14 @@ public class SalesServiceTestIT extends TransactionalTests {
         assertFalse(checkForUniqueIdResponse.isUnique());
 	}
 
-	@InSequence(13)
 	@Test
 	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void trySalesMessageConsumerBean_Save_Report_SalesMarshallException() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
+
 		// Data
 		String salesReportRequest = "BAD_MESSAGE_CONTENT";
 
@@ -499,12 +502,14 @@ public class SalesServiceTestIT extends TransactionalTests {
         return producer;
     }
 
-	@InSequence(14)
 	@Test
 	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumerBean_Save_Report_Original_TakeOverDocument() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
+
 		// Data
 		String messageGuid = "37eb22e6-077d-45ee-a596-2228c3e096e8";
 
@@ -543,24 +548,26 @@ public class SalesServiceTestIT extends TransactionalTests {
 
 	}
 
-	@InSequence(15)
 	@Test
 	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumerBean_save_report_original_and_correction() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
 
 		testSalesMessageConsumerBean_Save_Report_Original();
 
         testSalesMessageConsumerBean_Save_Report_Corrected();
 	}
 
-	@InSequence(16)
 	@Test
 	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumerBean_save_report_correction_and_original_not_processed_yet() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
 
 		// Report corrected should be saved, even if the original referenced report is not processed yet
 		testSalesMessageConsumerBean_Save_Report_Corrected();

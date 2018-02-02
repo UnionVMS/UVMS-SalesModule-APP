@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
+package eu.europa.ec.fisheries.uvms.sales.service.arquillian.test;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.CheckForUniqueIdResponse;
@@ -8,9 +8,9 @@ import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.SalesModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.ValidationQualityAnalysisMapper;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.*;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.persistence.DataSource;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
@@ -40,14 +40,15 @@ public class SalesServiceMockTestIT extends TransactionalMockTests {
     @EJB
     RedeliveryCounterHelper redeliveryCounterHelper;
 
-    @InSequence(1)
     @Test
     @OperateOnDeployment("salesservice_redelivery")
     @Transactional(TransactionMode.DISABLED)
     @DataSource("java:/jdbc/uvms_sales")
     public void testSalesMessageConsumerBean_SaveReport_RulesServiceBeanMock_No_Redelivery() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
+
         // Data
-        String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0311";
         String request = salesTestMessageFactory.composeFLUXSalesReportMessageNoRedeliveryAsString();
         String messageValidationStatus = "OK";
         String pluginToSendResponseThrough = "BELGIAN_SALES";
@@ -68,12 +69,14 @@ public class SalesServiceMockTestIT extends TransactionalMockTests {
         assertEquals(1L, redeliveryCounterHelper.getCounterValueForKey(RulesServiceBeanMock.KEY_SEND_REPORT_TO_RULES));
     }
 
-    @InSequence(2)
     @Test
     @OperateOnDeployment("salesservice_redelivery")
     @Transactional(TransactionMode.DISABLED)
     @DataSource("java:/jdbc/uvms_sales")
     public void testSalesMessageConsumerBean_RespondToInvalidMessage_Redelivery() throws Exception {
+        //wait until config had the chance to sync
+        Thread.sleep(10000L);
+
         // Test data
         String messageGuid = "d0c749bf-50d6-479a-b12e-61c2f2d66419";
         String pluginToSendResponseThrough = "BELGIAN_SALES";

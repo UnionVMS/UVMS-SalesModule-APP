@@ -1,10 +1,11 @@
-package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
+package eu.europa.ec.fisheries.uvms.sales.service.arquillian.deployment;
 
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.consumer.bean.MessageConsumerBean;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.bean.SalesMessageProducerBean;
 import eu.europa.ec.fisheries.uvms.sales.service.*;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.TransactionalTests;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.*;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.*;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
