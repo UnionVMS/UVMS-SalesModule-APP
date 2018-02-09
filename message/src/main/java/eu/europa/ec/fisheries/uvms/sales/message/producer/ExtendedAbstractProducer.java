@@ -46,7 +46,7 @@ public abstract class ExtendedAbstractProducer extends AbstractProducer  impleme
             LOGGER.info("Sending message with replyTo: [{}]", replyTo);
             LOGGER.debug("Message content : [{}]", text);
 
-            if (connection == null || session == null) {
+            if (connection == null) {
                 throw new MessageException("[ Connection or session is null, cannot send message ] ");
             }
 
