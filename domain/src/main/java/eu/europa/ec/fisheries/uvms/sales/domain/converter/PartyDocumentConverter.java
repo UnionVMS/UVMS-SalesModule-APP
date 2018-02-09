@@ -15,10 +15,8 @@ public abstract class PartyDocumentConverter extends CustomConverter<List<PartyD
     @Override
     public String convert(List<PartyDocument> partyDocuments, Type<? extends String> destinationType, MappingContext mappingContext) {
         for (PartyDocument partyDocument : partyDocuments) {
-            if (everyNecessaryFieldIsNotNull(partyDocument)) {
-                if (roleToSearchFor() == partyDocument.getRole()) {
-                    return partyDocument.getParty().getName();
-                }
+            if (everyNecessaryFieldIsNotNull(partyDocument) && roleToSearchFor() == partyDocument.getRole()) {
+                return partyDocument.getParty().getName();
             }
         }
 
