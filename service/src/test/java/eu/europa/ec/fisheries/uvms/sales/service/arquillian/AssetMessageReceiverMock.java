@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.message.JMSUtils;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
