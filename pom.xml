@@ -241,6 +241,7 @@
 	</profiles>
 
     <modules>
+        <module>liquibase</module>
         <module>domain</module>
         <module>rest</module>
         <module>service</module>
