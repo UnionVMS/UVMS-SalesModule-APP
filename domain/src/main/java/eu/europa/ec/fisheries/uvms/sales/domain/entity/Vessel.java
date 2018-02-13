@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -21,16 +23,20 @@ public class Vessel {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "cfr", nullable = false)
     private String extId;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "country", nullable = false)
+    @NotNull
     @Size(max = 3)
+    @Column(name = "country", nullable = false)
     private String countryCode;
 
+    @Valid
+    @NotNull
     @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_vessel_id", nullable = false)
     private List<VesselContact> vesselContacts;

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_document
+            id="20"
+            ext_id="DocumentExternalID1"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+    />
+    <sales_document
+            id="21"
+            ext_id="DocumentExternalID2"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+    />
+    <sales_document
+            id="22"
+            ext_id="DocumentExternalID3"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+    />
+    <sales_document
+            id="23"
+            ext_id="DocumentExternalID4"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+    />
+    <sales_flux_report
+            id="123"
+            ext_id="abc"
+            purpose_code="ORIGINAL"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_ext_id="[NULL]"
+            correction="[NULL]"
+            deletion="2017-11-24 00:00:00"
+            received_on="2017-11-24 02:00:00"
+    />
+    <sales_flux_report
+            id="124"
+            ext_id="def"
+            purpose_code="DELETE"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_ext_id="abc"
+            correction="[NULL]"
+            deletion="[NULL]"
+            received_on="2017-11-24 02:00:00"
+    />
+    <sales_flux_report
+            id="125"
+            ext_id="ghi"
+            purpose_code="DELETE"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_ext_id="abc"
+            correction="[NULL]"
+            deletion="2017-11-24 00:00:00"
+            received_on="2017-11-24 02:00:00"
+    />
+    <sales_flux_report
+            id="126"
+            ext_id="yoyoyo"
+            purpose_code="DELETE"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_ext_id="ghi"
+            correction="[NULL]"
+            deletion="[NULL]"
+            received_on="2017-11-24 02:00:00"
+    />
+
+    <sales_flux_report
+            id="127"
+            ext_id="IReferToANonExistingReport"
+            purpose_code="DELETE"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_ext_id="nonExisting"
+            correction="[NULL]"
+            deletion="[NULL]"
+            received_on="2017-11-24 02:00:00"
+    />
+    <sales_flux_report
+            id="128"
+            ext_id="correctedReport"
+            purpose_code="ORIGINAL"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_ext_id="[NULL]"
+            correction="2000-11-24 00:00:00"
+            deletion="[NULL]"
+            received_on="2017-11-24 02:00:00"
+    />
+    <sales_flux_report
+            id="129"
+            ext_id="deletionReport"
+            purpose_code="CORRECTION"
+            item_type="SALES_NOTE"
+            creation="2000-11-24 00:00:00"
+            flux_report_party="BEL"
+            sales_document_id="20"
+            sales_flux_report_prev_ext_id="correctedReport"
+            correction="[NULL]"
+            deletion="[NULL]"
+            received_on="2017-11-24 02:00:00"
+    />
+</dataset>

@@ -21,13 +21,13 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class MapperProducerTest {
+public class DomainMapperProducerTest {
 
     private static MapperFacade mapper;
 
     @BeforeClass
     public static void setUp() {
-        mapper = new MapperProducer().getMapper();
+        mapper = new DomainMapperProducer().getMapper();
     }
 
     @Test
@@ -39,8 +39,9 @@ public class MapperProducerTest {
                 .withIDS(new IDType().withValue("ID"))
                 .withCreationDateTime(new DateTimeType().withDateTime(creation))
                 .withPurpose(new TextType().withValue("The cake is a lie"))
-                .withPurposeCode(new CodeType().withValue("9"))
-                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("name")));
+                .withPurposeCode(new CodeType().withValue("5"))
+                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("name")))
+                .withReferencedID(new IDType().withValue("previousExtId"));
 
         SalesReportType salesReportType = new SalesReportType()
                 .withItemTypeCode(new CodeType().withValue("TOD"))
@@ -63,12 +64,13 @@ public class MapperProducerTest {
         assertEquals("ID", fluxReport.getExtId());
         assertEquals(creation, fluxReport.getCreation());
         assertEquals("The cake is a lie", fluxReport.getPurposeText());
-        assertEquals(Purpose.ORIGINAL, fluxReport.getPurpose());
+        assertEquals(Purpose.CORRECTION, fluxReport.getPurpose());
         assertEquals("name", fluxReport.getFluxReportParty());
         assertEquals(FluxReportItemType.TAKE_OVER_DOCUMENT, fluxReport.getItemType());
         assertEquals("DOC1", fluxReport.getDocument().getExtId());
         assertEquals(SalesCategory.FIRST_SALE, fluxReport.getAuctionSale().getCategory());
         assertEquals(deletion, fluxReport.getDeletion());
+        assertEquals("previousExtId", fluxReport.getPreviousFluxReportExtId());
     }
 
     @Test
@@ -85,7 +87,7 @@ public class MapperProducerTest {
                 .itemType(FluxReportItemType.SALES_NOTE)
                 .document(new Document().extId("docu"))
                 .auctionSale(new AuctionSale().category(SalesCategory.NEGOTIATED_SALE))
-                .previousFluxReport(new FluxReport().extId("100ext"))
+                .previousFluxReportExtId("100ext")
                 .deletion(deletion);
 
         Report report = mapper.map(fluxReport, Report.class);
@@ -717,8 +719,7 @@ public class MapperProducerTest {
                 .purpose(Purpose.ORIGINAL)
                 .auctionSale(new AuctionSale()
                     .category(SalesCategory.NEGOTIATED_SALE))
-                .previousFluxReport(new FluxReport()
-                    .extId("Heya"))
+                .previousFluxReportExtId("Heya")
                 .document(new Document()
                     .occurrence(occurrence)
                     .fishingActivity(new FishingActivity()
@@ -773,8 +774,7 @@ public class MapperProducerTest {
                 .deletion(deletion)
                 .extId("fluxReportDocumentExtId")
                 .purpose(Purpose.ORIGINAL)
-                .previousFluxReport(new FluxReport()
-                        .extId("Heya"))
+                .previousFluxReportExtId("Heya")
                 .document(new Document()
                         .occurrence(occurrence)
                         .fishingActivity(new FishingActivity()

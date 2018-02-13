@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.schema.sales.ReportSummary;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ReportDomainModel {
@@ -20,12 +21,21 @@ public interface ReportDomainModel {
     Optional<Report> findByExtId(String extId);
 
     /**
-     * Creates a report.
+     * Finds a report by its GUID, internally known as extId.
+     *
+     * @param extId internal name for GUID
+     * @param includeDeletedOrCorrectedReports true if you want to find a report that could have been corrected or deleted
+     * @return the found report
+     */
+    Optional<Report> findByExtId(String extId, boolean includeDeletedOrCorrectedReports);
+
+    /**
+     * Creates a report and converts the document/product prices to the local currency based on the exchangeRate.
      *
      * @param report the report to be created
      * @return the created report
      */
-    Report create(Report report);
+    Report create(Report report, String localCurrency, BigDecimal exchangeRate);
 
     /**
      * Get a {@link Report} with all products eagerly loaded. If no object has been found, {@link javax.persistence.NoResultException} is thrown.
@@ -61,7 +71,7 @@ public interface ReportDomainModel {
      *  Retrieves the sales report (note or take over document) which is a correction or deletion of the given sales
      *  report.
      **/
-    Optional<Report> findCorrectionOrDeletionOf(@NotNull String extId);
+    Optional<Report> findCorrectionOf(@NotNull String extId);
 
     /**
      * Returns all referenced reports, including the report that has

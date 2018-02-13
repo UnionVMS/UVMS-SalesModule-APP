@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesQueryMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
+import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 
@@ -67,7 +68,7 @@ public interface ReportService {
      */
     void saveReport(Report report, String pluginToSendResponseThrough,
                     List<ValidationQualityAnalysisType> validationResults,
-                    String messageValidationStatus);
+                    String messageValidationStatus) throws ConfigServiceException;
 
     /**
      * Finds a sales report by extId

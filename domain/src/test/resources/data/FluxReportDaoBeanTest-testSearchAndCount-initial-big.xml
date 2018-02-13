@@ -161,8 +161,9 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="122"
@@ -173,8 +174,9 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="12300000"
@@ -185,8 +187,9 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="2017-11-24 00:00:00"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="123"
@@ -197,8 +200,9 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
-            sales_flux_report_prev_id="12300000"
+            sales_flux_report_prev_ext_id="12300000"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="124"
@@ -209,8 +213,9 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="125"
@@ -221,8 +226,9 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
 
     <!-- all these reports are linked to the document 21, to simplify the test -->
@@ -235,8 +241,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="132"
@@ -247,8 +254,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="133"
@@ -259,8 +267,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="134"
@@ -271,8 +280,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="135"
@@ -283,8 +293,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="136"
@@ -295,8 +306,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="137"
@@ -307,8 +319,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="138"
@@ -319,8 +332,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="139"
@@ -331,8 +345,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="140"
@@ -343,8 +358,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="141"
@@ -355,8 +371,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="142"
@@ -367,8 +384,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="143"
@@ -379,8 +397,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="144"
@@ -391,8 +410,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="145"
@@ -403,8 +423,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="146"
@@ -415,8 +436,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="147"
@@ -427,8 +449,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="148"
@@ -439,8 +462,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="149"
@@ -451,8 +475,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="150"
@@ -463,8 +488,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
 
 </dataset>

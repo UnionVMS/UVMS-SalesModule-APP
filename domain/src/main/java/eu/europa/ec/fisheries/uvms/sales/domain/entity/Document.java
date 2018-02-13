@@ -6,6 +6,8 @@ import org.hibernate.annotations.BatchSize;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -29,12 +31,23 @@ public class Document {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "ext_id", nullable = false)
     private String extId;
 
+    @NotNull
     @Column(name = "currency", nullable = false)
     private String currency;
 
+
+    @Column(name = "currency_local")
+    private String currencyLocal;
+
+
+    @Column(name = "total_price_local")
+    private BigDecimal totalPriceLocal;
+
+    @NotNull
     @Column(name = "occurrence", nullable = false)
     private DateTime occurrence;
 
@@ -44,22 +57,34 @@ public class Document {
     @Column(name = "total_weight")
     private Double totalWeight;
 
+    @Valid
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_fishing_activity_id")
     private FishingActivity fishingActivity;
 
+    @Valid
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_flux_location_id")
     private FluxLocation fluxLocation;
 
+    @Valid
     @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_document_id", nullable = false)
     @BatchSize(size = 1000)
     private List<PartyDocument> partyDocuments;
 
+    @Valid
     @OneToMany(mappedBy = "document", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @BatchSize(size = 1000)
     private List<Product> products;
+
+    public BigDecimal getTotalPriceLocal() {
+        return totalPriceLocal;
+    }
+
+    public void setTotalPriceLocal(BigDecimal totalPriceLocal) {
+        this.totalPriceLocal = totalPriceLocal;
+    }
 
     public Integer getId() {
         return id;
@@ -137,6 +162,14 @@ public class Document {
         this.products = products;
     }
 
+    public String getCurrencyLocal() {
+        return currencyLocal;
+    }
+
+    public void setCurrencyLocal(String currencyLocal) {
+        this.currencyLocal = currencyLocal;
+    }
+
     public Document id(Integer id) {
         this.id = id;
         return this;
@@ -184,6 +217,17 @@ public class Document {
 
     public Document products(List<Product> products) {
         this.products = products;
+        return this;
+    }
+
+
+    public Document totalPriceLocal(BigDecimal totalPriceLocal) {
+        this.totalPriceLocal = totalPriceLocal;
+        return this;
+    }
+
+    public Document currencyLocal(String currencyLocal) {
+        this.currencyLocal = currencyLocal;
         return this;
     }
 }

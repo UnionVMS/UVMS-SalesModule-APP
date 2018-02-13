@@ -11,25 +11,26 @@
 	
     <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
     <artifactId>sales</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.9-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
         <guava.version>20.0</guava.version>
         <orika.version>1.5.0</orika.version>
         <jackson.version>2.4.1</jackson.version>
-        <sales.model.version>1.0.9</sales.model.version>
+        <sales.model.version>1.0.10</sales.model.version>
         <asset.model.version>3.0.7</asset.model.version>
-        <rules.model.version>3.0.6</rules.model.version>
-        <uvms.commons.parent.version>3.0.6</uvms.commons.parent.version>
-        <uvms.config.version>3.1.1</uvms.config.version>
+        <rules.model.version>3.0.21</rules.model.version>
+        <uvms.commons.parent.version>3.0.9-SNAPSHOT</uvms.commons.parent.version>
+        <uvms.config.version>4.0.0</uvms.config.version>
         <sl4j.version>1.7.25</sl4j.version>
         <logback.version>1.2.3</logback.version>        
-        <usm4uvms.version>3.0.9</usm4uvms.version>
+        <usm4uvms.version>4.0.8</usm4uvms.version>
         <mdr.model.version>0.5.2</mdr.model.version>
         <mockito.version>2.7.1</mockito.version>
         <powermock.version>1.7.0RC2</powermock.version>
         <jacoco.version>0.7.9</jacoco.version>
+        <hibernate.validator.version>5.1.3.Final</hibernate.validator.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-SalesModule-APP.git</scm.connection>
         <annotations.version>2.0.3</annotations.version>
@@ -53,7 +54,6 @@
                 <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
                 <artifactId>rules-model</artifactId>
                 <version>${rules.model.version}</version>
-                <classifier>date</classifier>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
@@ -139,12 +139,6 @@
 				<version>1.13</version>
 				<type>pom</type>
 			</dependency>
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-arquillian-deps</artifactId>
-				<version>1.13</version>
-				<type>pom</type>
-			</dependency>
     		<dependency>
     			<groupId>ch.qos.logback</groupId>
     			<artifactId>logback-core</artifactId>
@@ -164,6 +158,12 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.16.18</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.validator.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

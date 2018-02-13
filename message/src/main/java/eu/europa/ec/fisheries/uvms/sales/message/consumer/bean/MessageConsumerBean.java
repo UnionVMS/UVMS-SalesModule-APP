@@ -63,6 +63,7 @@ public class MessageConsumerBean implements MessageListener {
         } catch (SalesMarshallException e) {
             LOG.error("[ Error when unmarshalling SalesBaseRequest in sales: ] {}", e.getStackTrace());
             errorEvent.fire(new EventMessage(textMessage, "Invalid content in message: " + textMessage));
+            return;
         }
 
         SalesModuleMethod method = salesRequest.getMethod();

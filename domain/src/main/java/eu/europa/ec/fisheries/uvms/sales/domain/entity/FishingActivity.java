@@ -5,6 +5,8 @@ import lombok.ToString;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "sales_fishing_activity")
@@ -23,22 +25,29 @@ public class FishingActivity {
     @Column(name = "ext_id")
     private String extId;
 
+    @NotNull
     @Column(name = "type", nullable = false)
     private String type;
 
+    @NotNull
     @Column(name = "union_trip_id", nullable = false)
     private String fishingTripId;
 
+    @NotNull
     @Column(name = "start_date", nullable = false)
     private DateTime startDate;
 
     @Column(name = "end_date")
     private DateTime endDate;
 
+    @Valid
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_vessel_id", nullable = false)
     private Vessel vessel;
 
+    @Valid
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "sales_flux_location_id", nullable = false)
     private FluxLocation location;

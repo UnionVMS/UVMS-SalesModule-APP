@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
-public class MapperProducer {
+public class DomainMapperProducer {
 
     @Produces
     @FLUX
@@ -112,14 +112,11 @@ public class MapperProducer {
                 .field("FLUXSalesReportMessage.FLUXReportDocument.purpose.value", "purposeText")
                 .field("FLUXSalesReportMessage.FLUXReportDocument.purposeCode", "purpose")
                 .field("FLUXSalesReportMessage.FLUXReportDocument.ownerFLUXParty.IDS[0].value", "fluxReportParty")
+                .field("FLUXSalesReportMessage.FLUXReportDocument.referencedID.value", "previousFluxReportExtId")
                 .field("FLUXSalesReportMessage.salesReports[0].itemTypeCode", "itemType")
                 .field("FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0]", "document")
                 .field("auctionSale", "auctionSale")
                 .field("deletion", "deletion")
-
-                //from a to b, the referenced object needs to be searched in the database, by the service calling this mapper. Thaaanks. **/
-                .fieldBToA("previousFluxReport.extId", "FLUXSalesReportMessage.FLUXReportDocument.referencedID.value")
-
                 .register();
     }
 
@@ -291,7 +288,7 @@ public class MapperProducer {
                 .field("landingDate", "document.fishingActivity.startDate")
                 .field("landingPort", "document.fishingActivity.location.extId")
                 .field("location", "document.fluxLocation.extId")
-                .field("referencedId", "previousFluxReport.extId")
+                .field("referencedId", "previousFluxReportExtId")
                 .field("purpose", "purpose")
                 .fieldMap("buyer", "document.partyDocuments").converter("buyerPartyDocumentConverter").direction(MappingDirection.B_TO_A).add()
                 .fieldMap("provider", "document.partyDocuments").converter("providerPartyDocumentConverter").direction(MappingDirection.B_TO_A).add()

@@ -38,13 +38,13 @@ public class SalesMessageProducerBeanTest {
         String jmsMessageId = "MyJmsMessageId";
 
         //Mock
-        doReturn(jmsMessageId).when(rulesMessageProducerBean).sendModuleMessage(text, null, timeout, DeliveryMode.NON_PERSISTENT);
+        doReturn(jmsMessageId).when(rulesMessageProducerBean).sendModuleMessage(text, null);
 
         //Execute
         String returnedJMSMessageId = salesMessageProducerBean.sendModuleMessage(text, Union.RULES, timeout);
 
         //Verify and assert
-        verify(rulesMessageProducerBean).sendModuleMessage(text, null, timeout, DeliveryMode.NON_PERSISTENT);
+        verify(rulesMessageProducerBean).sendModuleMessage(text, null);
         verifyNoMoreInteractions(rulesMessageProducerBean, assetMessageProducerBean, mdrMessageProducerBean, ecbProxyMessageProducerBean);
         assertEquals(jmsMessageId, returnedJMSMessageId);
     }

@@ -14,7 +14,8 @@
             creation="1995-11-24 00:00:00"
             flux_report_party="BEL"
             sales_document_id="23"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="2"
@@ -24,7 +25,8 @@
             creation="1995-11-24 00:00:00"
             flux_report_party="BEL"
             sales_document_id="23"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="3"
@@ -34,7 +36,8 @@
             creation="1995-11-24 00:00:00"
             flux_report_party="BEL"
             sales_document_id="23"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="4"
@@ -44,7 +47,8 @@
             creation="1995-11-24 00:00:00"
             flux_report_party="BEL"
             sales_document_id="23"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_note_take_over_document_relation
         take_over_document_id="2"

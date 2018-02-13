@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @Entity
@@ -25,9 +27,11 @@ public class SavedSearchGroup {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "user_id", nullable = false)
     private String user;
 
+    @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 

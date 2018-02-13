@@ -198,8 +198,9 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="2017-11-24 00:00:00"
+            received_on="2017-11-24 02:00:00"
     />
 
     <sales_flux_report
@@ -212,8 +213,9 @@
             flux_report_party="BEL"
             sales_document_id="20"
             sales_auction_sale_id="80"
-            sales_flux_report_prev_id="1230000"
+            sales_flux_report_prev_ext_id="1230000"
             correction="[NULL]"
+            received_on="2017-11-24 03:00:00"
     />
 
     <sales_flux_report
@@ -226,8 +228,9 @@
             flux_report_party="BEL"
             sales_document_id="21"
             sales_auction_sale_id="82"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 04:00:00"
     />
 
     <sales_flux_report
@@ -240,7 +243,23 @@
             flux_report_party="BEL"
             sales_document_id="22"
             sales_auction_sale_id="83"
-            sales_flux_report_prev_id="[NULL]"
+            sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
+            received_on="2017-11-24 05:00:00"
+    />
+
+    <sales_flux_report
+            id="127"
+            ext_id="deleted"
+            purpose_code="DELETE"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            deletion="[NULL]"
+            flux_report_party="BEL"
+            sales_document_id="22"
+            sales_auction_sale_id="83"
+            sales_flux_report_prev_ext_id="klk"
+            correction="[NULL]"
+            received_on="2017-11-24 06:00:00"
     />
 </dataset>

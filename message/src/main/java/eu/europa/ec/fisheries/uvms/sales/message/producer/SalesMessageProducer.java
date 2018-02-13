@@ -25,7 +25,7 @@ public interface SalesMessageProducer {
      * @throws MessageException when something goes wrong delivering the message **/
     String sendModuleMessage(String text, Union module, long timeout) throws MessageException;
 
-    void sendModuleErrorMessage(EventMessage message);
+    void sendModuleErrorMessage(EventMessage message) throws MessageException;
 
     void sendModuleResponseMessage(TextMessage message, String text) throws MessageException;
 }

@@ -86,16 +86,24 @@
                                   constraintName="sales_document_ext_id_unique" />
         </rollback>
     </changeSet>
+
     <changeSet id="doc-03" author="matbul">
         <dropUniqueConstraint tableName="sales_document"
                               constraintName="sales_document_ext_id_unique" />
-
 
         <rollback>
             <addUniqueConstraint columnNames="ext_id"
                                  constraintName="sales_document_ext_id_unique"
                                  tableName="sales_document"/>
         </rollback>
+    </changeSet>
+
+
+    <changeSet id="doc-04" author="matbul">
+        <addColumn tableName="sales_document">
+            <column name="total_price_local" type="numeric"/>
+            <column name="currency_local" type="text"/>
+        </addColumn>
     </changeSet>
         
 </databaseChangeLog>

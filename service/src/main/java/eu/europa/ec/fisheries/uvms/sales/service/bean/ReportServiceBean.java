@@ -3,9 +3,13 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
+import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
+import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
+import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.ReportService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceExportHelper;
@@ -16,6 +20,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
 import ma.glasnost.orika.MapperFacade;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +30,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -33,6 +40,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class ReportServiceBean implements ReportService {
 
     static final Logger LOG = LoggerFactory.getLogger(ReportServiceBean.class);
+    public static final int MAX_EXPORT_RESULTS = 1000;
 
     @EJB
     private ReportDomainModel reportDomainModel;
@@ -58,16 +66,34 @@ public class ReportServiceBean implements ReportService {
     @EJB
     private ReportServiceHelper reportServiceHelper;
 
+    @EJB
+    private EcbProxyService ecbProxyService;
+
+    @EJB
+    private ParameterService parameterService;
+
     @Override
     public void saveReport(Report report, String pluginToSendResponseThrough,
                            List<ValidationQualityAnalysisType> validationResults,
-                           String messageValidationStatus) {
+                           String messageValidationStatus) throws ConfigServiceException {
         Report alreadyExistingReport = reportDomainModel.findByExtId(report.getFLUXSalesReportMessage().getFLUXReportDocument().getIDS().get(0).getValue())
                                                         .orNull();
-
         //If a report exists with the incoming ID, we don't save the report.
         if (alreadyExistingReport == null) {
-            reportDomainModel.create(report);
+
+            String targetCurrency = parameterService.getStringValue(ParameterKey.CURRENCY.getKey());
+
+            // We need to find the exchange rate for the incoming report's currency to the local currency
+            // so Sales can convert it later on
+            BigDecimal exchangeRate = findExchangeRateForCurrencyInReport(report, targetCurrency);
+
+            try {
+                reportDomainModel.create(report, targetCurrency, exchangeRate);
+
+            } catch (SalesNonBlockingException e) {
+                LOG.error("Unable to create sales report. Reason: " + e.getMessage());
+                return;
+            }
         }
 
         try {
@@ -82,6 +108,20 @@ public class ReportServiceBean implements ReportService {
             LOG.error("Error when forwarding a report to other relevant parties", e);
         }
 
+    }
+
+    private BigDecimal findExchangeRateForCurrencyInReport(Report report, String targetCurrency) {
+        String currencyOfIncomingReport = report.getFLUXSalesReportMessage().getSalesReports().get(0).getIncludedSalesDocuments().get(0).getCurrencyCode().getValue();
+        DateTime creationDateOfReport = report.getFLUXSalesReportMessage().getFLUXReportDocument().getCreationDateTime().getDateTime();
+
+        // Only contact ECB Proxy when the report's currency differs from the local currency
+        BigDecimal exchangeRate;
+        if (!Objects.equals(currencyOfIncomingReport, targetCurrency)) {
+            exchangeRate = ecbProxyService.findExchangeRate(currencyOfIncomingReport, targetCurrency, creationDateOfReport);
+        } else {
+            exchangeRate = BigDecimal.ONE;
+        }
+        return exchangeRate;
     }
 
     @Override
@@ -154,7 +194,7 @@ public class ReportServiceBean implements ReportService {
 
     @Override
     public List<List<String>> exportDocuments(@NotNull PageCriteriaDto<ReportQueryFilterDto> filters) {
-        PagedListDto<ReportListDto> search = search(filters.pageSize(Integer.MAX_VALUE).pageIndex(1), true);
+        PagedListDto<ReportListDto> search = search(filters.pageSize(MAX_EXPORT_RESULTS).pageIndex(1), true);
 
         List<ReportListExportDto> reports = mapper.mapAsList(search.getItems(), ReportListExportDto.class);
 
@@ -202,4 +242,5 @@ public class ReportServiceBean implements ReportService {
     protected void setReportServiceExportHelper(ReportServiceExportHelper reportServiceExportHelper) {
         this.reportServiceExportHelper = reportServiceExportHelper;
     }
+
 }

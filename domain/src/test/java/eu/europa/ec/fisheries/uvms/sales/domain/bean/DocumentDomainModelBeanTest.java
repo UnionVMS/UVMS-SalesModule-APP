@@ -1,12 +1,8 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.SalesDocumentType;
-import eu.europa.ec.fisheries.uvms.sales.domain.DocumentDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.DocumentDao;
-import eu.europa.ec.fisheries.uvms.sales.domain.dao.bean.DocumentDaoBean;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
-import eu.europa.ec.fisheries.uvms.sales.domain.mapper.MapperProducer;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +10,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,32 +33,32 @@ public class DocumentDomainModelBeanTest {
 
     @Test
     public void findByExtIdWhenDocumentWasFound() throws Exception {
-        Optional<Document> documentOptional = Optional.of(new Document());
-        Optional<SalesDocumentType> salesDocumentTypeOptional = Optional.of(new SalesDocumentType());
+        List<Document> documents = Arrays.asList(new Document());
+        List<SalesDocumentType> salesDocuments = Arrays.asList(new SalesDocumentType());
 
-        doReturn(documentOptional).when(dao).findByExtId("extId");
-        doReturn(salesDocumentTypeOptional.get()).when(mapper).map(documentOptional.get(), SalesDocumentType.class);
-        Optional<SalesDocumentType> foundSalesDocument = documentDomainModel.findByExtId("extId");
+        doReturn(documents).when(dao).findByExtId("extId");
+        doReturn(salesDocuments).when(mapper).mapAsList(documents, SalesDocumentType.class);
+
+        List<SalesDocumentType> foundSalesDocument = documentDomainModel.findByExtId("extId");
 
         verify(dao).findByExtId("extId");
-        verify(mapper).map(documentOptional.get(), SalesDocumentType.class);
+        verify(mapper).mapAsList(documents, SalesDocumentType.class);
         verifyNoMoreInteractions(dao, mapper);
 
-        assertEquals(salesDocumentTypeOptional, foundSalesDocument);
+        assertEquals(salesDocuments, foundSalesDocument);
     }
 
     @Test
     public void findByExtIdWhenNoDocumentWasFound() throws Exception {
-        Optional<Document> documentOptional = Optional.of(new Document());
-        Optional<SalesDocumentType> salesDocumentTypeOptional = Optional.of(new SalesDocumentType());
+        doReturn(new ArrayList<>()).when(dao).findByExtId("extId");
+        doReturn(new ArrayList<>()).when(mapper).mapAsList(new ArrayList<>(), SalesDocumentType.class);
 
-        doReturn(Optional.absent()).when(dao).findByExtId("extId");
-        Optional<SalesDocumentType> foundSalesDocument = documentDomainModel.findByExtId("extId");
+        List<SalesDocumentType> foundSalesDocuments = documentDomainModel.findByExtId("extId");
 
         verify(dao).findByExtId("extId");
         verifyNoMoreInteractions(dao);
 
-        assertEquals(Optional.absent(), foundSalesDocument);
+        assertTrue(foundSalesDocuments.isEmpty());
     }
 
 
