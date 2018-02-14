@@ -4,27 +4,27 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="/schema/sales_address.xml" />
-    <include file="/schema/sales_auction_sale.xml" />
-    <include file="/schema/sales_contact.xml" />
-    <include file="/schema/sales_vessel.xml" />
-    <include file="/schema/sales_vessel_contact.xml" />
-    <include file="/schema/sales_flux_location.xml" />
-    <include file="/schema/sales_fishing_activity.xml" />
-    <include file="/schema/sales_document.xml" />
-    <include file="/schema/sales_product.xml" />
-    <include file="/schema/sales_flux_report.xml" />
-    <include file="/schema/sales_note_take_over_document_relation.xml" />
-    <include file="/schema/sales_origin.xml" />
-    <include file="/schema/sales_party.xml" />
-    <include file="/schema/sales_party_document.xml" />
-    <include file="/schema/sales_saved_search_group.xml" />
-    <include file="/schema/sales_saved_search_group_field.xml" />
-    <include file="/schema/sales_query.xml" />
-    <include file="/schema/sales_query_parameter_type.xml" />
-    <include file="/schema/sales_response.xml" />
-    <include file="/schema/parameter.xml" />
-    <include file="/schema/sales_erroneous_message.xml" />
-    <include file="/schema/sales_unsaved_message.xml" />
+    <include file="/schema/v0.1/sales_address.xml" />
+    <include file="/schema/v0.1/sales_auction_sale.xml" />
+    <include file="/schema/v0.1/sales_contact.xml" />
+    <include file="/schema/v0.1/sales_vessel.xml" />
+    <include file="/schema/v0.1/sales_vessel_contact.xml" />
+    <include file="/schema/v0.1/sales_flux_location.xml" />
+    <include file="/schema/v0.1/sales_fishing_activity.xml" />
+    <include file="/schema/v0.1/sales_document.xml" />
+    <include file="/schema/v0.1/sales_product.xml" />
+    <include file="/schema/v0.1/sales_flux_report.xml" />
+    <include file="/schema/v0.1/sales_note_take_over_document_relation.xml" />
+    <include file="/schema/v0.1/sales_origin.xml" />
+    <include file="/schema/v0.1/sales_party.xml" />
+    <include file="/schema/v0.1/sales_party_document.xml" />
+    <include file="/schema/v0.1/sales_saved_search_group.xml" />
+    <include file="/schema/v0.1/sales_saved_search_group_field.xml" />
+    <include file="/schema/v0.1/sales_query.xml" />
+    <include file="/schema/v0.1/sales_query_parameter_type.xml" />
+    <include file="/schema/v0.1/sales_response.xml" />
+    <include file="/schema/v0.1/parameter.xml" />
+    <include file="/schema/v0.1/sales_erroneous_message.xml" />
+    <include file="/schema/v0.1/sales_unsaved_message.xml" />
 
 </databaseChangeLog>

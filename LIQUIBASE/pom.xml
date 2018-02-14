@@ -43,19 +43,18 @@
     <profiles>
     
         <profile>
-            <id>postgres</id>
+            <id>docker</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <db.driver>org.postgresql.Driver</db.driver>
-                <db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
-                <db.outputFile>changelog/generatedChangelog.xml</db.outputFile>
-                <driver.groupId>org.postgresql</driver.groupId>
-                <driver.artifactId>postgresql</driver.artifactId>
-                <driver.version>9.4-1201-jdbc41</driver.version>
+                <db.url>jdbc:postgresql://localhost:25432/db71u</db.url>
+                <db.user>sales</db.user>
+                <db.passwd>sales</db.passwd>
+                <db.defaultSchema>sales</db.defaultSchema>
             </properties>
         </profile>
+
 
         <profile>
             <id>belgium-local</id>
@@ -253,8 +252,7 @@
                             <id>update-schema</id>
                             <phase>process-resources</phase>
                             <goals>
-                                <goal>update</goal>
-                                <goal>tag</goal>                            
+                                <goal>updateSQL</goal>
                             </goals>
                         </execution>
                     </executions> 

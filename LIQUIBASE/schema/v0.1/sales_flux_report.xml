@@ -188,49 +188,4 @@
         </modifySql>
     </changeSet>
 
-    <changeSet author="stihft" id="flr-07-addColumnPrevFluxReportExtId">
-        <addColumn tableName="sales_flux_report">
-            <column name="sales_flux_report_prev_ext_id" type="varchar(100)">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-        <sql>update sales_flux_report a SET sales_flux_report_prev_ext_id = (SELECT b.ext_id FROM sales_flux_report b WHERE a.sales_flux_report_prev_id = b.id)</sql>
-
-        <rollback>
-            <sql>update sales_flux_report a SET sales_flux_report_prev_id = (SELECT b.id FROM sales_flux_report b WHERE a.sales_flux_report_prev_ext_id = b.ext_id)</sql>
-            <dropColumn tableName="sales_flux_report" columnName="sales_flux_report_prev_ext_id" />
-        </rollback>
-    </changeSet>
-
-    <changeSet author="stihft" id="flr-08-dropColumnPrevFluxReportId">
-        <dropForeignKeyConstraint baseTableName="sales_flux_report" constraintName="sales_flux_report_sales_flux_report_prev_id_fk"/>
-        <dropColumn columnName="sales_flux_report_prev_id"
-                    tableName="sales_flux_report"/>
-
-        <rollback>
-            <addColumn tableName="sales_flux_report">
-                <column name="sales_flux_report_prev_id" type="integer"/>
-            </addColumn>
-
-            <addForeignKeyConstraint
-                    constraintName="sales_flux_report_sales_flux_report_prev_id_fk"
-                    baseTableName="sales_flux_report"
-                    baseColumnNames="sales_flux_report_prev_id"
-                    referencedTableName="sales_flux_report"
-                    referencedColumnNames="id"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet author="matbul" id="flr-09-addReceivedOnColumn">
-        <addColumn tableName="sales_flux_report">
-            <column name="received_on" type="timestamp"/>
-        </addColumn>
-
-        <rollback>
-            <dropColumn columnName="received_on"
-                        tableName="sales_flux_report"/>
-        </rollback>
-    </changeSet>
-
-
 </databaseChangeLog>
