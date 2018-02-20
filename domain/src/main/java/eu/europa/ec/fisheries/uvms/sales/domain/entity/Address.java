@@ -40,9 +40,8 @@ public class Address {
     @Column(name = "city_sub_division_name")
     private String citySubDivision;
 
-    @NotNull
     @Size(max = 3)
-    @Column(name = "country", nullable = false)
+    @Column(name = "country")
     private String countryCode;
 
     @Column(name = "country_name")
