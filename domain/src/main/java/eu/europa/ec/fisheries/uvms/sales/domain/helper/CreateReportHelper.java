@@ -116,7 +116,11 @@ public class CreateReportHelper {
 
         for (Product product : document.getProducts()) {
             BigDecimal priceFromReport = product.getPrice();
-            product.priceLocal(priceFromReport.multiply(exchangeRate));
+
+            if (priceFromReport != null) {
+                product.priceLocal(priceFromReport.multiply(exchangeRate));
+            }
+
         }
     }
 
