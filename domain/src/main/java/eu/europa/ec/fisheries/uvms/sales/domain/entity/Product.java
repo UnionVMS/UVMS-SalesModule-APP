@@ -64,8 +64,7 @@ public class Product {
     @Column(name = "distribution_category", nullable = false)
     private String distributionCategory;
 
-    @NotNull
-    @Column(name = "price", nullable = false)
+    @Column(name = "price")
     private BigDecimal price;
 
     @Column(name = "price_local")
