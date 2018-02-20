@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
+package eu.europa.ec.fisheries.uvms.sales.service.arquillian.test.helper;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
@@ -155,13 +155,6 @@ public class SalesServiceTestHelper {
 
     public Destination getReplyToRulesQueue() {
         return replyToRulesQueue;
-    }
-
-    private javax.jms.MessageProducer getProducer(Session session, Destination destination) throws JMSException {
-        javax.jms.MessageProducer producer = session.createProducer(destination);
-        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        producer.setTimeToLive(60000L);
-        return producer;
     }
 
 }

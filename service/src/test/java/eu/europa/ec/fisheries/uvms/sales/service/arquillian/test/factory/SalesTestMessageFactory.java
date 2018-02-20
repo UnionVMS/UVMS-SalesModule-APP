@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
+package eu.europa.ec.fisheries.uvms.sales.service.arquillian.test.factory;
 
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.SalesModuleRequestMapper;

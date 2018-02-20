@@ -45,7 +45,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
         try {
             LOG.info("Sending message back to recipient from Sales with correlationId {} on queue: {}", originalJMSMessage.getJMSMessageID(),
                     originalJMSMessage.getJMSReplyTo());
-            rulesMessageProducerBean.sendModuleResponseMessageLatest(originalJMSMessage, messageToBeSent);
+            rulesMessageProducerBean.sendResponseMessageToSender(originalJMSMessage, messageToBeSent);
 
         } catch (Exception e) {
             String errorMessage = "[ Error when returning module request. ] " + e.getMessage();
@@ -64,13 +64,13 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
         try {
             switch (module) {
                 case ASSET:
-                    return assetMessageProducerBean.sendModuleMessageNonePersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
+                    return assetMessageProducerBean.sendModuleMessageNonPersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
                 case ECB_PROXY:
-                    return ecbProxyMessageProducerBean.sendModuleMessageNonePersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
+                    return ecbProxyMessageProducerBean.sendModuleMessageNonPersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
                 case RULES:
                     return rulesMessageProducerBean.sendModuleMessage(text, replyToSalesQueue);
                 case MDR:
-                    return mdrMessageProducerBean.sendModuleMessageNonePersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
+                    return mdrMessageProducerBean.sendModuleMessageNonPersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
                 default:
                     throw new UnsupportedOperationException("Sales has no functionality implemented to talk with " + module);
             }
@@ -85,7 +85,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
     public void sendModuleErrorMessage(EventMessage message) throws MessageException {
         try {
             LOG.debug("Sending error message back from Sales module to recipient on JMS Queue with correlationID: {} ", message.getJmsMessage().getJMSMessageID());
-            rulesMessageProducerBean.sendModuleResponseMessageLatest(message.getJmsMessage(), message.getErrorMessage());
+            rulesMessageProducerBean.sendResponseMessageToSender(message.getJmsMessage(), message.getErrorMessage());
 
         } catch (Exception e) {
             String errorMessage = "[ Error when returning Error message to recipient. ] " + e.getMessage();

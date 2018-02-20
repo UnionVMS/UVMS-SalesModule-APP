@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
+package eu.europa.ec.fisheries.uvms.sales.service.arquillian.ghost.server;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
@@ -19,9 +19,9 @@ import static org.junit.Assert.assertNotNull;
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSMdrEvent")
 })
-public class MDRMessageReceiverMock implements MessageListener {
+public class MDRModuleGhostServer implements MessageListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProxyMessageReceiverMock.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EcbProxyGhostServer.class);
 
     private ConnectionFactory connectionFactory;
     private Queue replyToSalesQueue;
