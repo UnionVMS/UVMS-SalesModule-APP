@@ -101,7 +101,7 @@ public class EventServiceBean implements EventService {
             case FLUXTL_ON:
                 return "FLUXTL_ON";
             default:
-                throw new RuntimeException("No case implemented for " + respondToInvalidMessageRequest.getTypeOfId());
+                throw new SalesServiceException("No case implemented for " + respondToInvalidMessageRequest.getTypeOfId());
         }
     }
 
@@ -151,7 +151,7 @@ public class EventServiceBean implements EventService {
                 response = !uniqueIdService.doesReferencedReportExist(request.getIds().get(0));
                 break;
             default:
-                throw new RuntimeException("No case implemented for " + request.getType());
+                throw new SalesServiceException("No case implemented for " + request.getType());
         }
 
         try {
