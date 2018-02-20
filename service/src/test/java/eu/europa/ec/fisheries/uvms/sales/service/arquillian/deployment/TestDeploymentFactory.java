@@ -5,15 +5,12 @@ import eu.europa.ec.fisheries.uvms.sales.message.consumer.bean.MessageConsumerBe
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.bean.SalesMessageProducerBean;
 import eu.europa.ec.fisheries.uvms.sales.service.*;
-import eu.europa.ec.fisheries.uvms.sales.service.arquillian.TransactionalTests;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.*;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.*;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,12 +24,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-@Slf4j
-public abstract class BuildSalesServiceMockTestDeployment {
+public class TestDeploymentFactory {
 
-    final static Logger LOG = LoggerFactory.getLogger(BuildSalesServiceMockTestDeployment.class);
+    final static Logger LOG = LoggerFactory.getLogger(TestDeploymentFactory.class);
 
-    private static WebArchive createArchive(final String name) {
+    private static WebArchive createBasicTestArchive(final String archiveName) {
         File[] files = Maven.resolver().loadPomFromFile("pom.xml")
                 .importRuntimeDependencies().resolve().withTransitivity().asFile();
 
@@ -40,18 +36,20 @@ public abstract class BuildSalesServiceMockTestDeployment {
 
         // Embedding war package which contains the test class is needed
         // So that Arquillian can invoke test class through its servlet test runner
-        WebArchive testWar = ShrinkWrap.create(WebArchive.class, name + ".war");
+        WebArchive testWar = ShrinkWrap.create(WebArchive.class, archiveName + ".war");
 
         testWar.addClass(SalesConfigHelperBean.class);
-        testWar.addClass(TransactionalTests.class);
 
         // Empty beans for EE6 CDI
         testWar.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        testWar.addAsWebInfResource("ejb-jar-test-mock.xml", "ejb-jar.xml");
         testWar.addAsResource("persistence-integration.xml", "META-INF/persistence.xml");
         testWar.addAsResource("logback-test.xml", "logback.xml");
         testWar.addAsResource("logging.properties", "logging.properties");
         testWar.addAsManifestResource("jboss-deployment-structure.xml","jboss-deployment-structure.xml");
+
+        testWar.addAsResource("report_original.txt", "report_original.txt");
+        testWar.addAsResource("before_corrections.txt", "before_corrections.txt");
+        testWar.addAsResource("corrections.txt", "corrections.txt");
 
         testWar.addAsLibraries(files);
 
@@ -60,15 +58,14 @@ public abstract class BuildSalesServiceMockTestDeployment {
         return testWar;
     }
 
-    @Deployment(name = "salesservice_redelivery", order = 1)
-    public static Archive<?> createSalesServiceMockDeployment() {
-        WebArchive archive = createArchive("test_mock");
+    public static WebArchive createBasicTestDeployment(final String testArchiveName) {
+        WebArchive archive = createBasicTestArchive(testArchiveName);
 
-        boolean isAddRecursivelyTrue = true;
 
         archive.addClass(eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils.class);
         archive.addClass(eu.europa.ec.fisheries.uvms.commons.message.api.MessageException.class);
 
+        boolean isAddRecursivelyTrue = true;
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.commons.message");
 
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.domain");

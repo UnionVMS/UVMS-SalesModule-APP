@@ -5,16 +5,14 @@ import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageProducer;
-import eu.europa.ec.fisheries.uvms.sales.message.producer.ExtendedAbstractProducer;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.DeliveryMode;
 import javax.jms.Queue;
 
 @Stateless
-public class ConfigMessageProducerBean extends ExtendedAbstractProducer implements ConfigMessageProducer {
+public class ConfigMessageProducerBean extends AbstractProducer implements ConfigMessageProducer {
 
     private static final long TIME_TO_LIVE = 60000L;
 
@@ -23,7 +21,7 @@ public class ConfigMessageProducerBean extends ExtendedAbstractProducer implemen
     public String sendConfigMessage(String configMessage) throws ConfigMessageException {
         try {
             Queue replyToQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
-            return sendModuleMessageNonePersistent(configMessage, replyToQueue, TIME_TO_LIVE);
+            return sendModuleMessageNonPersistent(configMessage, replyToQueue, TIME_TO_LIVE);
 
         } catch (Exception e) {
             throw new ConfigMessageException("Something went wrong sending a config messages from the sales module");

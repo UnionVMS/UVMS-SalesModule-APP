@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
+package eu.europa.ec.fisheries.uvms.sales.service.arquillian.ghost.server;
 
 import eu.europa.ec.fisheries.schema.sales.proxy.ecb.types.v1.EcbProxyBaseRequest;
 import eu.europa.ec.fisheries.schema.sales.proxy.ecb.types.v1.GetExchangeRateResponse;
@@ -25,9 +25,9 @@ import static org.junit.Assert.assertNotNull;
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSSalesEcbProxy")
 })
-public class ProxyMessageReceiverMock implements MessageListener {
+public class EcbProxyGhostServer implements MessageListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProxyMessageReceiverMock.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EcbProxyGhostServer.class);
 
     private ConnectionFactory connectionFactory;
     private Queue replyToSalesQueue;

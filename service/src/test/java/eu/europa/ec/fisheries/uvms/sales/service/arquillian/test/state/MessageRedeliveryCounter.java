@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
+package eu.europa.ec.fisheries.uvms.sales.service.arquillian.test.state;
 
 import javax.ejb.Singleton;
 import java.util.concurrent.ConcurrentHashMap;
@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Singleton
-public class RedeliveryCounterHelper {
+public class MessageRedeliveryCounter {
 
     final ConcurrentMap<String, AtomicLong> map = new ConcurrentHashMap<String, AtomicLong>();
 

@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.sales.service.arquillian;
+package eu.europa.ec.fisheries.uvms.sales.service.arquillian.ghost.server;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.message.JMSUtils;
@@ -17,9 +17,9 @@ import static org.junit.Assert.assertNotNull;
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSAssetEvent")
 })
-public class AssetMessageReceiverMock implements MessageListener {
+public class AssetModuleGhostServer implements MessageListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AssetMessageReceiverMock.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AssetModuleGhostServer.class);
 
     private ConnectionFactory connectionFactory;
     private Queue replyToSalesQueue;

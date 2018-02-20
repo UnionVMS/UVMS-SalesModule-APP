@@ -9,7 +9,7 @@
                 <ejb-ref-name>eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceHelper/rulesService
                 </ejb-ref-name>
                 <local>eu.europa.ec.fisheries.uvms.sales.service.RulesService</local>
-                <ejb-link>RulesServiceBeanMock</ejb-link>
+                <ejb-link>SetTransactionRollbackRulesServiceAlternativeBean</ejb-link>
             </ejb-local-ref>
         </session>
         <session>
@@ -18,7 +18,7 @@
                 <ejb-ref-name>eu.europa.ec.fisheries.uvms.sales.service.bean.UnsavedMessageServiceBean/rulesService
                 </ejb-ref-name>
                 <local>eu.europa.ec.fisheries.uvms.sales.service.RulesService</local>
-                <ejb-link>RulesServiceBeanMock</ejb-link>
+                <ejb-link>SetTransactionRollbackRulesServiceAlternativeBean</ejb-link>
             </ejb-local-ref>
         </session>
         <session>
@@ -27,7 +27,7 @@
                 <ejb-ref-name>eu.europa.ec.fisheries.uvms.sales.service.bean.ReportServiceBean/rulesService
                 </ejb-ref-name>
                 <local>eu.europa.ec.fisheries.uvms.sales.service.RulesService</local>
-                <ejb-link>RulesServiceBeanMock</ejb-link>
+                <ejb-link>SetTransactionRollbackRulesServiceAlternativeBean</ejb-link>
             </ejb-local-ref>
         </session>
   </enterprise-beans>

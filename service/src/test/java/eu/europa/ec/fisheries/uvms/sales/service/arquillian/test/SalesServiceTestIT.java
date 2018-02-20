@@ -15,9 +15,9 @@ import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.EventService;
 import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
-import eu.europa.ec.fisheries.uvms.sales.service.arquillian.SalesServiceTestHelper;
-import eu.europa.ec.fisheries.uvms.sales.service.arquillian.SalesTestMessageFactory;
-import eu.europa.ec.fisheries.uvms.sales.service.arquillian.TransactionalTests;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.deployment.StandardTestDeployment;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.test.helper.SalesServiceTestHelper;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.test.factory.SalesTestMessageFactory;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import org.apache.commons.lang.StringUtils;
@@ -42,7 +42,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
-public class SalesServiceTestIT extends TransactionalTests {
+public class SalesServiceTestIT extends StandardTestDeployment {
 
     static final Logger LOG = LoggerFactory.getLogger(SalesServiceTestIT.class);
 

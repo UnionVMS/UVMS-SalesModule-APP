@@ -8,7 +8,11 @@ import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.SalesModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.ValidationQualityAnalysisMapper;
-import eu.europa.ec.fisheries.uvms.sales.service.arquillian.*;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.alternative.bean.SetTransactionRollbackRulesServiceAlternativeBean;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.deployment.MessageRedeliveryTestDeployment;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.test.factory.SalesTestMessageFactory;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.test.helper.SalesServiceTestHelper;
+import eu.europa.ec.fisheries.uvms.sales.service.arquillian.test.state.MessageRedeliveryCounter;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.DataSource;
@@ -27,9 +31,9 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
-public class SalesServiceMockTestIT extends TransactionalMockTests {
+public class SalesServiceRedeliveryTestIT extends MessageRedeliveryTestDeployment {
 
-    static final Logger LOG = LoggerFactory.getLogger(SalesServiceMockTestIT.class);
+    static final Logger LOG = LoggerFactory.getLogger(SalesServiceRedeliveryTestIT.class);
 
     @EJB
     SalesServiceTestHelper salesServiceTestHelper;
@@ -38,7 +42,7 @@ public class SalesServiceMockTestIT extends TransactionalMockTests {
     SalesTestMessageFactory salesTestMessageFactory;
 
     @EJB
-    RedeliveryCounterHelper redeliveryCounterHelper;
+    MessageRedeliveryCounter messageRedeliveryCounter;
 
     @Test
     @OperateOnDeployment("salesservice_redelivery")
@@ -56,7 +60,7 @@ public class SalesServiceMockTestIT extends TransactionalMockTests {
         String salesReportRequest = SalesModuleRequestMapper.createSalesReportRequest(request, messageValidationStatus, validationQualityAnalysisList, pluginToSendResponseThrough);
 
         //Execute, trigger MessageConsumerBean
-        redeliveryCounterHelper.resetRedeliveryCounter();
+        messageRedeliveryCounter.resetRedeliveryCounter();
         salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(salesReportRequest, salesServiceTestHelper.getReplyToRulesQueue());
 
         // Assert
@@ -65,8 +69,8 @@ public class SalesServiceMockTestIT extends TransactionalMockTests {
         assertNull(sendSalesResponseRequestMessage);
 
         // Redelivery should not occur
-        assertEquals(1L, redeliveryCounterHelper.getCounterValueForKey(RulesServiceBeanMock.KEY_SEND_RESPONSE_TO_RULES));
-        assertEquals(1L, redeliveryCounterHelper.getCounterValueForKey(RulesServiceBeanMock.KEY_SEND_REPORT_TO_RULES));
+        assertEquals(1L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackRulesServiceAlternativeBean.KEY_SEND_RESPONSE_TO_RULES));
+        assertEquals(1L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackRulesServiceAlternativeBean.KEY_SEND_REPORT_TO_RULES));
     }
 
     @Test
@@ -85,7 +89,7 @@ public class SalesServiceMockTestIT extends TransactionalMockTests {
         String respondToInvalidMessageRequest = SalesModuleRequestMapper.createRespondToInvalidMessageRequest(messageGuid, Lists.newArrayList(validationQualityAnalysis), pluginToSendResponseThrough, sender, SalesIdType.FLUXTL_ON);
 
         //Execute, trigger MessageConsumerBean
-        redeliveryCounterHelper.resetRedeliveryCounter();
+        messageRedeliveryCounter.resetRedeliveryCounter();
         salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(respondToInvalidMessageRequest, salesServiceTestHelper.getReplyToRulesQueue());
 
         // Assert
@@ -94,7 +98,7 @@ public class SalesServiceMockTestIT extends TransactionalMockTests {
         assertNull(sendSalesResponseRequestMessage);
 
         // JMS Redelivery 10 + 1
-        assertEquals(11L, redeliveryCounterHelper.getCounterValueForKey(RulesServiceBeanMock.KEY_SEND_RESPONSE_TO_RULES));
+        assertEquals(11L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackRulesServiceAlternativeBean.KEY_SEND_RESPONSE_TO_RULES));
 
 
         // Assert use case: unique ID should be true for previous respondToInvalidMessageRequest failed redelivery attempts

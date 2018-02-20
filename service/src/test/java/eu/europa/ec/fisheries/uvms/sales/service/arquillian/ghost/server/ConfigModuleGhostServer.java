@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.sales.service.arquillian.mock;
+package eu.europa.ec.fisheries.uvms.sales.service.arquillian.ghost.server;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.sales.service.arquillian.test.producer.MessageProducer;
@@ -19,7 +19,7 @@ import javax.jms.MessageListener;
         @ActivationConfigProperty(propertyName = "destinationJndiName", propertyValue = MessageConstants.QUEUE_CONFIG),
         @ActivationConfigProperty(propertyName = "connectionFactoryJndiName", propertyValue = MessageConstants.CONNECTION_FACTORY)
 })
-public class ConfigConsumerMock implements MessageListener {
+public class ConfigModuleGhostServer implements MessageListener {
 
     @EJB
     private MessageProducer producer;
@@ -27,7 +27,11 @@ public class ConfigConsumerMock implements MessageListener {
     @Override
     public void onMessage(Message message) {
         try {
+            log.error("Configuration ghost server received message, sending back message on queue: "
+                            + message.getJMSReplyTo() + " with correlationId: " + message.getJMSMessageID());
+
             producer.sendMessage(PULL_SETTINGS_RESPONSE, message.getJMSReplyTo(), message.getJMSMessageID());
+
         } catch (JMSException e) {
             log.error("Cannot send response from config.", e);
         }
