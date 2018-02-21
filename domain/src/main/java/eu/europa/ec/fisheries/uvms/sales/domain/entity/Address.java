@@ -33,8 +33,7 @@ public class Address {
     @Column(name = "building_name")
     private String building;
 
-    @NotNull
-    @Column(name = "city_name", nullable = false)
+    @Column(name = "city_name")
     private String city;
 
     @Column(name = "city_sub_division_name")
