@@ -20,6 +20,9 @@
         <driver.groupId>org.postgresql</driver.groupId>
         <driver.artifactId>postgresql</driver.artifactId>
         <driver.version>9.4-1201-jdbc41</driver.version>
+
+        <!-- If no default context is specified, Liquibase will run all contexts -->
+        <liquibase.contexts>default</liquibase.contexts>
     </properties>
     
     <profiles>
@@ -62,6 +65,13 @@
             <properties>
                 <repository.id>${project.distributionManagement.repository.id}</repository.id>
                 <repository.url>${project.distributionManagement.repository.url}</repository.url>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>testdata</id>
+            <properties>
+                <liquibase.contexts>test</liquibase.contexts>
             </properties>
         </profile>
         <profile>
