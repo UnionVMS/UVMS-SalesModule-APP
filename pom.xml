@@ -247,6 +247,7 @@
         <module>service</module>
         <module>message</module>
         <module>module</module>
+        <module>service-integration-tests</module>
     </modules>
 
     <distributionManagement>
