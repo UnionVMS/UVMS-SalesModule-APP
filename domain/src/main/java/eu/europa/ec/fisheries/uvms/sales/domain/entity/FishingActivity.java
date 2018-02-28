@@ -33,8 +33,7 @@ public class FishingActivity {
     @Column(name = "union_trip_id", nullable = false)
     private String fishingTripId;
 
-    @NotNull
-    @Column(name = "start_date", nullable = false)
+    @Column(name = "start_date")
     private DateTime startDate;
 
     @Column(name = "end_date")

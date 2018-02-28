@@ -20,7 +20,10 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Stateless
 @Slf4j
@@ -118,6 +121,23 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
         } else {
             return fluxReport;
         }
+    }
+
+    @Override
+    public List<FluxReport> findOlderVersions(FluxReport fluxReport) {
+        List<FluxReport> olderVersions = new ArrayList<>();
+
+        if (isNotBlank(fluxReport.getPreviousFluxReportExtId())) {
+
+            Optional<FluxReport> previousReport = findByExtId(fluxReport.getPreviousFluxReportExtId());
+            if (previousReport.isPresent()) {
+                olderVersions.add(previousReport.get());
+                olderVersions.addAll(findOlderVersions(previousReport.get()));
+            }
+
+        }
+
+        return olderVersions;
     }
 
 }

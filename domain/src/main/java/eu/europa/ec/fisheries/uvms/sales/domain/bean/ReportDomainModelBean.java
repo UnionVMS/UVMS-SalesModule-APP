@@ -24,12 +24,14 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -68,8 +70,8 @@ public class ReportDomainModelBean implements ReportDomainModel {
     }
 
     @Override
-    public Report create(@NonNull Report report) {
-        return createReportHelper.create(report);
+    public Report create(@NonNull Report report, @NonNull String localCurrency, @NonNull BigDecimal exchangeRate) {
+        return createReportHelper.create(report, localCurrency, exchangeRate);
     }
 
     @Override
@@ -144,17 +146,15 @@ public class ReportDomainModelBean implements ReportDomainModel {
         return olderVersions;
     }
 
-    private <T> List<T> findOlderVersions(String referencedId, Class<T> expectedResult) {
+    private <T> List<T> findOlderVersions(String firstReferencedId, Class<T> expectedResult) {
         List<T> referencedReports = new ArrayList<>();
-        Optional<FluxReport> referencedReport = fluxReportDao.findByExtId(referencedId);
+        Optional<FluxReport> referencedReport = fluxReportDao.findByExtId(firstReferencedId);
 
         if (referencedReport.isPresent()) {
             referencedReports.add(mapper.map(referencedReport.get(), expectedResult));
 
-            String previousReferencedIdInChain = referencedReport.get().getPreviousFluxReportExtId();
-            if (previousReferencedIdInChain != null) {
-                referencedReports.addAll(findOlderVersions(previousReferencedIdInChain, expectedResult));
-            }
+            List<FluxReport> olderVersions = fluxReportDao.findOlderVersions(referencedReport.get());
+            referencedReports.addAll(mapper.mapAsList(olderVersions, expectedResult));
         }
 
         return referencedReports;
@@ -184,7 +184,13 @@ public class ReportDomainModelBean implements ReportDomainModel {
     public List<Report> findRelatedReportsOf(Report report) {
         String extId = reportHelper.getFLUXReportDocumentId(report);
         FluxReport fluxReport = fluxReportDao.findByExtId(extId).get();
-        List<FluxReport> relatedReports = ListUtils.union(fluxReport.getRelatedSalesNotes(), fluxReport.getRelatedTakeOverDocuments());
+        List<FluxReport> relatedReports = emptyList();
+        if (fluxReport.getRelatedSalesNotes() != null) {
+            relatedReports = ListUtils.union(relatedReports, fluxReport.getRelatedSalesNotes());
+        }
+        if (fluxReport.getRelatedTakeOverDocuments() != null) {
+            relatedReports = ListUtils.union(relatedReports, fluxReport.getRelatedTakeOverDocuments());
+        }
         return mapper.mapAsList(relatedReports, Report.class);
     }
 

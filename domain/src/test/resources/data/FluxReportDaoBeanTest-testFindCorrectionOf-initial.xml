@@ -35,6 +35,7 @@
             sales_flux_report_prev_ext_id="[NULL]"
             correction="2017-11-24 00:00:00"
             deletion="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="124"
@@ -47,6 +48,7 @@
             sales_flux_report_prev_ext_id="abc"
             correction="[NULL]"
             deletion="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="125"
@@ -58,6 +60,7 @@
             sales_document_id="20"
             sales_flux_report_prev_ext_id="abc"
             correction="2017-11-24 00:00:00"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="126"
@@ -70,6 +73,7 @@
             sales_flux_report_prev_ext_id="ghi"
             correction="[NULL]"
             deletion="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
 
     <sales_flux_report
@@ -83,6 +87,7 @@
             sales_flux_report_prev_ext_id="nonExisting"
             correction="[NULL]"
             deletion="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="128"
@@ -95,6 +100,7 @@
             sales_flux_report_prev_ext_id="[NULL]"
             correction="[NULL]"
             deletion="2000-11-24 00:00:00"
+            received_on="2017-11-24 02:00:00"
     />
     <sales_flux_report
             id="129"
@@ -107,5 +113,6 @@
             sales_flux_report_prev_ext_id="deletedReport"
             correction="[NULL]"
             deletion="[NULL]"
+            received_on="2017-11-24 02:00:00"
     />
 </dataset>

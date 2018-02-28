@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="stihft" id="flr-01">
+        
+        <createTable tableName="sales_flux_report">
+            <column name="id" type="integer">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_flux_report_pk"/>
+            </column>
+            <column name="ext_id" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose_code" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose_text" type="text" />
+            <column name="item_type" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_report_party" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sales_auction_sale_id" type="integer" />
+            <column name="sales_document_id" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sales_flux_report_next_id" type="integer" />
+            <column name="sales_flux_report_prev_id" type="integer" />
+        </createTable>
+
+        <createSequence sequenceName="sales_flux_report_id_seq"
+                        incrementBy="50"/>
+        <addDefaultValue columnName="id" tableName="sales_flux_report" defaultValueSequenceNext="sales_flux_report_id_seq"/>
+
+        <addForeignKeyConstraint
+                constraintName="sales_flux_report_sales_auction_sale_id_fk"
+                baseTableName="sales_flux_report"
+                baseColumnNames="sales_auction_sale_id"
+                referencedTableName="sales_auction_sale"
+                referencedColumnNames="id"/>
+        <addUniqueConstraint columnNames="sales_auction_sale_id"
+                             constraintName="sales_flux_report_sales_auction_sale_id_un"
+                             tableName="sales_flux_report" />
+        <addForeignKeyConstraint
+                constraintName="sales_flux_report_sales_document_id_fk"
+                baseTableName="sales_flux_report"
+                baseColumnNames="sales_document_id"
+                referencedTableName="sales_document"
+                referencedColumnNames="id"/>
+        <addForeignKeyConstraint
+                constraintName="sales_flux_report_sales_flux_report_next_id_fk"
+                baseTableName="sales_flux_report"
+                baseColumnNames="sales_flux_report_next_id"
+                referencedTableName="sales_flux_report"
+                referencedColumnNames="id"/>
+        <addForeignKeyConstraint
+                constraintName="sales_flux_report_sales_flux_report_prev_id_fk"
+                baseTableName="sales_flux_report"
+                baseColumnNames="sales_flux_report_prev_id"
+                referencedTableName="sales_flux_report"
+                referencedColumnNames="id"/>
+
+        <createIndex
+                indexName="sales_flux_report_i_1"
+                tableName="sales_flux_report">
+            <column name="sales_document_id" type="integer"/>
+        </createIndex>
+        <createIndex
+                indexName="sales_flux_report_i_2"
+                tableName="sales_flux_report">
+            <column name="sales_auction_sale_id" type="integer"/>
+        </createIndex>
+        <createIndex
+                indexName="sales_flux_report_i_3"
+                tableName="sales_flux_report">
+            <column name="flux_report_party" type="text"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    tableName="sales_flux_report"
+                    indexName="sales_flux_report_i_1" />
+
+            <dropIndex
+                    tableName="sales_flux_report"
+                    indexName="sales_flux_report_i_2" />
+
+            <dropIndex
+                    tableName="sales_flux_report"
+                    indexName="sales_flux_report_i_3" />
+
+            <dropSequence sequenceName="sales_flux_report_id_seq" />
+            <dropTable tableName="sales_flux_report" cascadeConstraints="true"/>
+        </rollback>
+        
+    </changeSet>
+    <changeSet author="matbul" id="removeNextFluxReport">
+        <dropForeignKeyConstraint baseTableName="sales_flux_report" constraintName="sales_flux_report_sales_flux_report_next_id_fk"/>
+        <dropColumn columnName="sales_flux_report_next_id"
+                    tableName="sales_flux_report"/>
+
+        <rollback>
+            <addColumn tableName="sales_flux_report">
+                <column name="sales_flux_report_next_id" type="integer"/>
+            </addColumn>
+
+            <addForeignKeyConstraint
+                    constraintName="sales_flux_report_sales_flux_report_next_id_fk"
+                    baseTableName="sales_flux_report"
+                    baseColumnNames="sales_flux_report_next_id"
+                    referencedTableName="sales_flux_report"
+                    referencedColumnNames="id"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="matbul" id="dropNotNullConstraint-item_type">
+        <dropNotNullConstraint columnDataType="text"
+                               columnName="item_type"
+                               tableName="sales_flux_report"/>
+        <rollback>
+            <addNotNullConstraint columnDataType="text"
+                                  columnName="item_type"
+                                  tableName="sales_flux_report"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="matbul" id="dropNotNullConstraint-sales_document_id">
+        <dropNotNullConstraint columnDataType="integer"
+                               columnName="sales_document_id"
+                               tableName="sales_flux_report"/>
+        <rollback>
+            <addNotNullConstraint columnDataType="integer"
+                                  columnName="sales_document_id"
+                                  tableName="sales_flux_report"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="flr-05-addColumnDeletion">
+        <addColumn tableName="sales_flux_report">
+            <column name="deletion" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="sales_flux_report" columnName="deletion" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="flr-06" author="stihft">
+        <addUniqueConstraint columnNames="ext_id"
+                             constraintName="sales_flux_report_ext_id_unique"
+                             tableName="sales_flux_report"/>
+
+        <rollback>
+            <dropUniqueConstraint tableName="sales_flux_report"
+                                  constraintName="sales_flux_report_ext_id_unique" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="flr-07-addColumnCorrection">
+        <addColumn tableName="sales_flux_report">
+            <column name="correction" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="sales_flux_report" columnName="correction" />
+        </rollback>
+    </changeSet>
+
+
+    <changeSet author="stihft" id="flr-08-addIndexForCorrectionWhereNull">
+        <createIndex
+                indexName="sales_flux_report_correction_not_null"
+                tableName="sales_flux_report">
+            <column name="id" type="integer"/>
+            <column name="correction" type="integer"/>
+        </createIndex>
+        <rollback>
+            <dropIndex indexName="sales_flux_report_correction_not_null"
+                       tableName="sales_flux_report"/>
+        </rollback>
+        <modifySql>
+            <append value=" WHERE correction IS NULL"/>
+        </modifySql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -8,7 +8,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
         <artifactId>sales</artifactId>
-        <version>1.0.8</version>
+        <version>1.0.10</version>
     </parent>
 
     <properties>
@@ -65,15 +65,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- re-use test files (the mothers) from domain -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>sales-domain</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sales-message</artifactId>
@@ -96,7 +87,6 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
             <artifactId>rules-model</artifactId>
-            <classifier>date</classifier>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>

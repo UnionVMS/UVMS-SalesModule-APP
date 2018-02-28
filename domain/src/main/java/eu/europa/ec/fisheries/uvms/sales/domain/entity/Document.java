@@ -39,6 +39,14 @@ public class Document {
     @Column(name = "currency", nullable = false)
     private String currency;
 
+
+    @Column(name = "currency_local")
+    private String currencyLocal;
+
+
+    @Column(name = "total_price_local")
+    private BigDecimal totalPriceLocal;
+
     @NotNull
     @Column(name = "occurrence", nullable = false)
     private DateTime occurrence;
@@ -69,6 +77,14 @@ public class Document {
     @OneToMany(mappedBy = "document", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @BatchSize(size = 1000)
     private List<Product> products;
+
+    public BigDecimal getTotalPriceLocal() {
+        return totalPriceLocal;
+    }
+
+    public void setTotalPriceLocal(BigDecimal totalPriceLocal) {
+        this.totalPriceLocal = totalPriceLocal;
+    }
 
     public Integer getId() {
         return id;
@@ -146,6 +162,14 @@ public class Document {
         this.products = products;
     }
 
+    public String getCurrencyLocal() {
+        return currencyLocal;
+    }
+
+    public void setCurrencyLocal(String currencyLocal) {
+        this.currencyLocal = currencyLocal;
+    }
+
     public Document id(Integer id) {
         this.id = id;
         return this;
@@ -193,6 +217,17 @@ public class Document {
 
     public Document products(List<Product> products) {
         this.products = products;
+        return this;
+    }
+
+
+    public Document totalPriceLocal(BigDecimal totalPriceLocal) {
+        this.totalPriceLocal = totalPriceLocal;
+        return this;
+    }
+
+    public Document currencyLocal(String currencyLocal) {
+        this.currencyLocal = currencyLocal;
         return this;
     }
 }

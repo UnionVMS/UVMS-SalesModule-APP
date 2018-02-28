@@ -3,7 +3,11 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
+import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
+import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceExportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceHelper;
@@ -19,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +38,9 @@ public class ReportServiceBeanTest {
 
     @InjectMocks
     private ReportServiceBean reportServiceBean;
+
+    @Mock
+    private EcbProxyService ecbProxyService;
 
     @Mock
     private ReportDomainModel reportDomainModel;
@@ -54,6 +62,10 @@ public class ReportServiceBeanTest {
 
     @Mock
     private ReportServiceHelper reportServiceHelper;
+
+    @Mock
+    private ParameterService parameterService;
+
 
     @Test(expected = IllegalArgumentException.class)
     public void testFindSalesDetailsWhenExtIdIsNull() throws Exception {
@@ -358,32 +370,39 @@ public class ReportServiceBeanTest {
     }
 
     @Test
-    public void testSaveReportWhenPurposeIsOriginalAndSalesLocationIsNotCountryOfHostAndVesselFlagIsNotCountryOfHost() {
+    public void testSaveReportWhenPurposeIsOriginalAndSalesLocationIsNotCountryOfHostAndVesselFlagIsNotCountryOfHost() throws ConfigServiceException {
         Report report = new Report();
         report.withFLUXSalesReportMessage(
-                new FLUXSalesReportMessage().withFLUXReportDocument(
-                        new FLUXReportDocumentType().withIDS(
-                                new IDType().withValue("bla"))));
+                new FLUXSalesReportMessage()
+                        .withFLUXReportDocument(
+                            new FLUXReportDocumentType()
+                                    .withIDS(new IDType().withValue("bla"))
+                                    .withCreationDateTime(new DateTimeType().withDateTime(DateTime.parse("2010-01-01"))))
+                        .withSalesReports(new SalesReportType().withIncludedSalesDocuments(new SalesDocumentType().withCurrencyCode(new CodeType().withValue("USD")))));
+
         String plugin = "FLUX";
         List<ValidationQualityAnalysisType> validationResults = Lists.newArrayList(new ValidationQualityAnalysisType());
         String messageValidationResult = "OK";
 
         //mock
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bla");
+        doReturn(BigDecimal.valueOf(1.5)).when(ecbProxyService).findExchangeRate("USD", "EUR", DateTime.parse("2010-01-01"));
+        doReturn("EUR").when(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
 
         //execute
         reportServiceBean.saveReport(report, plugin, validationResults, messageValidationResult);
 
         //verify and assert
-        verify(reportDomainModel).create(report);
+        verify(reportDomainModel).create(report, "EUR", BigDecimal.valueOf(1.5));
         verify(reportDomainModel).findByExtId("bla");
         verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin, validationResults, messageValidationResult);
         verify(reportServiceHelper).forwardReportToOtherRelevantParties(report, plugin);
+        verify(ecbProxyService).findExchangeRate("USD", "EUR", DateTime.parse("2010-01-01"));
         verifyNoMoreInteractions(reportDomainModel, reportServiceHelper);
     }
 
     @Test
-    public void testSaveReportWhenIdAlreadyExists() {
+    public void testSaveReportWhenIdAlreadyExists() throws ConfigServiceException {
         Report report = new Report();
         report.withFLUXSalesReportMessage(
                 new FLUXSalesReportMessage().withFLUXReportDocument(

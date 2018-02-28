@@ -3,7 +3,9 @@ package eu.europa.ec.fisheries.uvms.sales.domain.helper;
 import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
+import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
+import eu.europa.ec.fisheries.uvms.sales.domain.entity.Product;
 import eu.europa.ec.fisheries.uvms.sales.domain.mapper.FLUX;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.joda.time.DateTime;
 
 import javax.ejb.*;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +32,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Slf4j
 public class CreateReportHelper {
 
-    @Inject @FLUX
+    @Inject
+    @FLUX
     private MapperFacade mapper;
 
     @EJB
@@ -41,17 +45,24 @@ public class CreateReportHelper {
     @EJB
     BeanValidatorHelper beanValidatorHelper;
 
-    @AccessTimeout(value=60, unit=SECONDS)
+    @AccessTimeout(value = 60, unit = SECONDS)
     @Lock(LockType.WRITE)
-    public Report create(@NonNull Report report) {
+    public Report create(@NonNull Report report, @NonNull String localCurrency, @NonNull BigDecimal exchangeRate) {
         log.debug("Persisting report {}", report.toString());
 
         FluxReport fluxReport = mapper.map(report, FluxReport.class);
 
+        // set the receivedOn property to now
+        fluxReport.receivedOn(DateTime.now());
+
+        // convert the prices from the currency in the report to the local currency
+        enrichWithLocalCurrency(fluxReport, localCurrency, exchangeRate);
+        roundPricesToTwoDecimals(fluxReport);
+
         // to simplify search, each report entity has calculated fields that keeps whether is has been deleted or
         // corrected. Keep these fields up to date.
         if (reportHelper.isReportDeleted(report)) {
-            markPreviousReportAsDeleted(report);
+            markPreviousReportsAsDeleted(report);
         } else if (reportHelper.isReportCorrected(report)) {
             markPreviousReportAsCorrected(report);
         }
@@ -74,6 +85,46 @@ public class CreateReportHelper {
 
     }
 
+    protected void roundPricesToTwoDecimals(FluxReport fluxReport) {
+        if (fluxReport.getDocument().getTotalPrice() != null &&
+                (fluxReport.getDocument().getTotalPrice().scale() > 2 ||
+                fluxReport.getDocument().getTotalPriceLocal().scale() > 2)) {
+            fluxReport.getDocument().setTotalPrice(fluxReport.getDocument().getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP));
+            fluxReport.getDocument().setTotalPriceLocal(fluxReport.getDocument().getTotalPriceLocal().setScale(2, BigDecimal.ROUND_HALF_UP));
+        }
+
+
+        for (Product product : fluxReport.getDocument().getProducts()) {
+            if (product.getPrice() != null &&
+                    (product.getPrice().scale() > 2 ||
+                     product.getPriceLocal().scale() > 2)) {
+                product.setPrice(product.getPrice().setScale(2, BigDecimal.ROUND_HALF_UP));
+                product.setPriceLocal(product.getPriceLocal().setScale(2, BigDecimal.ROUND_HALF_UP));
+            }
+        }
+    }
+
+    protected void enrichWithLocalCurrency(FluxReport fluxReport, String localCurrency, BigDecimal exchangeRate) {
+        Document document = fluxReport.getDocument();
+
+        document.currencyLocal(localCurrency);
+
+        // Total price in Sales Document is not mandatory, if it's missing we set the local total price to 0
+        if (document.getTotalPrice() != null) {
+            document.totalPriceLocal(document.getTotalPrice().multiply(exchangeRate));
+        }
+
+        for (Product product : document.getProducts()) {
+            BigDecimal priceFromReport = product.getPrice();
+
+            if (priceFromReport != null) {
+                product.priceLocal(priceFromReport.multiply(exchangeRate));
+            }
+
+        }
+    }
+
+
     private void markReportAsCorrectedIfNewerVersionExists(FluxReport fluxReport) {
         Optional<FluxReport> possibleCorrection = fluxReportDao.findCorrectionOf(fluxReport.getExtId());
         if (possibleCorrection.isPresent()) {
@@ -85,20 +136,30 @@ public class CreateReportHelper {
         Optional<FluxReport> possibleDeletion = fluxReportDao.findDeletionOf(fluxReport.getExtId());
         if (possibleDeletion.isPresent()) {
             fluxReport.setDeletion(possibleDeletion.get().getCreation());
+        } else {
+            Optional<FluxReport> possibleCorrection = fluxReportDao.findCorrectionOf(fluxReport.getExtId());
+            if (possibleCorrection.isPresent() && possibleCorrection.get().isDeleted()) {
+                fluxReport.setDeletion(possibleCorrection.get().getDeletion());
+            }
         }
     }
 
-    private void markPreviousReportAsDeleted(Report report) {
+    private void markPreviousReportsAsDeleted(Report report) {
+        List<FluxReport> toBeMarkedAsDeleted = new ArrayList<>();
+
         DateTime deletionDate = reportHelper.getCreationDate(report);
         String originalReportExtId = reportHelper.getFLUXReportDocumentReferencedId(report);
-
         Optional<FluxReport> originalReport = fluxReportDao.findByExtId(originalReportExtId);
 
-        //TODO: don't only delete the referenced report, but also all reports it references in its turn
         if (originalReport.isPresent()) {
+            toBeMarkedAsDeleted.add(originalReport.get());
+            toBeMarkedAsDeleted.addAll(fluxReportDao.findOlderVersions(originalReport.get()));
+        }
+
+        for (FluxReport fluxReport : toBeMarkedAsDeleted) {
             // If a report was already deleted, we want to keep the original deletion date and not the date of the 'new' deletion.
-            if (originalReport.get().getDeletion() == null) {
-                originalReport.get().setDeletion(deletionDate);
+            if (fluxReport.getDeletion() == null) {
+                fluxReport.setDeletion(deletionDate);
             }
         }
     }

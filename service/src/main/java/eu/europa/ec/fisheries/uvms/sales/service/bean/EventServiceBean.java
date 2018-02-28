@@ -7,6 +7,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
 import eu.europa.ec.fisheries.uvms.sales.message.event.*;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
@@ -58,7 +59,7 @@ public class EventServiceBean implements EventService {
             reportService.saveReport(report, pluginToSendResponseThrough, validationResults, messageValidationResult);
         } catch (SalesMarshallException e) {
             throw new SalesServiceException("Something went wrong during unmarshalling of a sales report", e);
-        } catch (SalesServiceException e) {
+        } catch (SalesServiceException | ConfigServiceException  e) {
             throw new SalesServiceException("Something went wrong when saving a sales report", e);
         }
     }
@@ -100,7 +101,7 @@ public class EventServiceBean implements EventService {
             case FLUXTL_ON:
                 return "FLUXTL_ON";
             default:
-                throw new RuntimeException("No case implemented for " + respondToInvalidMessageRequest.getTypeOfId());
+                throw new SalesServiceException("No case implemented for " + respondToInvalidMessageRequest.getTypeOfId());
         }
     }
 
@@ -150,7 +151,7 @@ public class EventServiceBean implements EventService {
                 response = !uniqueIdService.doesReferencedReportExist(request.getIds().get(0));
                 break;
             default:
-                throw new RuntimeException("No case implemented for " + request.getType());
+                throw new SalesServiceException("No case implemented for " + request.getType());
         }
 
         try {

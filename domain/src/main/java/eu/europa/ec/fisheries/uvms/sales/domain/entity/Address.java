@@ -33,16 +33,14 @@ public class Address {
     @Column(name = "building_name")
     private String building;
 
-    @NotNull
-    @Column(name = "city_name", nullable = false)
+    @Column(name = "city_name")
     private String city;
 
     @Column(name = "city_sub_division_name")
     private String citySubDivision;
 
-    @NotNull
     @Size(max = 3)
-    @Column(name = "country", nullable = false)
+    @Column(name = "country")
     private String countryCode;
 
     @Column(name = "country_name")

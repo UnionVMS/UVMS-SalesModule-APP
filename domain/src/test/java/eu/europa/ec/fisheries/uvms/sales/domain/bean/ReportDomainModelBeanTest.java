@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -245,8 +246,8 @@ public class ReportDomainModelBeanTest {
         doReturn(Optional.of(fluxReport1)).when(fluxReportDao).findByExtId("fluxReport1");
         doReturn(report1).when(mapper).map(fluxReport1, ReportSummary.class);
 
-        doReturn(Optional.of(fluxReport2)).when(fluxReportDao).findByExtId("fluxReport2");
-        doReturn(report2).when(mapper).map(fluxReport2, ReportSummary.class);
+        doReturn(Arrays.asList(fluxReport2)).when(fluxReportDao).findOlderVersions(fluxReport1);
+        doReturn(Arrays.asList(report2)).when(mapper).mapAsList(Arrays.asList(fluxReport2), ReportSummary.class);
 
         //execute
         List<ReportSummary> allReferencedReports = reportDomainModelBean.findOlderVersionsOrderedByCreationDateDescending("fluxReport1");
@@ -255,8 +256,8 @@ public class ReportDomainModelBeanTest {
         verify(fluxReportDao).findByExtId("fluxReport1");
         verify(mapper).map(fluxReport1, ReportSummary.class);
 
-        verify(fluxReportDao).findByExtId("fluxReport2");
-        verify(mapper).map(fluxReport2, ReportSummary.class);
+        verify(fluxReportDao).findOlderVersions(fluxReport1);
+        verify(mapper).mapAsList(Arrays.asList(fluxReport2), ReportSummary.class);
 
         verifyNoMoreInteractions(fluxReportDao, reportHelper, mapper);
 
@@ -291,8 +292,8 @@ public class ReportDomainModelBeanTest {
         doReturn(Optional.of(fluxReport1)).when(fluxReportDao).findByExtId("fluxReport1");
         doReturn(report1).when(mapper).map(fluxReport1, Report.class);
 
-        doReturn(Optional.of(fluxReport2)).when(fluxReportDao).findByExtId("fluxReport2");
-        doReturn(report2).when(mapper).map(fluxReport2, Report.class);
+        doReturn(Arrays.asList(fluxReport2)).when(fluxReportDao).findOlderVersions(fluxReport1);
+        doReturn(Arrays.asList(report2)).when(mapper).mapAsList(Arrays.asList(fluxReport2), Report.class);
 
         doReturn(creationReport1).when(reportHelper).getCreationDate(report1);
         doReturn(creationReport2).when(reportHelper).getCreationDate(report2);
@@ -306,8 +307,9 @@ public class ReportDomainModelBeanTest {
         verify(fluxReportDao).findByExtId("fluxReport1");
         verify(mapper).map(fluxReport1, Report.class);
 
-        verify(fluxReportDao).findByExtId("fluxReport2");
-        verify(mapper).map(fluxReport2, Report.class);
+        verify(fluxReportDao).findOlderVersions(fluxReport1);
+        verify(mapper).mapAsList(Arrays.asList(fluxReport2), Report.class);
+
         verify(reportHelper).getCreationDate(report1);
         verify(reportHelper).getCreationDate(report2);
 
@@ -402,6 +404,105 @@ public class ReportDomainModelBeanTest {
 
         List<FluxReport> relatedFluxReports = Arrays.asList(relatedFluxReport1, relatedFluxReport2);
         List<Report> relatedReports = Arrays.asList(relatedReport1, relatedReport2);
+
+        //mock
+        doReturn(extId).when(reportHelper).getFLUXReportDocumentId(report);
+        doReturn(Optional.of(fluxReport)).when(fluxReportDao).findByExtId(extId);
+        doReturn(relatedReports).when(mapper).mapAsList(relatedFluxReports, Report.class);
+
+        //execute
+        List<Report> result = reportDomainModelBean.findRelatedReportsOf(report);
+
+        //verify and assert
+        verify(reportHelper).getFLUXReportDocumentId(report);
+        verify(fluxReportDao).findByExtId(extId);
+        verify(mapper).mapAsList(relatedFluxReports, Report.class);
+        verifyNoMoreInteractions(reportHelper, fluxReportDao, mapper);
+
+        assertSame(relatedReports, result);
+    }
+
+    @Test
+    public void testFindRelatedReportsOfForRelatedSalesNotesNull() {
+        //data set
+        Report report = new Report();
+        String extId = "extId";
+
+        FluxReport relatedFluxReport2 = new FluxReport().extId("2");
+
+        FluxReport fluxReport = new FluxReport().relatedSalesNotes(null)
+                .relatedTakeOverDocuments(Arrays.asList(relatedFluxReport2));
+
+        Report relatedReport2 = ReportMother.withExtId("2");
+
+        List<FluxReport> relatedFluxReports = Arrays.asList(relatedFluxReport2);
+        List<Report> relatedReports = Arrays.asList(relatedReport2);
+
+        //mock
+        doReturn(extId).when(reportHelper).getFLUXReportDocumentId(report);
+        doReturn(Optional.of(fluxReport)).when(fluxReportDao).findByExtId(extId);
+        doReturn(relatedReports).when(mapper).mapAsList(relatedFluxReports, Report.class);
+
+        //execute
+        List<Report> result = reportDomainModelBean.findRelatedReportsOf(report);
+
+        //verify and assert
+        verify(reportHelper).getFLUXReportDocumentId(report);
+        verify(fluxReportDao).findByExtId(extId);
+        verify(mapper).mapAsList(relatedFluxReports, Report.class);
+        verifyNoMoreInteractions(reportHelper, fluxReportDao, mapper);
+
+        assertSame(relatedReports, result);
+    }
+
+    @Test
+    public void testFindRelatedReportsOfForRelatedTakeOverDocumentsNull() {
+        //data set
+        Report report = new Report();
+        String extId = "extId";
+
+        FluxReport relatedFluxReport1 = new FluxReport().extId("1");
+
+        FluxReport fluxReport = new FluxReport().relatedSalesNotes(Arrays.asList(relatedFluxReport1))
+                .relatedTakeOverDocuments(null);
+
+        Report relatedReport1 = ReportMother.withExtId("1");
+
+        List<FluxReport> relatedFluxReports = Arrays.asList(relatedFluxReport1);
+        List<Report> relatedReports = Arrays.asList(relatedReport1);
+
+        //mock
+        doReturn(extId).when(reportHelper).getFLUXReportDocumentId(report);
+        doReturn(Optional.of(fluxReport)).when(fluxReportDao).findByExtId(extId);
+        doReturn(relatedReports).when(mapper).mapAsList(relatedFluxReports, Report.class);
+
+        //execute
+        List<Report> result = reportDomainModelBean.findRelatedReportsOf(report);
+
+        //verify and assert
+        verify(reportHelper).getFLUXReportDocumentId(report);
+        verify(fluxReportDao).findByExtId(extId);
+        verify(mapper).mapAsList(relatedFluxReports, Report.class);
+        verifyNoMoreInteractions(reportHelper, fluxReportDao, mapper);
+
+        assertSame(relatedReports, result);
+    }
+
+    @Test
+    public void testFindRelatedReportsOfForRelatedSalesNotesNullAndRelatedTakeOverDocumentsNull() {
+        //data set
+        Report report = new Report();
+        String extId = "extId";
+
+        FluxReport relatedFluxReport2 = new FluxReport().extId("2");
+
+        FluxReport fluxReport = new FluxReport().relatedSalesNotes(null)
+                .relatedTakeOverDocuments(null);
+
+        Report relatedReport2 = ReportMother.withExtId("2");
+
+        List<FluxReport> relatedFluxReports = Collections.emptyList();
+        List<Report> relatedReports = Collections.emptyList();
 
         //mock
         doReturn(extId).when(reportHelper).getFLUXReportDocumentId(report);

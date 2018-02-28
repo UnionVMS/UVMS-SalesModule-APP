@@ -64,9 +64,11 @@ public class Product {
     @Column(name = "distribution_category", nullable = false)
     private String distributionCategory;
 
-    @NotNull
-    @Column(name = "price", nullable = false)
+    @Column(name = "price")
     private BigDecimal price;
+
+    @Column(name = "price_local")
+    private BigDecimal priceLocal;
 
     @Valid
     @NotNull
@@ -190,6 +192,14 @@ public class Product {
         this.origins = origins;
     }
 
+    public BigDecimal getPriceLocal() {
+        return priceLocal;
+    }
+
+    public void setPriceLocal(BigDecimal priceLocal) {
+        this.priceLocal = priceLocal;
+    }
+
     public Product species(final String species) {
         setSpecies(species);
         return this;
@@ -255,5 +265,9 @@ public class Product {
         return this;
     }
 
+    public Product priceLocal(BigDecimal priceLocal) {
+        this.priceLocal = priceLocal;
+        return this;
+    }
 
 }
