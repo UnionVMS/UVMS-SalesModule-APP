@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
-    <changeSet author="stihft (generated)" id="1504876604581-2">
+    <changeSet author="stihft (generated)" id="1504876604581-2" context="test">
         <insert tableName="sales_contact">
             <column name="id" valueNumeric="2"/>
             <column name="title"/>
@@ -54,7 +54,7 @@
             <column name="alias"/>
         </insert>
     </changeSet>
-    <changeSet author="stihft (generated)" id="1504876604581-5">
+    <changeSet author="stihft (generated)" id="1504876604581-5" context="test">
         <insert tableName="sales_flux_location">
             <column name="id" valueNumeric="9"/>
             <column name="ext_id" value="BEOST"/>
@@ -317,7 +317,7 @@
             <column name="sales_address_id"/>
         </insert>
     </changeSet>
-    <changeSet author="stihft (generated)" id="1504876604581-8">
+    <changeSet author="stihft (generated)" id="1504876604581-8" context="test">
         <insert tableName="sales_party">
             <column name="id" valueNumeric="4"/>
             <column name="ext_id" value="123456"/>
@@ -424,7 +424,7 @@
             <column name="sales_address_id"/>
         </insert>
     </changeSet>
-    <changeSet author="stihft (generated)" id="1504876604581-11">
+    <changeSet author="stihft (generated)" id="1504876604581-11" context="test">
         <insert tableName="sales_vessel">
             <column name="id" valueNumeric="2"/>
             <column name="cfr" value="BEL123456789"/>
@@ -456,7 +456,7 @@
             <column name="country" value="BEL"/>
         </insert>
     </changeSet>
-    <changeSet author="stihft (generated)" id="1504876604581-4">
+    <changeSet author="stihft (generated)" id="1504876604581-4" context="test">
         <insert tableName="sales_fishing_activity">
             <column name="id" valueNumeric="2"/>
             <column name="ext_id"/>
@@ -508,7 +508,7 @@
             <column name="sales_flux_location_id" valueNumeric="34"/>
         </insert>
     </changeSet>
-    <changeSet author="stihft (generated)" id="1504876604581-3">
+    <changeSet author="stihft (generated)" id="1504876604581-3" context="test">
         <insert tableName="sales_document">
             <column name="id" valueNumeric="2"/>
             <column name="ext_id" value="BEL-SN-2017-123456"/>
@@ -560,7 +560,7 @@
             <column name="sales_fishing_activity_id" valueNumeric="6"/>
         </insert>
     </changeSet>
-    <changeSet author="stihft (generated)" id="1504876604581-9">
+    <changeSet author="stihft (generated)" id="1504876604581-9" context="test">
         <insert tableName="sales_party_document">
             <column name="id" valueNumeric="4"/>
             <column name="sales_party_id" valueNumeric="4"/>
@@ -667,7 +667,7 @@
             <column name="country"/>
         </insert>
     </changeSet>
-    <changeSet author="stihft (generated)" id="1504876604581-10">
+    <changeSet author="stihft (generated)" id="1504876604581-10" context="test">
         <insert tableName="sales_product">
             <column name="id" valueNumeric="7"/>
             <column name="species" value="PLE"/>
@@ -973,7 +973,7 @@
             <column name="sales_document_id" valueNumeric="6"/>
         </insert>
     </changeSet>
-    <changeSet author="stihft (generated)" id="1504876604581-7">
+    <changeSet author="stihft (generated)" id="1504876604581-7" context="test">
         <insert tableName="sales_origin">
             <column name="sales_product_id" valueNumeric="7"/>
             <column name="sales_flux_location_id" valueNumeric="11"/>
@@ -1051,7 +1051,7 @@
             <column name="sales_flux_location_id" valueNumeric="37"/>
         </insert>
     </changeSet>
-    <changeSet author="stihft (generated)" id="1504876604581-6">
+    <changeSet author="stihft (generated)" id="1504876604581-6" context="test">
         <insert tableName="sales_flux_report">
             <column name="id" valueNumeric="2"/>
             <column name="ext_id" value="d5da14d7-c2b3-4e36-978e-3f97662a0311"/>
@@ -1118,7 +1118,7 @@
             <column name="deletion"/>
         </insert>
     </changeSet>
-    <changeSet author="stihft (generated)" id="1504876604581-12">
+    <changeSet author="stihft (generated)" id="1504876604581-12" context="test">
         <insert tableName="sales_vessel_contact">
             <column name="id" valueNumeric="2"/>
             <column name="role" value="MASTER"/>
