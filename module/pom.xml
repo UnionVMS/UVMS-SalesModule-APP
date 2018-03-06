@@ -39,7 +39,7 @@
                         </ejbModule>
                         <webModule>
                             <groupId>${project.groupId}</groupId>
-                            <context-root>sales</context-root>  
+                            <context-root>${context.root}sales</context-root>  
                             <artifactId>sales-rest</artifactId>
                         </webModule>
                     </modules>
