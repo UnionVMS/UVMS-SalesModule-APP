@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.mapper.SalesModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.ValidationQualityAnalysisMapper;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.persistence.DataSource;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
@@ -44,11 +45,21 @@ public class SalesServiceRedeliveryTestIT extends MessageRedeliveryTestDeploymen
     @EJB
     MessageRedeliveryCounter messageRedeliveryCounter;
 
+
+    //=============================================
+    // Sales Message consumer redelivery test cases
+    //=============================================
+
+    //------------------------------------------------------------------------------
+    // Save report (No JMS redelivery retries required) -- Sales message consumer
+    //------------------------------------------------------------------------------
+
+    @InSequence(1)
     @Test
     @OperateOnDeployment("salesservice_redelivery")
     @Transactional(TransactionMode.DISABLED)
     @DataSource("java:/jdbc/uvms_sales")
-    public void testSalesMessageConsumerBean_SaveReport_RulesServiceBeanMock_No_Redelivery() throws Exception {
+    public void testSalesMessageConsumer_Save_Report_No_JMS_Redelivery_Retries_Required() throws Exception {
         //wait until config had the chance to sync
         Thread.sleep(10000L);
 
@@ -73,11 +84,16 @@ public class SalesServiceRedeliveryTestIT extends MessageRedeliveryTestDeploymen
         assertEquals(1L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackRulesServiceAlternativeBean.KEY_SEND_REPORT_TO_RULES));
     }
 
+    //------------------------------------------------------------------------------
+    // Respond to invalid message (JMS redelivery retries required) -- Sales message consumer
+    //------------------------------------------------------------------------------
+
+    @InSequence(2)
     @Test
     @OperateOnDeployment("salesservice_redelivery")
     @Transactional(TransactionMode.DISABLED)
     @DataSource("java:/jdbc/uvms_sales")
-    public void testSalesMessageConsumerBean_RespondToInvalidMessage_Redelivery() throws Exception {
+    public void testSalesMessageConsumer_Respond_To_Invalid_Message_And_Redeliver_ten_times() throws Exception {
         //wait until config had the chance to sync
         Thread.sleep(10000L);
 

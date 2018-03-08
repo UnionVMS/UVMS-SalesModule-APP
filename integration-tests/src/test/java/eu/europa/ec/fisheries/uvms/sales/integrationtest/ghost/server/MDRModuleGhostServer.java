@@ -3,8 +3,6 @@ package eu.europa.ec.fisheries.uvms.sales.integrationtest.ghost.server;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.ActivationConfigProperty;
@@ -20,8 +18,6 @@ import static org.junit.Assert.assertNotNull;
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSMdrEvent")
 })
 public class MDRModuleGhostServer implements MessageListener {
-
-    private static final Logger LOG = LoggerFactory.getLogger(EcbProxyGhostServer.class);
 
     private ConnectionFactory connectionFactory;
     private Queue replyToSalesQueue;
@@ -54,7 +50,7 @@ public class MDRModuleGhostServer implements MessageListener {
             messageProducer.send(mdrGetCodeListResponse);
 
         } catch (Exception e) {
-            LOG.error("Unable to send MDR response message. Reason: " + e.getMessage());
+            log.error("Unable to send MDR response message. Reason: " + e.getMessage());
         } finally {
             JMSUtils.disconnectQueue(connection, session, messageProducer);
         }

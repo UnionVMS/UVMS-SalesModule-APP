@@ -27,8 +27,6 @@ import static org.junit.Assert.assertNotNull;
 })
 public class EcbProxyGhostServer implements MessageListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EcbProxyGhostServer.class);
-
     private ConnectionFactory connectionFactory;
     private Queue replyToSalesQueue;
 
