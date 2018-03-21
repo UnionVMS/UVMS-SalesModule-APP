@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.sales.message.consumer.bean;
 import eu.europa.ec.fisheries.schema.sales.SalesBaseRequest;
 import eu.europa.ec.fisheries.schema.sales.SalesModuleMethod;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
 import eu.europa.ec.fisheries.uvms.sales.message.event.*;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
@@ -55,7 +56,7 @@ public class MessageConsumerBean implements MessageListener {
     public void onMessage(Message message) {
         LOG.info("Message received in sales");
         TextMessage textMessage = (TextMessage) message;
-
+        MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
         SalesBaseRequest salesRequest = null;
 
         try {

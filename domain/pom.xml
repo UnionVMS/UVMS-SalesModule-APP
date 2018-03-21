@@ -24,6 +24,10 @@
     </properties>
     
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sales-commons</artifactId>
+        </dependency>
  		<dependency>
 			<groupId>fish.focus.uvms.maven</groupId>
 			<artifactId>uvms-pom-gis-deps</artifactId>
