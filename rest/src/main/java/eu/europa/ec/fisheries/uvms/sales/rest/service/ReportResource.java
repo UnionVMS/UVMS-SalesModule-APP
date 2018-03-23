@@ -9,14 +9,12 @@ import eu.europa.ec.fisheries.uvms.sales.service.dto.PageCriteriaDto;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportQueryFilterDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.UUID;
 
 @Path("/report")
 @Stateless
@@ -38,7 +36,6 @@ public class ReportResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_JSON})
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response findByExtId(@QueryParam(value = "id") final String extId) {
-        MDC.put("requestId", UUID.randomUUID().toString());
         LOG.info("Find report by ext id invoked in rest layer");
         return createSuccessResponse(reportService.findSalesDetails(extId));
     }
@@ -55,7 +52,6 @@ public class ReportResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_JSON})
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response search(PageCriteriaDto<ReportQueryFilterDto> filters) {
-        MDC.put("requestId", UUID.randomUUID().toString());
         LOG.info("Search reports invoked in rest layer");
         return createSuccessResponse(reportService.search(filters, false));
     }
@@ -66,7 +62,6 @@ public class ReportResource extends UnionVMSResource {
     @Produces(value = MediaType.APPLICATION_JSON)
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response export(PageCriteriaDto<ReportQueryFilterDto> filters) {
-        MDC.put("requestId", UUID.randomUUID().toString());
         LOG.info("Export documents");
         return createSuccessResponse(reportService.exportDocuments(filters));
     }
@@ -77,7 +72,6 @@ public class ReportResource extends UnionVMSResource {
     @Produces(value = MediaType.APPLICATION_JSON)
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response export(ExportListsDto exportListsDto) {
-        MDC.put("requestId", UUID.randomUUID().toString());
         LOG.info("Export selected documents");
         return createSuccessResponse(reportService.exportSelectedDocuments(exportListsDto));
     }
