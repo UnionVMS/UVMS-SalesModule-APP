@@ -62,6 +62,7 @@ public class ReportResource extends UnionVMSResource {
     @Produces(value = MediaType.APPLICATION_JSON)
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response export(PageCriteriaDto<ReportQueryFilterDto> filters) {
+        LOG.info("Export documents");
         return createSuccessResponse(reportService.exportDocuments(filters));
     }
 
@@ -71,6 +72,7 @@ public class ReportResource extends UnionVMSResource {
     @Produces(value = MediaType.APPLICATION_JSON)
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response export(ExportListsDto exportListsDto) {
+        LOG.info("Export selected documents");
         return createSuccessResponse(reportService.exportSelectedDocuments(exportListsDto));
     }
 

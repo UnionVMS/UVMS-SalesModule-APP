@@ -5,6 +5,8 @@ import eu.europa.ec.fisheries.uvms.rest.security.RequiresFeature;
 import eu.europa.ec.fisheries.uvms.rest.security.UnionVMSFeature;
 import eu.europa.ec.fisheries.uvms.sales.service.SavedSearchService;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.SavedSearchGroupDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -16,6 +18,8 @@ import javax.ws.rs.core.Response;
 @Stateless
 public class SavedSearchResource extends UnionVMSResource {
 
+    static final Logger LOG = LoggerFactory.getLogger(SavedSearchResource.class);
+
     @EJB
     private SavedSearchService savedSearchService;
 
@@ -23,6 +27,7 @@ public class SavedSearchResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_JSON})
     @RequiresFeature(UnionVMSFeature.viewSalesReports)
     public Response getSavedSearchesByUser(@QueryParam(value = "user") final String user) {
+        LOG.info("Get saved searches by user");
         return createSuccessResponse(savedSearchService.getSavedSearches(user));
     }
 
@@ -31,6 +36,7 @@ public class SavedSearchResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_JSON})
     @RequiresFeature(UnionVMSFeature.manageSalesReports)
     public Response createSavedSearch(SavedSearchGroupDto searchGroupDto) {
+        LOG.info("Save search group");
         return createSuccessResponse(savedSearchService.saveSearch(searchGroupDto));
     }
 
@@ -38,8 +44,8 @@ public class SavedSearchResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_JSON})
     @RequiresFeature(UnionVMSFeature.manageSalesReports)
     public Response deleteSavedSearch(@QueryParam("id") Integer id) {
+        LOG.info("Delete search for id");
         savedSearchService.deleteSearch(id);
-
         return createSuccessResponse();
     }
 }

@@ -3,12 +3,13 @@ package eu.europa.ec.fisheries.uvms.sales.rest.filter;
 import eu.europa.ec.fisheries.uvms.sales.rest.constants.RestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+import java.util.UUID;
 
 
 @WebFilter("/*")
@@ -23,6 +24,7 @@ public class RequestFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+        MDC.put("requestId", UUID.randomUUID().toString());
         HttpServletResponse response = (HttpServletResponse) res;
         response.setHeader(RestConstants.ACCESS_CONTROL_ALLOW_ORIGIN, RestConstants.ACCESS_CONTROL_ALLOW_METHODS_ALL);
         response.setHeader(RestConstants.ACCESS_CONTROL_ALLOW_METHODS, RestConstants.ACCESS_CONTROL_ALLOWED_METHODS);
