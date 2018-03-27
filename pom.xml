@@ -11,7 +11,7 @@
 	
     <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
     <artifactId>sales</artifactId>
-    <version>1.0.11-SNAPSHOT</version>
+    <version>1.0.11</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -270,7 +270,7 @@
     </distributionManagement>
     <scm>
         <connection>${scm.connection}</connection>
-        <tag>HEAD</tag>
+        <tag>sales-1.0.11</tag>
     </scm>
 
 </project>
