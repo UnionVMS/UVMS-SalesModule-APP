@@ -111,14 +111,14 @@ public class CreateReportHelper {
 
         // Total price in Sales Document is not mandatory, if it's missing we set the local total price to 0
         if (document.getTotalPrice() != null) {
-            document.totalPriceLocal(document.getTotalPrice().multiply(exchangeRate));
+            document.totalPriceLocal(document.getTotalPrice().setScale(2).divide(exchangeRate, 2));
         }
 
         for (Product product : document.getProducts()) {
             BigDecimal priceFromReport = product.getPrice();
 
             if (priceFromReport != null) {
-                product.priceLocal(priceFromReport.multiply(exchangeRate));
+                product.priceLocal(priceFromReport.setScale(2).divide(exchangeRate, 2));
             }
 
         }

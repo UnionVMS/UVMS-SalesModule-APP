@@ -788,9 +788,9 @@ public class CreateReportHelperTest {
         createReportHelper.enrichWithLocalCurrency(fluxReport, LOCAL_CURRENCY, BigDecimal.valueOf(1.5));
 
         assertEquals("EUR", fluxReport.getDocument().getCurrencyLocal());
-        assertEquals(new BigDecimal("30.0"), fluxReport.getDocument().getTotalPriceLocal());
+        assertEquals(new BigDecimal("13.34"), fluxReport.getDocument().getTotalPriceLocal());
         for (Product product : fluxReport.getDocument().getProducts()) {
-            assertEquals(new BigDecimal("15.0"), product.getPriceLocal());
+            assertEquals(new BigDecimal("6.67"), product.getPriceLocal());
         }
     }
 
