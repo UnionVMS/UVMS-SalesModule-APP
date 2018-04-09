@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
 import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceExportHelper;
@@ -66,6 +67,9 @@ public class ReportServiceBeanTest {
     @Mock
     private ParameterService parameterService;
 
+    @Mock
+    private ReportHelper reportHelper;
+
 
     @Test(expected = IllegalArgumentException.class)
     public void testFindSalesDetailsWhenExtIdIsNull() throws Exception {
@@ -103,7 +107,7 @@ public class ReportServiceBeanTest {
         verify(salesDetailsHelper).enrichWithOtherRelevantVersions(salesDetailsDto, report);
         verify(salesDetailsHelper).enrichWithRelatedReport(salesDetailsDto, report);
         verify(salesDetailsHelper).enrichProductsWithFactor(salesDetailsDto);
-        verifyNoMoreInteractions(reportDomainModel, mapper, salesDetailsHelper);
+        verifyNoMoreInteractions(reportDomainModel, mapper, salesDetailsHelper, reportHelper);
     }
 
     @Test
@@ -323,7 +327,7 @@ public class ReportServiceBeanTest {
         verify(mapper).mapAsList(reports, ReportListDto.class);
         verify(searchReportsHelper).enrichWithVesselInformation(reportDtos);
         verify(searchReportsHelper).enrichWithOlderVersions(reportDtos);
-        verifyNoMoreInteractions(searchReportsHelper, reportDomainModel, mapper);
+        verifyNoMoreInteractions(searchReportsHelper, reportDomainModel, mapper, reportHelper);
 
         assertEquals(1, result.getCurrentPage());
         assertSame(reportDtos, result.getItems());
@@ -366,7 +370,7 @@ public class ReportServiceBeanTest {
         verify(reportDomainModel).searchIncludingDetails(reportQuery);
         verify(fluxSalesResponseMessageFactory).create(fluxSalesQueryMessage, reports, validationResults, messageValidationResult);
         verify(rulesService).sendResponseToRules(fluxSalesResponseMessage, "BEL", "FLUX");
-        verifyNoMoreInteractions(mapper, reportDomainModel, fluxSalesResponseMessageFactory, rulesService);
+        verifyNoMoreInteractions(mapper, reportDomainModel, fluxSalesResponseMessageFactory, rulesService, reportHelper);
     }
 
     @Test
@@ -386,6 +390,7 @@ public class ReportServiceBeanTest {
 
         //mock
         doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bla");
+        doReturn(false).when(reportHelper).isReportDeleted(report);
         doReturn(BigDecimal.valueOf(1.5)).when(ecbProxyService).findExchangeRate("USD", "EUR", DateTime.parse("2010-01-01"));
         doReturn("EUR").when(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
 
@@ -395,10 +400,43 @@ public class ReportServiceBeanTest {
         //verify and assert
         verify(reportDomainModel).create(report, "EUR", BigDecimal.valueOf(1.5));
         verify(reportDomainModel).findByExtId("bla");
+        verify(reportHelper).isReportDeleted(report);
+        verify(ecbProxyService).findExchangeRate("USD", "EUR", DateTime.parse("2010-01-01"));
         verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin, validationResults, messageValidationResult);
         verify(reportServiceHelper).forwardReportToOtherRelevantParties(report, plugin);
-        verify(ecbProxyService).findExchangeRate("USD", "EUR", DateTime.parse("2010-01-01"));
-        verifyNoMoreInteractions(reportDomainModel, reportServiceHelper);
+        verifyNoMoreInteractions(reportDomainModel, reportServiceHelper, reportHelper);
+    }
+
+    @Test
+    public void testSaveReportWhenPurposeIsDeleteAndSalesLocationIsNotCountryOfHostAndVesselFlagIsNotCountryOfHost() throws ConfigServiceException {
+        Report report = new Report();
+        report.withFLUXSalesReportMessage(
+                new FLUXSalesReportMessage()
+                        .withFLUXReportDocument(
+                                new FLUXReportDocumentType()
+                                        .withIDS(new IDType().withValue("bla"))
+                                        .withCreationDateTime(new DateTimeType().withDateTime(DateTime.parse("2010-01-01"))))
+                        .withSalesReports(new SalesReportType().withIncludedSalesDocuments(new SalesDocumentType().withCurrencyCode(new CodeType().withValue("USD")))));
+
+        String plugin = "FLUX";
+        List<ValidationQualityAnalysisType> validationResults = Lists.newArrayList(new ValidationQualityAnalysisType());
+        String messageValidationResult = "OK";
+
+        //mock
+        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bla");
+        doReturn(true).when(reportHelper).isReportDeleted(report);
+        doReturn("EUR").when(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
+
+        //execute
+        reportServiceBean.saveReport(report, plugin, validationResults, messageValidationResult);
+
+        //verify and assert
+        verify(reportDomainModel).create(report, "EUR", BigDecimal.ONE);
+        verify(reportDomainModel).findByExtId("bla");
+        verify(reportHelper).isReportDeleted(report);
+        verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin, validationResults, messageValidationResult);
+        verify(reportServiceHelper).forwardReportToOtherRelevantParties(report, plugin);
+        verifyNoMoreInteractions(reportDomainModel, reportServiceHelper, reportHelper);
     }
 
     @Test
@@ -423,7 +461,7 @@ public class ReportServiceBeanTest {
         verify(reportDomainModel).findByExtId("bla");
         verify(reportServiceHelper).sendResponseToSenderOfReport(report, plugin, validationResults, messageValidationResult);
         verify(reportServiceHelper).forwardReportToOtherRelevantParties(report, plugin);
-        verifyNoMoreInteractions(reportDomainModel);
+        verifyNoMoreInteractions(reportDomainModel, reportHelper);
     }
 
 }
