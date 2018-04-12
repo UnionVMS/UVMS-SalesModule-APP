@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
 import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
+import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
@@ -45,17 +46,8 @@ public class ReportServiceBean implements ReportService {
     @EJB
     private ReportDomainModel reportDomainModel;
 
-    @EJB
-    private ReportServiceExportHelper reportServiceExportHelper;
-
     @Inject @DTO
     private MapperFacade mapper;
-
-    @EJB
-    private SearchReportsHelper searchReportsHelper;
-
-    @EJB
-    private SalesDetailsHelper salesDetailsHelper;
 
     @EJB
     private FLUXSalesResponseMessageFactory fluxSalesResponseMessageFactory;
@@ -64,32 +56,36 @@ public class ReportServiceBean implements ReportService {
     private RulesService rulesService;
 
     @EJB
-    private ReportServiceHelper reportServiceHelper;
-
-    @EJB
     private EcbProxyService ecbProxyService;
 
     @EJB
     private ParameterService parameterService;
 
+    @EJB
+    private ReportServiceHelper reportServiceHelper;
+
+    @EJB
+    private SearchReportsHelper searchReportsHelper;
+
+    @EJB
+    private SalesDetailsHelper salesDetailsHelper;
+
+    @EJB
+    private ReportServiceExportHelper reportServiceExportHelper;
+
+    @EJB
+    private ReportHelper reportHelper;
+
+
     @Override
     public void saveReport(Report report, String pluginToSendResponseThrough,
                            List<ValidationQualityAnalysisType> validationResults,
                            String messageValidationStatus) throws ConfigServiceException {
-        Report alreadyExistingReport = reportDomainModel.findByExtId(report.getFLUXSalesReportMessage().getFLUXReportDocument().getIDS().get(0).getValue())
-                                                        .orNull();
-        //If a report exists with the incoming ID, we don't save the report.
-        if (alreadyExistingReport == null) {
-
-            String targetCurrency = parameterService.getStringValue(ParameterKey.CURRENCY.getKey());
-
-            // We need to find the exchange rate for the incoming report's currency to the local currency
-            // so Sales can convert it later on
-            BigDecimal exchangeRate = findExchangeRateForCurrencyInReport(report, targetCurrency);
-
+        if (!doesReportAlreadyExistInDatabase(report)) {
             try {
+                String targetCurrency = parameterService.getStringValue(ParameterKey.CURRENCY.getKey());
+                BigDecimal exchangeRate = findExchangeRateForCurrencyInReport(report, targetCurrency);
                 reportDomainModel.create(report, targetCurrency, exchangeRate);
-
             } catch (SalesNonBlockingException e) {
                 LOG.error("Unable to create sales report. Reason: " + e.getMessage());
                 return;
@@ -107,23 +103,30 @@ public class ReportServiceBean implements ReportService {
         } catch (SalesNonBlockingException e) {
             LOG.error("Error when forwarding a report to other relevant parties", e);
         }
+    }
 
+    private boolean doesReportAlreadyExistInDatabase(Report report) {
+        return reportDomainModel.findByExtId(report.getFLUXSalesReportMessage().getFLUXReportDocument().getIDS().get(0).getValue())
+                                .isPresent();
     }
 
     private BigDecimal findExchangeRateForCurrencyInReport(Report report, String targetCurrency) {
-        String currencyOfIncomingReport = report.getFLUXSalesReportMessage().getSalesReports().get(0).getIncludedSalesDocuments().get(0).getCurrencyCode().getValue();
-        DateTime creationDateOfReport = report.getFLUXSalesReportMessage().getFLUXReportDocument().getCreationDateTime().getDateTime();
-
-        // Only contact ECB Proxy when the report's currency differs from the local currency
-        BigDecimal exchangeRate;
-        if (!Objects.equals(currencyOfIncomingReport, targetCurrency)) {
-            exchangeRate = ecbProxyService.findExchangeRate(currencyOfIncomingReport, targetCurrency, creationDateOfReport);
+        if (reportHelper.isReportDeleted(report)) {
+            return BigDecimal.ONE;
         } else {
-            exchangeRate = BigDecimal.ONE;
-        }
-        return exchangeRate;
-    }
+            // We need to find the exchange rate for the incoming report's currency to the local currency
+            // so Sales can convert it later on
+            String currencyOfIncomingReport = report.getFLUXSalesReportMessage().getSalesReports().get(0).getIncludedSalesDocuments().get(0).getCurrencyCode().getValue();
+            DateTime creationDateOfReport = report.getFLUXSalesReportMessage().getFLUXReportDocument().getCreationDateTime().getDateTime();
 
+            // Only contact ECB Proxy when the report's currency differs from the local currency
+            if (!Objects.equals(currencyOfIncomingReport, targetCurrency)) {
+                return ecbProxyService.findExchangeRate(currencyOfIncomingReport, targetCurrency, creationDateOfReport);
+            } else {
+                return BigDecimal.ONE;
+            }
+        }
+    }
     @Override
     public Optional<Report> findByExtId(String extId) {
         return reportDomainModel.findByExtId(extId);

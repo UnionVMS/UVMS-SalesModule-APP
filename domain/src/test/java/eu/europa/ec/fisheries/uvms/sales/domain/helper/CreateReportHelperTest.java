@@ -79,7 +79,7 @@ public class CreateReportHelperTest {
         createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(mapper).map(report, FluxReport.class);
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
@@ -127,7 +127,7 @@ public class CreateReportHelperTest {
         createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(mapper).map(report, FluxReport.class);
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
@@ -177,7 +177,7 @@ public class CreateReportHelperTest {
         createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(mapper).map(report, FluxReport.class);
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
@@ -223,7 +223,7 @@ public class CreateReportHelperTest {
         createReportHelper.create(report, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(mapper).map(report, FluxReport.class);
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
@@ -286,7 +286,7 @@ public class CreateReportHelperTest {
 
         //assert and verify
         verify(mapper).map(report, FluxReport.class);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(reportHelper).getCreationDate(report);
         verify(reportHelper).getFLUXReportDocumentReferencedId(report);
         verify(fluxReportDao).findByExtId("hello");
@@ -346,7 +346,7 @@ public class CreateReportHelperTest {
 
         //assert and verify
         verify(mapper).map(report, FluxReport.class);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(reportHelper).getCreationDate(report);
         verify(reportHelper).getFLUXReportDocumentReferencedId(report);
         verify(fluxReportDao).findByExtId("hello");
@@ -410,7 +410,7 @@ public class CreateReportHelperTest {
 
         //assert and verify
         verify(mapper).map(report, FluxReport.class);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(reportHelper).getCreationDate(report);
         verify(reportHelper).getFLUXReportDocumentReferencedId(report);
         verify(fluxReportDao).findByExtId("hello");
@@ -468,7 +468,7 @@ public class CreateReportHelperTest {
         Report persistedReport = createReportHelper.create(correctionReport, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(correctionReport);
+        verify(reportHelper, times(2)).isReportDeleted(correctionReport);
         verify(mapper).map(correctionReport, FluxReport.class);
         verify(reportHelper).isReportCorrected(correctionReport);
         verify(reportHelper).getFLUXReportDocumentReferencedId(correctionReport);
@@ -531,7 +531,7 @@ public class CreateReportHelperTest {
         Report persistedReport = createReportHelper.create(correctionReport, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(correctionReport);
+        verify(reportHelper, times(2)).isReportDeleted(correctionReport);
         verify(mapper).map(correctionReport, FluxReport.class);
         verify(reportHelper).isReportCorrected(correctionReport);
         verify(reportHelper).getFLUXReportDocumentReferencedId(correctionReport);
@@ -595,7 +595,7 @@ public class CreateReportHelperTest {
         Report persistedReport = createReportHelper.create(correctionReport, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(correctionReport);
+        verify(reportHelper, times(2)).isReportDeleted(correctionReport);
         verify(mapper).map(correctionReport, FluxReport.class);
         verify(reportHelper).isReportCorrected(correctionReport);
         verify(reportHelper).getFLUXReportDocumentReferencedId(correctionReport);
@@ -658,7 +658,7 @@ public class CreateReportHelperTest {
         Report persistedReport = createReportHelper.create(correctionReport, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(correctionReport);
+        verify(reportHelper, times(2)).isReportDeleted(correctionReport);
         verify(mapper).map(correctionReport, FluxReport.class);
         verify(reportHelper).isReportCorrected(correctionReport);
         verify(reportHelper).getFLUXReportDocumentReferencedId(correctionReport);
@@ -717,7 +717,7 @@ public class CreateReportHelperTest {
         Report persistedReport = createReportHelper.create(correctionReport, LOCAL_CURRENCY, BigDecimal.ONE);
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(correctionReport);
+        verify(reportHelper, times(2)).isReportDeleted(correctionReport);
         verify(mapper).map(correctionReport, FluxReport.class);
         verify(reportHelper).isReportCorrected(correctionReport);
         verify(reportHelper).getFLUXReportDocumentReferencedId(correctionReport);
@@ -765,7 +765,7 @@ public class CreateReportHelperTest {
         }
 
         //assert and verify
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(mapper).map(report, FluxReport.class);
         verify(reportHelper).isReportCorrected(report);
         verify(reportHelper).hasReferencesToTakeOverDocuments(report);
@@ -788,9 +788,9 @@ public class CreateReportHelperTest {
         createReportHelper.enrichWithLocalCurrency(fluxReport, LOCAL_CURRENCY, BigDecimal.valueOf(1.5));
 
         assertEquals("EUR", fluxReport.getDocument().getCurrencyLocal());
-        assertEquals(new BigDecimal("30.0"), fluxReport.getDocument().getTotalPriceLocal());
+        assertEquals(new BigDecimal("13.34"), fluxReport.getDocument().getTotalPriceLocal());
         for (Product product : fluxReport.getDocument().getProducts()) {
-            assertEquals(new BigDecimal("15.0"), product.getPriceLocal());
+            assertEquals(new BigDecimal("6.67"), product.getPriceLocal());
         }
     }
 

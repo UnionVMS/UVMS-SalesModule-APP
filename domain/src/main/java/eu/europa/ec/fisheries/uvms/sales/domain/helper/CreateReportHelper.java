@@ -56,8 +56,10 @@ public class CreateReportHelper {
         fluxReport.receivedOn(DateTime.now());
 
         // convert the prices from the currency in the report to the local currency
-        enrichWithLocalCurrency(fluxReport, localCurrency, exchangeRate);
-        roundPricesToTwoDecimals(fluxReport);
+        if (!reportHelper.isReportDeleted(report)) {
+            enrichWithLocalCurrency(fluxReport, localCurrency, exchangeRate);
+            roundPricesToTwoDecimals(fluxReport);
+        }
 
         // to simplify search, each report entity has calculated fields that keeps whether is has been deleted or
         // corrected. Keep these fields up to date.
@@ -107,18 +109,18 @@ public class CreateReportHelper {
     protected void enrichWithLocalCurrency(FluxReport fluxReport, String localCurrency, BigDecimal exchangeRate) {
         Document document = fluxReport.getDocument();
 
-        document.currencyLocal(localCurrency);
+        document.setCurrencyLocal(localCurrency);
 
         // Total price in Sales Document is not mandatory, if it's missing we set the local total price to 0
         if (document.getTotalPrice() != null) {
-            document.totalPriceLocal(document.getTotalPrice().multiply(exchangeRate));
+            document.totalPriceLocal(document.getTotalPrice().setScale(2).divide(exchangeRate, 2));
         }
 
         for (Product product : document.getProducts()) {
             BigDecimal priceFromReport = product.getPrice();
 
             if (priceFromReport != null) {
-                product.priceLocal(priceFromReport.multiply(exchangeRate));
+                product.setPriceLocal(priceFromReport.setScale(2).divide(exchangeRate, 2));
             }
 
         }
