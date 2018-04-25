@@ -46,11 +46,12 @@ public class RulesServiceBean implements RulesService {
             String responseGuid = responseHelper.getId(response);
 
             String request = RulesModuleRequestMapper.createSendSalesResponseRequest(responseAsString, responseGuid, recipient, pluginToSendResponseThrough, dataFlow, now);
-            messageProducer.sendModuleMessage(request, Union.RULES);
+            String messageSelector = "SendSalesResponseRequest";
+            messageProducer.sendModuleMessage(request, Union.RULES, messageSelector);
+
         } catch (RulesModelMarshallException | SalesMarshallException | MessageException e) {
             throw new SalesServiceException("Could not send the sales response to Rules", e);
         }
-
     }
 
     @Override
@@ -62,7 +63,9 @@ public class RulesServiceBean implements RulesService {
             String reportGuid = reportHelper.getId(report);
 
             String request = RulesModuleRequestMapper.createSendSalesReportRequest(reportAsString, reportGuid, recipient, pluginToSendResponseThrough, fluxDataFlow, now);
+            String messageSelector = "SendSalesReportRequest";
             messageProducer.sendModuleMessage(request, Union.RULES);
+
         } catch (RulesModelMarshallException | SalesMarshallException | MessageException e) {
             throw new SalesServiceException("Could not send the sales report to Rules", e);
         }

@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
@@ -54,7 +55,8 @@ public class MessageConsumerBean implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        LOG.info("Message received in sales");
+        MDC.remove("requestId");
+        LOG.info("Message received in sales. Times redelivered: " + getTimesRedelivered(message));
         TextMessage textMessage = (TextMessage) message;
         MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
         SalesBaseRequest salesRequest = null;
@@ -88,4 +90,11 @@ public class MessageConsumerBean implements MessageListener {
         }
     }
 
+    private int getTimesRedelivered(Message message) {
+        try {
+            return (message.getIntProperty("JMSXDeliveryCount") - 1);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }

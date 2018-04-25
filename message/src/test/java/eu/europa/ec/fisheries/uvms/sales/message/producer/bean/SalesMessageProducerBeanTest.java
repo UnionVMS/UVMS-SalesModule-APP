@@ -9,6 +9,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.jms.DeliveryMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -36,15 +39,20 @@ public class SalesMessageProducerBeanTest {
         String text = "MyText";
         long timeout = 30000L;
         String jmsMessageId = "MyJmsMessageId";
+        String messageSelector = "MyMessageSelector";
+        Map<String, String> messageProperties = new HashMap<>();
+        if (messageSelector != null) {
+            messageProperties.put("messageSelector", messageSelector);
+        }
 
         //Mock
-        doReturn(jmsMessageId).when(rulesMessageProducerBean).sendModuleMessage(text, null);
+        doReturn(jmsMessageId).when(rulesMessageProducerBean).sendModuleMessageWithProps(text, null, messageProperties);
 
         //Execute
-        String returnedJMSMessageId = salesMessageProducerBean.sendModuleMessage(text, Union.RULES, timeout);
+        String returnedJMSMessageId = salesMessageProducerBean.sendModuleMessage(text, Union.RULES, timeout, messageSelector);
 
         //Verify and assert
-        verify(rulesMessageProducerBean).sendModuleMessage(text, null);
+        verify(rulesMessageProducerBean).sendModuleMessageWithProps(text, null, messageProperties);
         verifyNoMoreInteractions(rulesMessageProducerBean, assetMessageProducerBean, mdrMessageProducerBean, ecbProxyMessageProducerBean);
         assertEquals(jmsMessageId, returnedJMSMessageId);
     }
