@@ -77,7 +77,7 @@ public class MessageConsumerBean implements MessageListener {
 
         EventMessage eventWithOriginalJmsMessage = new EventMessage(salesRequest);
         eventWithOriginalJmsMessage.setJmsMessage(textMessage);
-
+        LOG.info("Request message method: " + method.value());
         switch (method) {
             case SAVE_REPORT: reportReceivedEvent.fire(new EventMessage(salesRequest)); break;
             case QUERY: queryReceivedEvent.fire(new EventMessage(salesRequest)); break;
