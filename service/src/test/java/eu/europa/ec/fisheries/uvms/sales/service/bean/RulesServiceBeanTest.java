@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
+import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.FLUXSalesResponseMessageHelper;
@@ -61,6 +62,7 @@ public class RulesServiceBeanTest {
         String recipient = "FRA";
         String fluxDataFlow = "FLUX";
         String responseGuid = "abc";
+        String messageSelector = "SendSalesResponseRequest";
         FLUXSalesResponseMessage response = new FLUXSalesResponseMessage();
 
         //mock
@@ -81,7 +83,7 @@ public class RulesServiceBeanTest {
 
         verify(configService).getParameter(ParameterKey.FLUX_DATA_FLOW);
         verify(responseHelper).getId(response);
-        verify(messageProducer).sendModuleMessage(request, Union.RULES);
+        verify(messageProducer).sendModuleMessage(request, Union.RULES,messageSelector);
 
         verifyStatic();
         RulesModuleRequestMapper.createSendSalesResponseRequest(eq(responseAsString), eq(responseGuid), eq(recipient), eq(pluginToSendResponseThrough), eq(fluxDataFlow), isA(Date.class));
@@ -104,7 +106,7 @@ public class RulesServiceBeanTest {
         mockStatic(JAXBMarshaller.class);
         mockStatic(RulesModuleRequestMapper.class);
 
-        when(JAXBMarshaller.marshallJaxBObjectToString(report)).thenReturn(reportAsString);
+        when(JAXBMarshaller.marshallJaxBObjectToString(isA(Report.class))).thenReturn(reportAsString);
         when(configService.getParameter(ParameterKey.FLUX_DATA_FLOW)).thenReturn(fluxDataFlow);
         when(reportHelper.getId(report)).thenReturn(reportGuid);
         when(RulesModuleRequestMapper.createSendSalesReportRequest(eq(reportAsString), eq(reportGuid), eq(recipient), eq(pluginToSendResponseThrough), eq(fluxDataFlow), isA(Date.class))).thenReturn(request);
@@ -114,7 +116,7 @@ public class RulesServiceBeanTest {
 
         //verify and assert
         verifyStatic();
-        JAXBMarshaller.marshallJaxBObjectToString(report);
+        JAXBMarshaller.marshallJaxBObjectToString(isA(Report.class));
 
         verify(configService).getParameter(ParameterKey.FLUX_DATA_FLOW);
         verify(reportHelper).getId(report);

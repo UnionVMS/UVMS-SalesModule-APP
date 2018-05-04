@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EcbProxyServiceBean implements EcbProxyService {
 
-    private static final long TIMEOUT = 30000;
+    private static final long TIMEOUT = 120000;
 
     @EJB
     private SalesMessageProducer messageProducer;

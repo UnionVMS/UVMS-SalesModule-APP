@@ -14,6 +14,8 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
+import java.util.HashMap;
+import java.util.Map;
 
 @Stateless
 public class SalesMessageProducerBean implements SalesMessageProducer {
@@ -55,12 +57,22 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
     }
 
     @Override
+    public String sendModuleMessage(String text, Union module, String messageSelector) throws MessageException {
+        return sendModuleMessage(text, module, TIME_TO_LIVE, messageSelector);
+    }
+
+    @Override
     public String sendModuleMessage(String text, Union module) throws MessageException {
-        return sendModuleMessage(text, module, TIME_TO_LIVE);
+        return sendModuleMessage(text, module, TIME_TO_LIVE, null);
     }
 
     @Override
     public String sendModuleMessage(String text, Union module, long messageTimeToLiveMillis) throws MessageException {
+        return sendModuleMessage(text, module, messageTimeToLiveMillis, null);
+    }
+
+    @Override
+    public String sendModuleMessage(String text, Union module, long messageTimeToLiveMillis, String messageSelector) throws MessageException {
         try {
             switch (module) {
                 case ASSET:
@@ -68,7 +80,11 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
                 case ECB_PROXY:
                     return ecbProxyMessageProducerBean.sendModuleMessageNonPersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
                 case RULES:
-                    return rulesMessageProducerBean.sendModuleMessage(text, replyToSalesQueue);
+                    Map<String, String> messageProperties = new HashMap<>();
+                    if (messageSelector != null) {
+                        messageProperties.put("messageSelector", messageSelector);
+                    }
+                    return rulesMessageProducerBean.sendModuleMessageWithProps(text, replyToSalesQueue, messageProperties);
                 case MDR:
                     return mdrMessageProducerBean.sendModuleMessageNonPersistent(text, replyToSalesQueue, messageTimeToLiveMillis);
                 default:

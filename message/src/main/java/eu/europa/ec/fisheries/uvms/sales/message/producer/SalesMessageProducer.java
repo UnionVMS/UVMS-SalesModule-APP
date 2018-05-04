@@ -17,6 +17,14 @@ public interface SalesMessageProducer {
      * @throws MessageException when something goes wrong delivering the message **/
     String sendModuleMessage(String text, Union module) throws MessageException;
 
+    /** Sends a message to a module. The module gets 60 seconds to answer.
+     * @param text the message to be sent
+     * @param module the module to which the message needs to be sent
+     * @param messageSelector the messageSelector message property to facilitate the use of message selector MDBs
+     * @return correlation id
+     * @throws MessageException when something goes wrong delivering the message **/
+    String sendModuleMessage(String text, Union module, String messageSelector) throws MessageException;
+
     /** Sends a message to a module.
      * @param text the message to be sent
      * @param module the module to which the message needs to be sent
@@ -24,6 +32,15 @@ public interface SalesMessageProducer {
      * @return correlation id
      * @throws MessageException when something goes wrong delivering the message **/
     String sendModuleMessage(String text, Union module, long timeout) throws MessageException;
+
+    /** Sends a message to a module.
+     * @param text the message to be sent
+     * @param module the module to which the message needs to be sent
+     * @param timeout the max time in milliseconds it can take before aborting
+     * @param messageSelector the messageSelector message property to facilitate the use of message selector MDBs
+     * @return correlation id
+     * @throws MessageException when something goes wrong delivering the message **/
+    String sendModuleMessage(String text, Union module, long timeout, String messageSelector) throws MessageException;
 
     void sendModuleErrorMessage(EventMessage message) throws MessageException;
 
