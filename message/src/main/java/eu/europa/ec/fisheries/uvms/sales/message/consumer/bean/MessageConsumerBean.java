@@ -8,8 +8,7 @@ import eu.europa.ec.fisheries.uvms.sales.message.event.*;
 import eu.europa.ec.fisheries.uvms.sales.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
 import javax.ejb.ActivationConfigProperty;
@@ -25,9 +24,8 @@ import javax.jms.TextMessage;
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
     @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSSalesEvent")
 })
+@Slf4j
 public class MessageConsumerBean implements MessageListener {
-
-    static final Logger LOG = LoggerFactory.getLogger(MessageConsumerBean.class);
 
     @Inject
     @ReportReceivedEvent
@@ -56,7 +54,7 @@ public class MessageConsumerBean implements MessageListener {
     @Override
     public void onMessage(Message message) {
         MDC.remove("requestId");
-        LOG.info("Message received in sales. Times redelivered: " + getTimesRedelivered(message));
+        log.info("Message received in sales. Times redelivered: " + getTimesRedelivered(message));
         TextMessage textMessage = (TextMessage) message;
         MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
         SalesBaseRequest salesRequest = null;
@@ -64,7 +62,7 @@ public class MessageConsumerBean implements MessageListener {
         try {
             salesRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, SalesBaseRequest.class);
         } catch (SalesMarshallException e) {
-            LOG.error("[ Error when unmarshalling SalesBaseRequest in sales: ] {}", e.getStackTrace());
+            log.error("[ Error when unmarshalling SalesBaseRequest in sales: ] {}", e.getStackTrace());
             errorEvent.fire(new EventMessage(textMessage, "Invalid content in message: " + textMessage));
             return;
         }
@@ -77,7 +75,7 @@ public class MessageConsumerBean implements MessageListener {
 
         EventMessage eventWithOriginalJmsMessage = new EventMessage(salesRequest);
         eventWithOriginalJmsMessage.setJmsMessage(textMessage);
-        LOG.info("Request message method: " + method.value());
+        log.info("Request message method: " + method.value());
         switch (method) {
             case SAVE_REPORT: reportReceivedEvent.fire(new EventMessage(salesRequest)); break;
             case QUERY: queryReceivedEvent.fire(new EventMessage(salesRequest)); break;
