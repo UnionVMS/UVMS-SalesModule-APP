@@ -54,7 +54,7 @@ public class MessageConsumerBean implements MessageListener {
     @Override
     public void onMessage(Message message) {
         MDC.remove("requestId");
-        log.info("Message received in sales. Times redelivered: " + getTimesRedelivered(message));
+        log.debug("Message received in sales. Times redelivered: " + getTimesRedelivered(message));
         TextMessage textMessage = (TextMessage) message;
         MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
         SalesBaseRequest salesRequest = null;
