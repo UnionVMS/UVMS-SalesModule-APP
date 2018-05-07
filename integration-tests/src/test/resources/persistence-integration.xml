@@ -12,14 +12,14 @@
 	<exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.archive.autodetection" value="class" />
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+      <property name="hibernate.dialect" value="${integration.tests.hibernate.dialect}" />
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.format_sql" value="true"/>
       <property name="hibernate.flushMode" value="FLUSH_AUTO" />
       <property name="hibernate.cache.use_query_cache" value="false" />
       <property name="hibernate.cache.use_second_level_cache" value="false" />
       <property name="hibernate.current_session_context_class" value="jta"/>
-      <property name="hibernate.hbm2ddl.auto" value="create" />
+      <property name="hibernate.hbm2ddl.auto" value="${integration.tests.hibernate.hbm2ddl.auto}" />
       <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory"/>
     </properties>
   </persistence-unit>
