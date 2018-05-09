@@ -19,7 +19,7 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NamedQueries({
-        @NamedQuery(name = Document.FIND_BY_EXT_ID, query = "SELECT document from Document document WHERE document.extId = :extId"),
+        @NamedQuery(name = Document.FIND_BY_EXT_ID, query = "SELECT document from Document document WHERE lower(document.extId) = lower(:extId)"),
 })
 public class Document {
 
@@ -39,10 +39,8 @@ public class Document {
     @Column(name = "currency", nullable = false)
     private String currency;
 
-
     @Column(name = "currency_local")
     private String currencyLocal;
-
 
     @Column(name = "total_price_local")
     private BigDecimal totalPriceLocal;
