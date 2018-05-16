@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     @Rule
@@ -167,6 +168,25 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     public void testFindByExtIdWhenNoResultFound() {
         assertFalse(dao.findByExtId("").isPresent());
     }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindByExtId-initial.xml")
+    public void testFindByExtIdWhenExtIdHasUppercase() {
+        assertTrue(dao.findByExtId("ExternalID").isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindByExtId-initial.xml")
+    public void testFindByExtIdWhenExtIdIsAllLowercase() {
+        assertTrue(dao.findByExtId("externalid").isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindByExtId-initial.xml")
+    public void testFindByExtIdWhenExtIdIsAllUppercase() {
+        assertTrue(dao.findByExtId("EXTERNALID").isPresent());
+    }
+
 
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testSearchAndCount-initial-minimal.xml")

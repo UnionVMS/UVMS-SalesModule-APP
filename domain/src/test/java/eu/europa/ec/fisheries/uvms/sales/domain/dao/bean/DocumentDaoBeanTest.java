@@ -10,6 +10,7 @@ import org.junit.rules.ExpectedException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -45,6 +46,30 @@ public class DocumentDaoBeanTest extends AbstractDaoTest<DocumentDaoBean> {
         List<Document> document = dao.findByExtId("This one definitely doesn't exist");
 
         assertTrue(document.isEmpty());
+    }
+
+    @Test
+    @DataSet(initialData = "data/documentDaoBeanTest-testMapping-initial.xml")
+    public void findByExtIdWhenAllUppercase() throws Exception {
+        List<Document> document = dao.findByExtId("DOCUMENTEXTERNALID4");
+
+        assertFalse(document.isEmpty());
+    }
+
+    @Test
+    @DataSet(initialData = "data/documentDaoBeanTest-testMapping-initial.xml")
+    public void findByExtIdWhenIdHasUppercase() throws Exception {
+        List<Document> document = dao.findByExtId("DocumentExternalID4");
+
+        assertFalse(document.isEmpty());
+    }
+
+    @Test
+    @DataSet(initialData = "data/documentDaoBeanTest-testMapping-initial.xml")
+    public void findByExtIdWhenAllLowercase() throws Exception {
+        List<Document> document = dao.findByExtId("documentexternalid4");
+
+        assertFalse(document.isEmpty());
     }
 
 }
