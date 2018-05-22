@@ -180,12 +180,12 @@
                 </configuration>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
+        <testResources>
+            <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
-            </resource>
-        </resources>
+            </testResource>
+        </testResources>
     </build>
 
     <profiles>
