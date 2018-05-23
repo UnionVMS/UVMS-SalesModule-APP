@@ -53,7 +53,7 @@ public class ReferenceDataCache {
         if (cache == null) {
             cache = CacheBuilder.newBuilder()
                     .maximumSize(1000)
-                    .expireAfterWrite(1, TimeUnit.HOURS)
+                    .expireAfterWrite(23, TimeUnit.HOURS)
                     .build(
                             new CacheLoader<MDRCodeListKey, List<ObjectRepresentation>>() {
                                 @Override

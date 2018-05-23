@@ -8,6 +8,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.AssetServiceBeanHel
 import eu.europa.ec.fisheries.wsdl.asset.module.GetAssetModuleResponse;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -16,6 +17,7 @@ import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AssetServiceBean implements AssetService {
@@ -37,6 +39,7 @@ public class AssetServiceBean implements AssetService {
             }
 
             String request = helper.createRequestToFindAssetByCFR(cfr);
+            log.info("Send GetAssetModuleRequest message to Asset");
             response = helper.callAssetModule(request, GetAssetModuleResponse.class);
         } catch (SalesNonBlockingException e) {
             cache.cacheMessage(cfr, null);
@@ -51,6 +54,7 @@ public class AssetServiceBean implements AssetService {
     @Override
     public List<Asset> findByNameOrCFROrIRCS(String searchString) {
         String request = helper.createRequestToFindAssetsByNameOrCFROrIRCS(searchString);
+        log.info("Send AssetListModuleRequest message to Asset");
         ListAssetResponse response = helper.callAssetModule(request, ListAssetResponse.class);
         return response.getAsset(); //yup, getAsset() return a list of assets in this case. I was confused as well.
     }

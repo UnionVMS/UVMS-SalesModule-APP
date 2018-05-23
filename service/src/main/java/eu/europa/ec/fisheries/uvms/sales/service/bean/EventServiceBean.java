@@ -118,6 +118,7 @@ public class EventServiceBean implements EventService {
             }
 
             String marshalledFindReportByIdResponse = SalesModuleRequestMapper.createFindReportByIdResponse(marshalledReport);
+            LOG.info("Send FindReportByIdResponse message to requester");
             salesMessageProducer.sendModuleResponseMessage(event.getJmsMessage(), marshalledFindReportByIdResponse);
         } catch (SalesMarshallException e) {
             throw new SalesServiceException("Something went wrong during marshalling of a FindReportById", e);
@@ -156,6 +157,7 @@ public class EventServiceBean implements EventService {
 
         try {
             String checkForUniqueIdResponse = SalesModuleRequestMapper.createCheckForUniqueIdResponse(response);
+            LOG.info("Send CheckForUniqueIdResponse message to requester");
             salesMessageProducer.sendModuleResponseMessage(event.getJmsMessage(), checkForUniqueIdResponse);
         } catch (SalesMarshallException e) {
             throw new SalesServiceException("Something went wrong during marshalling of a uniqueIdResponse", e);
