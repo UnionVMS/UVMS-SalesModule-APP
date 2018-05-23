@@ -75,4 +75,29 @@ public class QueryDaoBeanTest extends AbstractDaoTest<QueryDaoBean> {
         assertFalse(query.isPresent());
     }
 
+    @Test
+    @DataSet(initialData = "data/queryDaoBeanTest-testCreate-initial.xml")
+    public void findByExtIdWhenAllUppercase() throws Exception {
+        Optional<Query> query = dao.findByExtId("ABC123");
+
+        assertTrue(query.isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/queryDaoBeanTest-testCreate-initial.xml")
+    public void findByExtIdWhenIdHasUppercase() throws Exception {
+        Optional<Query> query = dao.findByExtId("AbC123");
+
+        assertTrue(query.isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/queryDaoBeanTest-testCreate-initial.xml")
+    public void findByExtIdWhenAllLowercase() throws Exception {
+        Optional<Query> query = dao.findByExtId("abc123");
+
+        assertTrue(query.isPresent());
+    }
+
+
 }

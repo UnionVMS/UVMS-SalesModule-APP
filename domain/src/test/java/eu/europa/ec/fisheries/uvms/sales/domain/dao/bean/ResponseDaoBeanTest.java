@@ -76,4 +76,55 @@ public class ResponseDaoBeanTest extends AbstractDaoTest<ResponseDaoBean> {
         assertFalse(response.isPresent());
     }
 
+
+    @Test
+    @DataSet(initialData = "data/responseDaoBeanTest-testFindByExtId-initial.xml")
+    public void findByExtIdWhenAllUppercase() throws Exception {
+        Optional<Response> response = dao.findByExtId("ABC123");
+
+        assertTrue(response.isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/responseDaoBeanTest-testFindByExtId-initial.xml")
+    public void findByExtIdWhenIdHasUppercase() throws Exception {
+        Optional<Response> response = dao.findByExtId("AbC123");
+
+        assertTrue(response.isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/responseDaoBeanTest-testFindByExtId-initial.xml")
+    public void findByExtIdWhenAllLowercase() throws Exception {
+        Optional<Response> response = dao.findByExtId("abc123");
+
+        assertTrue(response.isPresent());
+    }
+
+
+    @Test
+    @DataSet(initialData = "data/responseDaoBeanTest-testFindByExtId-initial.xml")
+    public void findByReferencedIdWhenAllUppercase() throws Exception {
+        Optional<Response> response = dao.findByReferencedId("FIND ME");
+
+        assertTrue(response.isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/responseDaoBeanTest-testFindByExtId-initial.xml")
+    public void findByReferencedIdWhenIdHasUppercase() throws Exception {
+        Optional<Response> response = dao.findByReferencedId("FiNd Me");
+
+        assertTrue(response.isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/responseDaoBeanTest-testFindByExtId-initial.xml")
+    public void findByReferencedIdWhenAllLowercase() throws Exception {
+        Optional<Response> response = dao.findByReferencedId("find me");
+
+        assertTrue(response.isPresent());
+    }
+
+
 }

@@ -15,8 +15,8 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode
 @ToString
 @NamedQueries({
-        @NamedQuery(name = Response.FIND_BY_EXT_ID, query = "SELECT response from Response response WHERE response.extId = :extId"),
-        @NamedQuery(name = Response.FIND_BY_REFERENCED_ID, query = "SELECT response from Response response WHERE response.referencedId = :referencedId")
+        @NamedQuery(name = Response.FIND_BY_EXT_ID, query = "SELECT response from Response response WHERE lower(response.extId) = lower(:extId)"),
+        @NamedQuery(name = Response.FIND_BY_REFERENCED_ID, query = "SELECT response from Response response WHERE lower(response.referencedId) = lower(:referencedId)")
 })
 public class Response {
 
