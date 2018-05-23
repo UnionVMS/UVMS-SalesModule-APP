@@ -33,6 +33,8 @@ public class ObjectRepresentationToReferenceTerritoryCustomMapper extends Custom
                 case "enName":
                     referenceTerritory.setEnglishName(field.getColumnValue());
                     break;
+                default:
+                    break;
             }
         }
     }

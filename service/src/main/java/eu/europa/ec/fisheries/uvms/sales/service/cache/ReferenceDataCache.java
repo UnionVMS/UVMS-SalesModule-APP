@@ -50,12 +50,15 @@ public class ReferenceDataCache {
 
     @PostConstruct
     public void init() {
-        if (cache == null) {
-            cache = CacheBuilder.newBuilder()
-                    .maximumSize(1000)
-                    .expireAfterWrite(23, TimeUnit.HOURS)
-                    .build(
-                            new CacheLoader<MDRCodeListKey, List<ObjectRepresentation>>() {
+        if (cache != null) {
+            return;
+        }
+
+        cache = CacheBuilder.newBuilder()
+                .maximumSize(1000)
+                .expireAfterWrite(23, TimeUnit.HOURS)
+                .build(
+                        new CacheLoader<MDRCodeListKey, List<ObjectRepresentation>>() {
                                 @Override
                                 public List<ObjectRepresentation> load(MDRCodeListKey key) throws Exception {
                                     try {
@@ -65,9 +68,8 @@ public class ReferenceDataCache {
                                         return Lists.newArrayList();
                                     }
                                 }
-                            }
+                        }
                     );
-        }
     }
 
     public List<ReferenceTerritory> getFlagStates() {
