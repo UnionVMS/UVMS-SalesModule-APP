@@ -82,6 +82,10 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
+            <artifactId>exchange-model</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>ma.glasnost.orika</groupId>

@@ -18,6 +18,7 @@ public class SalesServiceTestHelper {
     private static final long TIMEOUT = 60000;
 
     private Queue rulesEventQueue;
+    private Queue exchangeEventQueue;
     private Queue salesEventQueue;
     private Queue replyToRulesQueue;
     private Queue replyToSalesQueue;
@@ -29,6 +30,7 @@ public class SalesServiceTestHelper {
         connectionFactory = JMSUtils.lookupConnectionFactory();
         rulesEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_MODULE_RULES);
         salesEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES_EVENT);
+        exchangeEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_EXCHANGE_EVENT);
         replyToRulesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_RULES);
         replyToSalesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
     }
@@ -140,6 +142,10 @@ public class SalesServiceTestHelper {
      * */
     public TextMessage receiveMessageFromRulesEventQueue() {
         return receiveTextMessageNoMessageExpiry(rulesEventQueue);
+    }
+
+    public TextMessage receiveMessageFromExchangeEventQueue() {
+        return receiveTextMessageNoMessageExpiry(exchangeEventQueue);
     }
 
     /**

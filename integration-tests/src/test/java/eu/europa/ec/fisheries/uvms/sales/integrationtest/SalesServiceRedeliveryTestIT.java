@@ -5,7 +5,7 @@ import eu.europa.ec.fisheries.schema.sales.CheckForUniqueIdResponse;
 import eu.europa.ec.fisheries.schema.sales.SalesIdType;
 import eu.europa.ec.fisheries.schema.sales.SalesMessageIdType;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
-import eu.europa.ec.fisheries.uvms.sales.integrationtest.alternative.bean.SetTransactionRollbackRulesServiceAlternativeBean;
+import eu.europa.ec.fisheries.uvms.sales.integrationtest.alternative.bean.SetTransactionRollbackOutgoingMessageServiceAlternativeBean;
 import eu.europa.ec.fisheries.uvms.sales.integrationtest.deployment.MessageRedeliveryTestDeployment;
 import eu.europa.ec.fisheries.uvms.sales.integrationtest.test.factory.SalesTestMessageFactory;
 import eu.europa.ec.fisheries.uvms.sales.integrationtest.test.helper.SalesServiceTestHelper;
@@ -80,8 +80,8 @@ public class SalesServiceRedeliveryTestIT extends MessageRedeliveryTestDeploymen
         assertNull(sendSalesResponseRequestMessage);
 
         // Redelivery should not occur
-        assertEquals(1L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackRulesServiceAlternativeBean.KEY_SEND_RESPONSE_TO_RULES));
-        assertEquals(1L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackRulesServiceAlternativeBean.KEY_SEND_REPORT_TO_RULES));
+        assertEquals(1L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackOutgoingMessageServiceAlternativeBean.KEY_SEND_RESPONSE_TO_RULES));
+        assertEquals(1L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackOutgoingMessageServiceAlternativeBean.KEY_SEND_REPORT_TO_EXCHANGE));
     }
 
     //------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ public class SalesServiceRedeliveryTestIT extends MessageRedeliveryTestDeploymen
         assertNull(sendSalesResponseRequestMessage);
 
         // JMS Redelivery 10 + 1
-        assertEquals(11L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackRulesServiceAlternativeBean.KEY_SEND_RESPONSE_TO_RULES));
+        assertEquals(11L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackOutgoingMessageServiceAlternativeBean.KEY_SEND_RESPONSE_TO_RULES));
 
 
         // Assert use case: unique ID should be true for previous respondToInvalidMessageRequest failed redelivery attempts

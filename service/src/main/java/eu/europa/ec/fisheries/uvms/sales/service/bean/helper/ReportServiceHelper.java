@@ -9,7 +9,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
-import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
+import eu.europa.ec.fisheries.uvms.sales.service.OutgoingMessageService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 
 import javax.ejb.EJB;
@@ -35,10 +35,11 @@ public class ReportServiceHelper {
     private ReportHelper reportHelper;
 
     @EJB
-    private RulesService rulesService;
+    private ReportDomainModel reportDomainModel;
 
     @EJB
-    private ReportDomainModel reportDomainModel;
+    private OutgoingMessageService outgoingMessageService;
+
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendResponseToSenderOfReport(Report report,
@@ -48,7 +49,7 @@ public class ReportServiceHelper {
         try {
             FLUXSalesResponseMessage responseToSender = fluxSalesResponseMessageFactory.create(report, validationResults, messageValidationStatus);
             String senderOfReport = reportHelper.getFLUXReportDocumentOwnerId(report);
-            rulesService.sendResponseToRules(responseToSender, senderOfReport, pluginToSendResponseThrough);
+            outgoingMessageService.sendResponse(responseToSender, senderOfReport, pluginToSendResponseThrough);
         } catch (Exception e) {
             throw new SalesNonBlockingException("Rolling back transaction in sendResponseToSenderOfReport", e);
         }
@@ -66,10 +67,10 @@ public class ReportServiceHelper {
 
             if (reportHelper.isFirstSaleOrNegotiatedSale(originalReport) && salesLocationCountry.equals(countryOfHost)) {
                 if (!vesselFlagState.equals(countryOfHost)) {
-                    rulesService.sendReportToRules(report.getFLUXSalesReportMessage(), vesselFlagState, pluginToSendResponseThrough);
+                    outgoingMessageService.forwardReport(report.getFLUXSalesReportMessage(), vesselFlagState, pluginToSendResponseThrough);
                 }
                 if (!landingCountry.equals(countryOfHost) && !landingCountry.equals(vesselFlagState)) {
-                    rulesService.sendReportToRules(report.getFLUXSalesReportMessage(), landingCountry, pluginToSendResponseThrough);
+                    outgoingMessageService.forwardReport(report.getFLUXSalesReportMessage(), landingCountry, pluginToSendResponseThrough);
                 }
             }
         } catch (Exception e) {
