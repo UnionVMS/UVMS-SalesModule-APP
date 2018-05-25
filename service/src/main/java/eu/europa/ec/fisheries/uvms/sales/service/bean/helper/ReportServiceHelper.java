@@ -11,6 +11,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingExcepti
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.OutgoingMessageService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -22,6 +23,7 @@ import java.util.List;
  * Class who's only purpose is to hide low-level logic from the ReportServiceBean.
  * Should not be used by any other class!
  */
+@Slf4j
 @Stateless
 public class ReportServiceHelper {
 
@@ -67,9 +69,11 @@ public class ReportServiceHelper {
 
             if (reportHelper.isFirstSaleOrNegotiatedSale(originalReport) && salesLocationCountry.equals(countryOfHost)) {
                 if (!vesselFlagState.equals(countryOfHost)) {
+                    log.info("Forward sales report for vessel flag state: " + vesselFlagState);
                     outgoingMessageService.forwardReport(report.getFLUXSalesReportMessage(), vesselFlagState, pluginToSendResponseThrough);
                 }
                 if (!landingCountry.equals(countryOfHost) && !landingCountry.equals(vesselFlagState)) {
+                    log.info("Forward sales report for landing country: " + landingCountry);
                     outgoingMessageService.forwardReport(report.getFLUXSalesReportMessage(), landingCountry, pluginToSendResponseThrough);
                 }
             }

@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingExcepti
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.EcbProxyRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 
 import javax.ejb.EJB;
@@ -20,6 +21,7 @@ import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import java.math.BigDecimal;
 
+@Slf4j
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EcbProxyServiceBean implements EcbProxyService {
@@ -53,8 +55,10 @@ public class EcbProxyServiceBean implements EcbProxyService {
 
     private <T> T callEcbProxy(String request, Class<T> returnType) {
         try {
+            log.info("Send GetExchangeRateRequest message to ECB proxy");
             String messageId = messageProducer.sendModuleMessage(request, Union.ECB_PROXY);
             TextMessage responseText = receiver.getMessage(messageId, TextMessage.class, TIMEOUT);
+            log.info("Received response");
             return unmarshallTextMessage(responseText, returnType);
         } catch (MessageException e) {
             throw new SalesNonBlockingException("Could not contact the ECB proxy Module", e);

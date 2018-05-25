@@ -18,6 +18,11 @@
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.artifactId}/${project.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.artifactId}/${project.artifactId}-error.log</application.error.logfile>
+        <integration.tests.hibernate.dialect>org.hibernate.dialect.H2Dialect</integration.tests.hibernate.dialect>
+        <integration.tests.hibernate.hbm2ddl.auto>create</integration.tests.hibernate.hbm2ddl.auto>
+        <integration.tests.wildfly-remote.host>localhost</integration.tests.wildfly-remote.host>
+        <integration.tests.wildfly-remote.port>8080</integration.tests.wildfly-remote.port>
+        <integration.tests.wildfly-remote.managementPort>9990</integration.tests.wildfly-remote.managementPort>
     </properties>
 
     <dependencyManagement>
@@ -221,6 +226,16 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>jenkins</id>
+            <properties>
+                <integration.tests.hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</integration.tests.hibernate.dialect>
+                <integration.tests.hibernate.hbm2ddl.auto></integration.tests.hibernate.hbm2ddl.auto>
+                <integration.tests.wildfly-remote.host></integration.tests.wildfly-remote.host>
+                <integration.tests.wildfly-remote.port>8080</integration.tests.wildfly-remote.port>
+                <integration.tests.wildfly-remote.managementPort>9990</integration.tests.wildfly-remote.managementPort>
+            </properties>
         </profile>
     </profiles>
 
