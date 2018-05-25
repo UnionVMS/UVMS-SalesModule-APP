@@ -10,12 +10,9 @@ import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
-import eu.europa.ec.fisheries.uvms.sales.service.ExchangeService;
 import eu.europa.ec.fisheries.uvms.sales.service.OutgoingMessageService;
-import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -25,7 +22,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReportServiceHelperTest {
@@ -41,9 +37,6 @@ public class ReportServiceHelperTest {
 
     @Mock
     private ConfigService configService;
-
-//    @Mock
-//    private RulesService rulesService;
 
     @Mock
     private ReportDomainModel reportDomainModel;
