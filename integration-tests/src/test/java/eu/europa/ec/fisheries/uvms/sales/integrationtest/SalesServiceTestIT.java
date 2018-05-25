@@ -127,8 +127,8 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 
 		// Data
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0311";
-		String vesselFlagState = "BE3";
-		String landingCountry = "BE2";
+		String vesselFlagState = "BEL";
+		String landingCountry = "BEL";
 		String salesReportRequest = salesTestMessageFactory.composeSalesReportRequestAsString(messageGuid, vesselFlagState, landingCountry);
 
 		//Execute, save report for MessageConsumerBean
@@ -141,35 +141,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		FLUXSalesResponseMessage fluxSalesResponseMessage = salesServiceTestHelper.getSalesModelBean(sendSalesResponseRequest.getRequest(), FLUXSalesResponseMessage.class);
 		assertEquals(messageGuid, fluxSalesResponseMessage.getFLUXResponseDocument().getReferencedID().getValue());
 
-
-		// Test data
-
-		// Assert use case, find report by id, sales report should exist for previously saved sales report
-
-		// Assert use case, forward SendSalesReportRequest to vessel flag state non-local member state
-		TextMessage vesselFlagStateTextMessage = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
-		assertNotNull(vesselFlagStateTextMessage);
-		SendSalesReportRequest vesselFlagStateSendSalesReportRequest = salesServiceTestHelper.getSalesModelBean(vesselFlagStateTextMessage.getText(), SendSalesReportRequest.class);
-		assertEquals(vesselFlagState, vesselFlagStateSendSalesReportRequest.getRecipient());
-
-		FLUXSalesReportMessage vesselFlagStateFLUXSalesReportMessage = salesServiceTestHelper.getSalesModelBean(vesselFlagStateSendSalesReportRequest.getRequest(), FLUXSalesReportMessage.class);
-		assertNotNull("vesselFlagStateFLUXSalesReportMessage: " + vesselFlagStateFLUXSalesReportMessage);
-		assertEquals(messageGuid, vesselFlagStateFLUXSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
-
-
-		// Assert use case, forward SendSalesReportRequest to landing country non-local member state
-		TextMessage landingCountryTextMessage = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
-		assertNotNull(landingCountryTextMessage);
-		SendSalesReportRequest landingCountrySendSalesReportRequest = salesServiceTestHelper.getSalesModelBean(landingCountryTextMessage.getText(), SendSalesReportRequest.class);
-		assertEquals(landingCountry, landingCountrySendSalesReportRequest.getRecipient());
-
-		FLUXSalesReportMessage landingCountryStateFLUXSalesReportMessage = salesServiceTestHelper.getSalesModelBean(vesselFlagStateSendSalesReportRequest.getRequest(), FLUXSalesReportMessage.class);
-		assertNotNull("landingCountryStateFLUXSalesReportMessage: " + landingCountryStateFLUXSalesReportMessage);
-		assertEquals(messageGuid, landingCountryStateFLUXSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
-
-
 		// Assert use case, find report by id, should be saved in database
-
 		String findReportByIdRequestMessage = SalesModuleRequestMapper.createFindReportByIdRequest(messageGuid);
 
 		// Execute
@@ -370,6 +342,20 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 
 	}
 
+	@InSequence(8)
+	@Test
+	@OperateOnDeployment("salesservice")
+	@Transactional(TransactionMode.DISABLED)
+	@DataSource("java:/jdbc/uvms_sales")
+	public void testSalesMessageConsumer_Save_Report_Original_And_Send_To_Other_Party() throws Exception {
+
+		//wait until config had the chance to sync
+		Thread.sleep(10000L);
+
+		testSalesMessageConsumer_Save_Report_And_Send_To_Other_Party();
+
+	}
+
 	private void testSalesMessageConsumer_Save_Report_Original() throws Exception {
 		// Data
 		String messageGuid = "63ce0d5d-c313-45a3-986b-3e6fed6fecf2";
@@ -406,6 +392,36 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		FLUXSalesReportMessage fluxSalesReportMessage = salesServiceTestHelper.getSalesModelBean(findReportByIdResponse.getReport(), FLUXSalesReportMessage.class);
 		assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
 		assertEquals("BEL-SN-63ce0d5d-c313-45a3-986b-3e6fed6fecf2", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
+	}
+
+	private void testSalesMessageConsumer_Save_Report_And_Send_To_Other_Party() throws Exception {
+		// Data
+		String messageGuid = "15108560-8226-40ae-953e-df987e220249";
+
+		String request = salesTestMessageFactory.composeFLUXSalesReportMessageSendToOtherPartyAsString();
+		String messageValidationStatus = "OK";
+		String pluginToSendResponseThrough = "BELGIAN_SALES";
+		List<ValidationQualityAnalysisType> validationQualityAnalysisList = new ArrayList<>();
+		String salesReportRequest = SalesModuleRequestMapper.createSalesReportRequest(request, messageValidationStatus, validationQualityAnalysisList, pluginToSendResponseThrough);
+
+		// Execute, save report for MessageConsumerBean
+		salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(salesReportRequest, salesServiceTestHelper.getReplyToRulesQueue());
+
+		// Assert, receive FLUXSalesResponseMessage
+		TextMessage textMessageSendSalesResponseRequest = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
+		assertNotNull(textMessageSendSalesResponseRequest);
+		SendSalesResponseRequest sendSalesResponseRequest = salesServiceTestHelper.getSalesModelBean(textMessageSendSalesResponseRequest.getText(), SendSalesResponseRequest.class);
+		FLUXSalesResponseMessage fluxSalesResponseMessage = salesServiceTestHelper.getSalesModelBean(sendSalesResponseRequest.getRequest(), FLUXSalesResponseMessage.class);
+		assertEquals(messageGuid, fluxSalesResponseMessage.getFLUXResponseDocument().getReferencedID().getValue());
+
+
+		// Receive report sent to other party
+		TextMessage textMessageSendSalesReportRequest = salesServiceTestHelper.receiveMessageFromExchangeEventQueue();
+		assertNotNull(textMessageSendSalesReportRequest);
+		eu.europa.ec.fisheries.schema.exchange.module.v1.SendSalesReportRequest sendSalesReportRequest = salesServiceTestHelper.getSalesModelBean(textMessageSendSalesReportRequest.getText(), eu.europa.ec.fisheries.schema.exchange.module.v1.SendSalesReportRequest.class);
+		Report fluxSalesReportMessageToOtherParty = salesServiceTestHelper.getSalesModelBean(sendSalesReportRequest.getReport(), Report.class);
+		assertEquals(messageGuid, fluxSalesReportMessageToOtherParty.getFLUXSalesReportMessage().getFLUXReportDocument().getIDS().get(0).getValue());
+		assertEquals("NLD", sendSalesReportRequest.getSenderOrReceiver());
 	}
 
 	private void testSalesMessageConsumer_Save_Report_Corrected() throws Exception {
