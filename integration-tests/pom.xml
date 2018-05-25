@@ -9,7 +9,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
         <artifactId>sales</artifactId>
-        <version>1.0.14-SNAPSHOT</version>
+        <version>1.0.14</version>
     </parent>
 
     <properties>
@@ -231,8 +231,8 @@
             <id>jenkins</id>
             <properties>
                 <integration.tests.hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</integration.tests.hibernate.dialect>
-                <integration.tests.hibernate.hbm2ddl.auto></integration.tests.hibernate.hbm2ddl.auto>
-                <integration.tests.wildfly-remote.host></integration.tests.wildfly-remote.host>
+                <integration.tests.hibernate.hbm2ddl.auto />
+                <integration.tests.wildfly-remote.host />
                 <integration.tests.wildfly-remote.port>8080</integration.tests.wildfly-remote.port>
                 <integration.tests.wildfly-remote.managementPort>9990</integration.tests.wildfly-remote.managementPort>
             </properties>
