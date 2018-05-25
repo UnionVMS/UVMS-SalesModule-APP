@@ -18,7 +18,7 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NamedQueries({
-        @NamedQuery(name = Query.FIND_BY_EXT_ID, query = "SELECT query from Query query WHERE query.extId = :extId"),
+        @NamedQuery(name = Query.FIND_BY_EXT_ID, query = "SELECT query from Query query WHERE lower(query.extId) = lower(:extId)"),
 })
 public class Query {
 

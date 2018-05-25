@@ -48,6 +48,7 @@ public class RulesServiceBean implements RulesService {
 
             String request = RulesModuleRequestMapper.createSendSalesResponseRequest(responseAsString, responseGuid, recipient, pluginToSendResponseThrough, dataFlow, now);
             String messageSelector = "SendSalesResponseRequest";
+            log.info("Send SendSalesResponseRequest message to Rules");
             messageProducer.sendModuleMessage(request, Union.RULES, messageSelector);
 
         } catch (RulesModelMarshallException | SalesMarshallException | MessageException e) {
@@ -66,7 +67,8 @@ public class RulesServiceBean implements RulesService {
 
             String request = RulesModuleRequestMapper.createSendSalesReportRequest(reportAsString, reportGuid, recipient, pluginToSendResponseThrough, fluxDataFlow, now);
             String messageSelector = "SendSalesReportRequest";
-            messageProducer.sendModuleMessage(request, Union.RULES);
+            log.info("Send SendSalesReportRequest message to Rules");
+            messageProducer.sendModuleMessage(request, Union.RULES, messageSelector);
 
         } catch (RulesModelMarshallException | SalesMarshallException | MessageException e) {
             throw new SalesServiceException("Could not send the sales report to Rules", e);

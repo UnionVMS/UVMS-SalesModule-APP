@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.service.MDRService;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
+import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.mdr.communication.MdrGetCodeListResponse;
 import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 
@@ -32,11 +33,12 @@ import javax.jms.TextMessage;
 import javax.xml.bind.JAXBException;
 import java.util.List;
 
+@Slf4j
 @Singleton
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MDRServiceBean implements MDRService {
 
-    private static final long TIMEOUT = 30000;
+    private static final long TIMEOUT = 180000;
 
     @EJB
     private MessageConsumer consumer;
@@ -47,10 +49,11 @@ public class MDRServiceBean implements MDRService {
     public List<ObjectRepresentation> findCodeList(MDRCodeListKey acronym) {
         try {
             String request = MdrModuleMapper.createFluxMdrGetCodeListRequest(acronym.getInternalName());
+            log.info("Send MdrGetCodeListRequest message to MDR. Acronym: " + acronym.name());
             String correlationId = producer.sendModuleMessage(request, Union.MDR);
 
             TextMessage message = consumer.getMessage(correlationId, TextMessage.class, TIMEOUT);
-
+            log.info("Received response message");
             MdrGetCodeListResponse response = JAXBUtils.unMarshallMessage(message.getText(), MdrGetCodeListResponse.class);
             return response.getDataSets();
         } catch (MdrModelMarshallException | JAXBException | MessageException | JMSException e) {

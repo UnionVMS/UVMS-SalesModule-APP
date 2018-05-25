@@ -29,7 +29,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PowerMockIgnore( {"javax.management.*"})
 public class MDRServiceBeanTest {
 
-    private static final long TIMEOUT = 30000;
+    private static final long TIMEOUT = 180000;
 
     @InjectMocks
     private MDRServiceBean mdrServiceBean;

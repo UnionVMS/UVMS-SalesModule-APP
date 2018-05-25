@@ -10,7 +10,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
-import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
+import eu.europa.ec.fisheries.uvms.sales.service.OutgoingMessageService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
 import org.junit.Test;
@@ -39,10 +39,10 @@ public class ReportServiceHelperTest {
     private ConfigService configService;
 
     @Mock
-    private RulesService rulesService;
+    private ReportDomainModel reportDomainModel;
 
     @Mock
-    private ReportDomainModel reportDomainModel;
+    private OutgoingMessageService outgoingMessageService;
 
     @Test
     public void testSendResponseToSenderOfReport() throws Exception {
@@ -64,8 +64,8 @@ public class ReportServiceHelperTest {
         //verify
         verify(fluxSalesResponseMessageFactory).create(report, validationResults, messageValidationResult);
         verify(reportHelper).getFLUXReportDocumentOwnerId(report);
-        verify(rulesService).sendResponseToRules(responseToSender, senderOfReport, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).sendResponse(responseToSender, senderOfReport, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -164,7 +164,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -197,7 +197,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -230,7 +230,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -266,9 +266,9 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -304,8 +304,8 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -341,8 +341,8 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -378,7 +378,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService);
     }
 
     @Test
@@ -414,8 +414,8 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -458,9 +458,9 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -505,9 +505,9 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -549,7 +549,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService);
     }
 
     @Test
@@ -593,7 +593,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService);
     }
 
     @Test
@@ -648,9 +648,9 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -704,7 +704,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService);
     }
 
 }

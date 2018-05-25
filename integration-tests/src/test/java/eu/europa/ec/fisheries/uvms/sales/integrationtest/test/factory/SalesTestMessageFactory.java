@@ -686,6 +686,10 @@ public class SalesTestMessageFactory {
         return getTestDataFromFile("test-data/corrections.txt");
     }
 
+    public String composeFLUXSalesReportMessageSendToOtherPartyAsString() {
+        return getTestDataFromFile("test-data/report_original_send_to_other_party.xml");
+    }
+
     private String getTestDataFromFile(String fileName) {
         try {
             InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
