@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
         sequenceName = "sales_unsaved_message_id_seq",
         allocationSize = 50)
 @NamedQueries({
-        @NamedQuery(name = UnsavedMessage.FIND, query = "SELECT unsavedMessage from UnsavedMessage unsavedMessage WHERE unsavedMessage.extId = :extId")
+        @NamedQuery(name = UnsavedMessage.FIND, query = "SELECT unsavedMessage from UnsavedMessage unsavedMessage WHERE lower(unsavedMessage.extId) = lower(:extId)")
 })
 @EqualsAndHashCode
 @ToString

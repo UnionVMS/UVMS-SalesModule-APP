@@ -19,6 +19,7 @@ public abstract class StandardTestDeployment {
         standardTestWebArchive.addAsResource("test-data/report_original.txt", "test-data/report_original.txt");
         standardTestWebArchive.addAsResource("test-data/before_corrections.txt", "test-data/before_corrections.txt");
         standardTestWebArchive.addAsResource("test-data/corrections.txt", "test-data/corrections.txt");
+        standardTestWebArchive.addAsResource("test-data/report_original_send_to_other_party.xml", "test-data/report_original_send_to_other_party.xml");
 
         return standardTestWebArchive;
     }

@@ -19,12 +19,12 @@ import java.util.List;
 @EqualsAndHashCode(exclude = {"relatedTakeOverDocuments", "relatedSalesNotes"})
 @ToString(exclude = {"relatedTakeOverDocuments", "relatedSalesNotes"})
 @NamedQueries({
-        @NamedQuery(name = FluxReport.FIND_BY_EXT_ID, query = "SELECT report from FluxReport report WHERE report.extId = :extId"),
+        @NamedQuery(name = FluxReport.FIND_BY_EXT_ID, query = "SELECT report from FluxReport report WHERE lower(report.extId) = lower(:extId)"),
         @NamedQuery(name = FluxReport.FIND_BY_REFERENCED_ID_AND_PURPOSE,
                 query = "SELECT report from FluxReport report " +
-                        "WHERE report.previousFluxReportExtId = :extId " +
+                        "WHERE lower(report.previousFluxReportExtId) = lower(:extId) " +
                         "and report.purpose = :purpose"),
-        @NamedQuery(name = FluxReport.FIND_TOD_BY_EXT_ID, query = "SELECT report from FluxReport report WHERE report.extId = :extId AND report.itemType = eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType.TAKE_OVER_DOCUMENT")
+        @NamedQuery(name = FluxReport.FIND_TOD_BY_EXT_ID, query = "SELECT report from FluxReport report WHERE lower(report.extId) = lower(:extId) AND report.itemType = eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType.TAKE_OVER_DOCUMENT")
 })
 public class FluxReport {
 

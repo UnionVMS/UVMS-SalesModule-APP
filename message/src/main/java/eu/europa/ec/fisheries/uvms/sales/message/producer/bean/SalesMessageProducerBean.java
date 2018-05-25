@@ -45,8 +45,6 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
     @Override
     public void sendModuleResponseMessage(TextMessage originalJMSMessage, String messageToBeSent) throws MessageException {
         try {
-            LOG.info("Sending message back to recipient from Sales with correlationId {} on queue: {}", originalJMSMessage.getJMSMessageID(),
-                    originalJMSMessage.getJMSReplyTo());
             rulesMessageProducerBean.sendResponseMessageToSender(originalJMSMessage, messageToBeSent);
 
         } catch (Exception e) {

@@ -27,7 +27,7 @@ public class ConfigModuleGhostServer implements MessageListener {
     @Override
     public void onMessage(Message message) {
         try {
-            log.error("Configuration ghost server received message, sending back message on queue: "
+            log.info("Configuration ghost server received message, sending back message on queue: "
                             + message.getJMSReplyTo() + " with correlationId: " + message.getJMSMessageID());
 
             producer.sendMessage(PULL_SETTINGS_RESPONSE, message.getJMSReplyTo(), message.getJMSMessageID());

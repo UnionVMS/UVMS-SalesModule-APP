@@ -120,7 +120,7 @@ public class RulesServiceBeanTest {
 
         verify(configService).getParameter(ParameterKey.FLUX_DATA_FLOW);
         verify(reportHelper).getId(report);
-        verify(messageProducer).sendModuleMessage(request, Union.RULES);
+        verify(messageProducer).sendModuleMessage(request, Union.RULES, "SendSalesReportRequest");
 
         verifyStatic();
         RulesModuleRequestMapper.createSendSalesReportRequest(eq(reportAsString), eq(reportGuid), eq(recipient), eq(pluginToSendResponseThrough), eq(fluxDataFlow), isA(Date.class));

@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ConversionFactor;
-import eu.europa.ec.fisheries.uvms.sales.service.dto.cache.ReferenceTerritory;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
 import un.unece.uncefact.data.standard.mdr.communication.ColumnDataType;
@@ -41,6 +40,8 @@ public class ObjectRepresentationToConversionFactorCustomMapper extends CustomMa
                     break;
                 case "presentation":
                     conversionFactor.setPresentation(columnValue);
+                    break;
+                default:
                     break;
             }
         }

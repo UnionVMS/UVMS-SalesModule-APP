@@ -66,55 +66,35 @@ public class TestDeploymentFactory {
 
         boolean isAddRecursivelyTrue = true;
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.commons.message");
-
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.domain");
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.message");
-
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.dto");
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.mapper");
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.converter");
-
         archive.addClass(QueryService.class).addClass(QueryServiceBean.class);
-
         archive.addClass(UniqueIdService.class).addClass(UniqueIdServiceBean.class);
-
         archive.addClass(ReportService.class).addClass(ReportServiceBean.class);
-
         archive.addClass(eu.europa.ec.fisheries.uvms.sales.service.AssetCache.class).addClass(eu.europa.ec.fisheries.uvms.sales.service.bean.AssetCacheBean.class);
-
         archive.addClass(ReportServiceHelper.class);
-
         archive.addClass(EcbProxyService.class).addClass(EcbProxyServiceBean.class);
-
         archive.addClass(MDRCodeListKey.class);
         archive.addClass(MDRService.class).addClass(MDRServiceBean.class);
-
         archive.addClass(ReferenceDataCache.class);
-
         archive.addClass(SalesDetailsHelper.class);
-
         archive.addClass(AssetServiceBeanHelper.class);
         archive.addClass(AssetService.class).addClass(AssetServiceBean.class);
-
         archive.addClass(SearchReportsHelper.class);
-
         archive.addClass(ReportServiceExportHelper.class);
-
         archive.addClass(ReportService.class).addClass(ReportServiceBean.class);
-
         archive.addClass(Union.class);
         archive.addClass(SalesMessageProducer.class).addClass(SalesMessageProducerBean.class);
-
         archive.addClass(RulesService.class).addClass(RulesServiceBean.class);
-
         archive.addClass(ConfigService.class).addClass(ConfigServiceBean.class);
-
         archive.addClass(FLUXSalesResponseMessageFactory.class);
-
         archive.addClass(UnsavedMessageService.class).addClass(UnsavedMessageServiceBean.class);
-
         archive.addClass(EventService.class).addClass(EventServiceBean.class);
-
+        archive.addClass(ExchangeService.class).addClass(ExchangeServiceBean.class);
+        archive.addClass(OutgoingMessageService.class).addClass(OutgoingMessageServiceBean.class);
         archive.addClass(MessageConsumerBean.class);
 
         return archive;
