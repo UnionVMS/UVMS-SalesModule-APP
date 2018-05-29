@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.OutgoingMessageService;
+import eu.europa.ec.fisheries.uvms.sales.service.ResponseService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,6 +43,9 @@ public class ReportServiceHelper {
     @EJB
     private OutgoingMessageService outgoingMessageService;
 
+    @EJB
+    private ResponseService responseService;
+
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendResponseToSenderOfReport(Report report,
@@ -51,6 +55,10 @@ public class ReportServiceHelper {
         try {
             FLUXSalesResponseMessage responseToSender = fluxSalesResponseMessageFactory.create(report, validationResults, messageValidationStatus);
             String senderOfReport = reportHelper.getFLUXReportDocumentOwnerId(report);
+
+            //Save the outgoing response
+            responseService.saveResponse(responseToSender.getFLUXResponseDocument());
+
             outgoingMessageService.sendResponse(responseToSender, senderOfReport, pluginToSendResponseThrough);
         } catch (Exception e) {
             throw new SalesNonBlockingException("Rolling back transaction in sendResponseToSenderOfReport", e);
