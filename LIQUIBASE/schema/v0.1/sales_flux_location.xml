@@ -39,5 +39,20 @@
         </rollback>
         
     </changeSet>
-        
+
+    <changeSet author="stihft" id="fll-02">
+        <createIndex
+                indexName="sales_flux_location_i_1"
+                tableName="sales_flux_location">
+            <column name="sales_address_id" type="integer"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="sales_flux_location_i_1"
+                    tableName="sales_flux_location"/>
+        </rollback>
+    </changeSet>
+
+
 </databaseChangeLog>

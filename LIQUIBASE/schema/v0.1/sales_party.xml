@@ -36,4 +36,18 @@
 
     </changeSet>
 
+    <changeSet author="stihft" id="par-02">
+        <createIndex
+                indexName="sales_party_i_1"
+                tableName="sales_party">
+            <column name="sales_address_id" type="integer"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex
+                    indexName="sales_party_i_1"
+                    tableName="sales_party"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
