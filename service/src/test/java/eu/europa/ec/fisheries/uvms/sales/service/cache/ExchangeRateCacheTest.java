@@ -30,7 +30,8 @@ public class ExchangeRateCacheTest {
         DateTime dateTime = new DateTime(2018,05,30,6,59, DateTimeZone.UTC);
         DateTime dateTimeMinusOneDay = new DateTime(2018,05,29,6,59, DateTimeZone.UTC);
         DateTime dateTimeMinusPlusOneDay = new DateTime(2018,05,31,6,59, DateTimeZone.UTC);
-        assertEquals("DKK|30/05/18|EUR", exchangeRateCache.getCacheKey(sourceCurrency, targetCurrency, dateTime));
+        assertTrue("DKK|30/05/18|EUR".equals(exchangeRateCache.getCacheKey(sourceCurrency, targetCurrency, dateTime))
+                || "DKK|5/30/18|EUR".equals(exchangeRateCache.getCacheKey(sourceCurrency, targetCurrency, dateTime)));
         assertFalse(exchangeRateCache.getExchangeRateFromCache(sourceCurrency, targetCurrency, dateTime).isPresent());
         assertFalse(exchangeRateCache.getExchangeRateFromCache(sourceCurrency, targetCurrency, dateTimeMinusOneDay).isPresent());
         assertFalse(exchangeRateCache.getExchangeRateFromCache(sourceCurrency, targetCurrency, dateTimeMinusPlusOneDay).isPresent());
