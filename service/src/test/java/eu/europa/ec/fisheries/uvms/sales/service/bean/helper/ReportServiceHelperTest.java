@@ -11,6 +11,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.OutgoingMessageService;
+import eu.europa.ec.fisheries.uvms.sales.service.ResponseService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
 import org.junit.Test;
@@ -44,6 +45,9 @@ public class ReportServiceHelperTest {
     @Mock
     private OutgoingMessageService outgoingMessageService;
 
+    @Mock
+    private ResponseService responseService;
+
     @Test
     public void testSendResponseToSenderOfReport() throws Exception {
         //data set
@@ -57,6 +61,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(responseToSender).when(fluxSalesResponseMessageFactory).create(report, validationResults, messageValidationResult);
         doReturn(senderOfReport).when(reportHelper).getFLUXReportDocumentOwnerId(report);
+        doNothing().when(responseService).saveResponse(any());
 
         //execute
         reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough, validationResults, messageValidationResult);
