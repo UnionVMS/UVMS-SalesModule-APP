@@ -315,12 +315,22 @@ public class ReportHelperTest {
     }
 
     @Test
-    public void testGetId() {
+    public void testGetIdWithArgumentFLUXSalesReportMessage() {
         FLUXSalesReportMessage reportMessage = new FLUXSalesReportMessage()
                 .withFLUXReportDocument(new FLUXReportDocumentType()
                     .withIDS(new IDType().withValue("id")));
 
         assertEquals("id", reportHelper.getId(reportMessage));
+    }
+
+    @Test
+    public void testGetIdWithArgumentReport() {
+        FLUXSalesReportMessage reportMessage = new FLUXSalesReportMessage()
+                .withFLUXReportDocument(new FLUXReportDocumentType()
+                        .withIDS(new IDType().withValue("id")));
+        Report report = new Report().withFLUXSalesReportMessage(reportMessage);
+
+        assertEquals("id", reportHelper.getId(report));
     }
 
     @Test

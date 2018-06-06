@@ -124,6 +124,10 @@ public class ReportHelper {
         }
     }
 
+    public String getId(Report report) {
+        return getId(report.getFLUXSalesReportMessage());
+    }
+
     public String getId(FLUXSalesReportMessage reportMessage) {
         return reportMessage.getFLUXReportDocument().getIDS().get(0).getValue();
     }

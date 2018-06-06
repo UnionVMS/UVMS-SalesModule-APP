@@ -70,6 +70,14 @@ public class ReportServiceHelper {
         try {
             Report originalReport = findOriginalReport(report);
 
+            // The rule that checks whether a correction/deletion refers to an existing report, has level "WARNING".
+            // This means that it is possible to receive a delete report that refers to a non-existing original report.
+            // In this case, it it is impossible to determine all the data needed to forward the delete report.
+            if (report == originalReport /* not equals, literally the same object */ && reportHelper.isReportDeleted(report)) {
+                log.error("A delete report has been received with id " + reportHelper.getId(report) + ". The referenced id, {}, refers to a non-existing report! We cannot determine whether this delete report should be forwarded!", reportHelper.getFLUXReportDocumentReferencedId(report));
+                return;
+            }
+
             String countryOfHost = configService.getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
             String vesselFlagState = reportHelper.getVesselFlagState(originalReport);
             String salesLocationCountry = reportHelper.getSalesLocationCountry(originalReport);
