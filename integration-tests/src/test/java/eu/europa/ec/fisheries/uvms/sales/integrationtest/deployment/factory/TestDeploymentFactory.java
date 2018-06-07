@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.sales.message.producer.bean.SalesMessageProdu
 import eu.europa.ec.fisheries.uvms.sales.service.*;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.*;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.*;
+import eu.europa.ec.fisheries.uvms.sales.service.cache.ExchangeRateCache;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ReferenceDataCache;
 import eu.europa.ec.fisheries.uvms.sales.service.constants.MDRCodeListKey;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
@@ -96,6 +97,9 @@ public class TestDeploymentFactory {
         archive.addClass(ExchangeService.class).addClass(ExchangeServiceBean.class);
         archive.addClass(OutgoingMessageService.class).addClass(OutgoingMessageServiceBean.class);
         archive.addClass(MessageConsumerBean.class);
+
+        archive.addClass(ResponseService.class).addClass(ResponseServiceBean.class);
+        archive.addClass(ExchangeRateCache.class);
 
         return archive;
     }

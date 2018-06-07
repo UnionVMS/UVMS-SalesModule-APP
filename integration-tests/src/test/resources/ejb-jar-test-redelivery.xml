@@ -36,7 +36,7 @@
                 <ejb-ref-name>eu.europa.ec.fisheries.uvms.sales.service.bean.OutgoingMessageServiceBean/rulesService
                 </ejb-ref-name>
                 <local>eu.europa.ec.fisheries.uvms.sales.service.RulesService</local>
-                <ejb-link>RulesServiceBean</ejb-link>
+                <ejb-link>SetTransactionRollbackRulesServiceAlternativeBean</ejb-link>
             </ejb-local-ref>
         </session>
   </enterprise-beans>
