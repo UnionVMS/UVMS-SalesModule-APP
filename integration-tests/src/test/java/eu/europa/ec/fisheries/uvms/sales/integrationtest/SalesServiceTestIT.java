@@ -87,7 +87,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Save_Report_Original_And_Correction() throws Exception {
 		//wait until config had the chance to sync
-		Thread.sleep(10000L);
+		Thread.sleep(15000L);
 
 		testSalesMessageConsumer_Save_Report_Original();
 
@@ -105,7 +105,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Save_Report_Correction_And_Original_Not_Processed_Yet() throws Exception {
 		//wait until config had the chance to sync
-		Thread.sleep(10000L);
+		Thread.sleep(15000L);
 
 		// Report corrected should be saved, even if the original referenced report is not processed yet
 		testSalesMessageConsumer_Save_Report_Corrected();
@@ -123,7 +123,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Save_Report() throws Exception {
         //wait until config had the chance to sync
-        Thread.sleep(10000L);
+        Thread.sleep(15000L);
 
 		// Data
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0311";
@@ -168,7 +168,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void trySalesMessageConsumer_Save_Report_Hibernate_Validator_ConstraintViolation_Exception() throws Exception {
 		//wait until config had the chance to sync
-		Thread.sleep(10000L);
+		Thread.sleep(15000L);
 
 		// Data
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0312";
@@ -226,7 +226,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Respond_To_Invalid_Message() throws Exception {
 		//wait until config had the chance to sync
-		Thread.sleep(10000L);
+		Thread.sleep(15000L);
 
 		// Test data
 		String messageGuid = "d0c749bf-50d6-479a-b12e-61c2f2d66439";
@@ -273,7 +273,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void trySalesMessageConsumer_Save_Report_SalesMarshallException() throws Exception {
 		//wait until config had the chance to sync
-		Thread.sleep(10000L);
+		Thread.sleep(15000L);
 
 		// Data
 		String salesReportRequest = "BAD_MESSAGE_CONTENT";
@@ -302,7 +302,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Save_Report_Original_TakeOverDocument() throws Exception {
 		//wait until config had the chance to sync
-		Thread.sleep(10000L);
+		Thread.sleep(15000L);
 
 		// Data
 		String messageGuid = "37eb22e6-077d-45ee-a596-2228c3e096e8";
@@ -350,7 +350,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	public void testSalesMessageConsumer_Save_Report_Original_And_Send_To_Other_Party() throws Exception {
 
 		//wait until config had the chance to sync
-		Thread.sleep(10000L);
+		Thread.sleep(15000L);
 
 		testSalesMessageConsumer_Save_Report_And_Send_To_Other_Party();
 
