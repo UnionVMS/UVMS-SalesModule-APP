@@ -23,6 +23,7 @@ public class ConfigMessageConsumerBean implements ConfigMessageConsumer {
     @Override
     public <T> T getConfigMessage(String correlationId, Class type) throws ConfigMessageException {
         try {
+            LOG.info("Get Sales config PullSettingsResponse message");
             return salesMessageConsumer.getMessage(correlationId, type, TIMEOUT);
         } catch (MessageException e) {
             LOG.error("Something went wrong retrieving a config messages from the sales module", e);

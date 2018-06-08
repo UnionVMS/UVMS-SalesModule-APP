@@ -86,12 +86,15 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Save_Report_Original_And_Correction() throws Exception {
+        LOG.info("----------------------------------------------------------------------------------------------------");
+        LOG.info("testSalesMessageConsumer_Save_Report_Original_And_Correction - Started");
 		//wait until config had the chance to sync
-		Thread.sleep(15000L);
+		Thread.sleep(30000L);
 
 		testSalesMessageConsumer_Save_Report_Original();
 
 		testSalesMessageConsumer_Save_Report_Corrected();
+        LOG.info("testSalesMessageConsumer_Save_Report_Original_And_Correction - Finished");
 	}
 
 	//------------------------------------------------------------------------------------
@@ -104,12 +107,14 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Save_Report_Correction_And_Original_Not_Processed_Yet() throws Exception {
+        LOG.info("----------------------------------------------------------------------------------------------------");
+        LOG.info("testSalesMessageConsumer_Save_Report_Correction_And_Original_Not_Processed_Yet - Started");
 		//wait until config had the chance to sync
-		Thread.sleep(15000L);
+		Thread.sleep(30000L);
 
 		// Report corrected should be saved, even if the original referenced report is not processed yet
 		testSalesMessageConsumer_Save_Report_Corrected();
-
+        LOG.info("testSalesMessageConsumer_Save_Report_Correction_And_Original_Not_Processed_Yet - Finished");
 	}
 
 	//--------------------------------------
@@ -122,8 +127,10 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Save_Report() throws Exception {
+        LOG.info("----------------------------------------------------------------------------------------------------");
+        LOG.info("testSalesMessageConsumer_Save_Report - Started");
         //wait until config had the chance to sync
-        Thread.sleep(15000L);
+        Thread.sleep(30000L);
 
 		// Data
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0311";
@@ -144,17 +151,20 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		// Assert use case, find report by id, should be saved in database
 		String findReportByIdRequestMessage = SalesModuleRequestMapper.createFindReportByIdRequest(messageGuid);
 
+        Thread.sleep(5000L);
+
 		// Execute
 		String correlationId = salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(findReportByIdRequestMessage, salesServiceTestHelper.getReplyToRulesQueue());
 
 		// Assert, find report by Id for MessageConsumerBean should find existing FLUX sales report
-		TextMessage textMessageFindReportByIdResponse = salesServiceTestHelper.receiveMessageFromReplyToRulesQueue(correlationId);
+        TextMessage textMessageFindReportByIdResponse = salesServiceTestHelper.receiveMessageFromReplyToRulesQueue(correlationId);
 		assertNotNull(textMessageFindReportByIdResponse);
 		FindReportByIdResponse findReportByIdResponse = salesServiceTestHelper.getSalesModelBean(textMessageFindReportByIdResponse.getText(), FindReportByIdResponse.class);
 		assertTrue(StringUtils.isNotBlank(findReportByIdResponse.getReport()));
 		FLUXSalesReportMessage fluxSalesReportMessage = salesServiceTestHelper.getSalesModelBean(findReportByIdResponse.getReport(), FLUXSalesReportMessage.class);
 		assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
 		assertEquals("BEL-SN-2007-7777777", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
+        LOG.info("testSalesMessageConsumer_Save_Report - Finished");
 	}
 
 	//------------------------------------------------------------------
@@ -167,8 +177,10 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void trySalesMessageConsumer_Save_Report_Hibernate_Validator_ConstraintViolation_Exception() throws Exception {
+        LOG.info("----------------------------------------------------------------------------------------------------");
+        LOG.info("trySalesMessageConsumer_Save_Report_Hibernate_Validator_ConstraintViolation_Exception - Started");
 		//wait until config had the chance to sync
-		Thread.sleep(15000L);
+		Thread.sleep(30000L);
 
 		// Data
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0312";
@@ -213,20 +225,22 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		LOG.debug("responseMessageBody: " + responseMessageBody);
 		FindReportByIdResponse findReportByIdResponse = JAXBMarshaller.unmarshallString(responseMessageBody, FindReportByIdResponse.class);
 		assertFalse(StringUtils.isNotBlank(findReportByIdResponse.getReport()));
+        LOG.info("trySalesMessageConsumer_Save_Report_Hibernate_Validator_ConstraintViolation_Exception - Finished");
 	}
 
 	//-----------------------------------------------------
 	// Respond to invalid message -- Sales message consumer
 	//-----------------------------------------------------
-
 	@InSequence(5)
 	@Test
 	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Respond_To_Invalid_Message() throws Exception {
+        LOG.info("----------------------------------------------------------------------------------------------------");
+        LOG.info("testSalesMessageConsumer_Respond_To_Invalid_Message - Started");
 		//wait until config had the chance to sync
-		Thread.sleep(15000L);
+		Thread.sleep(30000L);
 
 		// Test data
 		String messageGuid = "d0c749bf-50d6-479a-b12e-61c2f2d66439";
@@ -260,20 +274,22 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		assertNotNull(checkForUniqueIdResponseMessage);
 		CheckForUniqueIdResponse checkForUniqueIdResponse = JAXBMarshaller.unmarshallString(checkForUniqueIdResponseMessage.getText(), CheckForUniqueIdResponse.class);
 		assertFalse(checkForUniqueIdResponse.isUnique());
+        LOG.info("testSalesMessageConsumer_Respond_To_Invalid_Message - Finished");
 	}
 
 	//-----------------------------------------------------------
 	// Save report with marshall errors -- Sales message consumer
 	//-----------------------------------------------------------
-
 	@InSequence(6)
 	@Test
 	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void trySalesMessageConsumer_Save_Report_SalesMarshallException() throws Exception {
+        LOG.info("----------------------------------------------------------------------------------------------------");
+        LOG.info("trySalesMessageConsumer_Save_Report_SalesMarshallException - Started");
 		//wait until config had the chance to sync
-		Thread.sleep(15000L);
+		Thread.sleep(30000L);
 
 		// Data
 		String salesReportRequest = "BAD_MESSAGE_CONTENT";
@@ -289,20 +305,22 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		// Assert, should not receive FLUXSalesResponseMessage for previously save report SalesMarshallException
 		TextMessage textMessageSendSalesResponseRequest = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
 		assertNull(textMessageSendSalesResponseRequest);
+        LOG.info("trySalesMessageConsumer_Save_Report_SalesMarshallException - Finished");
 	}
 
 	//----------------------------------------------------------------------
 	// Save report with original takeover document -- Sales message consumer
 	//----------------------------------------------------------------------
-
 	@InSequence(7)
 	@Test
 	@OperateOnDeployment("salesservice")
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Save_Report_Original_TakeOverDocument() throws Exception {
-		//wait until config had the chance to sync
-		Thread.sleep(15000L);
+        LOG.info("----------------------------------------------------------------------------------------------------");
+        LOG.info("testSalesMessageConsumer_Save_Report_Original_TakeOverDocument - Started");
+	    //wait until config had the chance to sync
+		Thread.sleep(30000L);
 
 		// Data
 		String messageGuid = "37eb22e6-077d-45ee-a596-2228c3e096e8";
@@ -328,6 +346,8 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 
 		String findReportByIdRequestMessage = SalesModuleRequestMapper.createFindReportByIdRequest(messageGuid);
 
+        Thread.sleep(5000L);
+
 		// Execute
 		String correlationId = salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(findReportByIdRequestMessage, salesServiceTestHelper.getReplyToRulesQueue());
 
@@ -339,7 +359,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		FLUXSalesReportMessage fluxSalesReportMessage = salesServiceTestHelper.getSalesModelBean(findReportByIdResponse.getReport(), FLUXSalesReportMessage.class);
 		assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
 		assertEquals("BEL-TOD-37eb22e6-077d-45ee-a596-2228c3e096e8", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
-
+        LOG.info("testSalesMessageConsumer_Save_Report_Original_TakeOverDocument - Finshed");
 	}
 
 	@InSequence(8)
@@ -348,12 +368,13 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@Transactional(TransactionMode.DISABLED)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testSalesMessageConsumer_Save_Report_Original_And_Send_To_Other_Party() throws Exception {
-
+        LOG.info("----------------------------------------------------------------------------------------------------");
+        LOG.info("testSalesMessageConsumer_Save_Report_Original_And_Send_To_Other_Party - Started");
 		//wait until config had the chance to sync
-		Thread.sleep(15000L);
+		Thread.sleep(30000L);
 
 		testSalesMessageConsumer_Save_Report_And_Send_To_Other_Party();
-
+        LOG.info("testSalesMessageConsumer_Save_Report_Original_And_Send_To_Other_Party - Finished");
 	}
 
 	private void testSalesMessageConsumer_Save_Report_Original() throws Exception {
@@ -380,6 +401,8 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		// Assert use case, find report by id, should be saved in database
 
 		String findReportByIdRequestMessage = SalesModuleRequestMapper.createFindReportByIdRequest(messageGuid);
+
+        Thread.sleep(5000L);
 
 		// Execute
 		String correlationId = salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(findReportByIdRequestMessage, salesServiceTestHelper.getReplyToRulesQueue());
@@ -447,6 +470,8 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 
 		// Assert use case, find report by id, should be saved in database
 
+        Thread.sleep(5000);
+
 		String findReportByIdRequestMessage = SalesModuleRequestMapper.createFindReportByIdRequest(messageGuid);
 
 		// Execute
@@ -471,7 +496,6 @@ public class SalesServiceTestIT extends StandardTestDeployment {
     //---------------------------------------------------
     // Get configuration - Configuration message consumer
     //---------------------------------------------------
-
 	@InSequence(8)
     @Test
     @OperateOnDeployment("salesservice")
@@ -573,7 +597,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testEventService_Invalid_Message() throws Exception {
 		//wait until config had the chance to sync
-		Thread.sleep(10000L);
+		Thread.sleep(30000L);
 
 		// Test data
 		String messageGuid = "d0c749bf-50d6-479a-b12e-61c2f2d66469";
@@ -683,8 +707,10 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 	@Transactional(TransactionMode.COMMIT)
 	@DataSource("java:/jdbc/uvms_sales")
 	public void testEventService_Create_Report() throws Exception {
+        LOG.info("----------------------------------------------------------------------------------------------------");
+        LOG.info("testEventService_Create_Report - Started");
 		//wait until config had the chance to sync
-		Thread.sleep(10000L);
+		Thread.sleep(30000L);
 
 		// Test data
 		String messageGuid = "d5da24ff-42b4-5e76-967f-ad97762a0314";
@@ -718,6 +744,8 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		EventMessage eventMessage = new EventMessage(findReportByIdRequest);
 		eventMessage.setJmsMessage(findReportByIdRequestMessage);
 
+        Thread.sleep(5000);
+
 		// Execute
 		eventService.respondToFindReportMessage(eventMessage);
 		TextMessage responseMessage = salesServiceTestHelper.receiveMessageFromReplyToRulesQueue(findReportByIdRequestMessage.getJMSMessageID());
@@ -731,6 +759,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		assertNotNull(fluxSalesReportMessage);
 		assertEquals("BEL-SN-2007-7777777", fluxSalesReportMessage.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
 		assertEquals(messageGuid, fluxSalesReportMessage.getFLUXReportDocument().getIDS().get(0).getValue());
+        LOG.info("testEventService_Create_Report - Finished");
 	}
 
 	//----------------------------
