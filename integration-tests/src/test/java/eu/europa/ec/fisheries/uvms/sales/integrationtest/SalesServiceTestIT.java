@@ -693,6 +693,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
 		String vesselFlagState = "BEL";
 		String landingCountry = "BEL";
 		salesReportRequest.setReport(salesTestMessageFactory.composeFLUXSalesReportMessageAsString(messageGuid, vesselFlagState, landingCountry));
+		salesReportRequest.setMessageValidationStatus("OK");
 		EventMessage eventMessage2 = new EventMessage(salesReportRequest);
 
 		// Execute
