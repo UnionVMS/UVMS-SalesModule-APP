@@ -93,7 +93,7 @@ public class SalesServiceRedeliveryTestIT extends MessageRedeliveryTestDeploymen
     @OperateOnDeployment("salesservice_redelivery")
     @Transactional(TransactionMode.DISABLED)
     @DataSource("java:/jdbc/uvms_sales")
-    public void testSalesMessageConsumer_Respond_To_Invalid_Message_And_Redeliver_ten_times() throws Exception {
+    public void testSalesMessageConsumer_Respond_To_Invalid_Message_And_Redeliver_seven_times() throws Exception {
         //wait until config had the chance to sync
         Thread.sleep(10000L);
 
@@ -113,8 +113,8 @@ public class SalesServiceRedeliveryTestIT extends MessageRedeliveryTestDeploymen
         TextMessage sendSalesResponseRequestMessage = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
         assertNull(sendSalesResponseRequestMessage);
 
-        // JMS Redelivery 10 + 1
-        assertEquals(11L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackOutgoingMessageServiceAlternativeBean.KEY_SEND_RESPONSE_TO_RULES));
+        // JMS Redelivery 6 + 1
+        assertEquals(7L, messageRedeliveryCounter.getCounterValueForKey(SetTransactionRollbackOutgoingMessageServiceAlternativeBean.KEY_SEND_RESPONSE_TO_RULES));
 
 
         // Assert use case: unique ID should be true for previous respondToInvalidMessageRequest failed redelivery attempts

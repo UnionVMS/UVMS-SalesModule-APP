@@ -13,7 +13,7 @@ import javax.ejb.Stateless;
 @Stateless
 public class ConfigMessageConsumerBean implements ConfigMessageConsumer {
 
-    private static final long TIMEOUT = 10000;
+    private static final long TIMEOUT = 30000;
 
     static final Logger LOG = LoggerFactory.getLogger(ConfigMessageConsumerBean.class);
 
@@ -23,6 +23,7 @@ public class ConfigMessageConsumerBean implements ConfigMessageConsumer {
     @Override
     public <T> T getConfigMessage(String correlationId, Class type) throws ConfigMessageException {
         try {
+            LOG.info("Get Sales config PullSettingsResponse message");
             return salesMessageConsumer.getMessage(correlationId, type, TIMEOUT);
         } catch (MessageException e) {
             LOG.error("Something went wrong retrieving a config messages from the sales module", e);

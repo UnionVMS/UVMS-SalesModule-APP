@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
+import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.proxy.ecb.types.v1.GetExchangeRateResponse;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
@@ -10,6 +11,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingExcepti
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.EcbProxyRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
+import eu.europa.ec.fisheries.uvms.sales.service.cache.ExchangeRateCache;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 
@@ -34,10 +36,16 @@ public class EcbProxyServiceBean implements EcbProxyService {
     @EJB
     private MessageConsumer receiver;
 
+    @EJB
+    private ExchangeRateCache exchangeRateCache;
+
     @Override
     public BigDecimal findExchangeRate(String sourceCurrency, String targetCurrency, DateTime date) {
+        Optional<BigDecimal> exchangeRateFromCache = exchangeRateCache.getExchangeRateFromCache(sourceCurrency, targetCurrency, date);
+        if (exchangeRateFromCache.isPresent()) {
+            return exchangeRateFromCache.get();
+        }
         String request = null;
-
         try {
             request = EcbProxyRequestMapper.createGetExchangeRateRequest(sourceCurrency, targetCurrency, date);
         } catch (SalesMarshallException e) {
@@ -46,6 +54,7 @@ public class EcbProxyServiceBean implements EcbProxyService {
 
         try {
             GetExchangeRateResponse response = callEcbProxy(request, GetExchangeRateResponse.class);
+            exchangeRateCache.addExchangeRateToCache(sourceCurrency, targetCurrency, date, response.getExchangeRate());
             return response.getExchangeRate();
         } catch (SalesNonBlockingException e) {
             throw new SalesNonBlockingException("Could not convert the currency, because something went wrong contacting the ECB Proxy module. Sent message: " + request, e);
