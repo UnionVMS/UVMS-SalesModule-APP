@@ -133,6 +133,8 @@ public class EventServiceBean implements EventService {
 
         Boolean response = false;
 
+        LOG.debug("Unique ID check for IDS '" + request.getIds() + "' with type " + request.getType());
+
         switch (request.getType()) {
             case TRANSPORT_DOCUMENT:
                 break;
@@ -154,6 +156,8 @@ public class EventServiceBean implements EventService {
             default:
                 throw new SalesServiceException("No case implemented for " + request.getType());
         }
+
+        LOG.debug("Were the IDS unique? " + response);
 
         try {
             String checkForUniqueIdResponse = SalesModuleRequestMapper.createCheckForUniqueIdResponse(response);

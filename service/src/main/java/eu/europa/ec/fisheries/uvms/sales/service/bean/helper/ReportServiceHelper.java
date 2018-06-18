@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
 import eu.europa.ec.fisheries.uvms.sales.service.OutgoingMessageService;
+import eu.europa.ec.fisheries.uvms.sales.service.ResponseService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,6 +43,9 @@ public class ReportServiceHelper {
     @EJB
     private OutgoingMessageService outgoingMessageService;
 
+    @EJB
+    private ResponseService responseService;
+
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendResponseToSenderOfReport(Report report,
@@ -51,6 +55,10 @@ public class ReportServiceHelper {
         try {
             FLUXSalesResponseMessage responseToSender = fluxSalesResponseMessageFactory.create(report, validationResults, messageValidationStatus);
             String senderOfReport = reportHelper.getFLUXReportDocumentOwnerId(report);
+
+            //Save the outgoing response
+            responseService.saveResponse(responseToSender.getFLUXResponseDocument());
+
             outgoingMessageService.sendResponse(responseToSender, senderOfReport, pluginToSendResponseThrough);
         } catch (Exception e) {
             throw new SalesNonBlockingException("Rolling back transaction in sendResponseToSenderOfReport", e);
@@ -61,6 +69,14 @@ public class ReportServiceHelper {
     public void forwardReportToOtherRelevantParties(Report report, String pluginToSendResponseThrough) {
         try {
             Report originalReport = findOriginalReport(report);
+
+            // The rule that checks whether a correction/deletion refers to an existing report, has level "WARNING".
+            // This means that it is possible to receive a delete report that refers to a non-existing original report.
+            // In this case, it it is impossible to determine all the data needed to forward the delete report.
+            if (report == originalReport /* not equals, literally the same object */ && reportHelper.isReportDeleted(report)) {
+                log.error("A delete report has been received with id " + reportHelper.getId(report) + ". The referenced id, {}, refers to a non-existing report! We cannot determine whether this delete report should be forwarded!", reportHelper.getFLUXReportDocumentReferencedId(report));
+                return;
+            }
 
             String countryOfHost = configService.getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
             String vesselFlagState = reportHelper.getVesselFlagState(originalReport);
