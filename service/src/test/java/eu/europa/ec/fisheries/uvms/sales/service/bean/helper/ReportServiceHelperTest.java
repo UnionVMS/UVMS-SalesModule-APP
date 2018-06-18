@@ -2,10 +2,7 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
-import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
-import eu.europa.ec.fisheries.schema.sales.Report;
-import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
+import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
@@ -16,6 +13,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessag
 import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -61,7 +59,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(responseToSender).when(fluxSalesResponseMessageFactory).create(report, validationResults, messageValidationResult);
         doReturn(senderOfReport).when(reportHelper).getFLUXReportDocumentOwnerId(report);
-        doNothing().when(responseService).saveResponse(any());
+        doNothing().when(responseService).saveResponse(ArgumentMatchers.<FLUXResponseDocumentType>any());
 
         //execute
         reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough, validationResults, messageValidationResult);
