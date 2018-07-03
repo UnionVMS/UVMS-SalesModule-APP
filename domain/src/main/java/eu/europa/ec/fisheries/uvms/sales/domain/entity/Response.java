@@ -55,8 +55,11 @@ public class Response {
     @Column(name = "type_code")
     private String typeCode;
 
-    @Column(name = "respondent_flux_party")
-    private String respondentFLUXParty;
+    @Column(name = "respondent_flux_party_id")
+    private String respondentFLUXPartyId;
+
+    @Column(name = "respondent_flux_party_name")
+    private String respondentFLUXPartyName;
 
     public String getExtId() {
         return extId;
@@ -106,12 +109,20 @@ public class Response {
         this.typeCode = typeCode;
     }
 
-    public String getRespondentFLUXParty() {
-        return respondentFLUXParty;
+    public String getRespondentFLUXPartyId() {
+        return respondentFLUXPartyId;
     }
 
-    public void setRespondentFLUXParty(String respondentFLUXParty) {
-        this.respondentFLUXParty = respondentFLUXParty;
+    public void setRespondentFLUXPartyId(String respondentFLUXPartyId) {
+        this.respondentFLUXPartyId = respondentFLUXPartyId;
+    }
+
+    public String getRespondentFLUXPartyName() {
+        return respondentFLUXPartyName;
+    }
+
+    public void setRespondentFLUXPartyName(String respondentFLUXPartyName) {
+        this.respondentFLUXPartyName = respondentFLUXPartyName;
     }
 
     public Response extId(String extId) {
@@ -161,8 +172,13 @@ public class Response {
         return this;
     }
 
-    public Response respondentFLUXParty(String respondentFLUXParty) {
-        this.respondentFLUXParty = respondentFLUXParty;
+    public Response respondentFLUXPartyId(String respondentFLUXPartyId) {
+        this.respondentFLUXPartyId = respondentFLUXPartyId;
+        return this;
+    }
+
+    public Response respondentFLUXPartyName(String respondentFLUXPartyName) {
+        this.respondentFLUXPartyName = respondentFLUXPartyName;
         return this;
     }
 

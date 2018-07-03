@@ -661,20 +661,22 @@ public class DomainMapperProducerTest {
                 .remarks("remarks")
                 .rejectionReason("rejectionReason")
                 .typeCode("typeCode")
-                .respondentFLUXParty("respondentFLUXParty");
+                .respondentFLUXPartyId("hey")
+                .respondentFLUXPartyName("ho");
     }
 
-    private FLUXResponseDocumentType createFluxResponseDocumentType(DateTime now) {
+    private FLUXResponseDocumentType createFluxResponseDocumentType(DateTime creationDateTime) {
         return new FLUXResponseDocumentType()
                 .withIDS(Arrays.asList(new IDType().withValue("extId")))
                 .withReferencedID(new IDType().withValue("referencedId"))
-                .withCreationDateTime(new DateTimeType().withDateTime(now))
+                .withCreationDateTime(new DateTimeType().withDateTime(creationDateTime))
                 .withResponseCode(new CodeType().withValue("responseCode"))
                 .withRemarks(new TextType().withValue("remarks"))
                 .withRejectionReason(new TextType().withValue("rejectionReason"))
                 .withTypeCode(new CodeType().withValue("typeCode"))
-                .withRespondentFLUXParty(new FLUXPartyType().withIDS(
-                        new IDType().withValue("respondentFLUXParty")));
+                .withRespondentFLUXParty(new FLUXPartyType()
+                        .withIDS(new IDType().withValue("hey"))
+                        .withNames(new TextType().withValue("ho")));
     }
 
     private Query createQuery() {

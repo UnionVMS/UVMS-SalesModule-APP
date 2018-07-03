@@ -81,7 +81,8 @@ public class DomainMapperProducer {
                 .field("remarks.value", "remarks")
                 .field("rejectionReason.value", "rejectionReason")
                 .field("typeCode.value", "typeCode")
-                .field("respondentFLUXParty.IDS[0].value", "respondentFLUXParty")
+                .field("respondentFLUXParty.IDS[0].value", "respondentFLUXPartyId")
+                .field("respondentFLUXParty.names[0].value", "respondentFLUXPartyName")
                 .register();
     }
 
