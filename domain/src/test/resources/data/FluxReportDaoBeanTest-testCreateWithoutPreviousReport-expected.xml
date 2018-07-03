@@ -65,7 +65,7 @@
             purpose_code="CORRECTION"
             item_type="SALES_NOTE"
             creation="1995-11-24"
-            flux_report_party="BEL"
+            flux_report_party_id="BEL"
     />
 
 
