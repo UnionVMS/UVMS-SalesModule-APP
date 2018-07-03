@@ -35,12 +35,16 @@ public class DomainMapperProducerTest {
         DateTime creation = new DateTime(2017, 2, 17, 16, 35);
         DateTime deletion = new DateTime(2018, 2, 17, 16, 35);
 
+        FLUXPartyType ownerFLUXParty = new FLUXPartyType()
+                .withIDS(new IDType().withValue("party id"))
+                .withNames(new TextType().withValue("party hardy"));
+
         FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("ID"))
                 .withCreationDateTime(new DateTimeType().withDateTime(creation))
                 .withPurpose(new TextType().withValue("The cake is a lie"))
                 .withPurposeCode(new CodeType().withValue("5"))
-                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("name")))
+                .withOwnerFLUXParty(ownerFLUXParty)
                 .withReferencedID(new IDType().withValue("previousExtId"));
 
         SalesReportType salesReportType = new SalesReportType()
@@ -65,7 +69,8 @@ public class DomainMapperProducerTest {
         assertEquals(creation, fluxReport.getCreation());
         assertEquals("The cake is a lie", fluxReport.getPurposeText());
         assertEquals(Purpose.CORRECTION, fluxReport.getPurpose());
-        assertEquals("name", fluxReport.getFluxReportParty());
+        assertEquals("party id", fluxReport.getFluxReportPartyId());
+        assertEquals("party hardy", fluxReport.getFluxReportPartyName());
         assertEquals(FluxReportItemType.TAKE_OVER_DOCUMENT, fluxReport.getItemType());
         assertEquals("DOC1", fluxReport.getDocument().getExtId());
         assertEquals(SalesCategory.FIRST_SALE, fluxReport.getAuctionSale().getCategory());
@@ -83,7 +88,8 @@ public class DomainMapperProducerTest {
                 .purpose(Purpose.ORIGINAL)
                 .purposeText("Sorry miss Jackson, I am for real")
                 .creation(creation)
-                .fluxReportParty("Outkast")
+                .fluxReportPartyId("OUT")
+                .fluxReportPartyName("Outkast")
                 .itemType(FluxReportItemType.SALES_NOTE)
                 .document(new Document().extId("docu"))
                 .auctionSale(new AuctionSale().category(SalesCategory.NEGOTIATED_SALE))
@@ -98,7 +104,8 @@ public class DomainMapperProducerTest {
         assertEquals(creation, fluxSalesReportMessageType.getFLUXReportDocument().getCreationDateTime().getDateTime());
         assertEquals("Sorry miss Jackson, I am for real", fluxSalesReportMessageType.getFLUXReportDocument().getPurpose().getValue());
         assertEquals("9", fluxSalesReportMessageType.getFLUXReportDocument().getPurposeCode().getValue());
-        assertEquals("Outkast", fluxSalesReportMessageType.getFLUXReportDocument().getOwnerFLUXParty().getIDS().get(0).getValue());
+        assertEquals("OUT", fluxSalesReportMessageType.getFLUXReportDocument().getOwnerFLUXParty().getIDS().get(0).getValue());
+        assertEquals("Outkast", fluxSalesReportMessageType.getFLUXReportDocument().getOwnerFLUXParty().getNames().get(0).getValue());
         assertEquals("SN", fluxSalesReportMessageType.getSalesReports().get(0).getItemTypeCode().getValue());
         assertEquals("docu", fluxSalesReportMessageType.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
         assertEquals(SalesCategoryType.NEGOTIATED_SALE, auctionSaleType.getSalesCategory());
