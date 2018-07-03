@@ -683,7 +683,8 @@ public class DomainMapperProducerTest {
                 .startDate(DateTime.parse("2016-08-01"))
                 .endDate(DateTime.parse("2060-08-01"))
                 .submittedDate(DateTime.parse("2017-09-05"))
-                .submitterFLUXParty("fluxParty idType")
+                .submitterFLUXPartyId("fluxParty idType")
+                .submitterFLUXPartyName("Milky Way")
                 .parameters(Arrays.asList(queryParameter));
     }
 
@@ -694,6 +695,10 @@ public class DomainMapperProducerTest {
                 .withValueDateTime(new DateTimeType().withDateTime(DateTime.parse("1995-11-24")))
                 .withValueID(new IDType().withValue("idType"));
 
+        FLUXPartyType fluxParty = new FLUXPartyType()
+                .withIDS(new IDType().withValue("fluxParty idType"))
+                .withNames(new TextType().withValue("Milky Way"));
+
         return new SalesQueryType()
                 .withTypeCode(new CodeType().withValue("typeCode"))
                 .withID(new IDType().withValue("id"))
@@ -702,7 +707,7 @@ public class DomainMapperProducerTest {
                                 .withStartDateTime(new DateTimeType().withDateTime(DateTime.parse("2016-08-01")))
                                 .withEndDateTime(new DateTimeType().withDateTime(DateTime.parse("2060-08-01"))))
                 .withSubmittedDateTime(new DateTimeType().withDateTime(DateTime.parse("2017-09-05")))
-                .withSubmitterFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("fluxParty idType")))
+                .withSubmitterFLUXParty(fluxParty)
                 .withSimpleSalesQueryParameters(salesQueryParameterType);
     }
 

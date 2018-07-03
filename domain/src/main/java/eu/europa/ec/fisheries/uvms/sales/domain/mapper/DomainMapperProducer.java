@@ -92,7 +92,8 @@ public class DomainMapperProducer {
                 .field("typeCode.value", "queryType")
                 .field("specifiedDelimitedPeriod.startDateTime.dateTime", "startDate")
                 .field("specifiedDelimitedPeriod.endDateTime.dateTime", "endDate")
-                .field("submitterFLUXParty.IDS[0].value", "submitterFLUXParty")
+                .field("submitterFLUXParty.IDS[0].value", "submitterFLUXPartyId")
+                .field("submitterFLUXParty.names[0].value", "submitterFLUXPartyName")
                 .field("simpleSalesQueryParameters", "parameters")
                 .register();
     }
