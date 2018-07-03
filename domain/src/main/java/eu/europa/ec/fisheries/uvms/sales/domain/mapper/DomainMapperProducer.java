@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
+@SuppressWarnings("squid:S1192")
 public class DomainMapperProducer {
 
     @Produces
@@ -241,7 +242,8 @@ public class DomainMapperProducer {
                 .field("name.value", "party.name")
                 .field("countryID.value", "country")
                 .field("roleCodes[0].value", "role")
-                .field("specifiedFLUXOrganization.postalStructuredAddresses[0]", "party.address")
+                .field("specifiedStructuredAddresses[0]", "party.address")
+                .field("specifiedFLUXOrganization.postalStructuredAddresses[0]", "party.fluxOrganizationAddress")
                 .field("specifiedFLUXOrganization.name.value", "party.fluxOrganizationName")
                 .register();
     }
