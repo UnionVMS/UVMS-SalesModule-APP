@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="stihft" id="par-03">
+        <addColumn tableName="sales_party">
+            <column name="flux_organization_address_id" type="integer" />
+        </addColumn>
+
+        <addForeignKeyConstraint
+                constraintName="sales_party_flux_organization_address_id_fk"
+                baseTableName="sales_party"
+                baseColumnNames="flux_organization_address_id"
+                referencedTableName="sales_address"
+                referencedColumnNames="id"/>
+
+        <createIndex
+                indexName="sales_party_i_2"
+                tableName="sales_party">
+            <column name="flux_organization_address_id" type="integer"/>
+        </createIndex>
+
+        <sql>update sales_party SET flux_organization_address_id = sales_address_id</sql>
+        <sql>update sales_party SET sales_address_id = NULL</sql>
+
+        <rollback>
+            <sql>update sales_party SET sales_address_id = flux_organization_address_id</sql>
+            <dropIndex
+                    indexName="sales_party_i_1"
+                    tableName="sales_party"/>
+            <dropForeignKeyConstraint
+                    baseTableName="sales_party"
+                    constraintName="sales_party_flux_organization_address_id_fk"
+            />
+            <dropColumn tableName="sales_party"
+                        columnName="flux_organization_address_id" />
+        </rollback>
+    </changeSet>
+
+        
+</databaseChangeLog>

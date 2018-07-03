@@ -191,7 +191,7 @@ public class DomainMapperProducerTest {
                 .withSpecifiedFLUXOrganization(new FLUXOrganizationType()
                         .withName(new TextType().withValue("I couldn't cut it as a poor man stealin'"))
                         .withPostalStructuredAddresses(new StructuredAddressType()
-                                .withBlockName(new TextType().withValue("Should pick this address!"))));
+                                .withBlockName(new TextType().withValue("This is how you remind me of what I'm really am"))));
 
         PartyDocument partyDocument = mapper.map(salesPartyType, PartyDocument.class);
 
@@ -199,7 +199,8 @@ public class DomainMapperProducerTest {
         assertEquals("name", partyDocument.getParty().getName());
         assertEquals("BEL", partyDocument.getCountry());
         assertEquals(PartyRole.BUYER, partyDocument.getRole());
-        assertEquals("Should pick this address!", partyDocument.getParty().getAddress().getBlock());
+        assertEquals("Never made it as a wise man", partyDocument.getParty().getAddress().getBlock());
+        assertEquals("This is how you remind me of what I'm really am", partyDocument.getParty().getFluxOrganizationAddress().getBlock());
         assertEquals("I couldn't cut it as a poor man stealin'", partyDocument.getParty().getFluxOrganizationName());
     }
 
@@ -209,6 +210,7 @@ public class DomainMapperProducerTest {
                 .extId("Yow")
                 .fluxOrganizationName("Don't be fooled by the rocks that I got")
                 .address(new Address().block("I'm still Jenny from the block"))
+                .fluxOrganizationAddress(new Address().block("Used to have a little, now I have a lot"))
                 .name("name");
 
         PartyDocument partyDocument = new PartyDocument()
@@ -220,7 +222,8 @@ public class DomainMapperProducerTest {
 
         assertEquals("Yow", salesPartyType.getID().getValue());
         assertEquals("Don't be fooled by the rocks that I got", salesPartyType.getSpecifiedFLUXOrganization().getName().getValue());
-        assertEquals("I'm still Jenny from the block", salesPartyType.getSpecifiedFLUXOrganization().getPostalStructuredAddresses().get(0).getBlockName().getValue());
+        assertEquals("I'm still Jenny from the block", salesPartyType.getSpecifiedStructuredAddresses().get(0).getBlockName().getValue());
+        assertEquals("Used to have a little, now I have a lot", salesPartyType.getSpecifiedFLUXOrganization().getPostalStructuredAddresses().get(0).getBlockName().getValue());
         assertEquals("name", salesPartyType.getName().getValue());
         assertEquals("FRA", salesPartyType.getCountryID().getValue());
         assertEquals(Lists.newArrayList(new CodeType().withValue("RECIPIENT")), salesPartyType.getRoleCodes());
