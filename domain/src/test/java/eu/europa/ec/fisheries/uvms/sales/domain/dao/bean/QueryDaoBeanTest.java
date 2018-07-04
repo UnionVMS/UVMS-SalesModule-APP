@@ -13,9 +13,7 @@ import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class QueryDaoBeanTest extends AbstractDaoTest<QueryDaoBean> {
@@ -32,7 +30,7 @@ public class QueryDaoBeanTest extends AbstractDaoTest<QueryDaoBean> {
                 .queryType("SN+TOD")
                 .startDate(DateTime.now())
                 .endDate(DateTime.now())
-                .submitterFLUXParty("FLUXParty");
+                .submitterFLUXPartyId("FLUXParty");
 
         QueryParameterType queryParameterType = new QueryParameterType()
                 .typeCode("bla")

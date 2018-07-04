@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="stihft" id="que-02">
+        <renameColumn tableName="sales_response"
+                      oldColumnName="respondent_flux_party"
+                      newColumnName="respondent_flux_party_id" />
+        <addColumn tableName="sales_response">
+            <column name="respondent_flux_party_name"
+                    type="text" />
+        </addColumn>
+
+        <rollback>
+            <renameColumn tableName="sales_response"
+                          oldColumnName="respondent_flux_party_id"
+                          newColumnName="respondent_flux_party" />
+            <dropColumn tableName="sales_response"
+                        columnName="respondent_flux_party_name" />
+        </rollback>
+    </changeSet>
+
+        
+</databaseChangeLog>

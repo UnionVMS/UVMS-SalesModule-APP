@@ -5,5 +5,8 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <include file="/schema/v1.0.16/sales_party.xml" />
+    <include file="/schema/v1.0.16/sales_query.xml" />
+    <include file="/schema/v1.0.16/sales_flux_report.xml" />
+    <include file="/schema/v1.0.16/sales_response.xml" />
 
 </databaseChangeLog>

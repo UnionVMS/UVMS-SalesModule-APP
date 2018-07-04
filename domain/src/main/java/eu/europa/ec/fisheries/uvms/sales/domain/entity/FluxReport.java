@@ -63,8 +63,11 @@ public class FluxReport {
     @JoinColumn(name = "sales_auction_sale_id")
     private AuctionSale auctionSale;
 
-    @Column(name = "flux_report_party")
-    private String fluxReportParty;
+    @Column(name = "flux_report_party_id")
+    private String fluxReportPartyId;
+
+    @Column(name = "flux_report_party_name")
+    private String fluxReportPartyName;
 
     @Valid
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -175,12 +178,20 @@ public class FluxReport {
         this.auctionSale = auctionSale;
     }
 
-    public String getFluxReportParty() {
-        return fluxReportParty;
+    public String getFluxReportPartyId() {
+        return fluxReportPartyId;
     }
 
-    public void setFluxReportParty(String fluxReportParty) {
-        this.fluxReportParty = fluxReportParty;
+    public void setFluxReportPartyId(String fluxReportPartyId) {
+        this.fluxReportPartyId = fluxReportPartyId;
+    }
+
+    public String getFluxReportPartyName() {
+        return fluxReportPartyName;
+    }
+
+    public void setFluxReportPartyName(String fluxReportPartyName) {
+        this.fluxReportPartyName = fluxReportPartyName;
     }
 
     public Document getDocument() {
@@ -271,8 +282,13 @@ public class FluxReport {
         return this;
     }
 
-    public FluxReport fluxReportParty(final String fluxReportParty) {
-        setFluxReportParty(fluxReportParty);
+    public FluxReport fluxReportPartyId(final String fluxReportPartyId) {
+        setFluxReportPartyId(fluxReportPartyId);
+        return this;
+    }
+
+    public FluxReport fluxReportPartyName(final String fluxReportPartyName) {
+        setFluxReportPartyName(fluxReportPartyName);
         return this;
     }
 

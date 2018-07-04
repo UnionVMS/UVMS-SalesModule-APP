@@ -5,14 +5,14 @@
             purpose_code="ORIGINAL"
             item_type="SALES_NOTE"
             creation="1995-11-17"
-            flux_report_party="BEL"
+            flux_report_party_id="BEL"
     />
     <sales_flux_report
             ext_id="ExternalID"
             purpose_code="CORRECTION"
             item_type="SALES_NOTE"
             creation="1995-11-24"
-            flux_report_party="BEL"
+            flux_report_party_id="BEL"
     />
 
     <sales_document
