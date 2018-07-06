@@ -18,7 +18,7 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NamedQueries({
-        @NamedQuery(name = Query.FIND_BY_EXT_ID, query = "SELECT query from Query query WHERE query.extId = :extId"),
+        @NamedQuery(name = Query.FIND_BY_EXT_ID, query = "SELECT query from Query query WHERE lower(query.extId) = lower(:extId)"),
 })
 public class Query {
 
@@ -48,8 +48,11 @@ public class Query {
     @Column(name = "end_date")
     private DateTime endDate;
 
-    @Column(name = "submitted_by")
-    private String submitterFLUXParty;
+    @Column(name = "submitter_id")
+    private String submitterFLUXPartyId;
+
+    @Column(name = "submitter_name")
+    private String submitterFLUXPartyName;
 
     @Valid
     @OneToMany(mappedBy = "query", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -104,12 +107,20 @@ public class Query {
         this.endDate = endDate;
     }
 
-    public String getSubmitterFLUXParty() {
-        return submitterFLUXParty;
+    public String getSubmitterFLUXPartyId() {
+        return submitterFLUXPartyId;
     }
 
-    public void setSubmitterFLUXParty(String submitterFLUXParty) {
-        this.submitterFLUXParty = submitterFLUXParty;
+    public void setSubmitterFLUXPartyId(String submitterFLUXPartyId) {
+        this.submitterFLUXPartyId = submitterFLUXPartyId;
+    }
+
+    public String getSubmitterFLUXPartyName() {
+        return submitterFLUXPartyName;
+    }
+
+    public void setSubmitterFLUXPartyName(String submitterFLUXPartyName) {
+        this.submitterFLUXPartyName = submitterFLUXPartyName;
     }
 
     public List<QueryParameterType> getParameters() {
@@ -151,8 +162,13 @@ public class Query {
         return this;
     }
 
-    public Query submitterFLUXParty(String submitterFLUXParty) {
-        this.submitterFLUXParty = submitterFLUXParty;
+    public Query submitterFLUXPartyId(String submitterFLUXPartyId) {
+        this.submitterFLUXPartyId = submitterFLUXPartyId;
+        return this;
+    }
+
+    public Query submitterFLUXPartyName(String submitterFLUXPartyName) {
+        this.submitterFLUXPartyName = submitterFLUXPartyName;
         return this;
     }
 
@@ -160,4 +176,5 @@ public class Query {
         this.parameters = parameters;
         return this;
     }
+
 }

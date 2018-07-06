@@ -27,4 +27,22 @@ public class UnsavedMessageDaoBeanTest extends AbstractDaoTest<UnsavedMessageDao
         assertFalse(dao.exists("bla"));
     }
 
+    @Test
+    @DataSet(initialData = "data/UnsavedMessageDaoBeanTest-exists-initial.xml")
+    public void existsWhenExtIdIsAllUppercase() throws Exception {
+        assertTrue(dao.exists("TEST"));
+    }
+
+    @Test
+    @DataSet(initialData = "data/UnsavedMessageDaoBeanTest-exists-initial.xml")
+    public void existsWhenExtIdHasUppercase() throws Exception {
+        assertTrue(dao.exists("TeSt"));
+    }
+
+    @Test
+    @DataSet(initialData = "data/UnsavedMessageDaoBeanTest-exists-initial.xml")
+    public void existsWhenExtIdIsAllLowercase() throws Exception {
+        assertTrue(dao.exists("test"));
+    }
+
 }

@@ -6,10 +6,10 @@
         <session>
             <ejb-name>ReportServiceHelper</ejb-name>
             <ejb-local-ref>
-                <ejb-ref-name>eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceHelper/rulesService
+                <ejb-ref-name>eu.europa.ec.fisheries.uvms.sales.service.bean.helper.ReportServiceHelper/outgoingMessageService
                 </ejb-ref-name>
-                <local>eu.europa.ec.fisheries.uvms.sales.service.RulesService</local>
-                <ejb-link>SetTransactionRollbackRulesServiceAlternativeBean</ejb-link>
+                <local>eu.europa.ec.fisheries.uvms.sales.service.OutgoingMessageService</local>
+                <ejb-link>SetTransactionRollbackOutgoingMessageServiceAlternativeBean</ejb-link>
             </ejb-local-ref>
         </session>
         <session>
@@ -25,6 +25,15 @@
             <ejb-name>ReportServiceBean</ejb-name>
             <ejb-local-ref>
                 <ejb-ref-name>eu.europa.ec.fisheries.uvms.sales.service.bean.ReportServiceBean/rulesService
+                </ejb-ref-name>
+                <local>eu.europa.ec.fisheries.uvms.sales.service.RulesService</local>
+                <ejb-link>SetTransactionRollbackRulesServiceAlternativeBean</ejb-link>
+            </ejb-local-ref>
+        </session>
+        <session>
+            <ejb-name>OutgoingMessageServiceBean</ejb-name>
+            <ejb-local-ref>
+                <ejb-ref-name>eu.europa.ec.fisheries.uvms.sales.service.bean.OutgoingMessageServiceBean/rulesService
                 </ejb-ref-name>
                 <local>eu.europa.ec.fisheries.uvms.sales.service.RulesService</local>
                 <ejb-link>SetTransactionRollbackRulesServiceAlternativeBean</ejb-link>

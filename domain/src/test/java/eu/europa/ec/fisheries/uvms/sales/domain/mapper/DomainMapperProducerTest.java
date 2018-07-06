@@ -35,12 +35,16 @@ public class DomainMapperProducerTest {
         DateTime creation = new DateTime(2017, 2, 17, 16, 35);
         DateTime deletion = new DateTime(2018, 2, 17, 16, 35);
 
+        FLUXPartyType ownerFLUXParty = new FLUXPartyType()
+                .withIDS(new IDType().withValue("party id"))
+                .withNames(new TextType().withValue("party hardy"));
+
         FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType()
                 .withIDS(new IDType().withValue("ID"))
                 .withCreationDateTime(new DateTimeType().withDateTime(creation))
                 .withPurpose(new TextType().withValue("The cake is a lie"))
                 .withPurposeCode(new CodeType().withValue("5"))
-                .withOwnerFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("name")))
+                .withOwnerFLUXParty(ownerFLUXParty)
                 .withReferencedID(new IDType().withValue("previousExtId"));
 
         SalesReportType salesReportType = new SalesReportType()
@@ -65,7 +69,8 @@ public class DomainMapperProducerTest {
         assertEquals(creation, fluxReport.getCreation());
         assertEquals("The cake is a lie", fluxReport.getPurposeText());
         assertEquals(Purpose.CORRECTION, fluxReport.getPurpose());
-        assertEquals("name", fluxReport.getFluxReportParty());
+        assertEquals("party id", fluxReport.getFluxReportPartyId());
+        assertEquals("party hardy", fluxReport.getFluxReportPartyName());
         assertEquals(FluxReportItemType.TAKE_OVER_DOCUMENT, fluxReport.getItemType());
         assertEquals("DOC1", fluxReport.getDocument().getExtId());
         assertEquals(SalesCategory.FIRST_SALE, fluxReport.getAuctionSale().getCategory());
@@ -83,7 +88,8 @@ public class DomainMapperProducerTest {
                 .purpose(Purpose.ORIGINAL)
                 .purposeText("Sorry miss Jackson, I am for real")
                 .creation(creation)
-                .fluxReportParty("Outkast")
+                .fluxReportPartyId("OUT")
+                .fluxReportPartyName("Outkast")
                 .itemType(FluxReportItemType.SALES_NOTE)
                 .document(new Document().extId("docu"))
                 .auctionSale(new AuctionSale().category(SalesCategory.NEGOTIATED_SALE))
@@ -98,7 +104,8 @@ public class DomainMapperProducerTest {
         assertEquals(creation, fluxSalesReportMessageType.getFLUXReportDocument().getCreationDateTime().getDateTime());
         assertEquals("Sorry miss Jackson, I am for real", fluxSalesReportMessageType.getFLUXReportDocument().getPurpose().getValue());
         assertEquals("9", fluxSalesReportMessageType.getFLUXReportDocument().getPurposeCode().getValue());
-        assertEquals("Outkast", fluxSalesReportMessageType.getFLUXReportDocument().getOwnerFLUXParty().getIDS().get(0).getValue());
+        assertEquals("OUT", fluxSalesReportMessageType.getFLUXReportDocument().getOwnerFLUXParty().getIDS().get(0).getValue());
+        assertEquals("Outkast", fluxSalesReportMessageType.getFLUXReportDocument().getOwnerFLUXParty().getNames().get(0).getValue());
         assertEquals("SN", fluxSalesReportMessageType.getSalesReports().get(0).getItemTypeCode().getValue());
         assertEquals("docu", fluxSalesReportMessageType.getSalesReports().get(0).getIncludedSalesDocuments().get(0).getIDS().get(0).getValue());
         assertEquals(SalesCategoryType.NEGOTIATED_SALE, auctionSaleType.getSalesCategory());
@@ -191,7 +198,7 @@ public class DomainMapperProducerTest {
                 .withSpecifiedFLUXOrganization(new FLUXOrganizationType()
                         .withName(new TextType().withValue("I couldn't cut it as a poor man stealin'"))
                         .withPostalStructuredAddresses(new StructuredAddressType()
-                                .withBlockName(new TextType().withValue("Should pick this address!"))));
+                                .withBlockName(new TextType().withValue("This is how you remind me of what I'm really am"))));
 
         PartyDocument partyDocument = mapper.map(salesPartyType, PartyDocument.class);
 
@@ -199,7 +206,8 @@ public class DomainMapperProducerTest {
         assertEquals("name", partyDocument.getParty().getName());
         assertEquals("BEL", partyDocument.getCountry());
         assertEquals(PartyRole.BUYER, partyDocument.getRole());
-        assertEquals("Should pick this address!", partyDocument.getParty().getAddress().getBlock());
+        assertEquals("Never made it as a wise man", partyDocument.getParty().getAddress().getBlock());
+        assertEquals("This is how you remind me of what I'm really am", partyDocument.getParty().getFluxOrganizationAddress().getBlock());
         assertEquals("I couldn't cut it as a poor man stealin'", partyDocument.getParty().getFluxOrganizationName());
     }
 
@@ -209,6 +217,7 @@ public class DomainMapperProducerTest {
                 .extId("Yow")
                 .fluxOrganizationName("Don't be fooled by the rocks that I got")
                 .address(new Address().block("I'm still Jenny from the block"))
+                .fluxOrganizationAddress(new Address().block("Used to have a little, now I have a lot"))
                 .name("name");
 
         PartyDocument partyDocument = new PartyDocument()
@@ -220,7 +229,8 @@ public class DomainMapperProducerTest {
 
         assertEquals("Yow", salesPartyType.getID().getValue());
         assertEquals("Don't be fooled by the rocks that I got", salesPartyType.getSpecifiedFLUXOrganization().getName().getValue());
-        assertEquals("I'm still Jenny from the block", salesPartyType.getSpecifiedFLUXOrganization().getPostalStructuredAddresses().get(0).getBlockName().getValue());
+        assertEquals("I'm still Jenny from the block", salesPartyType.getSpecifiedStructuredAddresses().get(0).getBlockName().getValue());
+        assertEquals("Used to have a little, now I have a lot", salesPartyType.getSpecifiedFLUXOrganization().getPostalStructuredAddresses().get(0).getBlockName().getValue());
         assertEquals("name", salesPartyType.getName().getValue());
         assertEquals("FRA", salesPartyType.getCountryID().getValue());
         assertEquals(Lists.newArrayList(new CodeType().withValue("RECIPIENT")), salesPartyType.getRoleCodes());
@@ -651,20 +661,22 @@ public class DomainMapperProducerTest {
                 .remarks("remarks")
                 .rejectionReason("rejectionReason")
                 .typeCode("typeCode")
-                .respondentFLUXParty("respondentFLUXParty");
+                .respondentFLUXPartyId("hey")
+                .respondentFLUXPartyName("ho");
     }
 
-    private FLUXResponseDocumentType createFluxResponseDocumentType(DateTime now) {
+    private FLUXResponseDocumentType createFluxResponseDocumentType(DateTime creationDateTime) {
         return new FLUXResponseDocumentType()
                 .withIDS(Arrays.asList(new IDType().withValue("extId")))
                 .withReferencedID(new IDType().withValue("referencedId"))
-                .withCreationDateTime(new DateTimeType().withDateTime(now))
+                .withCreationDateTime(new DateTimeType().withDateTime(creationDateTime))
                 .withResponseCode(new CodeType().withValue("responseCode"))
                 .withRemarks(new TextType().withValue("remarks"))
                 .withRejectionReason(new TextType().withValue("rejectionReason"))
                 .withTypeCode(new CodeType().withValue("typeCode"))
-                .withRespondentFLUXParty(new FLUXPartyType().withIDS(
-                        new IDType().withValue("respondentFLUXParty")));
+                .withRespondentFLUXParty(new FLUXPartyType()
+                        .withIDS(new IDType().withValue("hey"))
+                        .withNames(new TextType().withValue("ho")));
     }
 
     private Query createQuery() {
@@ -680,7 +692,8 @@ public class DomainMapperProducerTest {
                 .startDate(DateTime.parse("2016-08-01"))
                 .endDate(DateTime.parse("2060-08-01"))
                 .submittedDate(DateTime.parse("2017-09-05"))
-                .submitterFLUXParty("fluxParty idType")
+                .submitterFLUXPartyId("fluxParty idType")
+                .submitterFLUXPartyName("Milky Way")
                 .parameters(Arrays.asList(queryParameter));
     }
 
@@ -691,6 +704,10 @@ public class DomainMapperProducerTest {
                 .withValueDateTime(new DateTimeType().withDateTime(DateTime.parse("1995-11-24")))
                 .withValueID(new IDType().withValue("idType"));
 
+        FLUXPartyType fluxParty = new FLUXPartyType()
+                .withIDS(new IDType().withValue("fluxParty idType"))
+                .withNames(new TextType().withValue("Milky Way"));
+
         return new SalesQueryType()
                 .withTypeCode(new CodeType().withValue("typeCode"))
                 .withID(new IDType().withValue("id"))
@@ -699,7 +716,7 @@ public class DomainMapperProducerTest {
                                 .withStartDateTime(new DateTimeType().withDateTime(DateTime.parse("2016-08-01")))
                                 .withEndDateTime(new DateTimeType().withDateTime(DateTime.parse("2060-08-01"))))
                 .withSubmittedDateTime(new DateTimeType().withDateTime(DateTime.parse("2017-09-05")))
-                .withSubmitterFLUXParty(new FLUXPartyType().withIDS(new IDType().withValue("fluxParty idType")))
+                .withSubmitterFLUXParty(fluxParty)
                 .withSimpleSalesQueryParameters(salesQueryParameterType);
     }
 

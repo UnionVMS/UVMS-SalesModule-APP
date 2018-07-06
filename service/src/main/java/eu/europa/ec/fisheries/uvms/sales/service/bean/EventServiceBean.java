@@ -118,6 +118,7 @@ public class EventServiceBean implements EventService {
             }
 
             String marshalledFindReportByIdResponse = SalesModuleRequestMapper.createFindReportByIdResponse(marshalledReport);
+            LOG.info("Send FindReportByIdResponse message to requester");
             salesMessageProducer.sendModuleResponseMessage(event.getJmsMessage(), marshalledFindReportByIdResponse);
         } catch (SalesMarshallException e) {
             throw new SalesServiceException("Something went wrong during marshalling of a FindReportById", e);
@@ -131,6 +132,8 @@ public class EventServiceBean implements EventService {
         CheckForUniqueIdRequest request = ((CheckForUniqueIdRequest) event.getSalesBaseRequest());
 
         Boolean response = false;
+
+        LOG.debug("Unique ID check for IDS '" + request.getIds() + "' with type " + request.getType());
 
         switch (request.getType()) {
             case TRANSPORT_DOCUMENT:
@@ -154,8 +157,11 @@ public class EventServiceBean implements EventService {
                 throw new SalesServiceException("No case implemented for " + request.getType());
         }
 
+        LOG.debug("Were the IDS unique? " + response);
+
         try {
             String checkForUniqueIdResponse = SalesModuleRequestMapper.createCheckForUniqueIdResponse(response);
+            LOG.info("Send CheckForUniqueIdResponse message to requester");
             salesMessageProducer.sendModuleResponseMessage(event.getJmsMessage(), checkForUniqueIdResponse);
         } catch (SalesMarshallException e) {
             throw new SalesServiceException("Something went wrong during marshalling of a uniqueIdResponse", e);

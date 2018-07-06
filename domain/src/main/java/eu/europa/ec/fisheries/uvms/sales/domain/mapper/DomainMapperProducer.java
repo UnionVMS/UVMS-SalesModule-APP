@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
+@SuppressWarnings("squid:S1192")
 public class DomainMapperProducer {
 
     @Produces
@@ -80,7 +81,8 @@ public class DomainMapperProducer {
                 .field("remarks.value", "remarks")
                 .field("rejectionReason.value", "rejectionReason")
                 .field("typeCode.value", "typeCode")
-                .field("respondentFLUXParty.IDS[0].value", "respondentFLUXParty")
+                .field("respondentFLUXParty.IDS[0].value", "respondentFLUXPartyId")
+                .field("respondentFLUXParty.names[0].value", "respondentFLUXPartyName")
                 .register();
     }
 
@@ -91,7 +93,8 @@ public class DomainMapperProducer {
                 .field("typeCode.value", "queryType")
                 .field("specifiedDelimitedPeriod.startDateTime.dateTime", "startDate")
                 .field("specifiedDelimitedPeriod.endDateTime.dateTime", "endDate")
-                .field("submitterFLUXParty.IDS[0].value", "submitterFLUXParty")
+                .field("submitterFLUXParty.IDS[0].value", "submitterFLUXPartyId")
+                .field("submitterFLUXParty.names[0].value", "submitterFLUXPartyName")
                 .field("simpleSalesQueryParameters", "parameters")
                 .register();
     }
@@ -111,7 +114,8 @@ public class DomainMapperProducer {
                 .field("FLUXSalesReportMessage.FLUXReportDocument.creationDateTime.dateTime", "creation")
                 .field("FLUXSalesReportMessage.FLUXReportDocument.purpose.value", "purposeText")
                 .field("FLUXSalesReportMessage.FLUXReportDocument.purposeCode", "purpose")
-                .field("FLUXSalesReportMessage.FLUXReportDocument.ownerFLUXParty.IDS[0].value", "fluxReportParty")
+                .field("FLUXSalesReportMessage.FLUXReportDocument.ownerFLUXParty.IDS[0].value", "fluxReportPartyId")
+                .field("FLUXSalesReportMessage.FLUXReportDocument.ownerFLUXParty.names[0].value", "fluxReportPartyName")
                 .field("FLUXSalesReportMessage.FLUXReportDocument.referencedID.value", "previousFluxReportExtId")
                 .field("FLUXSalesReportMessage.salesReports[0].itemTypeCode", "itemType")
                 .field("FLUXSalesReportMessage.salesReports[0].includedSalesDocuments[0]", "document")
@@ -241,7 +245,8 @@ public class DomainMapperProducer {
                 .field("name.value", "party.name")
                 .field("countryID.value", "country")
                 .field("roleCodes[0].value", "role")
-                .field("specifiedFLUXOrganization.postalStructuredAddresses[0]", "party.address")
+                .field("specifiedStructuredAddresses[0]", "party.address")
+                .field("specifiedFLUXOrganization.postalStructuredAddresses[0]", "party.fluxOrganizationAddress")
                 .field("specifiedFLUXOrganization.name.value", "party.fluxOrganizationName")
                 .register();
     }

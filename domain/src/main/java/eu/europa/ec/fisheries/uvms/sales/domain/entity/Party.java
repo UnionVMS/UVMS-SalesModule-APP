@@ -39,6 +39,13 @@ public class Party {
     @JoinColumn(name = "sales_address_id")
     private Address address;
 
+    @Valid
+    @ManyToOne(
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "flux_organization_address_id")
+    private Address fluxOrganizationAddress;
+
     public Integer getId() {
         return id;
     }
@@ -79,6 +86,14 @@ public class Party {
         this.address = address;
     }
 
+    public Address getFluxOrganizationAddress() {
+        return fluxOrganizationAddress;
+    }
+
+    public void setFluxOrganizationAddress(Address fluxOrganizationAddress) {
+        this.fluxOrganizationAddress = fluxOrganizationAddress;
+    }
+
     public Party id(final Integer id) {
         setId(id);
         return this;
@@ -104,5 +119,8 @@ public class Party {
         return this;
     }
 
-
+    public Party fluxOrganizationAddress(Address fluxOrganizationAddress) {
+        setFluxOrganizationAddress(fluxOrganizationAddress);
+        return this;
+    }
 }

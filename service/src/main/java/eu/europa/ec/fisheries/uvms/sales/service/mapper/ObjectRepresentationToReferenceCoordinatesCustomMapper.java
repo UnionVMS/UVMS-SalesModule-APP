@@ -37,6 +37,8 @@ public class ObjectRepresentationToReferenceCoordinatesCustomMapper extends Cust
                 case "longitude":
                     referenceCoordinates.setLongitude(Double.parseDouble(field.getColumnValue()));
                     break;
+                default:
+                    break;
             }
         }
     }

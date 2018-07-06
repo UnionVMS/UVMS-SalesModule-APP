@@ -54,17 +54,11 @@
         </filter>
     </appender>
 
-    <logger name="org.jboss.weld" level="info"/>
-    <logger name="ma.glasnost.orika" level="info"/>
-    <logger name="net.bull.javamelody" level="info"/>
-    <logger name="eu.europa.ec.fisheries.uvms.sales.model.mapper" level="info"/>
-    <logger name="com.arjuna" level="error"/>
     <logger name="net.bull.javamelody" level="error"/>
-    <logger name="org.jboss.modules" level="error"/>
+    <logger name="org.hibernate.sql" level="debug"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace"/>
 
-    <logger name="eu.europa.ec.fisheries.uvms.sales.service" level="debug"/>
-
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="ERROR"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>

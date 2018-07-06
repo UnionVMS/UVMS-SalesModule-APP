@@ -11,7 +11,7 @@
 	
     <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
     <artifactId>sales</artifactId>
-    <version>1.0.13</version>
+    <version>1.0.16</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -22,7 +22,7 @@
         <asset.model.version>3.0.7</asset.model.version>
         <rules.model.version>3.0.21</rules.model.version>
         <uvms.commons.parent.version>3.0.17</uvms.commons.parent.version>
-        <uvms.config.version>4.0.0</uvms.config.version>
+        <uvms.config.version>4.0.1</uvms.config.version>
         <sl4j.version>1.7.25</sl4j.version>
         <logback.version>1.2.3</logback.version>        
         <usm4uvms.version>4.0.8</usm4uvms.version>
@@ -34,6 +34,7 @@
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-SalesModule-APP.git</scm.connection>
         <annotations.version>2.0.3</annotations.version>
+        <exchange-model.version>4.0.15</exchange-model.version>
     </properties>
 
     <dependencyManagement>
@@ -54,6 +55,11 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sales-commons</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
+                <artifactId>exchange-model</artifactId>
+                <version>${exchange-model.version}</version>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
@@ -270,7 +276,7 @@
     </distributionManagement>
     <scm>
         <connection>${scm.connection}</connection>
-        <tag>sales-1.0.13</tag>
+        <tag>sales-1.0.16</tag>
     </scm>
 
 </project>

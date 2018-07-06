@@ -25,200 +25,200 @@ public class ReportListExportDto {
     /**
      * flag state of the vessel
      */
-    public String flagState; //NOSONAR
+    public String _flagState; //NOSONAR
 
     /**
      * external marking (CFR) of the vessel
      */
-    public String externalMarking; //NOSONAR
+    public String _externalMarking; //NOSONAR
 
     /**
      * IRCS of the vessel
      */
-    public String ircs; //NOSONAR
+    public String _ircs; //NOSONAR
 
-    public String vesselName; //NOSONAR
+    public String _vesselName; //NOSONAR
 
     /**
      * timestamp of the sale
      */
-    public String occurrence; //NOSONAR
+    public String _occurrence; //NOSONAR
 
     /**
      * location of the sale
      */
-    public String location; //NOSONAR
-    public String landingDate; //NOSONAR
-    public String landingPort; //NOSONAR
-    public SalesCategoryType category; //NOSONAR
+    public String _location; //NOSONAR
+    public String _landingDate; //NOSONAR
+    public String _landingPort; //NOSONAR
+    public SalesCategoryType _category; //NOSONAR
 
     /**
      * provider name
      */
-    public String provider; //NOSONAR
+    public String _provider; //NOSONAR
 
     /**
      * buyer name
      */
-    public String buyer; //NOSONAR
+    public String _buyer; //NOSONAR
 
-    public DateTime deletion; //NOSONAR
+    public DateTime _deletion; //NOSONAR
 
     public String getFlagState() {
-        return flagState;
+        return _flagState;
     }
 
     public void setFlagState(String flagState) {
-        this.flagState = flagState;
+        this._flagState = flagState;
     }
 
     public String getExternalMarking() {
-        return externalMarking;
+        return _externalMarking;
     }
 
     public void setExternalMarking(String externalMarking) {
-        this.externalMarking = externalMarking;
+        this._externalMarking = externalMarking;
     }
 
     public String getIrcs() {
-        return ircs;
+        return _ircs;
     }
 
     public void setIrcs(String ircs) {
-        this.ircs = ircs;
+        this._ircs = ircs;
     }
 
     public String getVesselName() {
-        return vesselName;
+        return _vesselName;
     }
 
     public void setVesselName(String vesselName) {
-        this.vesselName = vesselName;
+        this._vesselName = vesselName;
     }
 
 
     public String getOccurrence() {
-        return occurrence;
+        return _occurrence;
     }
 
     public void setOccurrence(String occurrence) {
-        this.occurrence = occurrence;
+        this._occurrence = occurrence;
     }
 
     public String getLocation() {
-        return location;
+        return _location;
     }
 
     public void setLocation(String location) {
-        this.location = location;
+        this._location = location;
     }
 
     public String getLandingDate() {
-        return landingDate;
+        return _landingDate;
     }
 
     public void setLandingDate(String landingDate) {
-        this.landingDate = landingDate;
+        this._landingDate = landingDate;
     }
 
     public String getLandingPort() {
-        return landingPort;
+        return _landingPort;
     }
 
     public void setLandingPort(String landingPort) {
-        this.landingPort = landingPort;
+        this._landingPort = landingPort;
     }
 
     public SalesCategoryType getCategory() {
-        return category;
+        return _category;
     }
 
     public void setCategory(SalesCategoryType category) {
-        this.category = category;
+        this._category = category;
     }
 
     public String getBuyer() {
-        return buyer;
+        return _buyer;
     }
 
     public void setBuyer(String buyer) {
-        this.buyer = buyer;
+        this._buyer = buyer;
     }
 
     public String getProvider() {
-        return provider;
+        return _provider;
     }
 
     public void setProvider(String provider) {
-        this.provider = provider;
+        this._provider = provider;
     }
 
     public DateTime getDeletion() {
-        return deletion;
+        return _deletion;
     }
 
     public void setDeletion(DateTime deletion) {
-        this.deletion = deletion;
+        this._deletion = deletion;
     }
 
     public ReportListExportDto flagState(String flagState) {
-        this.flagState = flagState;
+        this._flagState = flagState;
         return this;
     }
 
     public ReportListExportDto externalMarking(String externalMarking) {
-        this.externalMarking = externalMarking;
+        this._externalMarking = externalMarking;
         return this;
     }
 
     public ReportListExportDto ircs(String ircs) {
-        this.ircs = ircs;
+        this._ircs = ircs;
         return this;
     }
 
     public ReportListExportDto vesselName(String vesselName) {
-        this.vesselName = vesselName;
+        this._vesselName = vesselName;
         return this;
     }
 
 
     public ReportListExportDto occurrence(String occurrence) {
-        this.occurrence = occurrence;
+        this._occurrence = occurrence;
         return this;
     }
 
     public ReportListExportDto location(String location) {
-        this.location = location;
+        this._location = location;
         return this;
     }
 
     public ReportListExportDto landingDate(String landingDate) {
-        this.landingDate = landingDate;
+        this._landingDate = landingDate;
         return this;
     }
 
     public ReportListExportDto landingPort(String landingPort) {
-        this.landingPort = landingPort;
+        this._landingPort = landingPort;
         return this;
     }
 
     public ReportListExportDto category(SalesCategoryType category) {
-        this.category = category;
+        this._category = category;
         return this;
     }
 
     public ReportListExportDto buyer(String buyer) {
-        this.buyer = buyer;
+        this._buyer = buyer;
         return this;
     }
 
     public ReportListExportDto provider(String provider) {
-        this.provider = provider;
+        this._provider = provider;
         return this;
     }
 
     public ReportListExportDto deletion(DateTime deletion) {
-        this.deletion = deletion;
+        this._deletion = deletion;
         return this;
     }
 }

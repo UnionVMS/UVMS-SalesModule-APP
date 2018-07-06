@@ -20,8 +20,7 @@ import org.junit.rules.ExpectedException;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     @Rule
@@ -109,7 +108,7 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
                 .extId("ExternalID")
                 .itemType(FluxReportItemType.SALES_NOTE)
                 .creation(new DateTime(1995, 11, 24, 0, 0))
-                .fluxReportParty("BEL")
+                .fluxReportPartyId("BEL")
                 .document(document)
                 .purpose(Purpose.CORRECTION)
                 .auctionSale(auctionSale);
@@ -126,7 +125,7 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
                 .purpose(Purpose.ORIGINAL)
                 .itemType(FluxReportItemType.SALES_NOTE)
                 .creation(new DateTime(1995, 11, 17, 0, 0))
-                .fluxReportParty("BEL")
+                .fluxReportPartyId("BEL")
                 .document(new Document().currency("EURO").extId("abcdef").occurrence(new DateTime(1990, 11, 11, 0, 0)));
 
         dao.create(correctedFluxReport);
@@ -145,7 +144,7 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
                 .extId("ExternalID")
                 .itemType(FluxReportItemType.SALES_NOTE)
                 .creation(new DateTime(1995, 11, 24, 0, 0))
-                .fluxReportParty("BEL")
+                .fluxReportPartyId("BEL")
                 .document(document)
                 .purpose(Purpose.CORRECTION)
                 .auctionSale(auctionSale)
@@ -167,6 +166,25 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     public void testFindByExtIdWhenNoResultFound() {
         assertFalse(dao.findByExtId("").isPresent());
     }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindByExtId-initial.xml")
+    public void testFindByExtIdWhenExtIdHasUppercase() {
+        assertTrue(dao.findByExtId("ExternalID").isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindByExtId-initial.xml")
+    public void testFindByExtIdWhenExtIdIsAllLowercase() {
+        assertTrue(dao.findByExtId("externalid").isPresent());
+    }
+
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindByExtId-initial.xml")
+    public void testFindByExtIdWhenExtIdIsAllUppercase() {
+        assertTrue(dao.findByExtId("EXTERNALID").isPresent());
+    }
+
 
     @Test
     @DataSet(initialData = "data/FluxReportDaoBeanTest-testSearchAndCount-initial-minimal.xml")

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="stihft" id="que-02">
+        <renameColumn tableName="sales_query"
+                      oldColumnName="submitted_by"
+                      newColumnName="submitter_id" />
+        <addColumn tableName="sales_query">
+            <column name="submitter_name"
+                    type="text" />
+        </addColumn>
+
+        <rollback>
+            <renameColumn tableName="sales_query"
+                          oldColumnName="submitter_id"
+                          newColumnName="submitted_by" />
+            <dropColumn tableName="sales_query"
+                        columnName="submitter_name" />
+        </rollback>
+    </changeSet>
+
+        
+</databaseChangeLog>

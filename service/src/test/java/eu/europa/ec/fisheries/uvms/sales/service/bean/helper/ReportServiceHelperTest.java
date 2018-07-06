@@ -2,19 +2,18 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import eu.europa.ec.fisheries.schema.sales.FLUXSalesReportMessage;
-import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
-import eu.europa.ec.fisheries.schema.sales.Report;
-import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
+import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.ParameterKey;
 import eu.europa.ec.fisheries.uvms.sales.domain.helper.ReportHelper;
 import eu.europa.ec.fisheries.uvms.sales.service.ConfigService;
-import eu.europa.ec.fisheries.uvms.sales.service.RulesService;
+import eu.europa.ec.fisheries.uvms.sales.service.OutgoingMessageService;
+import eu.europa.ec.fisheries.uvms.sales.service.ResponseService;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import eu.europa.ec.fisheries.uvms.sales.service.mother.ReportMother;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -39,10 +38,13 @@ public class ReportServiceHelperTest {
     private ConfigService configService;
 
     @Mock
-    private RulesService rulesService;
+    private ReportDomainModel reportDomainModel;
 
     @Mock
-    private ReportDomainModel reportDomainModel;
+    private OutgoingMessageService outgoingMessageService;
+
+    @Mock
+    private ResponseService responseService;
 
     @Test
     public void testSendResponseToSenderOfReport() throws Exception {
@@ -57,6 +59,7 @@ public class ReportServiceHelperTest {
         //mock
         doReturn(responseToSender).when(fluxSalesResponseMessageFactory).create(report, validationResults, messageValidationResult);
         doReturn(senderOfReport).when(reportHelper).getFLUXReportDocumentOwnerId(report);
+        doNothing().when(responseService).saveResponse(ArgumentMatchers.<FLUXResponseDocumentType>any());
 
         //execute
         reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough, validationResults, messageValidationResult);
@@ -64,8 +67,8 @@ public class ReportServiceHelperTest {
         //verify
         verify(fluxSalesResponseMessageFactory).create(report, validationResults, messageValidationResult);
         verify(reportHelper).getFLUXReportDocumentOwnerId(report);
-        verify(rulesService).sendResponseToRules(responseToSender, senderOfReport, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).sendResponse(responseToSender, senderOfReport, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -92,13 +95,40 @@ public class ReportServiceHelperTest {
 
         //verify
         verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
+    }
+
+    @Test
+    public void testForwardReportToOtherRelevantPartiesWhenReportIsADeleteWhichRefersToANonExistingReport() throws Exception {
+        //data set
+        Report delete = ReportMother.withId("delete");
+        String referencedID = "abc";
+        String pluginToSendResponseThrough = "FLUX";
+
+        //mock
+        doReturn(false).when(reportHelper).isReportCorrected(delete);
+        doReturn(true).when(reportHelper).isReportDeleted(delete);
+        doReturn(referencedID).when(reportHelper).getFLUXReportDocumentReferencedId(delete);
+        doReturn("delete").when(reportHelper).getId(delete);
+        doReturn(Optional.absent()).when(reportDomainModel).findByExtId(referencedID, true);
+
+
+        //execute
+        reportServiceHelper.forwardReportToOtherRelevantParties(delete, pluginToSendResponseThrough);
+
+        //verify
+        verify(reportHelper).isReportCorrected(delete);
+        verify(reportHelper, times(2)).isReportDeleted(delete);
+        verify(reportHelper, times(2)).getFLUXReportDocumentReferencedId(delete);
+        verify(reportDomainModel).findByExtId(referencedID, true);
+        verify(reportHelper).getId(delete);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -125,13 +155,13 @@ public class ReportServiceHelperTest {
 
         //verify
         verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -158,13 +188,13 @@ public class ReportServiceHelperTest {
 
         //verify
         verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -191,13 +221,13 @@ public class ReportServiceHelperTest {
 
         //verify
         verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -224,13 +254,13 @@ public class ReportServiceHelperTest {
 
         //verify
         verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -260,15 +290,15 @@ public class ReportServiceHelperTest {
 
         //verify
         verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -298,14 +328,14 @@ public class ReportServiceHelperTest {
 
         //verify
         verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -335,14 +365,14 @@ public class ReportServiceHelperTest {
 
         //verify
         verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -372,13 +402,13 @@ public class ReportServiceHelperTest {
 
         //verify
         verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService);
     }
 
     @Test
@@ -408,14 +438,14 @@ public class ReportServiceHelperTest {
 
         //verify
         verify(reportHelper).isReportCorrected(report);
-        verify(reportHelper).isReportDeleted(report);
+        verify(reportHelper, times(2)).isReportDeleted(report);
         verify(configService).getParameter(ParameterKey.FLUX_LOCAL_NATION_CODE);
         verify(reportHelper).getVesselFlagState(report);
         verify(reportHelper).getSalesLocationCountry(report);
         verify(reportHelper).getLandingCountry(report);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(report);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -458,9 +488,9 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -505,9 +535,9 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -549,7 +579,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService);
     }
 
     @Test
@@ -593,7 +623,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService);
     }
 
     @Test
@@ -648,9 +678,9 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
-        verify(rulesService).sendReportToRules(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, vesselFlagState, pluginToSendResponseThrough);
+        verify(outgoingMessageService).forwardReport(fluxSalesReportMessage, landingCountry, pluginToSendResponseThrough);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService, outgoingMessageService);
     }
 
     @Test
@@ -704,7 +734,7 @@ public class ReportServiceHelperTest {
         verify(reportHelper).getSalesLocationCountry(original);
         verify(reportHelper).getLandingCountry(original);
         verify(reportHelper).isFirstSaleOrNegotiatedSale(original);
-        verifyNoMoreInteractions(fluxSalesResponseMessageFactory, reportHelper, configService, rulesService);
+        verifyNoMoreInteractions(reportDomainModel, fluxSalesResponseMessageFactory, reportHelper, configService);
     }
 
 }
