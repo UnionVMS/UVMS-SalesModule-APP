@@ -40,7 +40,7 @@ public class ReferenceDataCache {
     private MapperFacade mapper;
 
     public ReferenceDataCache() {
-
+        //default constructor
     }
 
     public ReferenceDataCache(MDRService mdrService, MapperFacade mapper) {
@@ -73,7 +73,7 @@ public class ReferenceDataCache {
     }
 
     public List<ReferenceTerritory> getFlagStates() {
-        return map(todays(MDRCodeListKey.FLAG_STATES), ReferenceTerritory.class);
+        return map(getFromCache(MDRCodeListKey.FLAG_STATES), ReferenceTerritory.class);
     }
 
     public List<ReferenceCode> getSalesCategories() {
@@ -83,55 +83,45 @@ public class ReferenceDataCache {
     }
 
     public List<ReferenceCode> getSalesLocations() {
-        List<ObjectRepresentation> salesLocations = todays(MDRCodeListKey.SALES_LOCATIONS);
+        List<ObjectRepresentation> salesLocations = getFromCache(MDRCodeListKey.SALES_LOCATIONS);
         return new LocationObjectRepresentationToReferenceCodeCustomMapper()
                 .mapAsList(salesLocations);
     }
 
     public List<ReferenceCode> getFreshness() {
-        return map(todays(MDRCodeListKey.FRESHNESS), ReferenceCode.class);
+        return map(getFromCache(MDRCodeListKey.FRESHNESS), ReferenceCode.class);
     }
 
     public List<ReferenceCode> getPresentations() {
-        return map(todays(MDRCodeListKey.PRESENTATIONS), ReferenceCode.class);
+        return map(getFromCache(MDRCodeListKey.PRESENTATIONS), ReferenceCode.class);
     }
 
     public List<ReferenceCode> getPreservations() {
-        return map(todays(MDRCodeListKey.PRESERVATIONS), ReferenceCode.class);
+        return map(getFromCache(MDRCodeListKey.PRESERVATIONS), ReferenceCode.class);
     }
 
     public List<ReferenceCode> getDistributionClasses() {
-        return map(todays(MDRCodeListKey.DISTRIBUTION_CLASSES), ReferenceCode.class);
+        return map(getFromCache(MDRCodeListKey.DISTRIBUTION_CLASSES), ReferenceCode.class);
     }
 
     public List<ReferenceCode> getUsages() {
-        return map(todays(MDRCodeListKey.USAGES), ReferenceCode.class);
+        return map(getFromCache(MDRCodeListKey.USAGES), ReferenceCode.class);
     }
 
     public List<ReferenceCode> getCurrencies() {
-        return map(todays(MDRCodeListKey.CURRENCIES), ReferenceCode.class);
+        return map(getFromCache(MDRCodeListKey.CURRENCIES), ReferenceCode.class);
     }
 
     public List<ReferenceCode> getSpecies() {
-        return map(todays(MDRCodeListKey.SPECIES), ReferenceCode.class);
+        return map(getFromCache(MDRCodeListKey.SPECIES), ReferenceCode.class);
     }
 
     public List<ReferenceCoordinates> getMarketAndStorageLocations() {
-        return map(todays(MDRCodeListKey.MARKET_AND_STORAGE_LOCATIONS), ReferenceCoordinates.class);
+        return map(getFromCache(MDRCodeListKey.MARKET_AND_STORAGE_LOCATIONS), ReferenceCoordinates.class);
     }
 
     private <T> List<T> map(List<ObjectRepresentation> objectRepresentations, Class<T> classToMapTo) {
         return mapper.mapAsList(objectRepresentations, classToMapTo);
-    }
-
-    private List<ObjectRepresentation> todays(MDRCodeListKey mdrCodeListKey) {
-        List<ObjectRepresentation> objectRepresentations = getFromCache(mdrCodeListKey);
-        //TODO
-        /*return FluentIterable
-                .from(objectRepresentations)
-                .filter(new ObjectRepresentationDateFilter(DateTime.now()))
-                .toList();*/
-        return objectRepresentations;
     }
 
     private List<ObjectRepresentation> getFromCache(MDRCodeListKey mdrCodeListKey) {
@@ -139,7 +129,7 @@ public class ReferenceDataCache {
     }
 
     public BigDecimal getConversionFactorForProduct(ProductDto product) {
-        List<ConversionFactor> factors = map(todays(MDRCodeListKey.CONVERSION_FACTOR), ConversionFactor.class);
+        List<ConversionFactor> factors = map(getFromCache(MDRCodeListKey.CONVERSION_FACTOR), ConversionFactor.class);
         if ((product == null)
                 || (product.getSpecies() == null)
                 || (product.getPresentation() == null)
