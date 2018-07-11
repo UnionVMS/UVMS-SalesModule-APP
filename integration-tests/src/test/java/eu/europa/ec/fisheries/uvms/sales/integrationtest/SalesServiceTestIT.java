@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.sales.integrationtest;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.config.module.v1.PullSettingsResponse;
-import eu.europa.ec.fisheries.schema.rules.module.v1.SendSalesReportRequest;
 import eu.europa.ec.fisheries.schema.rules.module.v1.SendSalesResponseRequest;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
