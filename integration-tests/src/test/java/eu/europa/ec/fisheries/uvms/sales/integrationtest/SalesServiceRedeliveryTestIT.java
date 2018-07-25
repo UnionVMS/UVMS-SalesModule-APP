@@ -94,9 +94,6 @@ public class SalesServiceRedeliveryTestIT extends MessageRedeliveryTestDeploymen
     @Transactional(TransactionMode.DISABLED)
     @DataSource("java:/jdbc/uvms_sales")
     public void testSalesMessageConsumer_Respond_To_Invalid_Message_And_Redeliver_Four_Times() throws Exception {
-        //wait until config had the chance to sync
-        Thread.sleep(10000L);
-
         // Test data
         String messageGuid = "d0c749bf-50d6-479a-b12e-61c2f2d66419";
         String pluginToSendResponseThrough = "BELGIAN_SALES";
