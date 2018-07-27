@@ -72,6 +72,7 @@ public class TestDeploymentFactory {
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.dto");
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.mapper");
         archive.addPackages(isAddRecursivelyTrue, "eu.europa.ec.fisheries.uvms.sales.service.converter");
+        archive.addPackages(isAddRecursivelyTrue, "org.awaitility");
         archive.addClass(QueryService.class).addClass(QueryServiceBean.class);
         archive.addClass(UniqueIdService.class).addClass(UniqueIdServiceBean.class);
         archive.addClass(ReportService.class).addClass(ReportServiceBean.class);
