@@ -10,7 +10,7 @@
         <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
         <artifactId>sales</artifactId>
         <version>1.0.17-SNAPSHOT</version>
-    </parent>
+    </parent>e
 
     <properties>
         <!-- PROPERTIES USED FOR LOGBACK -->
@@ -25,7 +25,6 @@
         <integration.tests.wildfly-remote.managementPort>9990</integration.tests.wildfly-remote.managementPort>
         <awaitilitiy.version>3.0.0</awaitilitiy.version>
         <skipTests>false</skipTests>
-        <excludeTest></excludeTest>
     </properties>
 
     <dependencyManagement>
@@ -191,11 +190,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*IT</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
         <testResources>
@@ -248,10 +242,6 @@
                 <integration.tests.wildfly-remote.host />
                 <integration.tests.wildfly-remote.port>8080</integration.tests.wildfly-remote.port>
                 <integration.tests.wildfly-remote.managementPort>9990</integration.tests.wildfly-remote.managementPort>
-
-                <!-- this test runs fine locally, but not on Jenkins.
-                We've spent several hours finding out what's wrong, without success. Giving up :( -->
-                <excludeTest>**/SalesServiceRedeliveryTestIT.java</excludeTest>
             </properties>
         </profile>
     </profiles>

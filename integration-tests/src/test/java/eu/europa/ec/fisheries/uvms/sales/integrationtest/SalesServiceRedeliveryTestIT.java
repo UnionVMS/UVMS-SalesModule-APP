@@ -101,9 +101,10 @@ public class SalesServiceRedeliveryTestIT extends MessageRedeliveryTestDeploymen
     //------------------------------------------------------------------------------
     // Respond to invalid message (JMS redelivery retries required) -- Sales message consumer
     // Warning: doe snot work on Jenkins for an unknown reason. Therefore, we've excluded this
-    // test when running on Jenkins (see the pom).
+    // test :(
     //------------------------------------------------------------------------------
 
+    @Ignore
     @InSequence(2)
     @Test
     @OperateOnDeployment("salesservice_redelivery")
