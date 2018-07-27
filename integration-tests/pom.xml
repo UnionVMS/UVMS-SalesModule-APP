@@ -10,7 +10,7 @@
         <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
         <artifactId>sales</artifactId>
         <version>1.0.17-SNAPSHOT</version>
-    </parent>e
+    </parent>
 
     <properties>
         <!-- PROPERTIES USED FOR LOGBACK -->
