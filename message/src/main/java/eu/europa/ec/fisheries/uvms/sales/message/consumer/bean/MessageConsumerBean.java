@@ -22,7 +22,9 @@ import javax.jms.TextMessage;
 @MessageDriven(mappedName = MessageConstants.QUEUE_SALES_EVENT, activationConfig = {
     @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
-    @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSSalesEvent")
+    @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSSalesEvent"),
+    @ActivationConfigProperty(propertyName = "initialRedeliveryDelay", propertyValue = "60000"),
+    @ActivationConfigProperty(propertyName = "maximumRedeliveries", propertyValue = "3")
 })
 @Slf4j
 public class MessageConsumerBean implements MessageListener {

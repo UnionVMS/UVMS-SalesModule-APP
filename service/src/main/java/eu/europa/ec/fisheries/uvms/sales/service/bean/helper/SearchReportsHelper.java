@@ -3,14 +3,14 @@ package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
+import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesServiceException;
 import eu.europa.ec.fisheries.uvms.sales.service.AssetService;
 import eu.europa.ec.fisheries.uvms.sales.service.dto.ReportListDto;
 import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -25,9 +25,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * Should not be used by any other class or functionality!
  */
 @Stateless
+@Slf4j
 public class SearchReportsHelper {
-
-    static final Logger LOG = LoggerFactory.getLogger(SearchReportsHelper.class);
 
     @EJB
     private AssetService assetService;
@@ -45,11 +44,15 @@ public class SearchReportsHelper {
     public void prepareVesselFreeTextSearch(ReportQuery query) {
         ReportQueryFilter filters = query.getFilters();
         if (query.getFilters() != null && !Strings.isNullOrEmpty(filters.getVesselName())) {
-            List<String> vesselExtIds = assetService.findExtIdsByNameOrCFROrIRCS(filters.getVesselName());
-            if (!vesselExtIds.isEmpty()) {
-                filters.getVesselExtIds()
-                        .addAll(vesselExtIds);
-                filters.setVesselName(null);
+            try {
+                List<String> vesselExtIds = assetService.findExtIdsByNameOrCFROrIRCS(filters.getVesselName());
+                if (!vesselExtIds.isEmpty()) {
+                    filters.getVesselExtIds()
+                            .addAll(vesselExtIds);
+                    filters.setVesselName(null);
+                }
+            } catch (SalesNonBlockingException ex) {
+                log.error("Could not prepare the free text search for a vessel. ", ex);
             }
         }
     }
@@ -64,7 +67,7 @@ public class SearchReportsHelper {
                     reportDto.setIrcs(vessel.getIrcs());
                     reportDto.setExternalMarking(vessel.getExternalMarking());
                 } catch (SalesServiceException e) {
-                    LOG.error("Cannot retrieve vessel details of vessel " + vesselExtId, e);
+                    log.error("Cannot retrieve vessel details of vessel " + vesselExtId, e);
                 }
             }
         }
