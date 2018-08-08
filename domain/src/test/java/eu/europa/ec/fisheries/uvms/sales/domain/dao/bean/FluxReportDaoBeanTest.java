@@ -117,6 +117,91 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
     }
 
     @Test
+    @DataSet(expectedData = "data/FluxReportDaoBeanTest-testCreateWithoutPreviousReportForVariousSupply-expected.xml")
+    public void testCreateWithoutPreviousReportForVariousSupply() throws Exception {
+        Address address = new Address()
+                .city("test-city")
+                .countryCode("BEL")
+                .street("test-street");
+
+        FluxLocation fluxLocation = new FluxLocation()
+                .extId("test")
+                .countryCode("BEL")
+                .type("dummy")
+                .longitude(1.254654)
+                .latitude(40.5256546)
+                .address(address);
+
+        FluxLocation fluxLocation2 = new FluxLocation()
+                .extId("test2")
+                .countryCode("BEL")
+                .type("dummy")
+                .longitude(1.254654)
+                .latitude(40.5256546)
+                .address(address);
+
+        Contact contact = new Contact()
+                .familyName("Hooft");
+
+        VesselContact vesselContact = new VesselContact()
+                .role("OPERATOR")
+                .contact(contact);
+
+        Vessel vessel = new Vessel()
+                .extId("eeeext")
+                .countryCode("FRA")
+                .vesselContacts(Lists.newArrayList(vesselContact));
+
+        FishingActivity fishingActivity = new FishingActivity()
+                .vessel(vessel)
+                .location(fluxLocation)
+                .extId("31")
+                .type("dummy")
+                .fishingTripId("12345")
+                .startDate(new DateTime(2017, 1, 1, 10, 0))
+                .endDate(new DateTime(2017, 1, 5, 10, 0));
+
+        PartyDocument partyDocument = new PartyDocument()
+                .role(PartyRole.BUYER)
+                .party(new Party().name("BULTE"));
+
+        Product product = new Product()
+                .distributionCategory("distributionCategory")
+                .distributionClass("distributionClass")
+                .price(BigDecimal.TEN)
+                .species("SAL")
+                .usage("JUNK");
+
+        Document document = new Document()
+                .extId("DocumentExternalID")
+                .currency("Euro")
+                .occurrence(new DateTime(2001, 9, 11, 0, 0))
+                .fishingActivity(fishingActivity)
+                .fluxLocation(fluxLocation2)
+                .partyDocuments(Lists.newArrayList(partyDocument))
+                .products(Lists.newArrayList(product));
+
+        //Create relationships
+        product.document(document);
+
+        AuctionSale auctionSale = new AuctionSale()
+                .category(SalesCategory.VARIOUS_SUPPLY)
+                .countryCode("BEL")
+                .supplier("MySupplier");
+
+        FluxReport currentReport = new FluxReport()
+                .extId("ExternalID")
+                .itemType(FluxReportItemType.SALES_NOTE)
+                .creation(new DateTime(1995, 11, 24, 0, 0))
+                .fluxReportPartyId("BEL")
+                .document(document)
+                .purpose(Purpose.CORRECTION)
+                .auctionSale(auctionSale);
+
+        dao.create(currentReport);
+    }
+
+    @Test
     @DataSet(expectedData = "data/FluxReportDaoBeanTest-testCreateWithPreviousReport-expected.xml")
     public void testCreateWithPreviousReport() throws Exception {
         //first, create an old report
@@ -854,6 +939,19 @@ public class FluxReportDaoBeanTest extends AbstractDaoTest<FluxReportDaoBean> {
                 fluxLocation.getId();
             }
         }
+    }
+
+    /* ks*/
+    @Test
+    @DataSet(initialData = "data/FluxReportDaoBeanTest-testFindDetailsByIdForVariousSupply-initial.xml")
+    public void testFindDetailsByIdForVariousSupply() {
+        FluxReport fluxReport = dao.findDetailsByExtId("ExternalID");
+        commitTransaction(); //stop the active transaction, so we are sure that this entity is completely loaded,
+        // and no lazy fetching is needed anymore
+
+        assertEquals(SalesCategory.VARIOUS_SUPPLY, fluxReport.getAuctionSale().getCategory());
+        assertEquals("MySupplier", fluxReport.getAuctionSale().getSupplier());
+        assertEquals("BEL", fluxReport.getAuctionSale().getCountryCode());
     }
 
     @Test

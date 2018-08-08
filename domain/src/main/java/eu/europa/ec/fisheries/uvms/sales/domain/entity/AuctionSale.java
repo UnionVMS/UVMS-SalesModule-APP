@@ -30,6 +30,9 @@ public class AuctionSale {
     @Column(name = "country")
     private String countryCode;
 
+    @Column(name = "supplier")
+    private String supplier;
+
     public Integer getId() {
         return id;
     }
@@ -50,6 +53,14 @@ public class AuctionSale {
         this.countryCode = country;
     }
 
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
     public AuctionSale category(final SalesCategory type) {
         setCategory(type);
         return this;
@@ -57,6 +68,11 @@ public class AuctionSale {
 
     public AuctionSale countryCode(final String country) {
         setCountryCode(country);
+        return this;
+    }
+
+    public AuctionSale supplier(final String supplier) {
+        setSupplier(supplier);
         return this;
     }
 

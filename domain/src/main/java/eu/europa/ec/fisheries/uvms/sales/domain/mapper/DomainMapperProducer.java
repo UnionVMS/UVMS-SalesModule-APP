@@ -137,6 +137,7 @@ public class DomainMapperProducer {
         factory.classMap(AuctionSaleType.class, AuctionSale.class)
                 .field("countryCode", "countryCode")
                 .field("salesCategory", "category")
+                .field("supplier", "supplier")
                 .register();
     }
 

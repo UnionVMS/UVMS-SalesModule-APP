@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_address
+            city_name="test-city"
+            country="BEL"
+            street_name="test-street"
+    />
+
+    <sales_flux_location
+            ext_id="test"
+            country="BEL"
+            type="dummy"
+            longitude="1.254654"
+            latitude="40.5256546"
+    />
+
+    <sales_flux_location
+            ext_id="test2"
+            country="BEL"
+            type="dummy"
+            longitude="1.254654"
+            latitude="40.5256546"
+    />
+
+    <sales_contact
+            family_name="Hooft"
+    />
+
+    <sales_vessel_contact
+            role="OPERATOR"
+    />
+
+    <sales_vessel
+            cfr="eeeext"
+            country="FRA"
+    />
+
+    <sales_fishing_activity
+            ext_id="31"
+            type="dummy"
+            union_trip_id="12345"
+            start_date="2017-01-01 10:00:00"
+            end_date="2017-01-05 10:00:00"
+    />
+
+    <sales_party
+            name="BULTE"
+    />
+    <sales_party_document
+            role="BUYER"
+    />
+
+    <sales_product
+            distribution_category="distributionCategory"
+            distribution_class="distributionClass"
+            price="10"
+            species="SAL"
+            usage="JUNK"
+    />
+
+
+
+    <sales_flux_report
+            ext_id="ExternalID"
+            purpose_code="CORRECTION"
+            item_type="SALES_NOTE"
+            creation="1995-11-24"
+            flux_report_party_id="BEL"
+    />
+
+
+    <sales_document
+            ext_id="DocumentExternalID"
+            currency="Euro"
+            occurrence="2001-09-11 00:00:00"
+    />
+    <sales_auction_sale
+            type="VARIOUS_SUPPLY"
+            country="BEL"
+			supplier="MySupplier"
+    />
+
+
+</dataset>
+
