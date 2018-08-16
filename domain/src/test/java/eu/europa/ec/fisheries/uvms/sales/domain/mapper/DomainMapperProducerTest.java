@@ -561,6 +561,19 @@ public class DomainMapperProducerTest {
     }
 
     @Test
+    public void testMapAuctionSaleTypeToAuctionSaleForCategoryVariousSupply() {
+        AuctionSaleType auctionSaleType = new AuctionSaleType() .withCountryCode("BE")
+                .withSalesCategory(SalesCategoryType.VARIOUS_SUPPLY)
+                .withSupplier("MySupplier");
+
+        AuctionSale auctionSale = mapper.map(auctionSaleType, AuctionSale.class);
+
+        assertEquals("BE", auctionSale.getCountryCode());
+        assertEquals(SalesCategory.VARIOUS_SUPPLY, auctionSale.getCategory());
+        assertEquals("MySupplier", auctionSale.getSupplier());
+    }
+
+    @Test
     public void testMapAuctionSaleToAuctionSaleType() {
         AuctionSale auctionSale = new AuctionSale()
                                         .category(SalesCategory.FIRST_SALE)

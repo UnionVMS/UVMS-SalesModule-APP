@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="krisch" id="auc-02">
+        <addColumn tableName="sales_auction_sale">
+            <column name="supplier"
+                    type="text" />
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="sales_auction_sale"
+                        columnName="supplier" />
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <sales_document
+            id="20"
+            ext_id="DocumentExternalID"
+            currency="Euro"
+            occurrence="2001-9-11 00:00:00"
+    />
+    <sales_product
+            id="200"
+            species="SAL"
+            usage="HCN"
+            distribution_class="LSC"
+            distribution_category="NotSureWhatThisIs"
+            price="123.456"
+            sales_document_id="20"
+    />
+    <sales_product
+            id="201"
+            species="SAL"
+            usage="HCN"
+            distribution_class="LSC"
+            distribution_category="NotSureWhatThisIs"
+            price="123.456"
+            sales_document_id="20"
+    />
+    <sales_product
+            id="202"
+            species="SAL"
+            usage="HCN"
+            distribution_class="LSC"
+            distribution_category="NotSureWhatThisIs"
+            price="123.456"
+            sales_document_id="20"
+    />
+    <sales_product
+            id="203"
+            species="SAL"
+            usage="HCN"
+            distribution_class="LSC"
+            distribution_category="NotSureWhatThisIs"
+            price="123.456"
+            sales_document_id="20"
+    />
+    <sales_product
+            id="204"
+            species="SAL"
+            usage="HCN"
+            distribution_class="LSC"
+            distribution_category="NotSureWhatThisIs"
+            price="123.456"
+            sales_document_id="20"
+    />
+    <sales_product
+            id="205"
+            species="SAL"
+            usage="HCN"
+            distribution_class="LSC"
+            distribution_category="NotSureWhatThisIs"
+            price="123.456"
+            sales_document_id="20"
+    />
+
+
+    <sales_flux_location
+            id="300"
+            type="type"
+    />
+    <sales_flux_location
+            id="301"
+            type="type"
+    />
+    <sales_flux_location
+            id="302"
+            type="type"
+    />
+    <sales_flux_location
+            id="303"
+            type="type"
+    />
+    <sales_flux_location
+            id="304"
+            type="type"
+    />
+
+    <!--Product 200-->
+    <sales_origin
+            sales_product_id="200"
+            sales_flux_location_id="300"
+    />
+    <sales_origin
+            sales_product_id="200"
+            sales_flux_location_id="301"
+    />
+    <sales_origin
+            sales_product_id="200"
+            sales_flux_location_id="302"
+    />
+    <sales_origin
+            sales_product_id="200"
+            sales_flux_location_id="303"
+    />
+    <sales_origin
+            sales_product_id="200"
+            sales_flux_location_id="304"
+    />
+    <!--Product 200-->
+
+
+    <!--Product 201-->
+    <sales_origin
+            sales_product_id="201"
+            sales_flux_location_id="300"
+    />
+    <sales_origin
+            sales_product_id="201"
+            sales_flux_location_id="301"
+    />
+    <sales_origin
+            sales_product_id="201"
+            sales_flux_location_id="302"
+    />
+    <sales_origin
+            sales_product_id="201"
+            sales_flux_location_id="303"
+    />
+    <sales_origin
+            sales_product_id="201"
+            sales_flux_location_id="304"
+    />
+    <!--Product 201-->
+
+	<sales_auction_sale
+			id="123"
+            type="VARIOUS_SUPPLY"
+            country="BEL"
+			supplier="MySupplier"
+    />
+
+    <sales_flux_report
+            id="123"
+            ext_id="ExternalID"
+            purpose_code="CORRECTION"
+            item_type="SALES_NOTE"
+            creation="1995-11-24 00:00:00"
+            flux_report_party_id="BEL"
+            sales_document_id="20"
+            received_on="2017-11-24 02:00:00"
+			sales_auction_sale_id="123"
+    />
+
+</dataset>

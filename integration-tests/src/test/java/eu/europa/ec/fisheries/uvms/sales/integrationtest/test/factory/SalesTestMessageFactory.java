@@ -232,6 +232,7 @@ public class SalesTestMessageFactory {
                 "<ns4:AuctionSale>\n" +
                 "<ns4:CountryCode>BE4</ns4:CountryCode>\n" +
                 "<ns4:SalesCategory>FIRST_SALE</ns4:SalesCategory>\n" +
+                "<ns4:Supplier>MySupplier</ns4:Supplier>\n" +
                 "</ns4:AuctionSale>\n" +
                 "</ns4:Report>\n";
     }
