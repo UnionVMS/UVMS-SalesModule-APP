@@ -27,7 +27,6 @@ import org.jboss.arquillian.persistence.DataSource;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.joda.time.DateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -43,7 +42,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
-@Ignore
 public class SalesServiceTestIT extends StandardTestDeployment {
 
     static final Logger LOG = LoggerFactory.getLogger(SalesServiceTestIT.class);
