@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.jms.DeliveryMode;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import java.util.HashMap;
@@ -90,7 +91,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
             }
 
         } catch (Exception e) {
-            LOG.error("[ Error when sending a message to " + module+ ". ] {}", e.getMessage());
+            LOG.error(String.format("[ Error when sending a message to %s. ] {}", module), e.getMessage());
             throw new MessageException(e.getMessage());
         }
     }
@@ -99,8 +100,7 @@ public class SalesMessageProducerBean implements SalesMessageProducer {
     public void sendModuleErrorMessage(EventMessage message) throws MessageException {
         try {
             LOG.debug("Sending error message back from Sales module to recipient on JMS Queue with correlationID: {} ", message.getJmsMessage().getJMSMessageID());
-            rulesMessageProducerBean.sendResponseMessageToSender(message.getJmsMessage(), message.getErrorMessage());
-
+            rulesMessageProducerBean.sendResponseMessageToSender(message.getJmsMessage(), message.getErrorMessage(), 60000, DeliveryMode.NON_PERSISTENT);
         } catch (Exception e) {
             String errorMessage = "[ Error when returning Error message to recipient. ] " + e.getMessage();
             LOG.error(errorMessage);
