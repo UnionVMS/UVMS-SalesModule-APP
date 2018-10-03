@@ -47,28 +47,28 @@ public class SalesServiceTestIT extends StandardTestDeployment {
     static final Logger LOG = LoggerFactory.getLogger(SalesServiceTestIT.class);
 
     @EJB
-    SalesServiceTestHelper salesServiceTestHelper;
+    private SalesServiceTestHelper salesServiceTestHelper;
 
     @EJB
-    SalesTestMessageFactory salesTestMessageFactory;
+    private SalesTestMessageFactory salesTestMessageFactory;
 
     @EJB
-    EventService eventService;
+    private EventService eventService;
 
     @EJB
-    ConfigMessageProducer configMessageProducer;
+    private ConfigMessageProducer configMessageProducer;
 
     @EJB
-    ConfigMessageConsumer configMessageConsumer;
+    private ConfigMessageConsumer configMessageConsumer;
 
     @EJB
-    AssetService assetService;
+    private AssetService assetService;
 
     @EJB
-    EcbProxyService ecbProxyService;
+    private EcbProxyService ecbProxyService;
 
     @EJB
-    MDRService mdrService;
+    private MDRService mdrService;
 
 
     //==================================
@@ -284,12 +284,7 @@ public class SalesServiceTestIT extends StandardTestDeployment {
         String salesReportRequest = "BAD_MESSAGE_CONTENT";
 
         //Execute, save report for MessageConsumerBean
-        String jmsCorrelationId = salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(salesReportRequest, salesServiceTestHelper.getReplyToRulesQueue());
-
-        // Assert, receive error notification message for save report SalesMarshallException
-        TextMessage textErrorNotificationResponse = salesServiceTestHelper.receiveMessageFromReplyToRulesQueue(jmsCorrelationId);
-        assertNotNull(textErrorNotificationResponse);
-        assertTrue(textErrorNotificationResponse.getText().contains("Invalid content in message"));
+        salesServiceTestHelper.sendMessageToSalesMessageConsumerBean(salesReportRequest, salesServiceTestHelper.getReplyToRulesQueue());
 
         // Assert, should not receive FLUXSalesResponseMessage for previously save report SalesMarshallException
         TextMessage textMessageSendSalesResponseRequest = salesServiceTestHelper.receiveMessageFromRulesEventQueue();
@@ -616,33 +611,6 @@ public class SalesServiceTestIT extends StandardTestDeployment {
         String responseMessageBody = responseMessage.getText();
         assertTrue(responseMessageBody.contains("CheckForUniqueIdResponse"));
         assertTrue(responseMessageBody.contains("unique=\"false\""));
-    }
-
-    //-----------------------------
-    // Return error - Event service
-    //-----------------------------
-
-    @InSequence(13)
-    @Test
-    @OperateOnDeployment("salesservice")
-    @Transactional(TransactionMode.COMMIT)
-    @DataSource("java:/jdbc/uvms_sales")
-    public void testEventService_Return_Error() throws Exception {
-        // Test data
-        TextMessage requestMessage = salesServiceTestHelper.getTextMessageWithReplyTo(salesServiceTestHelper.getReplyToRulesQueue());
-        assertNotNull(requestMessage);
-        EventMessage eventMessage = new EventMessage(requestMessage, "Invalid content in message: " + requestMessage);
-        eventMessage.setJmsMessage(requestMessage);
-
-        // Execute
-        eventService.returnError(eventMessage);
-
-        // Assert
-        TextMessage responseMessage = salesServiceTestHelper.receiveMessageFromReplyToRulesQueue(requestMessage.getJMSMessageID());
-        assertNotNull(responseMessage);
-        String responseMessageBody = responseMessage.getText();
-        assertTrue(responseMessageBody.contains("Invalid content in message"));
-        assertTrue(responseMessageBody.contains(requestMessage.getJMSMessageID()));
     }
 
     //--------------------------
