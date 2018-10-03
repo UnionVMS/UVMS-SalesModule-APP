@@ -47,28 +47,28 @@ public class SalesServiceTestIT extends StandardTestDeployment {
     static final Logger LOG = LoggerFactory.getLogger(SalesServiceTestIT.class);
 
     @EJB
-    SalesServiceTestHelper salesServiceTestHelper;
+    private SalesServiceTestHelper salesServiceTestHelper;
 
     @EJB
-    SalesTestMessageFactory salesTestMessageFactory;
+    private SalesTestMessageFactory salesTestMessageFactory;
 
     @EJB
-    EventService eventService;
+    private EventService eventService;
 
     @EJB
-    ConfigMessageProducer configMessageProducer;
+    private ConfigMessageProducer configMessageProducer;
 
     @EJB
-    ConfigMessageConsumer configMessageConsumer;
+    private ConfigMessageConsumer configMessageConsumer;
 
     @EJB
-    AssetService assetService;
+    private AssetService assetService;
 
     @EJB
-    EcbProxyService ecbProxyService;
+    private EcbProxyService ecbProxyService;
 
     @EJB
-    MDRService mdrService;
+    private MDRService mdrService;
 
 
     //==================================
