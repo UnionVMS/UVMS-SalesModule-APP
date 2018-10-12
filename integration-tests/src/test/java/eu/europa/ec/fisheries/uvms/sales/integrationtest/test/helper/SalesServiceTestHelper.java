@@ -74,15 +74,6 @@ public class SalesServiceTestHelper {
         }
     }
 
-    public TextMessage receiveTextMessage(Destination receiveFromDestination) {
-        boolean hasMessageExpirySet = true;
-        return receiveTextMessage(receiveFromDestination, hasMessageExpirySet);
-    }
-
-    public TextMessage receiveTextMessage(Destination receiveFromDestination, String correlationId) {
-        boolean hasMessageExpirySet = true;
-        return receiveTextMessage(receiveFromDestination, correlationId, hasMessageExpirySet);
-    }
 
     public TextMessage receiveTextMessageNoMessageExpiry(Destination receiveFromDestination) {
         boolean hasMessageExpirySet = false;
@@ -90,11 +81,10 @@ public class SalesServiceTestHelper {
     }
 
     public TextMessage receiveTextMessageNoMessageExpiry(Destination receiveFromDestination, String correlationId) {
-        boolean hasMessageExpirySet = false;
-        return receiveTextMessage(receiveFromDestination, correlationId, hasMessageExpirySet);
+        return receiveTextMessage(receiveFromDestination, correlationId);
     }
 
-    private TextMessage receiveTextMessage(Destination receiveFromDestination, String correlationId, boolean hasMessageExpirySet) {
+    private TextMessage receiveTextMessage(Destination receiveFromDestination, String correlationId) {
         assertNotNull(correlationId);
         try (Connection connection = connectionFactory.createConnection();
              Session session = JMSUtils.connectToQueue(connection);
@@ -105,8 +95,6 @@ public class SalesServiceTestHelper {
                 log.error("Message consumer timeout is reached");
                 return null;
             }
-
-            assertEquals(hasMessageExpirySet, (receivedMessage.getJMSExpiration() > 0));
 
             return (TextMessage) receivedMessage;
 

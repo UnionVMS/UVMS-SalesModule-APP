@@ -22,7 +22,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 @PrepareForTest({JAXBUtils.class, MdrModuleMapper.class})
 @RunWith(PowerMockRunner.class)
@@ -78,5 +80,6 @@ public class MDRServiceBeanTest {
 
         assertEquals(expectedDatasets, result);
     }
+
 
 }
