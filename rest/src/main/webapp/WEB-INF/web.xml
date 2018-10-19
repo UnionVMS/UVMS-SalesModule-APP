@@ -5,12 +5,6 @@
          version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee">
 
     <context-param>
-        <param-name>resteasy.scan</param-name>
-        <param-value>true</param-value>
-    </context-param>
-
-
-    <context-param>
         <param-name>javamelody.datasources</param-name>
         <param-value>jdbc/uvms_sales</param-value>
     </context-param>
