@@ -36,6 +36,10 @@
             <artifactId>sales-model</artifactId>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sales-proxy-ecb-model</artifactId>
+        </dependency>
+        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
             <artifactId>exchange-model</artifactId>
         </dependency>
