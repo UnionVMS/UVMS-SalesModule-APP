@@ -8,8 +8,8 @@ import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesMarshallException;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
-import eu.europa.ec.fisheries.uvms.sales.model.mapper.EcbProxyRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.sales.proxy.ecb.model.mapper.EcbProxyRequestMapper;
 import eu.europa.ec.fisheries.uvms.sales.service.EcbProxyService;
 import eu.europa.ec.fisheries.uvms.sales.service.cache.ExchangeRateCache;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class EcbProxyServiceBean implements EcbProxyService {
         String request = null;
         try {
             request = EcbProxyRequestMapper.createGetExchangeRateRequest(sourceCurrency, targetCurrency, date);
-        } catch (SalesMarshallException e) {
+        } catch (MessageException e) {
             throw new SalesNonBlockingException("Could not create the request for the ECB proxy", e);
         }
 
