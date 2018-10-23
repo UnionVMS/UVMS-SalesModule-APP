@@ -32,7 +32,7 @@
         <powermock.version>1.7.0RC2</powermock.version>
         <jacoco.version>0.7.9</jacoco.version>
         <hibernate.validator.version>5.1.3.Final</hibernate.validator.version>
-        <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master-postgres.xml</docker.liquibase.changeLogFile>
+        <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>sales</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>sales</docker.liquibase.db.passwd>
 
