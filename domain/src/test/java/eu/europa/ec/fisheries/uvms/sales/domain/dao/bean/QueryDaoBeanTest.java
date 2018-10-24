@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Query;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.QueryParameterType;
 import eu.europa.ec.fisheries.uvms.sales.domain.framework.AbstractDaoTest;
@@ -12,6 +11,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 

@@ -108,7 +108,7 @@ public class EventServiceBean implements EventService {
     public void respondToFindReportMessage(@Observes @FindReportReceivedEvent EventMessage event) {
         FindReportByIdRequest request = ((FindReportByIdRequest) event.getSalesBaseRequest());
         Report report = reportService.findByExtId(request.getId())
-                .orNull();
+                .orElse(null);
 
         try {
             String marshalledReport = "";

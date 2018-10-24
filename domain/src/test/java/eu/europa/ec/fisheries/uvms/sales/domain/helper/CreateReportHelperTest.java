@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.helper;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
@@ -21,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -69,8 +69,8 @@ public class CreateReportHelperTest {
         when(mapper.map(report, FluxReport.class)).thenReturn(fluxReportEntity);
         when(reportHelper.isReportCorrected(report)).thenReturn(false);
         when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(fluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(fluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(fluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(fluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(fluxReportEntity);
         when(fluxReportDao.create(fluxReportEntity)).thenReturn(fluxReportEntity);
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
@@ -117,8 +117,8 @@ public class CreateReportHelperTest {
         when(fluxReportDao.findByExtId("a")).thenReturn(Optional.of(takeOverDocumentA));
         when(fluxReportDao.findByExtId("b")).thenReturn(Optional.of(takeOverDocumentB));
         when(fluxReportDao.findByExtId("c")).thenReturn(Optional.of(takeOverDocumentC));
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(fluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(fluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(fluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(fluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(fluxReportEntity);
         when(fluxReportDao.create(fluxReportEntity)).thenReturn(fluxReportEntity);
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
@@ -168,7 +168,7 @@ public class CreateReportHelperTest {
         when(reportHelper.isReportCorrected(report)).thenReturn(false);
         when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
         doReturn(Optional.of(correction)).when(fluxReportDao).findCorrectionOf(fluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(fluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(fluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(fluxReportEntity);
         when(fluxReportDao.create(fluxReportEntity)).thenReturn(fluxReportEntity);
         when(mapper.map(fluxReportEntity, Report.class)).thenReturn(report);
@@ -213,7 +213,7 @@ public class CreateReportHelperTest {
         when(mapper.map(report, FluxReport.class)).thenReturn(fluxReportEntity);
         when(reportHelper.isReportCorrected(report)).thenReturn(false);
         when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(fluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(fluxReportEntity.getExtId());
         doReturn(Optional.of(deletion)).when(fluxReportDao).findDeletionOf(fluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(fluxReportEntity);
         when(fluxReportDao.create(fluxReportEntity)).thenReturn(fluxReportEntity);
@@ -275,8 +275,8 @@ public class CreateReportHelperTest {
         when(fluxReportDao.findByExtId("hello")).thenReturn(Optional.of(oldFluxReportEntity));
         doReturn(Arrays.asList(evenOlderFluxReportEntity)).when(fluxReportDao).findOlderVersions(oldFluxReportEntity);
         doReturn(false).when(reportHelper).hasReferencesToTakeOverDocuments(report);
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(newFluxReportEntity);
         doReturn(newFluxReportEntity).when(fluxReportDao).create(newFluxReportEntity);
         doReturn(mappedAndPersistedReportFromDao).when(mapper).map(newFluxReportEntity, Report.class);
@@ -333,10 +333,10 @@ public class CreateReportHelperTest {
         when(reportHelper.isReportDeleted(report)).thenReturn(true);
         when(reportHelper.getCreationDate(report)).thenReturn(deletionDate);
         when(reportHelper.getFLUXReportDocumentReferencedId(report)).thenReturn("hello");
-        doReturn(Optional.absent()).when(fluxReportDao).findByExtId("hello");
+        doReturn(Optional.empty()).when(fluxReportDao).findByExtId("hello");
         doReturn(false).when(reportHelper).hasReferencesToTakeOverDocuments(report);
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(newFluxReportEntity);
         doReturn(newFluxReportEntity).when(fluxReportDao).create(newFluxReportEntity);
         doReturn(mappedAndPersistedReportFromDao).when(mapper).map(newFluxReportEntity, Report.class);
@@ -399,8 +399,8 @@ public class CreateReportHelperTest {
         when(fluxReportDao.findByExtId("hello")).thenReturn(Optional.of(oldFluxReportEntity));
         doReturn(new ArrayList<Report>()).when(fluxReportDao).findOlderVersions(oldFluxReportEntity);
         doReturn(false).when(reportHelper).hasReferencesToTakeOverDocuments(report);
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(newFluxReportEntity);
         doReturn(newFluxReportEntity).when(fluxReportDao).create(newFluxReportEntity);
         doReturn(mappedAndPersistedReportFromDao).when(mapper).map(newFluxReportEntity, Report.class);
@@ -458,8 +458,8 @@ public class CreateReportHelperTest {
         doReturn("hello").when(reportHelper).getFLUXReportDocumentReferencedId(correctionReport);
         doReturn(creationDateCorrection).when(reportHelper).getCreationDate(correctionReport);
         doReturn(Optional.of(oldFluxReportEntity)).when(fluxReportDao).findByExtId("hello");
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(newFluxReportEntity);
         doReturn(newFluxReportEntity).when(fluxReportDao).create(newFluxReportEntity);
         doReturn(correctionReport).when(mapper).map(newFluxReportEntity, Report.class);
@@ -522,7 +522,7 @@ public class CreateReportHelperTest {
         doReturn(creationDateCorrection).when(reportHelper).getCreationDate(correctionReport);
         doReturn(Optional.of(oldFluxReportEntity)).when(fluxReportDao).findByExtId("hello");
         doReturn(Optional.of(correctionOfCorrection)).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(newFluxReportEntity);
         doReturn(newFluxReportEntity).when(fluxReportDao).create(newFluxReportEntity);
         doReturn(correctionReport).when(mapper).map(newFluxReportEntity, Report.class);
@@ -585,7 +585,7 @@ public class CreateReportHelperTest {
         doReturn("hello").when(reportHelper).getFLUXReportDocumentReferencedId(correctionReport);
         doReturn(creationDateCorrection).when(reportHelper).getCreationDate(correctionReport);
         doReturn(Optional.of(oldFluxReportEntity)).when(fluxReportDao).findByExtId("hello");
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
         doReturn(Optional.of(deletionOfCorrection)).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(newFluxReportEntity);
         doReturn(newFluxReportEntity).when(fluxReportDao).create(newFluxReportEntity);
@@ -649,7 +649,7 @@ public class CreateReportHelperTest {
         doReturn(creationDateCorrection).when(reportHelper).getCreationDate(correctionReport);
         doReturn(Optional.of(oldFluxReportEntity)).when(fluxReportDao).findByExtId("hello");
         doReturn(Optional.of(oldFluxReportEntity)).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(newFluxReportEntity);
         doReturn(newFluxReportEntity).when(fluxReportDao).create(newFluxReportEntity);
         doReturn(correctionReport).when(mapper).map(newFluxReportEntity, Report.class);
@@ -705,10 +705,10 @@ public class CreateReportHelperTest {
         doReturn(false).when(reportHelper).hasReferencesToTakeOverDocuments(correctionReport);
         doReturn("hello").when(reportHelper).getFLUXReportDocumentReferencedId(correctionReport);
         doReturn(creationDateCorrection).when(reportHelper).getCreationDate(correctionReport);
-        doReturn(Optional.absent()).when(fluxReportDao).findByExtId("hello");
+        doReturn(Optional.empty()).when(fluxReportDao).findByExtId("hello");
         doReturn("world").when(reportHelper).getId(correctionReport.getFLUXSalesReportMessage());
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(newFluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(newFluxReportEntity.getExtId());
         doNothing().when(beanValidatorHelper).validateBean(newFluxReportEntity);
         doReturn(newFluxReportEntity).when(fluxReportDao).create(newFluxReportEntity);
         doReturn(correctionReport).when(mapper).map(newFluxReportEntity, Report.class);
@@ -752,8 +752,8 @@ public class CreateReportHelperTest {
         when(mapper.map(report, FluxReport.class)).thenReturn(fluxReportEntity);
         when(reportHelper.isReportCorrected(report)).thenReturn(false);
         when(reportHelper.hasReferencesToTakeOverDocuments(report)).thenReturn(false);
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(fluxReportEntity.getExtId());
-        doReturn(Optional.absent()).when(fluxReportDao).findDeletionOf(fluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(fluxReportEntity.getExtId());
+        doReturn(Optional.empty()).when(fluxReportDao).findDeletionOf(fluxReportEntity.getExtId());
         doThrow(new SalesNonBlockingException("MySalesNonBlockingException")).when(beanValidatorHelper).validateBean(fluxReportEntity);
 
         //execute

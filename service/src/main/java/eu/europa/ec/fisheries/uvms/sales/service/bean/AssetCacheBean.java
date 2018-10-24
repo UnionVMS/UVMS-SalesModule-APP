@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
@@ -8,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.AssetCache;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 
 import javax.ejb.Singleton;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -31,7 +31,7 @@ public class AssetCacheBean implements AssetCache {
 
         Optional<Asset> cachedAsset = cache.getIfPresent(cfr);
         if (cachedAsset == null) {
-            return Optional.absent();
+            return Optional.empty();
         } else if (!cachedAsset.isPresent()) {
             throw new SalesNonBlockingException("No asset found for cfr '" + cfr + "'");
         } else {
@@ -45,6 +45,6 @@ public class AssetCacheBean implements AssetCache {
         checkArgument(!isNullOrEmpty(cfr), "You're trying to add a null or empty key to the AssetCache");
         // Allow null asset here, so when an asset doesn't exist, it's still cached and doesn't use ActiveMQ.
 
-        cache.put(cfr, Optional.fromNullable(asset));
+        cache.put(cfr, Optional.ofNullable(asset));
     }
 }

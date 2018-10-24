@@ -5,7 +5,6 @@
  */
 package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.QueryDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Query;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
@@ -13,6 +12,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingExcepti
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class QueryDaoBean extends BaseDaoForSales<Query, Integer> implements QueryDao {
@@ -34,6 +34,6 @@ public class QueryDaoBean extends BaseDaoForSales<Query, Integer> implements Que
                     "id: " + extId);
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 }

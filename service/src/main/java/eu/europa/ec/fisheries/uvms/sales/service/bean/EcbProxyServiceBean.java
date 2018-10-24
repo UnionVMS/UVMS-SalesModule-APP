@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.proxy.ecb.types.v1.GetExchangeRateResponse;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
@@ -22,6 +21,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Slf4j
 @Stateless

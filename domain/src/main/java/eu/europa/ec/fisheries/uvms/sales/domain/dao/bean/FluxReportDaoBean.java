@@ -5,7 +5,6 @@
  */
 package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
@@ -22,6 +21,7 @@ import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -50,7 +50,7 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
                     "id: " + extId);
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class FluxReportDaoBean extends BaseDaoForSales<FluxReport, Integer> impl
         if (results.size() == 1) {
             return Optional.of(results.get(0));
         } else if (results.isEmpty()) {
-            return Optional.absent();
+            return Optional.empty();
         } else {
             log.error("Found more than 1 correction or deletion of report with extId " + extId + "! Going to return the last one.");
             return Optional.of(results.get(results.size()-1));

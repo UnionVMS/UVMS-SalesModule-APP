@@ -1,11 +1,10 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.bean;
 
-import com.google.common.base.Optional;
-import eu.europa.ec.fisheries.schema.sales.*;
-import eu.europa.ec.fisheries.uvms.sales.domain.ResponseDomainModel;
-import eu.europa.ec.fisheries.uvms.sales.domain.dao.QueryDao;
+import eu.europa.ec.fisheries.schema.sales.CodeType;
+import eu.europa.ec.fisheries.schema.sales.DateTimeType;
+import eu.europa.ec.fisheries.schema.sales.FLUXResponseDocumentType;
+import eu.europa.ec.fisheries.schema.sales.IDType;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.ResponseDao;
-import eu.europa.ec.fisheries.uvms.sales.domain.entity.Query;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Response;
 import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
@@ -17,10 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Optional;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -85,7 +84,7 @@ public class ResponseDomainModelBeanTest {
 
     @Test
     public void findByExtIdWhenNoResultWasFound() throws Exception {
-        doReturn(Optional.absent()).when(dao).findByExtId("extId");
+        doReturn(Optional.empty()).when(dao).findByExtId("extId");
 
         Optional<FLUXResponseDocumentType> optionalQuery = domainModelBean.findByExtId("extId");
 

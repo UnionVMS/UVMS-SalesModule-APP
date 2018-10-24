@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.SalesDocumentType;
 import eu.europa.ec.fisheries.schema.sales.SalesQueryType;
@@ -13,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -70,11 +70,11 @@ public class UniqueIdServiceBeanTest {
 
     @Test
     public void doesAnySalesReportExistWithAnyOfTheseIdsWhenNoReportsExistsWithGivenIds() throws Exception {
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("aaa", true);
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId("aaa", true);
         doReturn(false).when(unsavedMessageDomainModel).exists("aaa");
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bbb", true);
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId("bbb", true);
         doReturn(false).when(unsavedMessageDomainModel).exists("bbb");
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("ccc", true);
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId("ccc", true);
         doReturn(false).when(unsavedMessageDomainModel).exists("ccc");
 
         Boolean notUnique = service.doesAnySalesReportExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
@@ -91,7 +91,7 @@ public class UniqueIdServiceBeanTest {
 
     @Test
     public void doesAnySalesReportExistWithAnyOfTheseIdsWhenAReportExistsWithGivenIds() throws Exception {
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("aaa", true);
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId("aaa", true);
         doReturn(false).when(unsavedMessageDomainModel).exists("aaa");
         doReturn(Optional.of(new Report())).when(reportDomainModel).findByExtId("bbb", true);
 
@@ -106,9 +106,9 @@ public class UniqueIdServiceBeanTest {
 
     @Test
     public void doesAnySalesReportExistWithAnyOfTheseIdsWhenAnErroneousReportExistsWithGivenIds() throws Exception {
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("aaa", true);
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId("aaa", true);
         doReturn(false).when(unsavedMessageDomainModel).exists("aaa");
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bbb", true);
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId("bbb", true);
         doReturn(true).when(unsavedMessageDomainModel).exists("bbb");
 
         Boolean notUnique = service.doesAnySalesReportExistWithAnyOfTheseIds(Arrays.asList("aaa", "bbb", "ccc"));
@@ -139,8 +139,8 @@ public class UniqueIdServiceBeanTest {
     public void doesReferencedReportExistWhenItExistsAsAnErroneousReport() throws Exception {
         String id = "extId";
 
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId(id, false);
-        doReturn(Optional.absent()).when(queryDomainModel).findByExtId(id);
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId(id, false);
+        doReturn(Optional.empty()).when(queryDomainModel).findByExtId(id);
         doReturn(true).when(unsavedMessageDomainModel).exists(id);
 
         boolean doesExist = service.doesReferencedReportExist(id);
@@ -157,7 +157,7 @@ public class UniqueIdServiceBeanTest {
     public void doesReferencedReportExistWhenItExistsAsAQuery() throws Exception {
         String id = "extId";
 
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId(id, false);
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId(id, false);
         doReturn(Optional.of(new SalesQueryType())).when(queryDomainModel).findByExtId(id);
 
         boolean doesExist = service.doesReferencedReportExist(id);
@@ -173,8 +173,8 @@ public class UniqueIdServiceBeanTest {
     public void doesReferencedReportExistWhenItDoesNotExist() throws Exception {
         String id = "extId";
 
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId(id, false);
-        doReturn(Optional.absent()).when(queryDomainModel).findByExtId(id);
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId(id, false);
+        doReturn(Optional.empty()).when(queryDomainModel).findByExtId(id);
         doReturn(false).when(unsavedMessageDomainModel).exists(id);
 
         boolean doesExist = service.doesReferencedReportExist(id);

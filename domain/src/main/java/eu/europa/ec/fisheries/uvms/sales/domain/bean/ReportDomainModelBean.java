@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.bean;
 
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
@@ -28,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -63,7 +63,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
         Optional<FluxReport> fluxReport = fluxReportDao.findByExtId(extId);
         if (!fluxReport.isPresent()
                 || (!includeDeletedOrCorrectedReports && (fluxReport.get().isCorrected() || fluxReport.get().isDeleted()))) {
-            return Optional.absent();
+            return Optional.empty();
         } else {
             return Optional.of(mapper.map(fluxReport.get(), Report.class));
         }
@@ -115,7 +115,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
         if (referral.isPresent()) {
             return Optional.of(mapper.map(referral.get(), Report.class));
         } else {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 
@@ -136,7 +136,7 @@ public class ReportDomainModelBean implements ReportDomainModel {
         String firstReferencedId = reportHelper.getFLUXReportDocumentReferencedIdOrNull(report);
 
         if (isBlank(firstReferencedId)) {
-            return new ArrayList<Report>();
+            return new ArrayList<>();
         }
 
         List<Report> olderVersions = findOlderVersions(firstReferencedId, Report.class);
