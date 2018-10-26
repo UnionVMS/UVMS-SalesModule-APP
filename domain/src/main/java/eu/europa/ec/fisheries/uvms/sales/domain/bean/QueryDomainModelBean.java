@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.SalesQueryType;
 import eu.europa.ec.fisheries.uvms.sales.domain.QueryDomainModel;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.QueryDao;
@@ -11,6 +10,7 @@ import ma.glasnost.orika.MapperFacade;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -46,6 +46,6 @@ public class QueryDomainModelBean implements QueryDomainModel {
             return Optional.of(mapper.map(optionalQuery.get(), SalesQueryType.class));
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 }

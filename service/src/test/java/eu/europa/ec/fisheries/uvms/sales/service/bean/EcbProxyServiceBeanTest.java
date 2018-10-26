@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
@@ -22,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.jms.TextMessage;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -65,10 +65,10 @@ public class EcbProxyServiceBeanTest {
         String sourceCurrency = "DKK";
         String targetCurrency = "EUR";
         DateTime dateTime = new DateTime(2018,05,30,6,59, DateTimeZone.UTC);
-        Optional<BigDecimal> expectedExchangeRate = Optional.fromNullable(BigDecimal.ONE);
+        Optional<BigDecimal> expectedExchangeRate = Optional.ofNullable(BigDecimal.ONE);
 
         //mock
-        doReturn(Optional.absent()).when(exchangeRateCache).getExchangeRateFromCache(sourceCurrency, targetCurrency, dateTime);
+        doReturn(Optional.empty()).when(exchangeRateCache).getExchangeRateFromCache(sourceCurrency, targetCurrency, dateTime);
         doReturn("MyJMSMessageId").when(messageProducer).sendModuleMessage(anyString(), any(Union.class));
         doReturn(textMessage).when(receiver).getMessage("MyJMSMessageId", TextMessage.class, TIMEOUT);
         doNothing().when(exchangeRateCache).addExchangeRateToCache(sourceCurrency, targetCurrency, dateTime, BigDecimal.ONE);
@@ -90,7 +90,7 @@ public class EcbProxyServiceBeanTest {
         String sourceCurrency = "DKK";
         String targetCurrency = "EUR";
         DateTime dateTime = new DateTime(2018,05,30,6,59, DateTimeZone.UTC);
-        Optional<BigDecimal> expectedExchangeRate = Optional.fromNullable(BigDecimal.ONE);
+        Optional<BigDecimal> expectedExchangeRate = Optional.ofNullable(BigDecimal.ONE);
 
         //mock
         doReturn(expectedExchangeRate).when(exchangeRateCache).getExchangeRateFromCache(sourceCurrency, targetCurrency, dateTime);
@@ -109,10 +109,10 @@ public class EcbProxyServiceBeanTest {
         String sourceCurrency = "DKK";
         String targetCurrency = "EUR";
         DateTime dateTime = new DateTime(2018,05,30,6,59, DateTimeZone.UTC);
-        Optional<BigDecimal> expectedExchangeRate = Optional.fromNullable(BigDecimal.ONE);
+        Optional<BigDecimal> expectedExchangeRate = Optional.ofNullable(BigDecimal.ONE);
 
         //mock
-        doReturn(Optional.absent()).when(exchangeRateCache).getExchangeRateFromCache(sourceCurrency, targetCurrency, dateTime);
+        doReturn(Optional.empty()).when(exchangeRateCache).getExchangeRateFromCache(sourceCurrency, targetCurrency, dateTime);
         doReturn("MyJMSMessageId").when(messageProducer).sendModuleMessage(anyString(), any(Union.class));
         doThrow(new SalesNonBlockingException("MySalesNonBlockingException")).when(receiver).getMessage("MyJMSMessageId", TextMessage.class, TIMEOUT);
 

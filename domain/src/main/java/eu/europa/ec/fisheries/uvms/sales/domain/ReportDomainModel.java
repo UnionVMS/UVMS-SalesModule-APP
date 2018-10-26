@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.domain;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.schema.sales.ReportSummary;
@@ -8,6 +7,7 @@ import eu.europa.ec.fisheries.schema.sales.ReportSummary;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReportDomainModel {
 

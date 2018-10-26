@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.FluxReportItemType;
@@ -19,6 +18,7 @@ import org.junit.rules.ExpectedException;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 

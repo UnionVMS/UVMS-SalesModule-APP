@@ -5,7 +5,6 @@
  */
 package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.ResponseDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Response;
 import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingException;
@@ -13,6 +12,7 @@ import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingExcepti
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class ResponseDaoBean extends BaseDaoForSales<Response, Integer> implements ResponseDao {
@@ -33,11 +33,11 @@ public class ResponseDaoBean extends BaseDaoForSales<Response, Integer> implemen
                     "id: " + extId);
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override
-    public Optional<Response> findByReferencedId(String referencedId) throws SalesNonBlockingException {
+    public Optional<Response> findByReferencedId(String referencedId) {
         TypedQuery<Response> query = em.createNamedQuery(Response.FIND_BY_REFERENCED_ID, Response.class);
         query.setParameter("referencedId", referencedId);
 
@@ -52,6 +52,6 @@ public class ResponseDaoBean extends BaseDaoForSales<Response, Integer> implemen
                     "id: " + referencedId);
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 }

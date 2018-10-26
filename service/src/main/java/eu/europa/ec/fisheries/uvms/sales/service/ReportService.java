@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesQueryMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
@@ -11,6 +10,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import javax.ejb.Local;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @Local
 public interface ReportService {

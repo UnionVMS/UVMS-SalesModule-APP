@@ -1,7 +1,8 @@
 package eu.europa.ec.fisheries.uvms.sales.domain;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.SalesQueryType;
+
+import java.util.Optional;
 
 
 public interface QueryDomainModel {

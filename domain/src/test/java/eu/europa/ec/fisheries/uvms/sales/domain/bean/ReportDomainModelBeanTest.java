@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.constant.Purpose;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.FluxReportDao;
@@ -17,10 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -142,7 +138,7 @@ public class ReportDomainModelBeanTest {
     public void testFindByExtIdWhenNothingFound() {
         String extId = "extId";
 
-        doReturn(Optional.absent()).when(fluxReportDao).findByExtId(extId);
+        doReturn(Optional.empty()).when(fluxReportDao).findByExtId(extId);
 
         Optional<Report> result = reportDomainModelBean.findByExtId(extId);
 
@@ -206,14 +202,14 @@ public class ReportDomainModelBeanTest {
     public void findCorrectionOfWhenNothingFound() {
         String extId = "extId";
 
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(extId);
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(extId);
 
         Optional<Report> result = reportDomainModelBean.findCorrectionOf(extId);
 
         verify(fluxReportDao).findCorrectionOf(extId);
         verifyNoMoreInteractions(fluxReportDao, mapper);
 
-        assertEquals(Optional.<Report>absent(), result);
+        assertEquals(Optional.empty(), result);
     }
 
     @Test
@@ -341,7 +337,7 @@ public class ReportDomainModelBeanTest {
         String extId = "extId";
 
         doReturn(extId).when(reportHelper).getFLUXReportDocumentId(report);
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(extId);
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(extId);
 
         assertTrue(reportDomainModelBean.isLatestVersion(report));
 
@@ -356,7 +352,7 @@ public class ReportDomainModelBeanTest {
         Report report = new Report();
 
         doReturn(extId).when(reportHelper).getFLUXReportDocumentId(report);
-        doReturn(Optional.absent()).when(fluxReportDao).findCorrectionOf(extId);
+        doReturn(Optional.empty()).when(fluxReportDao).findCorrectionOf(extId);
 
         assertSame(report, reportDomainModelBean.findLatestVersion(report));
 

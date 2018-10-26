@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
@@ -25,10 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -389,7 +385,7 @@ public class ReportServiceBeanTest {
         String messageValidationResult = "OK";
 
         //mock
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bla");
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId("bla");
         doReturn(false).when(reportHelper).isReportDeleted(report);
         doReturn(BigDecimal.valueOf(1.5)).when(ecbProxyService).findExchangeRate("USD", "EUR", DateTime.parse("2010-01-01"));
         doReturn("EUR").when(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
@@ -423,7 +419,7 @@ public class ReportServiceBeanTest {
         String messageValidationResult = "OK";
 
         //mock
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId("bla");
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId("bla");
         doReturn(true).when(reportHelper).isReportDeleted(report);
         doReturn("EUR").when(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
 

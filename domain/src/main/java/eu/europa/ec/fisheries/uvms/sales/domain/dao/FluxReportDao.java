@@ -1,12 +1,12 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.dao;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.ReportQuery;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Document;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.FluxReport;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 /** DAO for all operations concerning a flux report. **/
 public interface FluxReportDao extends DaoForSales<FluxReport, Integer> {

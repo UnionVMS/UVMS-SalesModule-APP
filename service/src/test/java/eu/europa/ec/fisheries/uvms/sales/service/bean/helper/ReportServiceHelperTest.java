@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.ReportDomainModel;
@@ -19,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -116,7 +116,7 @@ public class ReportServiceHelperTest {
         doReturn(true).when(reportHelper).isReportDeleted(delete);
         doReturn(referencedID).when(reportHelper).getFLUXReportDocumentReferencedId(delete);
         doReturn("delete").when(reportHelper).getId(delete);
-        doReturn(Optional.absent()).when(reportDomainModel).findByExtId(referencedID, true);
+        doReturn(Optional.empty()).when(reportDomainModel).findByExtId(referencedID, true);
 
 
         //execute

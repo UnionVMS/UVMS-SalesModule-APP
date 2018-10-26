@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
@@ -20,10 +19,9 @@ import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.SearchReportsHelper
 import eu.europa.ec.fisheries.uvms.sales.service.dto.*;
 import eu.europa.ec.fisheries.uvms.sales.service.factory.FLUXSalesResponseMessageFactory;
 import eu.europa.ec.fisheries.uvms.sales.service.mapper.DTO;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -34,13 +32,14 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Stateless
+@Slf4j
 public class ReportServiceBean implements ReportService {
 
-    static final Logger LOG = LoggerFactory.getLogger(ReportServiceBean.class);
     public static final int MAX_EXPORT_RESULTS = 1000;
 
     @EJB
@@ -87,7 +86,7 @@ public class ReportServiceBean implements ReportService {
                 BigDecimal exchangeRate = findExchangeRateForCurrencyInReport(report, targetCurrency);
                 reportDomainModel.create(report, targetCurrency, exchangeRate);
             } catch (SalesNonBlockingException e) {
-                LOG.error("Unable to create sales report. Reason: " + e.getMessage());
+                log.error("Unable to create sales report", e);
                 return;
             }
         }
@@ -95,13 +94,13 @@ public class ReportServiceBean implements ReportService {
         try {
             reportServiceHelper.sendResponseToSenderOfReport(report, pluginToSendResponseThrough, validationResults, messageValidationStatus);
         } catch (SalesNonBlockingException e) {
-            LOG.error("Error when sending a response to the sender of the report", e);
+            log.error("Error when sending a response to the sender of the report", e);
         }
 
         try {
             reportServiceHelper.forwardReportToOtherRelevantParties(report, pluginToSendResponseThrough);
         } catch (SalesNonBlockingException e) {
-            LOG.error("Error when forwarding a report to other relevant parties", e);
+            log.error("Error when forwarding a report to other relevant parties", e);
         }
     }
 

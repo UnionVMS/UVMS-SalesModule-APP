@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.*;
 import eu.europa.ec.fisheries.uvms.sales.domain.dao.QueryDao;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Query;
@@ -16,11 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
+import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueryDomainModelBeanTest {
@@ -77,7 +76,7 @@ public class QueryDomainModelBeanTest {
 
     @Test
     public void findQueryByExtIdWhenNoQueryWasFound() throws Exception {
-        doReturn(Optional.absent()).when(dao).findByExtId("extId");
+        doReturn(Optional.empty()).when(dao).findByExtId("extId");
 
         queryDomainModelBean.findByExtId("extId");
 

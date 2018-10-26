@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.uvms.sales.service.bean.helper.AssetServiceBeanHelper;
 import eu.europa.ec.fisheries.wsdl.asset.module.GetAssetModuleResponse;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -15,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -63,7 +63,7 @@ public class AssetServiceBeanTest {
 
         when(helper.createRequestToFindAssetByCFR(CFR)).thenReturn("request");
         when(helper.callAssetModule("request", GetAssetModuleResponse.class)).thenReturn(response);
-        when(cache.retrieveAssetFromCache(CFR)).thenReturn(Optional.<Asset>absent());
+        when(cache.retrieveAssetFromCache(CFR)).thenReturn(Optional.empty());
         doNothing().when(cache).cacheMessage(CFR, asset);
 
         assertSame(asset, assetServiceBean.findByCFR(CFR));

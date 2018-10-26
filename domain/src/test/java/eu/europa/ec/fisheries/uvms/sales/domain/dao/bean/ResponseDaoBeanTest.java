@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.domain.dao.bean;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.uvms.sales.domain.entity.Response;
 import eu.europa.ec.fisheries.uvms.sales.domain.framework.AbstractDaoTest;
 import eu.europa.ec.fisheries.uvms.sales.domain.framework.DataSet;
@@ -8,6 +7,8 @@ import eu.europa.ec.fisheries.uvms.sales.model.exception.SalesNonBlockingExcepti
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 

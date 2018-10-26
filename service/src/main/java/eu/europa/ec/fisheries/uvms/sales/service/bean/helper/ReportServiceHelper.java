@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.sales.service.bean.helper;
 
-import com.google.common.base.Optional;
 import eu.europa.ec.fisheries.schema.sales.FLUXSalesResponseMessage;
 import eu.europa.ec.fisheries.schema.sales.Report;
 import eu.europa.ec.fisheries.schema.sales.ValidationQualityAnalysisType;
@@ -19,6 +18,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Class who's only purpose is to hide low-level logic from the ReportServiceBean.
