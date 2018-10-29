@@ -94,16 +94,6 @@
         </profile>
 
         <profile>
-            <id>belgium-local</id>
-            <properties>
-                <db.url>jdbc:postgresql://apunid01/uvms</db.url>
-                <db.user>sales</db.user>
-                <db.passwd>sales767</db.passwd>
-                <db.defaultSchema>sales</db.defaultSchema>
-            </properties>
-        </profile>
-
-        <profile>
             <id>export-data</id>
             <properties>
                 <db.diffTypes>data</db.diffTypes>
