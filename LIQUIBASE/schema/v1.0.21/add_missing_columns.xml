@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="stihft" id="amc-01">
+        <addColumn tableName="sales_party">
+            <column name="ext_id_scheme_id"
+                    type="text" />
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="sales_party"
+                        columnName="ext_id_scheme_id" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="stihft" id="amc-02">
+        <addColumn tableName="sales_flux_location">
+            <column name="ext_id_scheme_id"
+                    type="text" />
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="sales_flux_location"
+                        columnName="ext_id_scheme_id" />
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

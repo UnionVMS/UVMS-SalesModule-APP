@@ -36,7 +36,8 @@ public class DomainMapperProducerTest {
         DateTime deletion = new DateTime(2018, 2, 17, 16, 35);
 
         FLUXPartyType ownerFLUXParty = new FLUXPartyType()
-                .withIDS(new IDType().withValue("party id"))
+                .withIDS(new IDType()
+                        .withValue("party id"))
                 .withNames(new TextType().withValue("party hardy"));
 
         FLUXReportDocumentType fluxReportDocumentType = new FLUXReportDocumentType()
@@ -189,7 +190,8 @@ public class DomainMapperProducerTest {
     @Test
     public void testMapSalesPartyTypeToPartyDocument() {
         SalesPartyType salesPartyType = new SalesPartyType()
-                .withID(new IDType().withValue("Hello"))
+                .withID(new IDType().withValue("Hello")
+                        .withSchemeID("party scheme id"))
                 .withName(new TextType().withValue("name"))
                 .withCountryID(new IDType().withValue("BEL"))
                 .withRoleCodes(new CodeType().withValue("BUYER"))
@@ -203,6 +205,7 @@ public class DomainMapperProducerTest {
         PartyDocument partyDocument = mapper.map(salesPartyType, PartyDocument.class);
 
         assertEquals("Hello", partyDocument.getParty().getExtId());
+        assertEquals("party scheme id", partyDocument.getParty().getExtIdSchemeId());
         assertEquals("name", partyDocument.getParty().getName());
         assertEquals("BEL", partyDocument.getCountry());
         assertEquals(PartyRole.BUYER, partyDocument.getRole());
@@ -215,6 +218,7 @@ public class DomainMapperProducerTest {
     public void testMapPartyDocumentToSalesPartyType() {
         Party party = new Party()
                 .extId("Yow")
+                .extIdSchemeId("I know where I came from")
                 .fluxOrganizationName("Don't be fooled by the rocks that I got")
                 .address(new Address().block("I'm still Jenny from the block"))
                 .fluxOrganizationAddress(new Address().block("Used to have a little, now I have a lot"))
@@ -228,6 +232,7 @@ public class DomainMapperProducerTest {
         SalesPartyType salesPartyType = mapper.map(partyDocument, SalesPartyType.class);
 
         assertEquals("Yow", salesPartyType.getID().getValue());
+        assertEquals("I know where I came from", salesPartyType.getID().getSchemeID());
         assertEquals("Don't be fooled by the rocks that I got", salesPartyType.getSpecifiedFLUXOrganization().getName().getValue());
         assertEquals("I'm still Jenny from the block", salesPartyType.getSpecifiedStructuredAddresses().get(0).getBlockName().getValue());
         assertEquals("Used to have a little, now I have a lot", salesPartyType.getSpecifiedFLUXOrganization().getPostalStructuredAddresses().get(0).getBlockName().getValue());
@@ -309,7 +314,8 @@ public class DomainMapperProducerTest {
                 .withID(new IDType().withValue("id"))
                 .withPlotIdentification(new TextType().withValue("plotIdentification"))
                 .withPostOfficeBox(new TextType().withValue("postOfficeBox"))
-                .withStreetName(new TextType().withValue("streetName"));
+                .withStreetName(new TextType().withValue("streetName"))
+                .withPostalArea(new TextType().withValue("9450"));
 
         Address address = mapper.map(structuredAddressType, Address.class);
 
@@ -324,6 +330,7 @@ public class DomainMapperProducerTest {
         assertEquals("plotIdentification", address.getPlotId());
         assertEquals("postOfficeBox", address.getPostOfficeBox());
         assertEquals("streetName", address.getStreet());
+        assertEquals("9450", address.getPostcode());
         assertNull(address.getId());
     }
 
@@ -340,7 +347,8 @@ public class DomainMapperProducerTest {
                 .extId("id")
                 .plotId("plotIdentification")
                 .postOfficeBox("postOfficeBox")
-                .street("streetName");
+                .street("streetName")
+                .postcode("9620");
 
         StructuredAddressType structuredAddressType = mapper.map(address, StructuredAddressType.class);
 
@@ -355,6 +363,7 @@ public class DomainMapperProducerTest {
         assertEquals("plotIdentification", structuredAddressType.getPlotIdentification().getValue());
         assertEquals("postOfficeBox", structuredAddressType.getPostOfficeBox().getValue());
         assertEquals("streetName", structuredAddressType.getStreetName().getValue());
+        assertEquals("9620", structuredAddressType.getPostalArea().getValue());
     }
 
     @Test
@@ -365,7 +374,9 @@ public class DomainMapperProducerTest {
                         .withLongitudeMeasure(new MeasureType().withValue(BigDecimal.valueOf(1.5)));
 
         FLUXLocationType fluxLocationType = new FLUXLocationType()
-                .withID(new IDType().withValue("id"))
+                .withID(new IDType()
+                        .withValue("id")
+                        .withSchemeID("schemeId"))
                 .withTypeCode(new CodeType().withValue("typeCode"))
                 .withCountryID(new IDType().withValue("BEL"))
                 .withPhysicalStructuredAddress(new StructuredAddressType())
@@ -374,6 +385,7 @@ public class DomainMapperProducerTest {
         FluxLocation fluxLocation = mapper.map(fluxLocationType, FluxLocation.class);
 
         assertEquals("id", fluxLocation.getExtId());
+        assertEquals("schemeId", fluxLocation.getExtIdSchemeId());
         assertEquals("typeCode", fluxLocation.getType());
         assertEquals("BEL", fluxLocation.getCountryCode());
         assertEquals(new Address(), fluxLocation.getAddress());
@@ -386,6 +398,7 @@ public class DomainMapperProducerTest {
     public void testMapFLUXLocationToFluxLocationType() throws Exception {
         FluxLocation fluxLocation = new FluxLocation()
                 .extId("id")
+                .extIdSchemeId("schemeId")
                 .type("typeCode")
                 .countryCode("BEL")
                 .address(new Address())
@@ -395,6 +408,7 @@ public class DomainMapperProducerTest {
         FLUXLocationType fluxLocationType = mapper.map(fluxLocation, FLUXLocationType.class);
 
         assertEquals("id", fluxLocationType.getID().getValue());
+        assertEquals("schemeId", fluxLocationType.getID().getSchemeID());
         assertEquals("typeCode", fluxLocationType.getTypeCode().getValue());
         assertEquals("BEL", fluxLocationType.getCountryID().getValue());
         assertEquals(new StructuredAddressType(), fluxLocationType.getPhysicalStructuredAddress());

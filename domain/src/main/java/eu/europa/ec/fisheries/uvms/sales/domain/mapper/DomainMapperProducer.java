@@ -243,6 +243,7 @@ public class DomainMapperProducer {
     private void configurePartyDocument(MapperFactory factory) {
         factory.classMap(SalesPartyType.class, PartyDocument.class)
                 .field("ID.value", "party.extId")
+                .field("ID.schemeID", "party.extIdSchemeId")
                 .field("name.value", "party.name")
                 .field("countryID.value", "country")
                 .field("roleCodes[0].value", "role")
@@ -266,12 +267,14 @@ public class DomainMapperProducer {
                 .field("plotIdentification.value", "plotId")
                 .field("postOfficeBox.value", "postOfficeBox")
                 .field("streetName.value", "street")
+                .field("postalArea.value", "postcode")
                 .register();
     }
 
     private void configureFLUXLocationType(MapperFactory factory) {
         factory.classMap(FLUXLocationType.class, FluxLocation.class)
                 .field("ID.value", "extId")
+                .field("ID.schemeID", "extIdSchemeId")
                 .field("typeCode.value", "type")
                 .field("countryID.value", "countryCode")
                 .field("specifiedPhysicalFLUXGeographicalCoordinate.latitudeMeasure.value", "latitude")

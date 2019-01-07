@@ -26,6 +26,9 @@ public class Party {
     @Column(name = "ext_id")
     private String extId;
 
+    @Column(name = "ext_id_scheme_id")
+    private String extIdSchemeId;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -60,6 +63,14 @@ public class Party {
 
     public void setExtId(String extId) {
         this.extId = extId;
+    }
+
+    public String getExtIdSchemeId() {
+        return extIdSchemeId;
+    }
+
+    public void setExtIdSchemeId(String extIdSchemeId) {
+        this.extIdSchemeId = extIdSchemeId;
     }
 
     public String getName() {
@@ -104,6 +115,11 @@ public class Party {
         return this;
     }
 
+    public Party extIdSchemeId(String extIdSchemeId) {
+        setExtIdSchemeId(extIdSchemeId);
+        return this;
+    }
+
     public Party name(final String name) {
         setName(name);
         return this;
@@ -123,4 +139,5 @@ public class Party {
         setFluxOrganizationAddress(fluxOrganizationAddress);
         return this;
     }
+
 }
