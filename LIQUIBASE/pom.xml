@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
     <artifactId>liquibase</artifactId>
-    <version>1.0.21-SNAPSHOT</version>
+    <version>1.0.21</version>
     <name>sales-liquibase</name>
 
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
         <artifactId>sales</artifactId>
-        <version>1.0.21-SNAPSHOT</version>
+        <version>1.0.21</version>
     </parent>
 
     <properties>
