@@ -25,6 +25,9 @@ public class FluxLocation {
     @Column(name = "ext_id")
     private String extId;
 
+    @Column(name = "ext_id_scheme_id")
+    private String extIdSchemeId;
+
     @NotNull
     @Column(name = "type", nullable = false)
     private String type;
@@ -56,6 +59,14 @@ public class FluxLocation {
 
     public void setExtId(String extId) {
         this.extId = extId;
+    }
+
+    public String getExtIdSchemeId() {
+        return extIdSchemeId;
+    }
+
+    public void setExtIdSchemeId(String extIdSchemeId) {
+        this.extIdSchemeId = extIdSchemeId;
     }
 
     public String getType() {
@@ -103,6 +114,11 @@ public class FluxLocation {
         return this;
     }
 
+    public FluxLocation extIdSchemeId(String extIdSchemeId) {
+        this.extIdSchemeId = extIdSchemeId;
+        return this;
+    }
+
     public FluxLocation type(String type) {
         this.type = type;
         return this;
@@ -127,4 +143,10 @@ public class FluxLocation {
         this.address = address;
         return this;
     }
+
+    public FluxLocation id(Integer id) {
+        this.id = id;
+        return this;
+    }
+
 }
