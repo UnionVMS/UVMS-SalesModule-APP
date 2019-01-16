@@ -20,6 +20,8 @@
 
     <include file="changelog\v1.0.21\db-changelog-createSchema.xml" />
 
+    <include file="changelog\v1.0.22\db-changelog-createSchema.xml" />
+
     <!-- set DB specific properties, like sysdate vs now() -->
     <include file="changelog\properties.xml"/>
 
