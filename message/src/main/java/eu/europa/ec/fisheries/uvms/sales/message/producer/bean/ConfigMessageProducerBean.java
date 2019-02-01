@@ -14,7 +14,7 @@ import javax.jms.Queue;
 @Stateless
 public class ConfigMessageProducerBean extends AbstractProducer implements ConfigMessageProducer {
 
-    private static final long TIME_TO_LIVE = 60000L;
+    private static final long TIME_TO_LIVE = 600000L;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)

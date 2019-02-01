@@ -34,13 +34,13 @@ public class ConfigMessageConsumerBeanTest {
         Class<String> type = String.class;
 
         //mock
-        when(salesMessageConsumer.getMessage(correlationId, type, 30000L)).thenReturn(text);
+        when(salesMessageConsumer.getMessage(correlationId, type, 600000L)).thenReturn(text);
 
         //execute
         String actualResult = configMessageConsumerBean.getConfigMessage(correlationId, type);
 
         //verify and assert
-        verify(salesMessageConsumer).getMessage(correlationId, type, 30000L);
+        verify(salesMessageConsumer).getMessage(correlationId, type, 600000L);
         verifyNoMoreInteractions(salesMessageConsumer);
 
         assertEquals(text, actualResult);
@@ -54,7 +54,7 @@ public class ConfigMessageConsumerBeanTest {
         Class<String> type = String.class;
 
         //mock
-        when(salesMessageConsumer.getMessage(correlationId, type, 30000L)).thenThrow(new MessageException("oops"));
+        when(salesMessageConsumer.getMessage(correlationId, type, 600000L)).thenThrow(new MessageException("oops"));
 
         expectedException.expect(ConfigMessageException.class);
 
@@ -62,7 +62,7 @@ public class ConfigMessageConsumerBeanTest {
         configMessageConsumerBean.getConfigMessage(correlationId, type);
 
         //verify and assert
-        verify(salesMessageConsumer).getMessage(correlationId, type, 30000L);
+        verify(salesMessageConsumer).getMessage(correlationId, type, 600000L);
         verifyNoMoreInteractions(salesMessageConsumer);
     }
 }
