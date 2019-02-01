@@ -13,7 +13,7 @@ import javax.ejb.Stateless;
 @Stateless
 public class ConfigMessageConsumerBean implements ConfigMessageConsumer {
 
-    private static final long TIMEOUT = 30000;
+    private static final long TIMEOUT = 600000L;
 
     static final Logger LOG = LoggerFactory.getLogger(ConfigMessageConsumerBean.class);
 
