@@ -2,31 +2,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>fish.focus.uvms.maven</groupId>
-		<artifactId>uvms-pom</artifactId>
-		<relativePath />
-		<version>1.21</version>
-	</parent>
+  <parent>
+    <groupId>eu.europa.ec.fisheries.uvms</groupId>
+    <artifactId>mare-pom</artifactId>
+    <version>1.6.0-MARE</version>
+    <relativePath />
+  </parent>
 	
     <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
     <artifactId>sales</artifactId>
-    <version>1.0.23-SNAPSHOT</version>
+    <version>${uvms.sales.module.version}</version>
     <packaging>pom</packaging>
 
     <properties>
         <orika.version>1.5.0</orika.version>
         <jackson.version>2.4.1</jackson.version>
-        <sales.model.version>1.0.12</sales.model.version>
+        
+        <sales.model.version>${uvms.sales.model.version}</sales.model.version>
         <sales.ecb.proxy.model.version>1.0.7</sales.ecb.proxy.model.version>
-        <asset.model.version>3.0.7</asset.model.version>
-        <rules.model.version>3.0.21</rules.model.version>
-        <uvms.commons.parent.version>3.0.28</uvms.commons.parent.version>
-        <uvms.config.version>4.0.1</uvms.config.version>
+        <asset.model.version>${uvms.asset.module.version}</asset.model.version>
+        <rules.model.version>${uvms.rules.module.version}</rules.model.version>
+        <exchange-model.version>${uvms.exchange.model.version}</exchange-model.version>
+        <mdr.model.version>${uvms.mdr.model.version}</mdr.model.version>
+        
+        <uvms.commons.parent.version>${uvms.commonsLibrary.version}</uvms.commons.parent.version>
+        <uvms.config.version>${uvms.config.library.version}</uvms.config.version>
+        <usm4uvms.version>${uvms.uvms4usm.version}</usm4uvms.version>
+        
         <sl4j.version>1.7.25</sl4j.version>
         <logback.version>1.2.3</logback.version>        
-        <usm4uvms.version>4.0.8</usm4uvms.version>
-        <mdr.model.version>0.5.2</mdr.model.version>
         <mockito.version>2.7.1</mockito.version>
         <powermock.version>1.7.0RC2</powermock.version>
         <jacoco.version>0.7.9</jacoco.version>
@@ -37,7 +41,6 @@
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-SalesModule-APP.git</scm.connection>
         <annotations.version>2.0.3</annotations.version>
-        <exchange-model.version>4.0.15</exchange-model.version>
     </properties>
 
     <dependencyManagement>
@@ -83,7 +86,6 @@
                 <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
                 <artifactId>asset-model</artifactId>
                 <version>${asset.model.version}</version>
-                <classifier>date</classifier>
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
@@ -97,7 +99,7 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>uvms-config</artifactId>
+            	<artifactId>config-library</artifactId>
                 <version>${uvms.config.version}</version>
             </dependency>
             <dependency>

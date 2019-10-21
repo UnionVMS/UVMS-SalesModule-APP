@@ -12,7 +12,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
         <artifactId>sales</artifactId>
-        <version>1.0.23-SNAPSHOT</version>
+        <version>${uvms.sales.module.version}</version>
     </parent>
     
     <dependencies>

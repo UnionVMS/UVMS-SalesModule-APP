@@ -9,7 +9,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
         <artifactId>sales</artifactId>
-        <version>1.0.23-SNAPSHOT</version>
+        <version>${uvms.sales.module.version}</version>
     </parent>
 
     <properties>
@@ -61,7 +61,6 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
             <artifactId>asset-model</artifactId>
-            <classifier>date</classifier>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
@@ -73,7 +72,7 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-config</artifactId>
+            <artifactId>config-library</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
