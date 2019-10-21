@@ -2,14 +2,13 @@
     
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
-    <artifactId>liquibase</artifactId>
-    <version>1.0.23-SNAPSHOT</version>
+    <artifactId>sales-liquibase</artifactId>
     <name>sales-liquibase</name>
 
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
         <artifactId>sales</artifactId>
-        <version>1.0.23-SNAPSHOT</version>
+        <version>${uvms.sales.module.version}</version>
     </parent>
 
     <properties>
