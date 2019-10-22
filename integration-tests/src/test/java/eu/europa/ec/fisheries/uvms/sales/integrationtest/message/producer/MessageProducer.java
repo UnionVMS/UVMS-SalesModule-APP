@@ -15,16 +15,11 @@ public class MessageProducer {
 
     private static final Logger LOG = LoggerFactory.getLogger(MessageProducer.class);
     private static final long TIME_TO_LIVE_30_SECONDS = 30000;
-    private ConnectionFactory connectionFactory;
 
-    @PostConstruct
-    public void initialize() {
-        connectionFactory = JMSUtils.lookupConnectionFactory();
-    }
 
     public void sendMessage(String message, Destination destination, String correlationId) {
-        try (Connection connection = connectionFactory.createConnection();
-             Session session = JMSUtils.connectToQueue(connection);
+        try (Connection connection = JMSUtils.getConnectionV2();
+             Session session = JMSUtils.createSessionAndStartConnection(connection);
              javax.jms.MessageProducer producer = session.createProducer(destination)) {
 
             TextMessage textMessage = session.createTextMessage();
