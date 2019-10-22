@@ -29,7 +29,7 @@ public class ConfigServiceBean implements ConfigService {
 
     public String getParameter(ParameterKey parameterKey) {
         try {
-            return parameterService.getStringValue(parameterKey.getKey());
+            return parameterService.getParamValueById(parameterKey.getKey());
         } catch (ConfigServiceException e) {
             throw new SalesServiceException("Could not retrieve a setting with key " + parameterKey.getKey() + " from Config.", e);
         }

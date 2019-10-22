@@ -82,7 +82,7 @@ public class ReportServiceBean implements ReportService {
                            String messageValidationStatus) throws ConfigServiceException {
         if (!doesReportAlreadyExistInDatabase(report)) {
             try {
-                String targetCurrency = parameterService.getStringValue(ParameterKey.CURRENCY.getKey());
+                String targetCurrency = parameterService.getParamValueById(ParameterKey.CURRENCY.getKey());
                 BigDecimal exchangeRate = findExchangeRateForCurrencyInReport(report, targetCurrency);
                 reportDomainModel.create(report, targetCurrency, exchangeRate);
             } catch (SalesNonBlockingException e) {
