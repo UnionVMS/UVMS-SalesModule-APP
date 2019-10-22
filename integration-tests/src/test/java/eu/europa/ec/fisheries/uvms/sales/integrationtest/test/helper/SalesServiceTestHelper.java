@@ -23,11 +23,8 @@ public class SalesServiceTestHelper {
     private Queue replyToRulesQueue;
     private Queue replyToSalesQueue;
 
-    private ConnectionFactory connectionFactory;
-
     @PostConstruct
     public void setup() {
-        connectionFactory = JMSUtils.lookupConnectionFactory();
         rulesEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_MODULE_RULES);
         salesEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES_EVENT);
         exchangeEventQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_EXCHANGE_EVENT);
@@ -37,8 +34,8 @@ public class SalesServiceTestHelper {
 
     public String sendMessageToSalesMessageConsumerBean(String messageToSend, Destination replyToQueue) {
 
-        try (Connection connection = connectionFactory.createConnection();
-             Session session = JMSUtils.connectToQueue(connection);
+        try (Connection connection = JMSUtils.getConnectionV2();
+             Session session = JMSUtils.createSessionAndStartConnection(connection);
              MessageProducer producer = session.createProducer(salesEventQueue)) {
 
             TextMessage textMessage = session.createTextMessage(messageToSend);
@@ -56,9 +53,9 @@ public class SalesServiceTestHelper {
 
     public TextMessage getTextMessageWithReplyTo(Destination replyToDestination) {
 
-        try (Connection connection = connectionFactory.createConnection();
-             Session session = JMSUtils.connectToQueue(connection);
-             MessageProducer producer = session.createProducer(rulesEventQueue)) { // for testing sake
+        try (Connection connection = JMSUtils.getConnectionV2();
+                Session session = JMSUtils.createSessionAndStartConnection(connection);
+                MessageProducer producer = session.createProducer(rulesEventQueue)) { // for testing sake
 
             TextMessage textMessage = session.createTextMessage("Dummy Sales service Arquillian test message");
             textMessage.setJMSReplyTo(replyToDestination);
@@ -86,8 +83,8 @@ public class SalesServiceTestHelper {
 
     private TextMessage receiveTextMessage(Destination receiveFromDestination, String correlationId) {
         assertNotNull(correlationId);
-        try (Connection connection = connectionFactory.createConnection();
-             Session session = JMSUtils.connectToQueue(connection);
+        try (Connection connection = JMSUtils.getConnectionV2();
+             Session session = JMSUtils.createSessionAndStartConnection(connection);
              MessageConsumer consumer = session.createConsumer(receiveFromDestination, "JMSCorrelationID='" + correlationId + "'")) {
 
             Message receivedMessage = consumer.receive(TIMEOUT);
@@ -105,8 +102,8 @@ public class SalesServiceTestHelper {
     }
 
     private TextMessage receiveTextMessage(Destination receiveFromDestination, boolean hasMessageExpirySet) {
-        try (Connection connection = connectionFactory.createConnection();
-             Session session = JMSUtils.connectToQueue(connection);
+        try (Connection connection = JMSUtils.getConnectionV2();
+             Session session = JMSUtils.createSessionAndStartConnection(connection);
              MessageConsumer consumer = session.createConsumer(receiveFromDestination)) {
 
             Message receivedMessage = consumer.receive(TIMEOUT);

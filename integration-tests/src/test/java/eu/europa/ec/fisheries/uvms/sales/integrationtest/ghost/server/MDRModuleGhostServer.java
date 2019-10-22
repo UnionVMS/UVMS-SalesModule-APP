@@ -19,12 +19,10 @@ import static org.junit.Assert.assertNotNull;
 })
 public class MDRModuleGhostServer implements MessageListener {
 
-    private ConnectionFactory connectionFactory;
     private Queue replyToSalesQueue;
 
     @PostConstruct
     public void initialize() {
-        connectionFactory = JMSUtils.lookupConnectionFactory();
         replyToSalesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
     }
 
@@ -40,9 +38,9 @@ public class MDRModuleGhostServer implements MessageListener {
         Session session = null;
         MessageProducer messageProducer = null;
         try {
-            connection = connectionFactory.createConnection();
+            connection = JMSUtils.getConnectionV2();
             assertNotNull(connection);
-            session = JMSUtils.connectToQueue(connection);
+            session = JMSUtils.createSessionAndStartConnection(connection);
             assertNotNull(session);
             TextMessage mdrGetCodeListResponse = session.createTextMessage(getMockedSettingsResponse());
             mdrGetCodeListResponse.setJMSCorrelationID(requestMessage.getJMSMessageID());
