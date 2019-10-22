@@ -27,12 +27,10 @@ import static org.junit.Assert.assertNotNull;
 })
 public class EcbProxyGhostServer implements MessageListener {
 
-    private ConnectionFactory connectionFactory;
     private Queue replyToSalesQueue;
 
     @PostConstruct
     public void initialize() {
-        connectionFactory = JMSUtils.lookupConnectionFactory();
         replyToSalesQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_SALES);
     }
 
@@ -78,9 +76,9 @@ public class EcbProxyGhostServer implements MessageListener {
 
             String strGetExchangeRateResponse = JAXBMarshaller.marshallJaxBObjectToString(getExchangeRateResponse);
 
-            connection = connectionFactory.createConnection();
+            connection = JMSUtils.getConnectionV2();
             assertNotNull(connection);
-            session = JMSUtils.connectToQueue(connection);
+            session = JMSUtils.createSessionAndStartConnection(connection);
             assertNotNull(session);
             TextMessage getExchangeRateResponseMessage = session.createTextMessage(strGetExchangeRateResponse);
             getExchangeRateResponseMessage.setJMSCorrelationID(requestMessage.getJMSMessageID());
