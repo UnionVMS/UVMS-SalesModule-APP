@@ -388,7 +388,7 @@ public class ReportServiceBeanTest {
         doReturn(Optional.empty()).when(reportDomainModel).findByExtId("bla");
         doReturn(false).when(reportHelper).isReportDeleted(report);
         doReturn(BigDecimal.valueOf(1.5)).when(ecbProxyService).findExchangeRate("USD", "EUR", DateTime.parse("2010-01-01"));
-        doReturn("EUR").when(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
+        doReturn("EUR").when(parameterService).getParamValueById(ParameterKey.CURRENCY.getKey());
 
         //execute
         reportServiceBean.saveReport(report, plugin, validationResults, messageValidationResult);
@@ -421,7 +421,7 @@ public class ReportServiceBeanTest {
         //mock
         doReturn(Optional.empty()).when(reportDomainModel).findByExtId("bla");
         doReturn(true).when(reportHelper).isReportDeleted(report);
-        doReturn("EUR").when(parameterService).getStringValue(ParameterKey.CURRENCY.getKey());
+        doReturn("EUR").when(parameterService).getParamValueById(ParameterKey.CURRENCY.getKey());
 
         //execute
         reportServiceBean.saveReport(report, plugin, validationResults, messageValidationResult);
