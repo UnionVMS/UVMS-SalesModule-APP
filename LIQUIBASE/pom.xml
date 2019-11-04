@@ -13,8 +13,8 @@
 
     <properties>
         <db.driver>org.postgresql.Driver</db.driver>
-        <db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
-        <db.outputFile>changelog/generatedChangelog.xml</db.outputFile>
+        <db.changeLogFile>${project.basedir}/changelog/db-changelog-master.xml</db.changeLogFile>
+        <db.outputFile>${project.basedir}/changelog/generatedChangelog.xml</db.outputFile>
         <db.url>offline:postgresql</db.url>
         <driver.groupId>org.postgresql</driver.groupId>
         <driver.artifactId>postgresql</driver.artifactId>
@@ -59,8 +59,8 @@
                 <db.user>sales</db.user>
                 <db.passwd>sales</db.passwd>
                 <db.defaultSchema>sales</db.defaultSchema>
-            	<db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
-				<db.outputFile>changelog/generatedChangelog.xml</db.outputFile>
+            	<db.changeLogFile>${project.basedir}/changelog/db-changelog-master.xml</db.changeLogFile>
+				<db.outputFile>${project.basedir}/changelog/generatedChangelog.xml</db.outputFile>
 			</properties>
 		</profile>
 		<profile>
@@ -109,8 +109,8 @@
                 </plugins>
             </build>
 			<properties>
-                <db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
-				<db.docker.url>offline:postgresql?changeLogFile=target/databasechangelog.csv&amp;outputLiquibaseSql=true</db.docker.url>
+
+				<db.docker.url>offline:postgresql?changeLogFile=${project.build.directory}/databasechangelog.csv&amp;outputLiquibaseSql=true</db.docker.url>
 			</properties>
         </profile>
 
