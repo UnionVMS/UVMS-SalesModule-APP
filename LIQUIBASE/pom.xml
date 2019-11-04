@@ -49,27 +49,45 @@
         </profile>
 
         <profile>
-            <id>publish-sql</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
+			<id>postgres</id>
+			<activation>
+            <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <db.url>offline:postgresql?changeLogFile=target/changelog.csv</db.url>
+                <db.driver>org.postgresql.Driver</db.driver>
+				<db.url>jdbc:postgresql://localhost:5432/db71u</db.url>
                 <db.user>sales</db.user>
                 <db.passwd>sales</db.passwd>
                 <db.defaultSchema>sales</db.defaultSchema>
-            </properties>
+            	<db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
+				<db.outputFile>changelog/generatedChangelog.xml</db.outputFile>
+			</properties>
+		</profile>
+		<profile>
+			<id>publish-sql</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.liquibase</groupId>
                         <artifactId>liquibase-maven-plugin</artifactId>
-                        <version>3.4.2</version>
+						<configuration>
+							<url>${db.docker.url}</url>
+							<migrationSqlOutputFile>${project.build.directory}/full-update.sql</migrationSqlOutputFile>
+							<outputFileEncoding>UTF-8</outputFileEncoding>
+						</configuration>
+						<executions>
+							<execution>
+								<id>update-schema-sql</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>updateSQL</goal>
+								</goals>
+							</execution>
+						</executions>
                     </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
-                        <version>3.0.0</version>
                         <executions>
                             <execution>
                                 <id>attach-artifacts</id>
@@ -90,6 +108,10 @@
                     </plugin>
                 </plugins>
             </build>
+			<properties>
+                <db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
+				<db.docker.url>offline:postgresql?changeLogFile=target/databasechangelog.csv&amp;outputLiquibaseSql=true</db.docker.url>
+			</properties>
         </profile>
 
         <profile>
@@ -131,7 +153,6 @@
                 <plugin>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-maven-plugin</artifactId>
-                    <version>3.3.2</version>
                     <configuration>
                         <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
                         <changeLogFile>${db.changeLogFile}</changeLogFile>
