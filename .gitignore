@@ -8,3 +8,4 @@ plugin.properties
 .project
 .classpath
 .settings/
+pom.xml.versionsBackup
