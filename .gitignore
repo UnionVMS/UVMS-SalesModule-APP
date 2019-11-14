@@ -4,3 +4,7 @@
 **/apidocs
 logging.properties
 plugin.properties
+.flattened-pom.xml
+.project
+.classpath
+.settings/
