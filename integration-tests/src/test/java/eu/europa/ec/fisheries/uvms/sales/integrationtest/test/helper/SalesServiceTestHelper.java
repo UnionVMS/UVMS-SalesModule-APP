@@ -140,7 +140,7 @@ public class SalesServiceTestHelper {
         return receiveTextMessageNoMessageExpiry(replyToRulesQueue, correlationId);
     }
 
-    public <T> T getSalesModelBean(String textMessage, Class clazz) throws Exception {
+    public <T> T getSalesModelBean(String textMessage, Class<T> clazz) throws Exception {
         return JAXBMarshaller.unmarshallString(textMessage, clazz);
     }
 
