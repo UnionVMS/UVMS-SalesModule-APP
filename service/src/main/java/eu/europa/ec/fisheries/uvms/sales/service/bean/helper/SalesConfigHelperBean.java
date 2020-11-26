@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.sales.service.constants.ServiceConstants;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,13 @@ import java.util.List;
 @Stateless
 public class SalesConfigHelperBean implements ConfigHelper {
 
+    private static final String MODULE_VERSION_PROPERTIES_KEY = "uvms.module.version";
+
     @EJB
     private SalesConfigHelperDao salesConfigHelperDao;
+
+    @Inject
+    private PropertiesBean propertiesBean;
 
     @Override
     public List<String> getAllParameterKeys() {
@@ -30,6 +36,11 @@ public class SalesConfigHelperBean implements ConfigHelper {
     @Override
     public String getModuleName() {
         return ServiceConstants.SALES_CONFIG_NAME;
+    }
+
+    @Override
+    public String getModuleVersion() {
+        return propertiesBean.getProperty(MODULE_VERSION_PROPERTIES_KEY);
     }
 
     @Override
