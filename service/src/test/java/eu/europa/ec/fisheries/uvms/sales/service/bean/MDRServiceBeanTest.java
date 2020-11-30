@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import un.unece.uncefact.data.standard.mdr.communication.MdrGetCodeListRequest;
 import un.unece.uncefact.data.standard.mdr.communication.MdrGetCodeListResponse;
 import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 
@@ -21,6 +22,8 @@ import javax.jms.TextMessage;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -49,7 +52,7 @@ public class MDRServiceBeanTest {
     public void findCodeList() throws Exception {
         //data set
         MDRCodeListKey mdrCodeListKey = MDRCodeListKey.FLAG_STATES;
-        String mdrRequest = "test";
+        MdrGetCodeListRequest mdrRequest = new MdrGetCodeListRequest();
         String correlationId = "bla";
         String textMessageText = "testyedetest";
         MdrGetCodeListResponse mdrGetCodeListResponse = new MdrGetCodeListResponse();
@@ -61,7 +64,7 @@ public class MDRServiceBeanTest {
         mockStatic(MdrModuleMapper.class);
 
         when(MdrModuleMapper.createFluxMdrGetCodeListRequest("TERRITORY")).thenReturn(mdrRequest);
-        when(producer.sendModuleMessage(mdrRequest, Union.MDR)).thenReturn(correlationId);
+        when(producer.sendModuleMessage(anyString(), eq(Union.MDR))).thenReturn(correlationId);
         when(consumer.getMessage(correlationId, TextMessage.class, TIMEOUT)).thenReturn(textMessage);
         when(textMessage.getText()).thenReturn(textMessageText);
         when(JAXBUtils.unMarshallMessage(textMessageText, MdrGetCodeListResponse.class)).thenReturn(mdrGetCodeListResponse);
@@ -70,7 +73,6 @@ public class MDRServiceBeanTest {
         List<ObjectRepresentation> result = mdrServiceBean.findCodeList(mdrCodeListKey);
 
         //verify
-        verify(producer).sendModuleMessage(mdrRequest, Union.MDR);
         verify(consumer).getMessage(correlationId, TextMessage.class, TIMEOUT);
         verify(textMessage).getText();
 

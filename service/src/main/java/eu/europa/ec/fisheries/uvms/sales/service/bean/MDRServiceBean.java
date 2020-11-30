@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConsumer;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.mdr.model.exception.MdrModelMarshallException;
+import eu.europa.ec.fisheries.uvms.mdr.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.mdr.model.mapper.MdrModuleMapper;
 import eu.europa.ec.fisheries.uvms.sales.message.constants.Union;
 import eu.europa.ec.fisheries.uvms.sales.message.producer.SalesMessageProducer;
@@ -48,7 +49,7 @@ public class MDRServiceBean implements MDRService {
 
     public List<ObjectRepresentation> findCodeList(MDRCodeListKey acronym) {
         try {
-            String request = MdrModuleMapper.createFluxMdrGetCodeListRequest(acronym.getInternalName());
+            String request = JAXBMarshaller.marshallJaxBObjectToString(MdrModuleMapper.createFluxMdrGetCodeListRequest(acronym.getInternalName()));
             log.info("Send MdrGetCodeListRequest message to MDR. Acronym: " + acronym.name());
             String correlationId = producer.sendModuleMessage(request, Union.MDR);
 
