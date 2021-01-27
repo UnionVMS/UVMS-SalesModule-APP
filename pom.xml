@@ -28,9 +28,7 @@
         <uvms.commons.parent.version>${uvms.commonsLibrary.version}</uvms.commons.parent.version>
         <uvms.config.version>${uvms.config.library.version}</uvms.config.version>
         <usm4uvms.version>${uvms.uvms4usm.version}</usm4uvms.version>
-        
-        <sl4j.version>1.7.25</sl4j.version>
-        <logback.version>1.2.3</logback.version>        
+
         <mockito.version>2.7.1</mockito.version>
         <powermock.version>1.7.0RC2</powermock.version>
         <jacoco.version>0.7.9</jacoco.version>
@@ -160,21 +158,6 @@
 				<version>1.21</version>
 				<type>pom</type>
 			</dependency>
-    		<dependency>
-    			<groupId>ch.qos.logback</groupId>
-    			<artifactId>logback-core</artifactId>
-    			<version>${logback.version}</version>
-    		</dependency>
-    		<dependency>
-    			<groupId>ch.qos.logback</groupId>
-    			<artifactId>logback-classic</artifactId>
-    			<version>${logback.version}</version>
-    		</dependency>
-    		<dependency>
-    		    <groupId>org.slf4j</groupId>
-  			    <artifactId>slf4j-api</artifactId>
-    		    <version>${sl4j.version}</version>
-    		</dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
