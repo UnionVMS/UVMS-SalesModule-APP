@@ -49,7 +49,6 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sales-message</artifactId>
@@ -63,10 +62,12 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>config-library</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
@@ -76,7 +77,6 @@
             <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
             <artifactId>mdr-model</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
@@ -93,8 +93,13 @@
 			<groupId>fish.focus.uvms.maven</groupId>
 			<artifactId>uvms-pom-monitoring-deps</artifactId>
 			<type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.bull.javamelody</groupId>
+                    <artifactId>javamelody-core</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
-
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-arquillian-container-remote</artifactId>

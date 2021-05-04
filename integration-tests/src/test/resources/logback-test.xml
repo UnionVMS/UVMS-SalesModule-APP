@@ -54,7 +54,6 @@
         </filter>
     </appender>
 
-    <logger name="net.bull.javamelody" level="error"/>
     <logger name="org.hibernate.sql" level="debug"/>
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace"/>
 
