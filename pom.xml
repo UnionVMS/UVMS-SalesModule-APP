@@ -19,7 +19,7 @@
         <jackson.version>2.4.1</jackson.version>
         
         <sales.model.version>${uvms.sales.model.version}</sales.model.version>
-        <sales.ecb.proxy.model.version>1.0.7</sales.ecb.proxy.model.version>
+        <sales.ecb.proxy.model.version>${uvms.sales.proxy.version}</sales.ecb.proxy.model.version>
         <asset.model.version>${uvms.asset.module.version}</asset.model.version>
         <rules.model.version>${uvms.rules.module.version}</rules.model.version>
         <exchange-model.version>${uvms.exchange.model.version}</exchange-model.version>
@@ -135,12 +135,6 @@
         	<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-gis-deps</artifactId>
-				<version>1.21</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-logging-deps</artifactId>
 				<version>1.21</version>
 				<type>pom</type>
 			</dependency>
