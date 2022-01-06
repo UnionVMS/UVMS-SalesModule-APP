@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sales-module</artifactId>
     <name>sales-module</name>
     <packaging>ear</packaging>
-    
+
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.sales</groupId>
         <artifactId>sales</artifactId>
         <version>${uvms.sales.module.version}</version>
     </parent>
-    
+
     <build>
         <finalName>${project.name}</finalName>
         <plugins>
@@ -20,26 +21,31 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Logging-Profile>sales-logging-profile</Logging-Profile>
+                        </manifestEntries>
+                    </archive>
                     <modules>
                         <ejbModule>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>sales-domain</artifactId>
                         </ejbModule>
                         <ejbModule>
-                            <groupId>${project.groupId}</groupId>   
+                            <groupId>${project.groupId}</groupId>
                             <artifactId>sales-message</artifactId>
                         </ejbModule>
                         <ejbModule>
-                            <groupId>${project.groupId}</groupId>  
+                            <groupId>${project.groupId}</groupId>
                             <artifactId>sales-service</artifactId>
                         </ejbModule>
                         <ejbModule>
-                            <groupId>${project.groupId}</groupId>  
-                            <artifactId>sales-model</artifactId>							
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>sales-model</artifactId>
                         </ejbModule>
                         <webModule>
                             <groupId>${project.groupId}</groupId>
-                            <context-root>${context.root}sales</context-root>  
+                            <context-root>${context.root}sales</context-root>
                             <artifactId>sales-rest</artifactId>
                         </webModule>
                         <jarModule>
@@ -91,13 +97,13 @@
             <type>ejb</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>     
+            <groupId>${project.groupId}</groupId>
             <artifactId>sales-message</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>  
+            <groupId>${project.groupId}</groupId>
             <artifactId>sales-service</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
@@ -109,7 +115,7 @@
             <type>ejb</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>  
+            <groupId>${project.groupId}</groupId>
             <artifactId>sales-rest</artifactId>
             <version>${project.version}</version>
             <type>war</type>
@@ -165,15 +171,21 @@
             <groupId>eu.europa.ec.mare.usm</groupId>
             <artifactId>jwt-handler-impl</artifactId>
             <version>${usm.jwt-handler.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>fish.focus.uvms.maven</groupId>
+                    <artifactId>uvms-pom-logging-deps</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
-    
+
     <!-- USE following command to run this profile: mvn clean install -P wildfly-deploy wildfly:deploy -Dhostname=127.0.0.1 -Dport=9990 -Dusername=admin -Dpassword=asdf  -->
     <profiles>
         <profile>
             <id>wildfly-deploy</id>
             <build>
-                <plugins>	
+                <plugins>
                     <plugin>
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
@@ -190,7 +202,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>        
-    </profiles>  
-    
+        </profile>
+    </profiles>
+
 </project>
